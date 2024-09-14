@@ -1,18 +1,15 @@
+import artwork1PageRoute from "./artwork/Artwork1PageRoute";
+
+// Always leave this as last one, but you can also remove it
+const errorNotFoundPageRoute = {
+    path: "/:catchAll(.*)*",
+    component: () => import("src/pages/ErrorNotFoundPage.vue"),
+};
+
 const routes = [
-  {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/IndexPage.vue') }
-    ]
-  },
+    ...artwork1PageRoute,
+    // Continue to add more page routes here.
+    errorNotFoundPageRoute,
+];
 
-  // Always leave this as last one,
-  // but you can also remove it
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
-]
-
-export default routes
+export default routes;
