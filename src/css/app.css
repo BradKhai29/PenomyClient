@@ -1,1 +1,5 @@
 /* app global css */
+/* Disable the padding bottom of q-img */
+.q-img > div[style] {
+    padding-bottom: 0 !important;
+}
