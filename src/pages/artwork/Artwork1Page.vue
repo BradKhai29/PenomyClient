@@ -5,6 +5,11 @@
             src="~assets/quasar-logo-vertical.svg"
             style="width: 200px; height: 200px"
         />
+        <q-img
+            src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp"
+            spinner-color="white"
+            style="height: 140px; max-width: 150px; padding: 0px"
+        />
 
         <div>
             <p>This is counter: {{ counter }}</p>
