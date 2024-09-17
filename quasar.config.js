@@ -25,12 +25,12 @@ module.exports = configure(function (/* ctx */) {
 
         // https://github.com/quasarframework/quasar/tree/dev/extras
         extras: [
-            // 'ionicons-v4',
-            // 'mdi-v7',
+            "ionicons-v4",
+            "mdi-v7",
             "fontawesome-v6",
-            // 'eva-icons',
-            // 'themify',
-            // 'line-awesome',
+            "eva-icons",
+            "themify",
+            "line-awesome",
             // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
             "material-icons", // optional, you are not bound to it
