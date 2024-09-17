@@ -1,4 +1,5 @@
 import artwork1PageRoute from "./artwork/Artwork1PageRoute";
+import artwork3PageRoute from "./artwork/Artwork3PageRoute";
 
 // Always leave this as last one, but you can also remove it
 const errorNotFoundPageRoute = {
@@ -8,6 +9,7 @@ const errorNotFoundPageRoute = {
 
 const routes = [
     ...artwork1PageRoute,
+    ...artwork3PageRoute,
     // Continue to add more page routes here.
     errorNotFoundPageRoute,
 ];
