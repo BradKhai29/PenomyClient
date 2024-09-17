@@ -1,19 +1,33 @@
 <template>
     <q-layout view="hHh Lpr lFf">
-        <q-header elevated>
+        <q-header reveal bordered>
             <q-toolbar>
-                <q-btn
-                    flat
-                    dense
-                    round
-                    icon="menu"
-                    aria-label="Menu"
-                    @click="toggleLeftDrawer"
-                />
+                <q-btn flat @click="toggleLeftDrawer" round dense icon="menu" />
+                <q-icon name="home" size="2rem"></q-icon>Penomy
+                <q-space />
 
-                <q-toolbar-title> Quasar App </q-toolbar-title>
+                <q-input class="searchField" standout rounded dense label="Tìm kiếm" v-model="searchString"
+                    width="300px" bg-color="grey-4">
+                    <template v-slot:append>
+                        <q-avatar color="black">
+                            <q-icon name="search" color="white" />
+                        </q-avatar>
+                    </template>
+                </q-input>
 
-                <div>Quasar v{{ $q.version }}</div>
+                <q-space />
+                <div class="right-side">
+                    <q-btn color="primary" size=".6em" padding="4px" dense filled label="Thể loại"
+                        icon-right="expand_more" />
+                    <q-btn size=".6em" color="primary" padding="4px" dense filled label="Thể loại"
+                        icon-right="expand_more" />
+                    <q-btn icon="sms" round dense size=".7rem">
+                    </q-btn>
+                    <q-btn round color="primary" size=".6rem">
+                        <q-avatar size="1.3rem" icon="account_circle" />
+                    </q-btn>
+                </div>
+                <!-- </q-toolbar-title> -->
             </q-toolbar>
         </q-header>
 
@@ -21,11 +35,7 @@
             <q-list>
                 <q-item-label header> Essential Links </q-item-label>
 
-                <EssentialLink
-                    v-for="link in linksList"
-                    :key="link.title"
-                    v-bind="link"
-                />
+                <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
             </q-list>
         </q-drawer>
 
@@ -88,9 +98,35 @@ const linksList = [
     },
 ];
 
-const leftDrawerOpen = ref(false);
-
+var leftDrawerOpen = ref(false);
+var searchString = ref("");
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 </script>
+
+<style scoped>
+.logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.vue:hover {
+    filter: drop-shadow(0 0 2em #42b883aa);
+}
+
+.searchField {
+    width: 27rem;
+}
+
+.right-side {
+    display: flex;
+    gap: 0.5rem;
+}
+</style>
