@@ -7,3 +7,7 @@ defineOptions({
     name: "App",
 });
 </script>
+
+<style>
+@import url("css/app.css");
+</style>
