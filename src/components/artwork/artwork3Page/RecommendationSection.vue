@@ -29,23 +29,13 @@
     </q-page>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import ArtworkImage from './ArtworkImage.vue'
-export default {
 
-    components: {
-        ArtworkImage
-    },
-    setup() {
-        return {
-            tab: ref('alarms'),
-            ArtworkImage,
-            items
-        }
-    }
-}
-const items = [
+const tab = ref('alarms')
+
+const items = ref([
     {
         imageUrl: 'src/assets/hero_academia.jpg',
         rating: '4.8',
@@ -54,20 +44,20 @@ const items = [
         author: 'Kohei Horikoshi'
     },
     {
-        imageUrl: 'src/assets/another_image.jpg',
+        imageUrl: ref('src/assets/hero_academia.jpg'),
         rating: '4.5',
         genre: 'Adventure',
         title: 'One Piece',
         author: 'Eiichiro Oda'
     },
     {
-        imageUrl: 'src/assets/another_image.jpg',
+        imageUrl: ref('src/assets/hero_academia.jpg'),
         rating: '4.5',
         genre: 'Adventure',
         title: 'One Piece',
         author: 'Eiichiro Oda'
     }
-]
+])
 </script>
 
 <style scoped>

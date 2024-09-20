@@ -31,7 +31,8 @@ import heroAcademia from 'src/assets/hero_academia.jpg'
 const props = defineProps({
     genre: String,
     title: String,
-    author: String
+    author: String,
+    imgUrl: String
 })
 
 const imageUrl = ref(heroAcademia)
