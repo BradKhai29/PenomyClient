@@ -4,7 +4,7 @@ const routeDefinition = [
         component: () => import("layouts/CreatorStudioLayout.vue"),
         children: [
             {
-                path: "overview",
+                path: "artworks",
                 component: () =>
                     import("pages/creatorStudio/CreatorStudio1Page.vue"),
             },

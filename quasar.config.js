@@ -33,7 +33,6 @@ module.exports = configure(function (/* ctx */) {
             // 'line-awesome',
             // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-            "roboto-font", // optional, you are not bound to it
             "material-icons", // optional, you are not bound to it
         ],
 
@@ -103,7 +102,7 @@ module.exports = configure(function (/* ctx */) {
             // directives: [],
 
             // Quasar plugins
-            plugins: [],
+            plugins: ["Notify"],
         },
 
         // animations: 'all', // --- includes all animations

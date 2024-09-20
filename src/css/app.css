@@ -3,3 +3,41 @@
 .q-img > div[style] {
     padding-bottom: 0 !important;
 }
+
+:root {
+    --primary: #53bf94;
+    --primary-700-opacity-12: #e5f3ef;
+    --dark: #120e36;
+}
+
+.font-arial {
+    font-family: Arial, sans-serif !important;
+}
+
+.primary {
+    color: var(--primary);
+}
+
+.bg-light {
+    background-color: white !important;
+}
+
+.primary-700 {
+    color: var(--primary-700-opacity-12);
+}
+
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+.bg-primary-700 {
+    color: var(--primary-700-opacity-12);
+}
+
+.text-dark {
+    color: var(--dark);
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
