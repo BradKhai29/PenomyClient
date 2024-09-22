@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <q-tabs v-model="tab" align="left" no-caps outside-arrows mobile-arrows class=" shadow-2 tabs">
-            <q-icon name="list" class=" q-pr-sm" :style="{}" />
-            <q-tab name="mails" label="Đề xuất" />
-            <q-tab name="alarms" label="Cùng Series" />
-            <q-tab name="movies" label="Cùng thể loại" />
+    <q-card style="box-shadow: none; margin-top: 32px">
+        <q-tabs v-model="tab" align="left" no-caps outside-arrows mobile-arrows class="tabs">
+            <q-icon name="list" class="q-pr-sm" :style="{}" />
+            <q-tab class="tab-label" name="mails" label="Đề xuất" style="color: #78847E" />
+            <q-tab class="tab-label" name="alarms" label="Cùng Series" />
+            <q-tab class="tab-label" name="movies" label="Cùng thể loại" />
         </q-tabs>
 
         <!-- Tab Panels Content -->
@@ -26,7 +26,7 @@
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </q-tab-panel>
         </q-tab-panels>
-    </div>
+    </q-card>
 </template>
 
 <script setup>
@@ -69,7 +69,14 @@ const items = ref([
     width: 300px;
 }
 
+.tab-label {
+    font-size: 20px;
+    font-family: Arial;
+    font-weight: bolder;
+}
+
 .tabs {
+    padding-top: 32px;
     color: #120E36;
     font-weight: bold;
 }

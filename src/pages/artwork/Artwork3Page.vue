@@ -13,9 +13,9 @@
     <q-card class="detail-body " style="">
         <detail-body-section class="col-12"></detail-body-section>
     </q-card>
-    <q-card class="recommend-section">
+    <div class="recommend-section">
         <recommendation-section></recommendation-section>
-    </q-card>
+    </div>
 </template>
 
 <script>
@@ -48,14 +48,14 @@ export default {
 
 .detail-body {
     margin-top: 32px;
-    margin-bottom: 16px;
     margin-left: 15rem;
     margin-right: 15rem;
+    padding-bottom: 16px;
+    margin-bottom: 32px;
 }
 
 .recommend-section {
     margin-left: 15rem;
-    /* 50px */
     margin-right: 15rem;
 }
 
