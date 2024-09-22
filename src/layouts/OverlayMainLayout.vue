@@ -1,5 +1,5 @@
 <template>
-    <q-layout view="hHh Lpr lFf">
+    <q-layout view="LHh Lpr lFf">
         <q-header class="bg-light" bordered>
             <q-toolbar class="text-dark">
                 <q-btn
@@ -24,10 +24,10 @@
             v-model="showDrawer"
             :breakpoint="400"
             :width="280"
-            show-if-above
+            overlay
             bordered
         >
-            <q-toolbar class="text-dark toolbar-sm-show">
+            <q-toolbar class="text-dark">
                 <q-btn
                     flat
                     round
@@ -56,7 +56,11 @@
             </q-list>
         </q-drawer>
 
-        <q-page-container>
+        <q-page-container :class="{ overlay: showDrawer }">
+            <div
+                @click="toggleLeftDrawer"
+                :class="{ overlay: showDrawer }"
+            ></div>
             <router-view />
         </q-page-container>
     </q-layout>
@@ -89,13 +93,16 @@ function toggleLeftDrawer() {
     padding-bottom: 24px;
 }
 
-.toolbar-sm-show {
-    display: none !important;
-}
-
-@media screen and (max-width: 400px) {
-    .toolbar-sm-show {
-        display: flex !important;
-    }
+.overlay {
+    position: fixed; /* Sit on top of the page content */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.2); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
 }
 </style>
