@@ -7,10 +7,10 @@
                 4.8
             </q-chip>
         </div>
-        <div class="icon-container">
+        <div class="icon-container flex-center q-pl-xs">
             <q-icon name="looks_one" class="icon flex-center justify-center" />
         </div>
-        <div class="right-content q-pl-md">
+        <div class="right-content q-pl-xs">
             <div class="genre">
                 {{ genre }}
             </div>
@@ -42,6 +42,13 @@ const imageUrl = ref(heroAcademia)
 .image-wrapper {
     position: relative;
     display: inline-block;
+}
+
+
+.icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .rating-chip {

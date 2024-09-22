@@ -1,28 +1,35 @@
 <template>
-    <q-card class="my-card" flat bordered>
+    <q-card class="my-card" flat>
         <q-card-section horizontal class="image-container">
-            <q-img class="my-image" :src="imageUrl" height="280px" />
-            <q-btn unelevated color="white" text-color="#120E36" class="button-overlay q-py-sm">
-                <q-icon name="ion-desktop" />
-                <span>{{ imageTitle }}</span>
-            </q-btn>
+            <q-img class="my-image" :src="imageUrl" height="280px" width="225px">
+
+                <q-btn no-caps unelevated color="white" text-color="#120E36"
+                    class="button-overlay q-py-sm justify-start">
+                    <q-icon name="computer" />
+                    <span>{{ imageTitle }}</span>
+                </q-btn>
+            </q-img>
 
         </q-card-section>
 
     </q-card>
 </template>
 <style scoped>
-* {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
 .my-image {
     position: relative;
 }
 
+.my-card {
+    width: 225px;
+    padding-right: 16px;
+}
+
 .button-overlay {
+    font-weight: bold;
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
     position: absolute;
-    bottom: 10px;
+    bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;

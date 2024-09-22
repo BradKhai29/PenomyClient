@@ -1,7 +1,7 @@
 <template>
-    <q-page>
+    <div>
         <q-tabs v-model="tab" align="left" no-caps outside-arrows mobile-arrows class=" shadow-2 tabs">
-            <q-icon color="#53BF94" name="ion-list-box" class="q-pr-sm" />
+            <q-icon name="list" class=" q-pr-sm" :style="{}" />
             <q-tab name="mails" label="Đề xuất" />
             <q-tab name="alarms" label="Cùng Series" />
             <q-tab name="movies" label="Cùng thể loại" />
@@ -10,7 +10,7 @@
         <!-- Tab Panels Content -->
         <q-separator />
 
-        <q-tab-panels v-model="tab" animated>
+        <q-tab-panels class="recommend-panel" v-model="tab" animated>
             <q-tab-panel name="mails">
                 <div class="text-h6">Mails</div>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -26,7 +26,7 @@
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </q-tab-panel>
         </q-tab-panels>
-    </q-page>
+    </div>
 </template>
 
 <script setup>
@@ -61,7 +61,7 @@ const items = ref([
 </script>
 
 <style scoped>
-* {
+.recommend-panel {
     font-family: Arial, Helvetica, sans-serif;
 }
 
