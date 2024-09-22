@@ -99,22 +99,21 @@ a {
 .card-left-bottom {
     background-color: transparent;
     height: 51px;
-    width: 7.8rem;
+    width: 7.5rem;
     display: flex;
     gap: .3rem;
     justify-content: space-between;
 }
 
 #flag {
-    height: 1.6rem;
-    width: 2.3rem;
+    height: 1.5rem;
+    width: 2rem;
 }
 
 .artwork-name {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* margin-top: .5rem; */
     padding: 10px 0;
 }
 </style>

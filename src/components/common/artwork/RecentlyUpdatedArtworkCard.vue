@@ -107,14 +107,14 @@
 .card-left-bottom {
     background-color: transparent;
     height: 51px;
-    width: 7.6rem;
+    width: 7.3rem;
     display: flex;
     gap: .2rem;
     justify-content: space-between;
 }
 
 #flag {
-    height: 1.6rem;
-    width: 2.3rem;
+    height: 1.5rem;
+    width: 2rem;
 }
 </style>
