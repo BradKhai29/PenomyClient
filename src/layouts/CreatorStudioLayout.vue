@@ -24,9 +24,26 @@
             v-model="showDrawer"
             show-if-above
             :breakpoint="400"
-            bordered
             :width="280"
+            bordered
         >
+            <q-toolbar class="text-dark toolbar-sm-show">
+                <q-btn
+                    flat
+                    round
+                    icon="menu"
+                    aria-label="Menu"
+                    @click="toggleLeftDrawer"
+                    size="md"
+                />
+
+                <q-toolbar-title class="text-weight-bold">
+                    <q-avatar>
+                        <img src="/src/assets/logo/penomy.png" />
+                    </q-avatar>
+                    <span class="q-pl-md">Creator Studio</span>
+                </q-toolbar-title>
+            </q-toolbar>
             <q-list class="app-drawer-list">
                 <q-list class="drawer-gutter">
                     <OverviewLink />
@@ -75,5 +92,15 @@ function toggleLeftDrawer() {
 
 .drawer-gutter {
     padding-bottom: 24px;
+}
+
+.toolbar-sm-show {
+    display: none !important;
+}
+
+@media screen and (max-width: 400px) {
+    .toolbar-sm-show {
+        display: flex !important;
+    }
 }
 </style>

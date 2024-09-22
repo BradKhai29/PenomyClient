@@ -1,12 +1,12 @@
 const routeDefinition = [
     {
-        path: "/studio",
+        path: "/studio/comic",
         component: () => import("layouts/CreatorStudioLayout.vue"),
         children: [
             {
-                path: "artworks",
+                path: "edit/:id",
                 component: () =>
-                    import("pages/creatorStudio/CreatorStudio6Page.vue"),
+                    import("pages/creatorStudio/CreatorStudio8Page.vue"),
             },
         ],
     },
