@@ -7,7 +7,7 @@
                 4.8
             </q-chip>
         </div>
-        <div class="icon-container flex-center q-pl-xs">
+        <div class="icon-container flex-center">
             <q-icon name="looks_one" class="icon flex-center justify-center" />
         </div>
         <div class="right-content q-pl-xs">
@@ -49,6 +49,9 @@ const imageUrl = ref(heroAcademia)
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 14px;
 }
 
 .rating-chip {
@@ -56,6 +59,7 @@ const imageUrl = ref(heroAcademia)
     top: 0;
     left: 0;
     margin: 0px;
+    padding: 12px;
     background-color: #53BF94;
 }
 
