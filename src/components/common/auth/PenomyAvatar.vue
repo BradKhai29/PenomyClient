@@ -1,5 +1,5 @@
 <template>
-    <div class="row q-my-lg">
+    <div class="row">
         <q-avatar>
             <img src="../../../assets/logo/penomy.png">
         </q-avatar>

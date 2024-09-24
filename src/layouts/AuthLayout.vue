@@ -10,7 +10,7 @@
         </q-header>
 
         <q-page-container class="column items-center">
-            <PenomyAvatar></PenomyAvatar>
+            <penomy-avatar class="q-my-lg"></penomy-avatar>
             <router-view />
         </q-page-container>
 
