@@ -10,21 +10,17 @@
         </q-header>
 
         <q-page-container class="column items-center">
-            <div class="row q-my-lg">
-                <q-avatar>
-                    <img src="../assets/logo/penomy.png">
-                </q-avatar>
-                <div class="text-h6 q-py-sm">Penomy</div>
-            </div>
+            <PenomyAvatar></PenomyAvatar>
             <router-view />
         </q-page-container>
 
     </q-layout>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue'
 import { domainRootPath } from "../router/common/DomainRootPath";
+import PenomyAvatar from "../components/common/auth/PenomyAvatar.vue";
 
 const tabsDefinition = [
     { name: 'login', label: 'Đăng nhập', link: domainRootPath.auth + '/login' },
@@ -32,14 +28,8 @@ const tabsDefinition = [
     { name: 'forgotPassword', label: 'Quên mật khẩu', link: domainRootPath.auth + '/forgot-password' }
 ]
 
-export default {
-    setup() {
-        return {
-            tab: ref(''),
-            tabs: ref(tabsDefinition)
-        }
-    }
-}
+const tab = ref('');
+const tabs = ref(tabsDefinition);
 </script>
 
 <style>
