@@ -13,8 +13,8 @@ const routeDefinition = [
             },
             {
                 path: "artwork2",
-                component: () => import("pages/artwork/ArtWorkDetailMangaPage.vue"),
-            }
+                component: () => import("pages/artwork/Artwork1Page.vue"),
+            },
         ],
     },
     {
@@ -27,8 +27,8 @@ const routeDefinition = [
             },
             {
                 path: "mangadetail",
-                component: () => import("pages/artwork/MangaDetailPage.vue")
-            }
+                component: () => import("pages/artwork/MangaDetailPage.vue"),
+            },
         ],
     },
 ];
