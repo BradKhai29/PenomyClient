@@ -19,6 +19,7 @@
                         </q-avatar>
                     </div>
                 </q-img>
+                <div class="overlay"><q-icon class="play-icon" name="play_arrow" color="white" size="4rem" /></div>
             </q-card-section>
 
         </q-card>
@@ -115,5 +116,39 @@ a {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(135, 135, 135, 0.5);
+    z-index: 10;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+}
+
+.play-icon {
+    border: solid 1px white;
+    padding: .3rem;
+    border-radius: 100px !important;
+    transition: transform 0.2s;
+    transform: scale(0.1);
+}
+
+.my-card:hover .overlay {
+    visibility: visible;
+}
+
+.my-card:hover .play-icon {
+    transform: scale(1);
+}
+
+.my-card:hover .artwork-name > a{
+    /* transform:  0.2s; */
+    color: red;
 }
 </style>
