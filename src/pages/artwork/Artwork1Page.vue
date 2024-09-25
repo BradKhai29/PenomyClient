@@ -10,6 +10,11 @@
             spinner-color="white"
             style="height: 140px; max-width: 150px; padding: 0px"
         />
+        <q-img
+            src="https://th.bing.com/th/id/OIP.S0ROegmoqCQ4Zf3J13YwswHaD3?rs=1&pid=ImgDetMain"
+            spinner-color="white"
+            style="height: 140px; max-width: 150px; padding: 0px"
+        />
 
         <div>
             <p>This is counter: {{ counter }}</p>
