@@ -12,7 +12,7 @@ const routeDefinition = [
                 component: () => import("pages/artwork/Artwork1Page.vue"),
             },
             {
-                path: "artwork2",
+                path: "artwork/anime",
                 component: () => import("pages/artwork/Artwork1Page.vue"),
             },
         ],
@@ -24,10 +24,6 @@ const routeDefinition = [
             {
                 path: "comic",
                 component: () => import("pages/artwork/Artwork1Page.vue"),
-            },
-            {
-                path: "mangadetail",
-                component: () => import("pages/artwork/MangaDetailPage.vue"),
             },
         ],
     },

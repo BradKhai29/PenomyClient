@@ -7,16 +7,37 @@
                     round
                     icon="menu"
                     aria-label="Menu"
-                    @click="toggleLeftDrawer"
+                    @click="toggleDrawer"
                     size="md"
                 />
 
-                <q-toolbar-title class="text-weight-bold">
-                    <q-avatar>
-                        <img src="/src/assets/logo/penomy.png" />
-                    </q-avatar>
-                    <span class="q-pl-md">Penomy</span>
-                </q-toolbar-title>
+                <TheLogoButton class="toolbar-sm-hide" />
+
+                <q-space />
+
+                <TheSearchBar />
+
+                <q-space />
+
+                <div class="q-gutter-sm row items-center no-wrap">
+                    <TheCategoriesDropdown />
+                    <TheWatchingAreaDropdown />
+
+                    <q-btn
+                        round
+                        dense
+                        color="dark"
+                        class="bg-dark"
+                        icon="message"
+                    >
+                        <q-badge color="red" text-color="white" floating>
+                            <span class="text-weight-bold">1</span>
+                        </q-badge>
+                        <q-tooltip>Notifications</q-tooltip>
+                    </q-btn>
+
+                    <TheUserAvatar />
+                </div>
             </q-toolbar>
         </q-header>
 
@@ -27,23 +48,19 @@
             overlay
             bordered
         >
-            <q-toolbar class="text-dark">
+            <q-toolbar class="text-darkq-py-md">
                 <q-btn
                     flat
                     round
                     icon="menu"
                     aria-label="Menu"
-                    @click="toggleLeftDrawer"
+                    @click="toggleDrawer"
                     size="md"
                 />
 
-                <q-toolbar-title class="text-weight-bold">
-                    <q-avatar>
-                        <img src="/src/assets/logo/penomy.png" />
-                    </q-avatar>
-                    <span class="q-pl-md">Penomy</span>
-                </q-toolbar-title>
+                <TheLogoButton />
             </q-toolbar>
+
             <q-list class="app-drawer-list">
                 <q-list class="drawer-gutter">
                     <HomeLink />
@@ -57,10 +74,7 @@
         </q-drawer>
 
         <q-page-container :class="{ overlay: showDrawer }">
-            <div
-                @click="toggleLeftDrawer"
-                :class="{ overlay: showDrawer }"
-            ></div>
+            <div @click="toggleDrawer" :class="{ overlay: showDrawer }"></div>
             <router-view />
         </q-page-container>
     </q-layout>
@@ -68,18 +82,27 @@
 
 <script setup>
 import { ref } from "vue";
+
+// Import components from header section.
+import TheLogoButton from "src/components/layouts/MainLayout/headers/TheLogoButton.vue";
+import TheSearchBar from "src/components/layouts/MainLayout/headers/TheSearchBar.vue";
+import TheWatchingAreaDropdown from "src/components/layouts/MainLayout/headers/TheWatchingAreaDropdown.vue";
+import TheCategoriesDropdown from "src/components/layouts/MainLayout/headers/TheCategoriesDropdown.vue";
+import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvatar.vue";
+
+// Import components from drawer section.
 import HomeLink from "components/layouts/MainLayout/drawers/HomeLink.vue";
 import SocialMediaLink from "components/layouts/MainLayout/drawers/SocialMediaLink.vue";
 import ForYouExpansion from "components/layouts/MainLayout/drawers/ForYouExpansion.vue";
 import OthersExpansion from "components/layouts/OthersExpansion.vue";
 
 defineOptions({
-    name: "MainLayout",
+    name: "OverlayMainLayout",
 });
 
 const showDrawer = ref(false);
 
-function toggleLeftDrawer() {
+function toggleDrawer() {
     showDrawer.value = !showDrawer.value;
 }
 </script>
@@ -104,5 +127,19 @@ function toggleLeftDrawer() {
     background-color: rgba(0, 0, 0, 0.2); /* Black background with opacity */
     z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
     cursor: pointer; /* Add a pointer on hover */
+}
+
+.toolbar-sm-show {
+    display: none !important;
+}
+
+@media screen and (max-width: 560px) {
+    .toolbar-sm-show {
+        display: flex !important;
+    }
+
+    .toolbar-sm-hide {
+        display: none;
+    }
 }
 </style>

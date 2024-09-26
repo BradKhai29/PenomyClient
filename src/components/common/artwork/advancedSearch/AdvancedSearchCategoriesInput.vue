@@ -1,33 +1,16 @@
 <template>
     <section id="categories-section">
-        <div
-            class="flex items-center justify-between q-mb-xs"
-            :class="{ error: hasError }"
-        >
-            <label class="text-weight-bold">
-                <span>Thể loại</span>
-                <span class="asterisk">*</span>
-            </label>
-
-            <span :class="{ error: hasError }">
-                <span v-if="selectedCategories.length == 0"> Chưa chọn </span>
-                <span
-                    v-if="selectedCategories.length != 0"
-                    class="flex items-center"
+        <div class="flex items-center justify-between q-mb-xs">
+            <div class="text-subtitle1">
+                <span class="q-mr-xs">Thể loại</span>
+                <span v-if="selectedCategories.length != 0"
+                    >(Đã chọn: {{ selectedCategories.length }})</span
                 >
-                    <q-badge class="bg-primary text-dark text-weight-bold">{{
-                        selectedCategories.length
-                    }}</q-badge>
-                    <span class="q-ml-xs text-subtitle2">thể loại</span>
-                </span>
-            </span>
+            </div>
         </div>
         <div class="flex items-center">
-            <div class="flex items-center categories-container fit">
-                <div
-                    class="categories-list flex wrap q-gutter-sm"
-                    :class="{ error: hasError }"
-                >
+            <section class="flex items-center categories-container fit">
+                <div class="categories-list flex wrap q-gutter-sm">
                     <CategorySelectedTag
                         v-for="category in selectedCategories"
                         :key="category.id"
@@ -42,7 +25,7 @@
                         <q-icon name="add" size="sm" />
                     </q-btn>
                 </div>
-            </div>
+            </section>
             <section
                 class="category-dropdown-container q-mt-md shadow-1"
                 :class="{ hidden: !showDropdown }"
@@ -92,8 +75,8 @@
 <script>
 import { StringHelper } from "src/helpers/StringHelper";
 import { CategoryItem } from "src/api.models/creatorStudio/creatorStudio6Page/CategoryItem";
-import CategoryTag from "./ArtworkCategoryTag.vue";
-import CategorySelectedTag from "./ArtworkCategorySelectedTag.vue";
+import CategoryTag from "./AdvancedSearchCategoryTag.vue";
+import CategorySelectedTag from "./AdvancedSearchCategorySelectedTag.vue";
 import { ArtworkApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/ArtworkApiHandler";
 
 export default {
@@ -107,7 +90,7 @@ export default {
             required: true,
         },
     },
-    emits: ["update:modelValue", "verifyInput"],
+    emits: ["update:modelValue"],
     data() {
         return {
             showDropdown: false,
@@ -123,7 +106,6 @@ export default {
             // CategoryTag component that are selected for this artwork.
             selectedCategoryTags: [],
             searchCategory: null,
-            hasError: false,
         };
     },
     async beforeMount() {
@@ -136,9 +118,6 @@ export default {
         if (this.modelValue && this.modelValue.length > 0) {
             this.fillUpSelectedCategories(this.modelValue);
         }
-    },
-    mounted() {
-        this.$emit("verifyInput", this);
     },
     methods: {
         /**
@@ -156,20 +135,6 @@ export default {
                 foundCategoryItem.isSelected = true;
                 this.selectedCategories.push(foundCategoryItem);
             }
-        },
-        // This method is supported for debug purpose.
-        showCategories() {
-            console.log("Selected Categories", this.selectedCategories);
-            console.log("Category Tag", this.selectedCategoryTags);
-        },
-        verifyInput() {
-            if (this.selectedCategories.length > 0) {
-                this.hasError = false;
-                return true;
-            }
-
-            this.hasError = true;
-            return false;
         },
         resetCategories() {
             this.selectedCategoryTags.forEach((item) => item.removeTag());
@@ -225,7 +190,6 @@ export default {
 
             // Emit the event with all selected categories of this artwork.
             this.$emit("update:modelValue", this.selectedCategories);
-            this.verifyInput();
         },
         /**
          * @param {CategoryItem} categoryItem The category item to handle.
@@ -302,13 +266,14 @@ export default {
 .category-add-button,
 .category-dropdown-container {
     --dark: #120e36;
+    --dark-500: #78847e;
     --border-radius: 4px;
     --light-500: #eeeeee;
 }
 
 .categories-container {
     padding: 8px;
-    border: 1px solid var(--dark);
+    border: 1px solid var(--dark-500);
     border-radius: var(--border-radius);
 }
 
