@@ -10,7 +10,7 @@
             </q-card>
         </div>
     </q-card>
-    <q-card class="detail-body " style="">
+    <q-card class="detail-body" style="">
         <detail-body-section class="col-12"></detail-body-section>
     </q-card>
     <div class="recommend-section">
@@ -49,11 +49,11 @@ const backgroundStyle = computed(() => ({
 </script>
 
 <script>
-import ImageSection from "src/components/artwork/artwork3Page/ImageSection.vue";
-import DescriptionSection from "src/components/artwork/artwork3Page/DescriptionSection.vue";
-import RecommendationSection from "src/components/artwork/artwork3Page/RecommendationSection.vue";
-import SubcribeDetail from "src/components/artwork/artwork3Page/SubcribeDetail.vue";
-import DetailBodySection from "src/components/artwork/artwork3Page/DetailBodySection.vue";
+import ImageSection from "src/components/pages/artwork/artwork3Page/ImageSection.vue";
+import DescriptionSection from "src/components/pages/artwork/artwork3Page/DescriptionSection.vue";
+import RecommendationSection from "src/components/pages/artwork/artwork3Page/RecommendationSection.vue";
+import SubcribeDetail from "src/components/pages/artwork/artwork3Page/SubcribeDetail.vue";
+import DetailBodySection from "src/components/pages/artwork/artwork3Page/DetailBodySection.vue";
 
 export default {
     components: {
@@ -62,7 +62,7 @@ export default {
         RecommendationSection,
         SubcribeDetail,
         DetailBodySection,
-    }
+    },
 };
 </script>
 
@@ -72,7 +72,6 @@ export default {
     margin-left: 260px;
     margin-right: 260px;
     margin-bottom: 16px;
-
 }
 
 .detail-body {

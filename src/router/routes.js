@@ -1,4 +1,5 @@
 import artwork1PageRoute from "./artwork/Artwork1PageRoute";
+import auth1PageRoute from "./auth/Auth1PageRoute";
 import creatorStudio1PageRoute from "./creatorStudio/CreatorStudio1PageRoute";
 import creatorStudio2PageRoute from "./creatorStudio/CreatorStudio2PageRoute";
 import creatorStudio3PageRoute from "./creatorStudio/CreatorStudio3PageRoute";
@@ -21,6 +22,7 @@ const routes = [
     ...artwork1PageRoute,
     ...artwork3PageRoute,
     // Continue to add more page routes here.
+    ...auth1PageRoute,
     ...creatorStudio1PageRoute,
     ...creatorStudio2PageRoute,
     ...creatorStudio3PageRoute,

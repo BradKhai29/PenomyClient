@@ -11,6 +11,10 @@ const routeDefinition = [
                 path: "",
                 component: () => import("pages/artwork/Artwork1Page.vue"),
             },
+            {
+                path: "artwork/anime",
+                component: () => import("pages/artwork/Artwork1Page.vue"),
+            },
         ],
     },
     {

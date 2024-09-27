@@ -1,5 +1,5 @@
 <template>
-    <q-layout view="hHh Lpr lFf">
+    <q-layout view="hHR Lpr lFf">
         <q-header class="bg-light" bordered>
             <q-toolbar class="text-dark">
                 <q-btn
@@ -7,16 +7,37 @@
                     round
                     icon="menu"
                     aria-label="Menu"
-                    @click="toggleLeftDrawer"
+                    @click="toggleDrawer"
                     size="md"
                 />
 
-                <q-toolbar-title class="text-weight-bold">
-                    <q-avatar>
-                        <img src="/src/assets/logo/penomy.png" />
-                    </q-avatar>
-                    <span class="q-pl-md">Penomy</span>
-                </q-toolbar-title>
+                <TheLogoButton class="toolbar-sm-hide" />
+
+                <q-space />
+
+                <TheSearchBar />
+
+                <q-space />
+
+                <div class="q-gutter-sm row items-center no-wrap">
+                    <TheCategoriesDropdown />
+                    <TheWatchingAreaDropdown />
+
+                    <q-btn
+                        round
+                        dense
+                        color="dark"
+                        class="bg-dark"
+                        icon="message"
+                    >
+                        <q-badge color="red" text-color="white" floating>
+                            <span class="text-weight-bold">1</span>
+                        </q-badge>
+                        <q-tooltip>Notifications</q-tooltip>
+                    </q-btn>
+
+                    <TheUserAvatar />
+                </div>
             </q-toolbar>
         </q-header>
 
@@ -27,22 +48,17 @@
             show-if-above
             bordered
         >
-            <q-toolbar class="text-dark toolbar-sm-show">
+            <q-toolbar class="text-dark toolbar-sm-show q-py-md">
                 <q-btn
                     flat
                     round
                     icon="menu"
                     aria-label="Menu"
-                    @click="toggleLeftDrawer"
+                    @click="toggleDrawer"
                     size="md"
                 />
 
-                <q-toolbar-title class="text-weight-bold">
-                    <q-avatar>
-                        <img src="/src/assets/logo/penomy.png" />
-                    </q-avatar>
-                    <span class="q-pl-md">Penomy</span>
-                </q-toolbar-title>
+                <TheLogoButton />
             </q-toolbar>
             <q-list class="app-drawer-list">
                 <q-list class="drawer-gutter">
@@ -64,6 +80,15 @@
 
 <script setup>
 import { ref } from "vue";
+
+// Import components from header section.
+import TheLogoButton from "src/components/layouts/MainLayout/headers/TheLogoButton.vue";
+import TheSearchBar from "src/components/layouts/MainLayout/headers/TheSearchBar.vue";
+import TheWatchingAreaDropdown from "src/components/layouts/MainLayout/headers/TheWatchingAreaDropdown.vue";
+import TheCategoriesDropdown from "src/components/layouts/MainLayout/headers/TheCategoriesDropdown.vue";
+import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvatar.vue";
+
+// Import components from drawer section.
 import HomeLink from "components/layouts/MainLayout/drawers/HomeLink.vue";
 import SocialMediaLink from "components/layouts/MainLayout/drawers/SocialMediaLink.vue";
 import ForYouExpansion from "components/layouts/MainLayout/drawers/ForYouExpansion.vue";
@@ -75,7 +100,7 @@ defineOptions({
 
 const showDrawer = ref(false);
 
-function toggleLeftDrawer() {
+function toggleDrawer() {
     showDrawer.value = !showDrawer.value;
 }
 </script>
@@ -93,9 +118,13 @@ function toggleLeftDrawer() {
     display: none !important;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 560px) {
     .toolbar-sm-show {
         display: flex !important;
+    }
+
+    .toolbar-sm-hide {
+        display: none;
     }
 }
 </style>
