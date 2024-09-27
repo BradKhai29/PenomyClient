@@ -1,11 +1,11 @@
 import { domainRootPath } from "../common/DomainRootPath";
 const routeDefinition = [
     {
-        path: domainRootPath.artwork,
+        path: `${domainRootPath.artwork}/:id`,
         component: () => import("layouts/MainLayout.vue"),
         children: [
             {
-                path: "artwork3",
+                path: "",
                 component: () => import("pages/artwork/Artwork3Page.vue"),
             },
         ],
