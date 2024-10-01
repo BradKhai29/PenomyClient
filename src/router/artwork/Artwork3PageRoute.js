@@ -5,7 +5,7 @@ const routeDefinition = [
         component: () => import("layouts/OverlayMainLayout.vue"),
         children: [
             {
-                path: "artwork3",
+                path: "",
                 component: () => import("pages/artwork/Artwork3Page.vue"),
             },
         ],

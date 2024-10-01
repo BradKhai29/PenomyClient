@@ -2,7 +2,7 @@
     <q-card style="box-shadow: none; margin-top: 32px">
         <q-tabs v-model="tab" align="left" no-caps outside-arrows mobile-arrows class="tabs">
             <q-icon name="list" class="q-pr-sm" :style="{}" />
-            <q-tab class="tab-label" name="mails" label="Đề xuất" style="color: #78847E" />
+            <q-tab class="tab-label" name="mails" label="Đề xuất" />
             <q-tab class="tab-label" name="alarms" label="Cùng Series" />
             <q-tab class="tab-label" name="movies" label="Cùng thể loại" />
         </q-tabs>
