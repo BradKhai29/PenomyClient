@@ -154,8 +154,8 @@
 import { ref, onMounted } from 'vue';
 import { axios } from 'axios';
 var artworks = ref([]);
-onMounted(async () => {
-    await axios.get("https://localhost:7055/index.html#/g3/RecentlyUpdateComics", { empty : true })
+onMounted(() => {
+    axios.get("https://localhost:7055/index.html#/g3/RecentlyUpdateComics", { empty: true })
         .then(function (response) {
             artworks.value = response.data;
             console.log(artworks.value);
