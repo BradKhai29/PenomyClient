@@ -136,7 +136,7 @@
 .play-icon {
     border: solid 1px white;
     padding: .3rem;
-    border-radius: 100px ;
+    border-radius: 100px;
     transition: transform 0.2s;
     transform: scale(0.1);
 }
@@ -151,6 +151,16 @@
 </style>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import { axios } from 'axios';
+var artworks = ref([]);
+onMounted(async () => {
+    await axios.get("https://localhost:7055/index.html#/g3/RecentlyUpdateComics", { empty : true })
+        .then(function (response) {
+            artworks.value = response.data;
+            console.log(artworks.value);
+        })
+})
 const artwork = defineProps({
     name: {
         type: String,
