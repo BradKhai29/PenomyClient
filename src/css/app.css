@@ -8,22 +8,31 @@
     --primary: #53bf94;
     --primary-700-opacity-12: #e5f3ef;
     --dark: #120e36;
+    --dark-500: #78847e;
+    --light-100: #f9fafc;
+    --light-300: #eeeeee;
+    --light-500: #dddddd;
 }
 
 .font-arial {
     font-family: Arial, sans-serif !important;
 }
 
-.primary {
-    color: var(--primary);
-}
-
+/* Background color section */
 .bg-light {
     background-color: white !important;
 }
 
-.primary-700 {
-    color: var(--primary-700-opacity-12);
+.bg-light-100 {
+    background-color: var(--light-100) !important;
+}
+
+.bg-light-300 {
+    background-color: var(--light-300) !important;
+}
+
+.bg-light-500 {
+    background-color: var(--light-500) !important;
 }
 
 .bg-primary {
@@ -31,13 +40,38 @@
 }
 
 .bg-primary-700 {
-    color: var(--primary-700-opacity-12);
+    background-color: var(--primary-700-opacity-12) !important;
+}
+
+.bg-dark {
+    background-color: var(--dark) !important;
+}
+
+/* Text color section */
+.text-light {
+    color: var(--light-100) !important;
 }
 
 .text-dark {
-    color: var(--dark);
+    color: var(--dark) !important;
 }
 
-.text-primary {
+.text-dark-500 {
+    color: var(--dark-500) !important;
+}
+
+.text-primary,
+.primary {
     color: var(--primary) !important;
+}
+
+.text-primary-700,
+.primary-700 {
+    color: var(--primary-700-opacity-12) !important;
+}
+
+.underline-primary {
+    text-decoration-line: underline;
+    text-decoration-thickness: 3.2px;
+    text-decoration-color: var(--primary);
 }

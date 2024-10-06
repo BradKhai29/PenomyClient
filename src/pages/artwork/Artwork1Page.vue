@@ -1,30 +1,9 @@
 <template>
-    <q-page class="">
-        <img
-            alt="Quasar logo"
-            src="~assets/quasar-logo-vertical.svg"
-            style="width: 200px; height: 200px"
-        />
-        <q-img
-            src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp"
-            spinner-color="white"
-            style="height: 140px; max-width: 150px; padding: 0px"
-        />
-        <q-img
-            src="https://th.bing.com/th/id/OIP.S0ROegmoqCQ4Zf3J13YwswHaD3?rs=1&pid=ImgDetMain"
-            spinner-color="white"
-            style="height: 140px; max-width: 150px; padding: 0px"
-        />
-
-        <div>
-            <p>This is counter: {{ counter }}</p>
-            <button @click="clickMe">Click me ++</button>
-        </div>
-    </q-page>
+    <q-page class=""> </q-page>
 </template>
 
 <script setup>
-import { useAuthStore } from "stores/AuthStore";
+import { useAuthStore } from "src/stores/common/AuthStore";
 import { ref } from "vue";
 
 const authStore = useAuthStore();

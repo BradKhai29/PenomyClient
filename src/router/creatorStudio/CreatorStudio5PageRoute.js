@@ -6,7 +6,7 @@ const routeDefinition = [
             {
                 path: "artworks",
                 component: () =>
-                    import("pages/creatorStudio/CreatorStudio1Page.vue"),
+                    import("pages/creatorStudio/CreatorStudio6Page.vue"),
             },
         ],
     },
