@@ -1,11 +1,19 @@
 <template>
-    <q-page class=""> </q-page>
+    <q-page class="">
+        <RecentlyUpdated />
+        <RecommendArtworkByCategory />
+        <UserComment />
+        <artwork-allow-comment-input />
+    </q-page>
 </template>
 
 <script setup>
+import ArtworkAllowCommentInput from "src/components/common/creatorStudio/ArtworkAllowCommentInput.vue";
+import UserComment from "src/components/common/artwork/UserComment.vue";
+import RecentlyUpdated from "src/components/common/artwork/RecentlyUpdated.vue";
+import RecommendArtworkByCategory from "src/components/common/artwork/RecommendArtworkByCategory.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { ref } from "vue";
-
 const authStore = useAuthStore();
 
 const counterInitValue = 0;

@@ -23,7 +23,7 @@
             <!-- right content -->
             <q-card-section class="card-content q-pa-sm">
                 <div class="text-subtitle1 text-weight-medium" style="padding-left: .2rem;">
-                    {{ artwork.name }}
+                    {{ artwork.title }}
                 </div>
                 <div class="text-subtitle3 text-weight-regular">
                     <q-icon name="account_circle" size="1.7rem" />
@@ -35,7 +35,7 @@
                             Tập 1241
                         </div>
                         <div class="text-subtitle2 text-weight-thin col text-italic text-right">
-                            2 ngày trước
+                            {{ artwork.lastUpdateAt }} ngày trước
                         </div>
                     </div>
                 </div>
@@ -152,40 +152,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { axios } from 'axios';
-var artworks = ref([]);
-onMounted(() => {
-    axios.get("https://localhost:7055/index.html#/g3/RecentlyUpdateComics", { empty: true })
-        .then(function (response) {
-            artworks.value = response.data;
-            console.log(artworks.value);
-        })
-})
-const artwork = defineProps({
-    name: {
-        type: String,
-        default: "One Piece - Đảo hải tặc"
-    },
-    supplier: {
-        type: String,
-        default: "Nha cung cấp"
-    },
-    rating: {
-        type: String,
-        default: "4.8"
-    },
-    favorite: {
-        type: Number,
-        default: 100
-    },
-    flag: {
-        type: String,
-        default: "https://th.bing.com/th/id/R.607b9f69862d76af04b474113c0c7ff5?rik=lfnOsbv7mhDNbQ&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2fb%2fbc%2fFlag_of_India.png&ehk=Pk5lH0C%2fhstFahWfb15vLjtrJb3DslIU4%2fAQneo9IIM%3d&risl=&pid=ImgRaw&r=0"
-    },
-    image: {
-        type: String,
-        default: "https://cdn.quasar.dev/img/parallax2.jpg"
-    }
+const props = defineProps({
+    artwork: {
+        type: Object,
+        default: () => ({
 
+        })
+    },
 })
 </script>

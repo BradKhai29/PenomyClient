@@ -4,7 +4,7 @@
         <div>
             <q-btn flat dense text-color="black" icon="arrow_left"
                 @click="$refs.carousel.previous(); calculatePage('previous')" />
-            {{ page }} / 5
+            {{ page }} / {{ carouselSlides.length }}
             <q-btn flat dense text-color="black" icon="arrow_right"
                 @click="$refs.carousel.next(); calculatePage('next')" />
         </div>
@@ -14,7 +14,7 @@
         <q-carousel-slide v-for="slide in carouselSlides" :key="slide.index" :name="slide.index">
             <div class="row q-col-gutter-md q-pa-sm">
                 <div v-for="item in slide" class="col-3" :key="item">
-                    <RecentlyUpdatedArtworkCard />
+                    <RecentlyUpdatedArtworkCard :artwork="item" />
                 </div>
             </div>
         </q-carousel-slide>
@@ -23,50 +23,31 @@
 <script setup>
 
 import RecentlyUpdatedArtworkCard from 'src/components/common/artwork/RecentlyUpdatedArtworkCard.vue';
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
+import { HttpMethod } from 'src/api.common/HttpMethod';
+import axios from 'axios';
+const apiUrl = `${BaseWebApiUrl}/g3/RecentlyUpdatedComics`;
 const slide = ref(0);
 const page = ref(1);
-
+var artworks = ref([]);
 function calculatePage(operation) {
     if (operation === 'next') {
         page.value++
-        if (page.value > 5) {
+        if (page.value > carouselSlides.value.length) {
             page.value = 1
         }
     }
     if (operation === 'previous') {
         page.value--
         if (page.value < 1) {
-            page.value = 5
+            page.value = carouselSlides.value.length
         }
     }
 }
-const items = ref([
-    { title: 'Item 1', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 2', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 3', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 4', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 5', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 6', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 7', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 8', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 9', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 10', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 11', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 12', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 13', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 14', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 15', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 16', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 17', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 18', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    { title: 'Item 19', image: 'https://cdn.quasar.dev/img/parallax2.jpg' },
-    // ... more items
-])
-
 const carouselSlides = computed(() => {
     const itemsPerSlide = 4; // Adjust this value as needed
-    return items.value.reduce((acc, item, index) => {
+    return artworks.value.reduce((acc, item, index) => {
         const slideIndex = Math.floor(index / itemsPerSlide);
         if (!acc[slideIndex]) {
             acc[slideIndex] = [];
@@ -76,7 +57,33 @@ const carouselSlides = computed(() => {
         return acc;
     }, []);
 })
+function calculateDayDifference(startDate, endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const millisecondsDifference = end.getTime() - start.getTime();
+    const daysDifference = millisecondsDifference / 86400000;
+    return daysDifference;
+}
+
+onMounted(async () => {
+    // get data from api
+    await axios({
+        url: apiUrl,
+        method: HttpMethod.GET,
+        params: {
+            empty: true
+        },
+    }).then((response) => {
+        artworks.value = response.data.body.artworkList
+        artworks.value[0].image = "https://cdn.quasar.dev/img/parallax2.jpg"
+        artworks.value.forEach((item) => {
+            item.lastUpdateAt = Math.round(calculateDayDifference(item.lastUpdateAt, new Date()))
+        })
+    });
+})
+
 </script>
+
 <style scoped>
 .title {
     display: flex;

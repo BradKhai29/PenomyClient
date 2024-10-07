@@ -1,67 +1,66 @@
 <template>
     <div>
-        <q-card class="my-card bg-grey-2" bordered>
-            <q-card-section horizontal>
-                <q-img class="col-5 image" fit="cover" src="https://cdn.quasar.dev/img/parallax2.jpg" height="360px"
-                    width="100%" bordered>
-                    <div class="rating">
-                        <q-icon name="star" size="1rem"></q-icon>
-                        <span class="text-subtitle2">4.8</span>
-                    </div>
-                    <div class="card-left-bottom absolute-bottom-right">
-                        <div class="favorite">
-                            <q-icon name="favorite" size=".84rem"></q-icon>
-                            <span class="text-subtitle2">100K</span>
+        <router-link to="/artworks/1">
+            <q-card class="my-card bg-grey-2" bordered>
+                <q-card-section horizontal>
+                    <q-img class="col-5 image" fit="cover" src="https://cdn.quasar.dev/img/parallax2.jpg" height="360px"
+                        width="100%" bordered>
+                        <div class="rating">
+                            <q-icon name="star" size="1rem"></q-icon>
+                            <span class="text-subtitle2">{{ artwork.rating }}</span>
                         </div>
-                        <q-avatar rounded id="flag">
-                            <img
-                                src="https://th.bing.com/th/id/R.607b9f69862d76af04b474113c0c7ff5?rik=lfnOsbv7mhDNbQ&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2fb%2fbc%2fFlag_of_India.png&ehk=Pk5lH0C%2fhstFahWfb15vLjtrJb3DslIU4%2fAQneo9IIM%3d&risl=&pid=ImgRaw&r=0">
-                        </q-avatar>
-                    </div>
-                </q-img>
-                <div class="overlay"><q-icon class="play-icon" name="play_arrow" color="white" size="4rem" /></div>
-            </q-card-section>
+                        <div class="card-left-bottom absolute-bottom-right">
+                            <div class="favorite">
+                                <q-icon name="favorite" size=".84rem"></q-icon>
+                                <span class="text-subtitle2">{{ artwork.favorite }}</span>
+                            </div>
+                            <q-avatar rounded id="flag">
+                                <img
+                                    src="https://th.bing.com/th/id/R.607b9f69862d76af04b474113c0c7ff5?rik=lfnOsbv7mhDNbQ&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2fb%2fbc%2fFlag_of_India.png&ehk=Pk5lH0C%2fhstFahWfb15vLjtrJb3DslIU4%2fAQneo9IIM%3d&risl=&pid=ImgRaw&r=0">
+                            </q-avatar>
+                        </div>
+                    </q-img>
+                    <div class="overlay"><q-icon class="play-icon" name="play_arrow" color="white" size="4rem" /></div>
+                </q-card-section>
 
-        </q-card>
-        <div class="artwork-name">
-            <a href="#">One Piece - Đảo hải tặc</a>
-            <q-icon name="more_vert" class="cursor-pointer">
-                <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
-                        <q-item clickable v-close-popup>
-                            <q-item-section>
-                                <q-item-label>Photos</q-item-label>
-                            </q-item-section>
-                        </q-item>
+            </q-card>
+            <div class="artwork-name">
+                <a href="#">{{ artwork.title }}</a>
+                <q-icon name="more_vert" class="cursor-pointer">
+                    <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
+                            <q-item clickable v-close-popup>
+                                <q-item-section>
+                                    <q-item-label>Photos</q-item-label>
+                                </q-item-section>
+                            </q-item>
 
-                        <q-item clickable v-close-popup>
-                            <q-item-section>
-                                <q-item-label>Videos</q-item-label>
-                            </q-item-section>
-                        </q-item>
+                            <q-item clickable v-close-popup>
+                                <q-item-section>
+                                    <q-item-label>Videos</q-item-label>
+                                </q-item-section>
+                            </q-item>
 
-                        <q-item clickable v-close-popup>
-                            <q-item-section>
-                                <q-item-label>Articles</q-item-label>
-                            </q-item-section>
-                        </q-item>
-                    </q-list>
-                </q-menu>
-            </q-icon>
-        </div>
+                            <q-item clickable v-close-popup>
+                                <q-item-section>
+                                    <q-item-label>Articles</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </q-icon>
+            </div>
+        </router-link>
     </div>
 </template>
 <script setup>
-props: {
+const props = defineProps({
     artwork: {
-        id: String;
-        name: String;
-        rating: String;
-        favorite: String;
-        flag: String;
-        image: String;
+        type: Object,
+        default: () => ({
 
-    }
-}
+        })
+    },
+})
 </script>
 <style scoped>
 a {
@@ -90,6 +89,11 @@ a {
     align-items: center;
     justify-content: center;
     padding: .15rem .4rem;
+}
+
+.rating :first-child,
+.favorite :first-child {
+    color: black;
 }
 
 .favorite {
@@ -147,7 +151,7 @@ a {
     transform: scale(1);
 }
 
-.my-card:hover .artwork-name > a{
+.my-card:hover .artwork-name>a {
     /* transform:  0.2s; */
     color: red;
 }
