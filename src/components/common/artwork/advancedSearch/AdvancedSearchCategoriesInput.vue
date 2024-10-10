@@ -74,10 +74,10 @@
 
 <script>
 import { StringHelper } from "src/helpers/StringHelper";
-import { CategoryItem } from "src/api.models/creatorStudio/creatorStudio6Page/CategoryItem";
+import { CategoryItem } from "src/api.models/creatorStudio/common/CategoryItem";
 import CategoryTag from "./AdvancedSearchCategoryTag.vue";
 import CategorySelectedTag from "./AdvancedSearchCategorySelectedTag.vue";
-import { ArtworkApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/ArtworkApiHandler";
+import { CreatorStudio6ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/CreatorStudio6ApiHandler";
 
 export default {
     components: {
@@ -109,7 +109,8 @@ export default {
         };
     },
     async beforeMount() {
-        const _categories = await ArtworkApiHandler.getAllCategoriesAsync();
+        const _categories =
+            await CreatorStudio6ApiHandler.getAllCategoriesAsync();
 
         if (_categories) {
             _categories.forEach((item) => this.categories.push(item));

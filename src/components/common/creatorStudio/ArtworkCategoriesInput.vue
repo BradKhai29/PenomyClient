@@ -91,10 +91,13 @@
 
 <script>
 import { StringHelper } from "src/helpers/StringHelper";
-import { CategoryItem } from "src/api.models/creatorStudio/creatorStudio6Page/CategoryItem";
+import { CategoryItem } from "src/api.models/creatorStudio/common/CategoryItem";
 import CategoryTag from "./ArtworkCategoryTag.vue";
 import CategorySelectedTag from "./ArtworkCategorySelectedTag.vue";
-import { ArtworkApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/ArtworkApiHandler";
+import { CreatorStudio6ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/CreatorStudio6ApiHandler";
+
+// The name of this input support for changes detected.
+const inputName = "category";
 
 export default {
     components: {
@@ -107,7 +110,7 @@ export default {
             required: true,
         },
     },
-    emits: ["update:modelValue", "verifyInput"],
+    emits: ["update:modelValue", "verifyInput", "hasChange"],
     data() {
         return {
             showDropdown: false,
@@ -127,7 +130,8 @@ export default {
         };
     },
     async beforeMount() {
-        const _categories = await ArtworkApiHandler.getAllCategoriesAsync();
+        const _categories =
+            await CreatorStudio6ApiHandler.getAllCategoriesAsync();
 
         if (_categories) {
             _categories.forEach((item) => this.categories.push(item));
@@ -188,13 +192,25 @@ export default {
         },
         removeCategoryTagById(categoryTagId) {
             const notFoundIndex = -1;
+
             const foundCategoryTagIndex = this.selectedCategoryTags.findIndex(
                 (item) => item.id == categoryTagId
             );
 
-            if (foundCategoryTagIndex != notFoundIndex) {
+            const foundCategoryIndex = this.selectedCategories.findIndex(
+                (item) => item.id == categoryTagId
+            );
+
+            if (foundCategoryIndex != notFoundIndex) {
+                this.selectedCategories.splice(foundCategoryIndex, 1);
                 this.selectedCategoryTags.splice(foundCategoryTagIndex, 1);
             }
+
+            // Emit the event with all selected categories of this artwork.
+            this.$emit("update:modelValue", this.selectedCategories);
+
+            // Emit hasChange event to let parent know.
+            this.$emit("hasChange", inputName, true);
         },
         onCategoryTagPreSelect(categoryTag) {
             this.addCategoryTag(categoryTag);
@@ -204,27 +220,31 @@ export default {
          */
         onCategoryTagChangeState(categoryItem, categoryTag) {
             const notFoundIndex = -1;
-            const foundCategoryIndex = this.selectedCategories.findIndex(
-                (item) => item.id == categoryItem.id
-            );
-
             if (categoryItem.isSelected) {
                 // Check if this category item is added to the selected list.
-                if (foundCategoryIndex == notFoundIndex) {
-                    this.selectedCategories.push(categoryItem);
-                }
+                const itemIndex = this.selectedCategories.findIndex(
+                    (item) => item.id == categoryItem.id
+                );
 
-                // The category tag for later operation.
-                this.addCategoryTag(categoryTag);
+                const isItemExisted = itemIndex != notFoundIndex;
+
+                if (!isItemExisted) {
+                    this.selectedCategories.push(categoryItem);
+
+                    // The category tag for later operation.
+                    this.addCategoryTag(categoryTag);
+                }
             } else {
                 // If isSelected is false, then remove this
                 // category item from the selected list.
-                this.selectedCategories.splice(foundCategoryIndex, 1);
                 this.removeCategoryTagById(categoryItem.id);
             }
 
             // Emit the event with all selected categories of this artwork.
             this.$emit("update:modelValue", this.selectedCategories);
+
+            // Emit hasChange event to let parent know.
+            this.$emit("hasChange", inputName, true);
             this.verifyInput();
         },
         /**
@@ -250,6 +270,8 @@ export default {
             if (foundCategoryTag) {
                 foundCategoryTag.removeTag();
             }
+
+            this.removeCategoryTagById(categoryItem.id);
         },
         trySearchCategoryByKeyword() {
             if (this.searchCategory == "") {

@@ -1,6 +1,12 @@
 <template>
     <header class="header-highlight">
         <span> {{ label }} </span>
+        <q-badge
+            v-if="badgeLabel"
+            class="q-py-xs bg-primary text-dark text-weight-bold"
+        >
+            {{ badgeLabel }}
+        </q-badge>
     </header>
 </template>
 
@@ -10,6 +16,9 @@ export default {
         label: {
             type: String,
             required: true,
+        },
+        badgeLabel: {
+            type: String,
         },
     },
 };

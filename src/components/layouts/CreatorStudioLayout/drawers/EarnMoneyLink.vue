@@ -1,6 +1,6 @@
 <template>
     <DrawerLink
-        title="Kiếm tiền"
+        title="Doanh thu"
         icon="paid"
         link="/studio/earn-money"
         :isSelected="isSelected"

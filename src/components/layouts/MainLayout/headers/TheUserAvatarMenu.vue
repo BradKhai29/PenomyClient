@@ -5,12 +5,15 @@
         transition-show="jump-down"
         transition-hide="jump-up"
         :offset="[0, 16]"
+        max-height="640"
+        max-width="300"
         fit
     >
         <q-list class="avatar-menu-list">
             <q-item
+                id="profile-button"
                 clickable
-                v-close-popup
+                @click="toggleProfileButton"
                 class="text-weight-bold avatar-menu-item bg-light-100 q-py-md"
             >
                 <div class="flex column col-grow justify-center q-gutter-sm">
@@ -141,16 +144,32 @@
 </template>
 
 <script setup>
+import { route } from "quasar/wrappers";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 const showMenu = ref(false);
 const isAuth = ref(authStore.isAuth);
 const isCreator = ref(authStore.isCreator);
 const userName = ref(null);
 const avatarUrl = ref(authStore.avatarUrl);
+
+function toggleProfileButton() {
+    // Close the avatar menu when toggling the button.
+    showMenu.value = false;
+
+    if (authStore.checkAuth) {
+        console.log("Login success");
+        return;
+    }
+
+    // If user is not auth, then redirects to login page.
+    router.push("auth/login");
+}
 
 function signInAsUser() {
     userName.value = "DuongKhai2904";
@@ -198,23 +217,34 @@ watch(
 .avatar-menu,
 .avatar-menu-list,
 .avatar-menu-item {
-    --menu-width: 280px;
+    --menu-min-width: 280px;
+    --menu-max-height: 640px !important;
 }
 
 .avatar-menu {
-    --menu-max-height: 480px !important;
-
-    min-width: var(--menu-width);
-    max-height: var(--menu-max-height);
+    min-width: var(--menu-min-width) !important;
+    height: var(--menu-max-height) !important;
 }
 
 .avatar-menu-list {
-    min-width: var(--menu-width) !important;
+    min-width: var(--menu-min-width) !important;
     padding: 20px;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scroll.avatar-menu::-webkit-scrollbar,
+.scroll.avatar-menu-list::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scroll.avatar-menu,
+.scroll.avatar-menu-list {
+    -ms-overflow-style: none !important; /* IE and Edge */
+    scrollbar-width: none !important; /* Firefox */
+}
+
 .avatar-menu-item {
-    max-width: var(--menu-width);
     border-radius: 4px;
 }
 
