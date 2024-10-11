@@ -1,5 +1,5 @@
 <template>
-    <div class="column">
+    <div v-if="!isLoading" class="column">
         <div
             class="row justify-between input-header"
             :class="{ error: hasError }"
@@ -45,21 +45,32 @@
 </template>
 
 <script>
-import { ArtworkApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/ArtworkApiHandler";
+import { CreatorStudio6ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/CreatorStudio6ApiHandler";
 
 const defaultOption = { label: "Chọn quốc gia", value: -1 };
+const inputName = "origin";
 
 export default {
     name: "ArtworkOriginInput",
+    props: {
+        modelValue: {
+            required: true,
+        },
+        artworkOriginId: {
+            default: null,
+        },
+    },
     data() {
         return {
+            isLoading: true,
             originOptions: [defaultOption],
             selectedOrigin: null,
             hasError: false,
+            artworkOldOriginId: null,
         };
     },
     async mounted() {
-        const _origins = await ArtworkApiHandler.getAllOriginsAsync();
+        const _origins = await CreatorStudio6ApiHandler.getAllOriginsAsync();
 
         if (_origins) {
             // Populate the origin list that fetched from
@@ -70,35 +81,20 @@ export default {
         }
 
         if (this.artworkOriginId) {
-            const index = this.originOptions.findIndex(
+            this.artworkOldOriginId = this.artworkOriginId;
+
+            this.selectedOrigin = this.originOptions.find(
                 (item) => item.value == this.artworkOriginId
             );
-
-            this.selectedOrigin = this.originOptions[index];
         } else {
             // Set selected origin as default options.
             this.selectedOrigin = this.originOptions[0];
         }
 
+        this.isLoading = false;
         this.$emit("verifyInput", this);
     },
-    emits: ["update:modelValue", "verifyInput"],
-    props: {
-        modelValue: {
-            required: true,
-        },
-        artworkOriginId: {
-            type: Number,
-            default: null,
-        },
-    },
-    watch: {
-        selectedOrigin(newOrigin, _) {
-            this.hasError = false;
-
-            this.$emit("update:modelValue", newOrigin.value);
-        },
-    },
+    emits: ["update:modelValue", "verifyInput", "hasChange"],
     methods: {
         verifyInput() {
             if (this.selectedOrigin.value == defaultOption.value) {
@@ -108,6 +104,22 @@ export default {
             }
 
             return !this.hasError;
+        },
+    },
+    watch: {
+        selectedOrigin(newOrigin, _) {
+            this.hasError = false;
+
+            // Emit the update:modelValue event if any change in selected origin.
+            this.$emit("update:modelValue", newOrigin.value);
+
+            if (this.artworkOldOriginId) {
+                const hasChange =
+                    this.selectedOrigin.value != defaultOption.value &&
+                    this.artworkOldOriginId != this.selectedOrigin.value;
+
+                this.$emit("hasChange", inputName, hasChange);
+            }
         },
     },
 };

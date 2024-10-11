@@ -1,5 +1,7 @@
 <template>
-    <q-page class=""> </q-page>
+    <q-page class="">
+        <span class="text-h1">{{ emoji }}</span>
+    </q-page>
 </template>
 
 <script setup>
@@ -7,6 +9,8 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 import { ref } from "vue";
 
 const authStore = useAuthStore();
+
+const emoji = ref("😭");
 
 const counterInitValue = 0;
 const counter = ref(counterInitValue);

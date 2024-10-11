@@ -1,9 +1,9 @@
 <template>
-    <div @click="isChecked = !isChecked" class="policy-confirm-checkbox">
+    <div @click="checkPolicy" class="policy-confirm-checkbox">
         <span class="wrapper q-mr-xs">
             <q-icon name="check" :class="{ checked: isChecked }"></q-icon>
         </span>
-        <span class="">
+        <span>
             <span>Tôi xác nhận nội dung đăng tải tuân thủ </span>
             <a
                 href="https://quasar.dev/layout/grid/flex-playground"
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { inject, ref, watch } from "vue";
 
 const isChecked = ref(false);
 
@@ -27,10 +27,19 @@ const props = defineProps({
     modelValue: {
         required: true,
     },
+    disable: {
+        type: Boolean,
+    },
 });
 
 const emit = defineEmits(["update:modelValue"]);
 
+function checkPolicy() {
+    // Reverse the check policy when clicking on.
+    isChecked.value = !isChecked.value;
+}
+
+// Watch the isChecked value if any change happen.
 watch(
     () => isChecked.value,
     (newValue, _) => {

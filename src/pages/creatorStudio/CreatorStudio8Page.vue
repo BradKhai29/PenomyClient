@@ -1,57 +1,74 @@
 <template>
     <q-page v-if="isLoading"></q-page>
-    <q-page v-else>
-        <PageHeader headerTitle="Tác phẩm đầu tiên" />
+    <q-page v-if="isNotFound">
+        <CreatorStudio8PageHeader :isNotFound="true" />
+        <section class="row justify-center items-center" style="height: 100vh">
+            <div class="col-8 shadow-1">Không tìm thấy</div>
+        </section>
+    </q-page>
+    <q-page v-if="!isLoading && !isNotFound">
+        <CreatorStudio8PageHeader :headerTitle="artworkDetail.titleRef" />
         <form @submit.prevent class="q-pa-lg">
             <section id="general-info" class="row justify-center q-gutter-lg">
                 <section class="col-auto">
                     <ThumbnailInput
                         v-model="artworkDetail.thumbnailImageFile"
-                        :defaultImageSrc="artworkDetail.thumbnailUrl"
+                        :presetImageSrc="artworkDetail.thumbnailUrl"
                         @verifyInput="addVerifyInputCallback"
+                        @hasChange="detectInputChange"
                     />
                 </section>
                 <div class="col-sm-6 col-md-8 col-grow">
                     <section class="q-pa-lg shadow-1 input-section">
                         <HeaderHighlight
                             label="Thông tin chung"
+                            :badgeLabel="
+                                hasChangesInData ? 'Có thay đổi' : null
+                            "
                             class="q-mb-md"
                         />
 
                         <TitleInput
                             v-model="artworkDetail.title"
                             v-bind="titleInputBind"
-                            @verifyInput="addVerifyInputCallback"
                             class="q-mb-sm"
+                            @verifyInput="addVerifyInputCallback"
+                            @hasChange="detectInputChange"
                         />
 
                         <OriginInput
                             v-model="artworkDetail.originId"
                             :artworkOriginId="artworkDetail.originId"
-                            @verifyInput="addVerifyInputCallback"
                             class="q-mb-sm"
+                            @verifyInput="addVerifyInputCallback"
+                            @hasChange="detectInputChange"
                         />
 
                         <IntroductionInput
                             v-model="artworkDetail.introduction"
                             v-bind="introductionInputBind"
-                            @verifyInput="addVerifyInputCallback"
                             class="q-mb-sm"
+                            @verifyInput="addVerifyInputCallback"
+                            @hasChange="detectInputChange"
                         />
 
                         <CategoriesInput
                             v-model="artworkDetail.selectedCategories"
-                            @verifyInput="addVerifyInputCallback"
                             class="q-mb-sm"
+                            @verifyInput="addVerifyInputCallback"
+                            @hasChange="detectInputChange"
                         />
 
                         <PublicLevelInput
                             v-model="artworkDetail.publicLevel"
+                            :artworkPublicLevel="artworkDetail.publicLevel"
                             class="q-mb-sm"
+                            @hasChange="detectInputChange"
                         />
 
                         <AllowCommentInput
                             v-model="artworkDetail.allowComment"
+                            @hasChange="detectInputChange"
                         />
                     </section>
 
@@ -63,9 +80,17 @@
                             v-model="artworkDetail.confirmPolicy"
                         />
                         <q-btn
+                            v-if="hasChangesInData"
+                            :loading="isDetailUpdating"
                             class="q-mt-xs bg-primary text-dark text-weight-bold"
-                            label="Xác nhận tạo"
+                            label="Cập nhật thông tin"
                             @click="updateComicDetail"
+                        />
+                        <q-btn
+                            v-else
+                            disable
+                            class="q-mt-xs bg-primary text-dark text-weight-bold"
+                            label="Cập nhật thông tin"
                         />
                     </div>
                 </div>
@@ -75,10 +100,12 @@
 </template>
 
 <script>
+import { computed } from "vue";
 import { useQuasar } from "quasar";
-import { ArtworkApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/ArtworkApiHandler";
+import { useRoute } from "vue-router";
+import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
 
-import PageHeader from "components/pages/creatorStudio/CreatorStudio8Page/CreatorStudio8PageHeader.vue";
+import CreatorStudio8PageHeader from "components/pages/creatorStudio/CreatorStudio8Page/CreatorStudio8PageHeader.vue";
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
 import TitleInput from "components/common/creatorStudio/ArtworkTitleInput.vue";
 import IntroductionInput from "components/common/creatorStudio/ArtworkIntroductionInput.vue";
@@ -88,7 +115,7 @@ import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevel
 import ThumbnailInput from "components/common/creatorStudio/ArtworkThumbnailInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
 import CategoriesInput from "components/common/creatorStudio/ArtworkCategoriesInput.vue";
-import { CategoryItem } from "src/api.models/creatorStudio/creatorStudio6Page/CategoryItem";
+import { CategoryItem } from "src/api.models/creatorStudio/common/CategoryItem";
 
 const errorNotification = {
     position: "top",
@@ -101,7 +128,7 @@ const errorNotification = {
 
 export default {
     components: {
-        PageHeader,
+        CreatorStudio8PageHeader,
         HeaderHighlight,
         TitleInput,
         IntroductionInput,
@@ -112,34 +139,21 @@ export default {
         ConfirmPolicyInput,
         CategoriesInput,
     },
-    async mounted() {
-        const _artworkDetail =
-            await ArtworkApiHandler.getArtworkDetailByIdAsync(1);
-
-        // If call WebAPI success, then populate the information
-        // data:artworkDetail in this page.
-        if (_artworkDetail) {
-            this.artworkDetail.id = _artworkDetail.id;
-            this.artworkDetail.title = _artworkDetail.title;
-            this.artworkDetail.originId = _artworkDetail.origin.id;
-            this.artworkDetail.introduction = _artworkDetail.introduction;
-            this.artworkDetail.publicLevel = _artworkDetail.publicLevel;
-            this.artworkDetail.allowComment = _artworkDetail.allowComment;
-            this.artworkDetail.thumbnailUrl = _artworkDetail.thumbnailUrl;
-            _artworkDetail.selectedCategories.forEach((item) =>
-                this.artworkDetail.selectedCategories.push(item)
-            );
-        }
-
-        // Turn off the loading flag to load the page.
-        this.isLoading = false;
-    },
     data() {
         return {
             isLoading: true,
+            isNotFound: false,
+            /**
+             * This flag used to check if creator inputs any
+             * data to update a comic, support for navigation guard
+             * when creator accidentally exits the page while inputting information
+             */
+            hasChangesInData: false,
+            isDetailUpdating: false,
             artworkDetail: {
                 id: 0,
                 title: "",
+                titleRef: "",
                 /**
                  * @type {Number} The originId of this artwork.
                  */
@@ -155,12 +169,113 @@ export default {
                 thumbnailImageFile: null,
                 thumbnailUrl: null,
             },
+            artworkDetailChangeDetect: {
+                titleChange: false,
+                introductionChange: false,
+                thumbnailChange: false,
+                originIdChange: false,
+                categoryChange: false,
+                publicLevelChange: false,
+                allowCommentChange: false,
+            },
             titleInputBind: titleInputBind,
             introductionInputBind: introductionInputBind,
             verifyInputCallbacks: [],
         };
     },
+    provide() {
+        return {
+            hasChangesInData: computed(() => this.hasChangesInData),
+        };
+    },
+    async mounted() {
+        const route = useRoute();
+        const comicId = route.params.comicId;
+
+        // If comicId is null, then display not found.
+        if (!comicId) {
+            this.isNotFound = true;
+            this.isLoading = false;
+            return;
+        }
+
+        // Get artwork detail from api.
+        const _artworkDetail =
+            await CreatorStudio8ApiHandler.getArtworkDetailByIdAsync(comicId);
+
+        if (_artworkDetail.isNotFound) {
+            this.isNotFound = true;
+            this.isLoading = false;
+
+            return;
+        }
+
+        // If call WebAPI success, then populate the artwork detail information.
+        this.artworkDetail.id = _artworkDetail.id;
+        this.artworkDetail.title = _artworkDetail.title;
+        this.artworkDetail.titleRef = _artworkDetail.title;
+        this.artworkDetail.originId = _artworkDetail.originId;
+        this.artworkDetail.introduction = _artworkDetail.introduction;
+        this.artworkDetail.publicLevel = _artworkDetail.publicLevel;
+        this.artworkDetail.allowComment = _artworkDetail.allowComment;
+        this.artworkDetail.thumbnailUrl = _artworkDetail.thumbnailUrl;
+
+        _artworkDetail.selectedCategories.forEach((item) =>
+            this.artworkDetail.selectedCategories.push(item)
+        );
+
+        // Turn off the loading flag to load the page.
+        this.isLoading = false;
+    },
     methods: {
+        /**
+         * @param {String} inputName The name of the input that has changed or input data.
+         */
+        detectInputChange(inputName, hasChange) {
+            // Detect changes in all 7 inputs of the comic details.
+            switch (inputName) {
+                case "title":
+                    this.artworkDetailChangeDetect.titleChange = hasChange;
+                    break;
+
+                case "introduction":
+                    this.artworkDetailChangeDetect.introductionChange =
+                        hasChange;
+                    break;
+
+                case "origin":
+                    this.artworkDetailChangeDetect.originIdChange = hasChange;
+                    break;
+
+                case "category":
+                    this.artworkDetailChangeDetect.categoryChange = hasChange;
+                    break;
+
+                case "thumbnail":
+                    this.artworkDetailChangeDetect.thumbnailChange = hasChange;
+                    break;
+
+                case "publicLevel":
+                    this.artworkDetailChangeDetect.publicLevelChange =
+                        hasChange;
+                    break;
+
+                case "allowComment":
+                    this.artworkDetailChangeDetect.allowCommentChange =
+                        hasChange;
+                    break;
+            }
+
+            // Update hasChangesInData state if changes are detected.
+            this.hasChangesInData =
+                this.artworkDetailChangeDetect.titleChange ||
+                this.artworkDetailChangeDetect.introductionChange ||
+                this.artworkDetailChangeDetect.originIdChange ||
+                this.artworkDetailChangeDetect.thumbnailChange ||
+                this.artworkDetailChangeDetect.categoryChange ||
+                this.artworkDetailChangeDetect.publicLevelChange ||
+                this.artworkDetailChangeDetect.allowCommentChange;
+        },
         async updateComicDetail() {
             const isValid = this.verifyAllInputs();
 
@@ -178,9 +293,27 @@ export default {
                 return;
             }
 
-            await ArtworkApiHandler.updateArtworkDetailAsync(
-                this.artworkDetail
-            );
+            // Turn on the isDetailUpdating flag to prevent user from clicking
+            // the button while the api is processing the data.
+            this.isDetailUpdating = true;
+
+            const result =
+                await CreatorStudio8ApiHandler.updateArtworkDetailAsync(
+                    this.artworkDetail,
+                    this.artworkDetailChangeDetect.categoryChange
+                );
+
+            if (result.isSuccess) {
+                this.showSuccessNotification("Cập nhật thông tin thành công");
+            } else {
+                this.showErrorNotification(
+                    result.message ?? "Có lỗi từ server khi cập nhật"
+                );
+            }
+
+            // Update the flag when the changes are updated successfully.
+            this.hasChangesInData = false;
+            this.isDetailUpdating = false;
         },
         addVerifyInputCallback(callback) {
             this.verifyInputCallbacks.push(callback);
@@ -222,8 +355,29 @@ export default {
             });
         };
 
+        const showSuccessNotification = (message) => {
+            quasar.notify({
+                type: "positive",
+                textColor: "light",
+                icon: "info",
+                message: message,
+                position: "top",
+                actions: [
+                    {
+                        label: "Đóng",
+                        color: "light",
+                        handler: () => {
+                            /* console.log('wooow') */
+                        },
+                    },
+                ],
+                progress: errorNotification.showTimeoutProgress,
+            });
+        };
+
         return {
             showErrorNotification,
+            showSuccessNotification,
         };
     },
 };

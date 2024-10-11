@@ -18,6 +18,8 @@ function accentReplacer(inputString, a, A, e, E, i, I, u, U, o, O, y, Y, d, D) {
     if (D) return "D";
 }
 
+const emptyString = "";
+
 const StringHelper = {
     /**
      * Replace all the accent characters found in the input stringValue
@@ -27,6 +29,9 @@ const StringHelper = {
      */
     replaceAccentChar(stringValue) {
         return stringValue.replace(accentRegExp, accentReplacer);
+    },
+    emptyString() {
+        return emptyString;
     },
 };
 

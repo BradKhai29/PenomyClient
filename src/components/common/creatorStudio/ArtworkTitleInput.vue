@@ -22,13 +22,11 @@
 </template>
 
 <script>
+import { StringHelper } from "src/helpers/StringHelper";
+const inputName = "title";
+
 export default {
     name: "CreateArtworkInput",
-    data() {
-        return {
-            hasError: false,
-        };
-    },
     props: {
         modelValue: {
             type: String,
@@ -59,10 +57,23 @@ export default {
             default: "",
         },
     },
-    mounted() {
-        this.$emit("verifyInput", this);
+    data() {
+        return {
+            hasError: false,
+            artworkOldTitle: null,
+        };
     },
-    emits: ["update:modelValue", "verifyInput"],
+    mounted() {
+        // Emit verify input event including this instance.
+        this.$emit("verifyInput", this);
+
+        // If the model value is not null, that means this artwork title input
+        // is used in update page, then set value for the artwork old title.
+        if (this.modelValue) {
+            this.artworkOldTitle = this.modelValue;
+        }
+    },
+    emits: ["update:modelValue", "verifyInput", "hasChange"],
     methods: {
         /**
          * @param {InputEvent} event The event instance.
@@ -72,7 +83,6 @@ export default {
 
             if (inputValue.length <= this.maxLength) {
                 this.$emit("update:modelValue", inputValue);
-                this.verifyInput();
 
                 return;
             }
@@ -94,7 +104,18 @@ export default {
     },
     watch: {
         modelValue() {
+            // First verify the input when model value is changed.
             this.verifyInput();
+
+            let hasChange = this.modelValue != StringHelper.emptyString();
+
+            // If artwork old title is not null, then check if the new input
+            // value is similar to the artwork old title or not.
+            if (this.artworkOldTitle) {
+                hasChange &= this.modelValue != this.artworkOldTitle;
+            }
+
+            this.$emit("hasChange", inputName, hasChange);
         },
     },
 };

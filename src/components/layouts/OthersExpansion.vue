@@ -1,9 +1,5 @@
 <template>
-    <q-expansion-item
-        default-opened
-        label="Khác"
-        class="others-section-expansion"
-    >
+    <q-expansion-item label="Khác" class="others-section-expansion">
         <SettingLink />
         <SupportLink />
         <SendFeedbackLink />
