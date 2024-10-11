@@ -22,7 +22,7 @@
 </template>
 <script setup>
 
-import RecentlyUpdatedArtworkCard from 'src/components/common/artwork/RecentlyUpdatedArtworkCard.vue';
+import RecentlyUpdatedArtworkCard from 'src/components/common/artwork/comic/RecentlyUpdatedArtworkCard.vue';
 import { ref, computed, onMounted } from 'vue'
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from 'src/api.common/HttpMethod';
@@ -75,7 +75,6 @@ onMounted(async () => {
         },
     }).then((response) => {
         artworks.value = response.data.body.artworkList
-        artworks.value[0].image = "https://cdn.quasar.dev/img/parallax2.jpg"
         artworks.value.forEach((item) => {
             item.lastUpdateAt = Math.round(calculateDayDifference(item.lastUpdateAt, new Date()))
         })

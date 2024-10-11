@@ -2,7 +2,7 @@
     <q-card class="my-card bg-grey-2" bordered>
         <q-card-section horizontal>
             <!-- left content -->
-            <q-img class="col-5 image" fit="cover" :src="artwork.image" height="180px" width="37%" bordered>
+            <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="180px" width="37%" bordered>
                 <div class="rating">
                     <q-icon name="star" size="1rem" color="dark"></q-icon>
                     <span class="text-subtitle2">{{ artwork.rating }}</span>
@@ -13,7 +13,7 @@
                         <span class="text-subtitle2">100K</span>
                     </div>
                     <q-avatar rounded id="flag">
-                        <img :src="artwork.flag">
+                        <img :src="artwork.flagUrl">
                     </q-avatar>
                 </div>
                 <div class="overlay"><q-icon class="play-icon" name="play_arrow" color="white" size="2rem" /></div>
