@@ -2,6 +2,7 @@
     <q-page class="">
         <RecentlyUpdated />
         <RecommendArtworkByCategory />
+        <CommentInputField />
         <UserComment />
         <artwork-allow-comment-input />
     </q-page>
