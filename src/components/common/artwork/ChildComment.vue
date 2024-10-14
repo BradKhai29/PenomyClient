@@ -54,42 +54,6 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import ChildComment from './ChildComment.vue';
-// defineProps({
-//     id: {
-//         type: Number,
-//         default: 1
-//     },
-//     avatar: {
-//         type: String,
-//         default: "https://cdn.quasar.dev/img/boy-avatar.png"
-//     },
-//     userName: {
-//         type: String,
-//         default: "tên người dùng"
-//     },
-//     postTime: {
-//         type: String,
-//         default: "(2 phút trước)"
-//     },
-//     comment: {
-//         type: String,
-//         default: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut doloribus maiores repellat sit, ad fuga nihil fugiat adipisci voluptate aliquid eum corrupti reiciendis, nam explicabo accusantium vitae voluptatum dolore asperiores?"
-//     },
-//     like: {
-//         type: Number,
-//         default: 100
-//     },
-//     replies: {
-//         type: Number,
-//         default: 2
-//     },
-//     isAuthor: {
-//         type: Boolean,
-//         default: true
-//     }
-
-// })
 
 var props = defineProps({
     comment: {
@@ -113,6 +77,7 @@ var props = defineProps({
     }
 })
 
+const children = computed(() => props.children);
 </script>
 <script>
 export default {

@@ -25,7 +25,8 @@ onMounted(async () => {
         },
     })
         .then((response) => {
-            comments.value = response.data.body;
+            comments.value = response.data.body.commentList;
+            console.log(comments.value);
         });
 })
 </script>
