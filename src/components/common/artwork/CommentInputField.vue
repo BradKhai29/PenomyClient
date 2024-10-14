@@ -13,11 +13,10 @@
             <q-btn round dense icon="send" size=".5rem" color="primary" padding=".6rem" @click="sendComment(user)" />
         </q-item>
     </div>
-
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue';
 import axios from 'axios';
 import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
 import { HttpMethod } from 'src/api.common/HttpMethod';
@@ -25,35 +24,66 @@ const isDirectlyComment = ref(true);
 const props = defineProps({
     artworkId: {
         type: String,
-        required: true,
+        required: false,
         default: "2336253634727936",
     },
     chapterId: {
         type: String,
         required: false,
         default: "0",
+    },
+    commentId: {
+        type: String,
+        required: false,
+    },
+    isUpdate: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
+    oldComment: {
+        type: String,
+        required: false
     }
 })
-const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
-const comment = ref('');
+
+const comment = ref(props.oldComment);
+const emit = defineEmits(['editComment']);
 
 async function sendComment(user) {
-    await axios({
-        url: apiUrl,
-        method: HttpMethod.POST,
-        data: {
-            artworkId: props.artworkId,
-            chapterId: props.chapterId,
-            isDirectlyComment: isDirectlyComment.value,
-            commentContent: comment.value,
-            userId: 123
-        },
-    })
-        .then((response) => {
-            comment.value = '';
-            console.log(response);
-        });
-    console.log(123);
+    if (comment.value.match(/^\n+$/) == null) {
+        if (!props.isUpdate) {
+            const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
+            await axios({
+                url: apiUrl,
+                method: HttpMethod.POST,
+                data: {
+                    artworkId: props.artworkId,
+                    chapterId: props.chapterId,
+                    isDirectlyComment: isDirectlyComment.value,
+                    commentContent: comment.value,
+                    userId: 123
+                },
+            })
+                .then((response) => {
+                    comment.value = '';
+                    console.log(response);
+                });
+        } else {
+            const apiUrl = `${BaseWebApiUrl}/G53/comment/edit`;
+            await axios({
+                url: apiUrl,
+                method: HttpMethod.PUT,
+                data: {
+                    newComment: comment.value,
+                    commentId: (props.commentId),
+                },
+            })
+                .then(() => {
+                    emit('editComment', comment.value);
+                });
+        }
+    }
 }
 
 </script>

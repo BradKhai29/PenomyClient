@@ -1,5 +1,5 @@
 <template>
-    <UserComment v-for="comment in comments" :key="comment.id" :comment="comment" />
+    <UserComment v-for="comment in comments" :key="comment.id" :comment="comment" @deleteComment='onCommentDelete' />
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
@@ -12,7 +12,7 @@ const apiUrl = `${BaseWebApiUrl}/g10/ArtworkComment/get`;
 
 var props = defineProps({
     artworkId: {
-        type: Number,
+        type: String,
         required: true
     }
 });
@@ -21,12 +21,15 @@ onMounted(async () => {
         url: apiUrl,
         method: HttpMethod.GET,
         params: {
-            artworkId: props.artworkId
+            artworkId: BigInt(props.artworkId)
         },
     })
         .then((response) => {
             comments.value = response.data.body.commentList;
-            console.log(comments.value);
         });
 })
+
+function onCommentDelete(id) {
+    comments.value = comments.value.filter((comment) => comment.id !== id)
+}
 </script>
