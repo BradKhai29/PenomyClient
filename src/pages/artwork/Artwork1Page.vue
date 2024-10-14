@@ -5,7 +5,6 @@
         <CommentInputField />
         <UserComment />
         <comment-loader artworkId = '2336253634727936'/>
-        <span class="text-h1">{{ emoji }}</span>
     </q-page>
 </template>
 
@@ -17,6 +16,28 @@ import RecommendArtworkByCategory from "src/components/common/artwork/comic/Artw
 import CommentLoader from "src/components/common/artwork/CommentLoader.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { ref } from "vue";
+
+
+function clickMe() {
+    authStore.increment();
+    counter.value = authStore.counter;
+}
+
+defineOptions({
+    name: "IndexPage",
+});
+</script>
+
+<template>
+    <q-page class="">
+        <span class="text-h1">{{ emoji }}</span>
+    </q-page>
+</template>
+
+<script setup>
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { ref } from "vue";
+
 const authStore = useAuthStore();
 
 const emoji = ref("😭");
