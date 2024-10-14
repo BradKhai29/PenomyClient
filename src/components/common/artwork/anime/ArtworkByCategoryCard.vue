@@ -2,20 +2,18 @@
     <div>
         <q-card class="my-card bg-grey-2" bordered>
             <q-card-section horizontal>
-                <q-img class="col-5 image" fit="cover" src="https://cdn.quasar.dev/img/parallax2.jpg" height="360px"
-                    width="100%" bordered>
+                <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="360px" width="100%" bordered>
                     <div class="rating">
                         <q-icon name="star" size="1rem"></q-icon>
-                        <span class="text-subtitle2">4.8</span>
+                        <span class="text-subtitle2">{{ artwork.rating }}</span>
                     </div>
                     <div class="card-left-bottom absolute-bottom-right">
                         <div class="favorite">
                             <q-icon name="favorite" size=".84rem"></q-icon>
-                            <span class="text-subtitle2">100K</span>
+                            <span class="text-subtitle2">{{ artwork.favorite }}</span>
                         </div>
                         <q-avatar rounded id="flag">
-                            <img
-                                src="https://th.bing.com/th/id/R.607b9f69862d76af04b474113c0c7ff5?rik=lfnOsbv7mhDNbQ&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2fb%2fbc%2fFlag_of_India.png&ehk=Pk5lH0C%2fhstFahWfb15vLjtrJb3DslIU4%2fAQneo9IIM%3d&risl=&pid=ImgRaw&r=0">
+                            <img :src="artwork.flagUrl">
                         </q-avatar>
                     </div>
                 </q-img>
@@ -24,7 +22,7 @@
 
         </q-card>
         <div class="artwork-name">
-            <a href="#">One Piece - Đảo hải tặc</a>
+            <a href="#">{{ artwork.title }}</a>
             <q-icon name="more_vert" class="cursor-pointer">
                 <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
                         <q-item clickable v-close-popup>
@@ -51,23 +49,21 @@
     </div>
 </template>
 <script setup>
-props: {
+const props = defineProps({
     artwork: {
-        id: String;
-        name: String;
-        rating: String;
-        favorite: String;
-        flag: String;
-        image: String;
+        type: Object,
+        default: () => ({
 
-    }
-}
+        })
+    },
+})
 </script>
 <style scoped>
 a {
     text-decoration: none;
     color: black;
     font-weight: 700;
+    font-size: 1.2rem;
 }
 
 .my-card {
@@ -90,6 +86,11 @@ a {
     align-items: center;
     justify-content: center;
     padding: .15rem .4rem;
+}
+
+.rating :first-child,
+.favorite :first-child {
+    color: black;
 }
 
 .favorite {
@@ -147,7 +148,7 @@ a {
     transform: scale(1);
 }
 
-.my-card:hover .artwork-name > a{
+.my-card:hover .artwork-name>a {
     /* transform:  0.2s; */
     color: red;
 }

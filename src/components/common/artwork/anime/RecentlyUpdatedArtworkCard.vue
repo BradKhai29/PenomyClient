@@ -2,7 +2,7 @@
     <q-card class="my-card bg-grey-2" bordered>
         <q-card-section horizontal>
             <!-- left content -->
-            <q-img class="col-5 image" fit="cover" :src="artwork.image" height="180px" width="37%" bordered>
+            <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="180px" width="37%" bordered>
                 <div class="rating">
                     <q-icon name="star" size="1rem" color="dark"></q-icon>
                     <span class="text-subtitle2">{{ artwork.rating }}</span>
@@ -13,7 +13,7 @@
                         <span class="text-subtitle2">100K</span>
                     </div>
                     <q-avatar rounded id="flag">
-                        <img :src="artwork.flag">
+                        <img :src="artwork.flagUrl">
                     </q-avatar>
                 </div>
                 <div class="overlay"><q-icon class="play-icon" name="play_arrow" color="white" size="2rem" /></div>
@@ -23,7 +23,7 @@
             <!-- right content -->
             <q-card-section class="card-content q-pa-sm">
                 <div class="text-subtitle1 text-weight-medium" style="padding-left: .2rem;">
-                    {{ artwork.name }}
+                    {{ artwork.title }}
                 </div>
                 <div class="text-subtitle3 text-weight-regular">
                     <q-icon name="account_circle" size="1.7rem" />
@@ -35,7 +35,7 @@
                             Tập 1241
                         </div>
                         <div class="text-subtitle2 text-weight-thin col text-italic text-right">
-                            2 ngày trước
+                            {{ artwork.lastUpdateAt }} ngày trước
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
 .play-icon {
     border: solid 1px white;
     padding: .3rem;
-    border-radius: 100px ;
+    border-radius: 100px;
     transition: transform 0.2s;
     transform: scale(0.1);
 }
@@ -151,31 +151,13 @@
 </style>
 
 <script setup>
-const artwork = defineProps({
-    name: {
-        type: String,
-        default: "One Piece - Đảo hải tặc"
-    },
-    supplier: {
-        type: String,
-        default: "Nha cung cấp"
-    },
-    rating: {
-        type: String,
-        default: "4.8"
-    },
-    favorite: {
-        type: Number,
-        default: 100
-    },
-    flag: {
-        type: String,
-        default: "https://th.bing.com/th/id/R.607b9f69862d76af04b474113c0c7ff5?rik=lfnOsbv7mhDNbQ&riu=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2fb%2fbc%2fFlag_of_India.png&ehk=Pk5lH0C%2fhstFahWfb15vLjtrJb3DslIU4%2fAQneo9IIM%3d&risl=&pid=ImgRaw&r=0"
-    },
-    image: {
-        type: String,
-        default: "https://cdn.quasar.dev/img/parallax2.jpg"
-    }
+import { ref, onMounted } from 'vue';
+const props = defineProps({
+    artwork: {
+        type: Object,
+        default: () => ({
 
+        })
+    },
 })
 </script>
