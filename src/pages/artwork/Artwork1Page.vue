@@ -3,7 +3,6 @@
         <RecentlyUpdated />
         <RecommendArtworkByCategory />
         <CommentInputField />
-        <UserComment />
         <comment-loader artworkId = '2336253634727936'/>
     </q-page>
 </template>
