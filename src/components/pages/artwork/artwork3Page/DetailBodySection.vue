@@ -6,9 +6,10 @@
                 <!-- Description -->
                 <q-card-section>
 
-                    <stat-detaild></stat-detaild>
+                    <stat-detaild :view-count="viewCount" :comment-count="commentCount" :favorite-count="favoriteCount"
+                        :star-rates="starRates"></stat-detaild>
                     <div class="text-body1">
-                        Vào tương lai, lúc mà con người với những sức mạnh siêu nhiên là điều thường thấy...
+                        {{ introduction }}
                     </div>
 
                     <!-- Stats Row -->
@@ -74,7 +75,28 @@
 <script setup>
 import { ref } from 'vue'
 import StatDetaild from './StatDetaild.vue';
-
+const props = defineProps({
+    introduction: {
+        type: String,
+        default: 'No introduction'
+    },
+    viewCount: {
+        type: Number,
+        required: true,
+    },
+    favoriteCount: {
+        type: Number,
+        required: true,
+    },
+    commentCount: {
+        type: Number,
+        required: true,
+    },
+    starRates: {
+        type: Number,
+        required: true,
+    },
+})
 const episodes = ref([
     {
         chapNumber: 10,

@@ -3,7 +3,9 @@
         <div class="q-pt-lg q-pb-xs">
             <q-card class="row detail-header">
                 <image-section class="col-3 q-pr-md"></image-section>
-                <description-section class="col-9 q-pt-md"></description-section>
+                <description-section :title="data.title" :author="data.authorName" :country="data.countryName"
+                    :status="data.artworkStatus" series="Học viện Anh Hùng" :buttons="buttons"
+                    class="col-9 q-pt-md"></description-section>
             </q-card>
             <q-card class="row justify-center subcribe-detail">
                 <subcribe-detail class="col-12"></subcribe-detail>
@@ -11,7 +13,9 @@
         </div>
     </q-card>
     <q-card class="detail-body" style="">
-        <detail-body-section class="col-12"></detail-body-section>
+        <detail-body-section :introduction="data.introduction" :view-count="data.viewCount"
+            :comment-count="data.commentCount" :favorite-count="data.favoriteCount" :star-rates="data.starRates"
+            class="col-12"></detail-body-section>
     </q-card>
     <div class="recommend-section">
         <recommendation-section></recommendation-section>
@@ -21,31 +25,36 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
 const route = useRoute();
-const backgroundImageUrl = ref(''); // To store the background image URL from the API
-
-onMounted(() => {
-    const id = route.params.id;
+const backgroundImageUrl = ref('');
+const artworkId = ref(null);
+const data = ref({});
+const chapterData = ref({});
+onMounted(async () => {
+    artworkId.value = route.params.artworkId;
+    const id = route.params.artworkId;
     try {
+        const [artworkDetail, chapters] = await Promise.all([
+            artworkDetailApiHandler.getArtworkDetailByIdAsync(id),
+            artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 3)
+        ]);
+
+        data.value = artworkDetail;
+        chapterData.value = chapters;
         backgroundImageUrl.value = '/src/assets/hero_academia.jpg';
     } catch (error) {
-
+        console.log(error);
     }
 });
 
-
-function fetchBackgroundImage() {
-    // Simulate an API call
-    setTimeout(() => {
-        backgroundImageUrl.value = '/src/assets/hero_academia.jpg';
-    }, 1000);
-}
-
-// Computed property for dynamic background style
 const backgroundStyle = computed(() => ({
     background: `url(${backgroundImageUrl.value}) no-repeat`,
     backgroundSize: 'cover',
 }));
+const buttons = computed(() => {
+    return data.value.selectedCategories ? data.value.selectedCategories.map((item) => ({ label: item })) : [];
+});
 </script>
 
 <script>
