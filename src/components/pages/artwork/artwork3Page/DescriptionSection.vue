@@ -63,18 +63,20 @@
 import { ref } from 'vue'
 
 // Define reactive properties using `ref`
-const title = ref('Học viện Anh Hùng mùa 1')
-const author = ref('Horikoshi Kohei')
-const country = ref('Nhật Bản')
-const status = ref('Hoàn thành')
-const series = ref('Học viện Anh Hùng')
-const buttons = ref([
-    { label: 'Hành động' },
-    { label: 'Phiêu lưu' },
-    { label: 'Viễn tưởng' },
-    { label: 'Hài hước' },
-    { label: 'Đời thường' }
-])
+import { defineProps } from 'vue'
+
+// Define props for dynamic data
+const props = defineProps({
+    title: String,
+    author: String,
+    country: String,
+    status: String,
+    series: String,
+    buttons: {
+        type: Array,
+
+    }
+})
 </script>
 
 <style scoped>

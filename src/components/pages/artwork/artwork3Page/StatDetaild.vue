@@ -15,13 +15,48 @@
 </style>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { defineProps } from 'vue'
 
-const stats = ref([
-    { icon: 'visibility', value: '100K' },
-    { icon: 'ion-heart', value: '100K' },
-    { icon: 'star', value: '4.8' },
-    { icon: 'add_box', value: '3.6M' },
+const props = defineProps({
+    viewCount: {
+        type: Number,
+        required: true,
+    },
+    favoriteCount: {
+        type: Number,
+        required: true,
+    },
+    commentCount: {
+        type: Number,
+        required: true,
+    },
+    starRates: {
+        type: Number,
+        required: true,
+    },
+});
+
+// Destructure into computed properties
+const viewCount = computed(() => `${props.viewCount}k`);
+const favoriteCount = computed(() => `${props.favoriteCount}k`);
+const commentCount = computed(() => `${props.commentCount}k`);
+const starRates = computed(() => `${props.starRates}`);
+
+// Use computed properties in the stats array
+const stats = computed(() => [
+    { icon: 'visibility', value: viewCount.value },
+    { icon: 'ion-heart', value: favoriteCount.value },
+    { icon: 'star', value: starRates.value },
+    { icon: 'add_box', value: commentCount.value },
     { icon: 'info', value: 'Khác' }
 ]);
+
+// const stats = ref([
+//     { icon: 'visibility', value: '100k' },
+//     { icon: 'ion-heart', value: '100k' },
+//     { icon: 'star', value: 4.8 },
+//     { icon: 'add_box', value: '100M' },
+//     { icon: 'info', value: 'Khác' }
+// ]);
 </script>
