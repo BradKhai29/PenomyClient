@@ -27,7 +27,10 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { watch } from "vue";
+import { StringHelper } from "src/helpers/StringHelper";
+
+const inputName = "introduction";
 
 export default {
     name: "CreateArtworkInput",
@@ -61,45 +64,63 @@ export default {
             default: "",
         },
     },
-    emits: ["update:modelValue"],
-    setup(props, { emit }) {
-        const hasError = ref(false);
-
-        const verifyInput = () => {
-            hasError.value = false;
-
-            if (props.required && !props.modelValue) {
-                hasError.value = true;
-            }
-
-            return !hasError.value;
+    data() {
+        return {
+            hasError: false,
+            artworkOldIntro: null,
         };
+    },
+    mounted() {
+        // Emit verify input event including this instance.
+        this.$emit("verifyInput", this);
 
-        const onInput = (event) => {
+        // If the model value is not null, that means this artwork intro input
+        // is used in update page, then set value for the artwork old intro.
+        if (this.modelValue) {
+            this.artworkOldIntro = this.modelValue;
+        }
+    },
+    emits: ["update:modelValue", "verifyInput", "hasChange"],
+    methods: {
+        /**
+         * @param {InputEvent} event The event instance.
+         */
+        onInput(event) {
             const inputValue = event.target.value + "";
 
-            if (inputValue.length <= props.maxLength) {
-                emit("update:modelValue", inputValue);
+            if (inputValue.length <= this.maxLength) {
+                this.$emit("update:modelValue", inputValue);
 
                 return;
             }
 
             // If the input value is exceed the max length, then prevent user to input.
             const inputElement = event.target;
-            inputElement.value = props.modelValue;
-        };
+            inputElement.value = this.modelValue;
+        },
+        verifyInput() {
+            this.hasError = false;
 
-        // Watch the input value and automatically verify input
-        watch(
-            () => props.modelValue,
-            () => verifyInput()
-        );
+            if (this.required && !this.modelValue) {
+                this.hasError = true;
+            }
 
-        return {
-            hasError,
-            onInput,
-            verifyInput,
-        };
+            return !this.hasError;
+        },
+    },
+    watch: {
+        modelValue() {
+            // First verify the input when model value is changed.
+            this.verifyInput();
+
+            let hasChange = this.modelValue != StringHelper.emptyString();
+
+            if (this.artworkOldIntro) {
+                hasChange &= this.modelValue != this.artworkOldIntro;
+            }
+
+            this.$emit("hasChange", inputName, hasChange);
+        },
     },
 };
 </script>

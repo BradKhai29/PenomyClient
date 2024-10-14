@@ -9,8 +9,8 @@ class CategoryItem {
     constructor(id, label, isSelected = false, matchedSearch = false) {
         this.id = id;
         this.label = label;
-        this.isSelected = isSelected;
-        this.matchedSearch = matchedSearch;
+        this.isSelected = isSelected ?? false;
+        this.matchedSearch = matchedSearch ?? false;
     }
 }
 

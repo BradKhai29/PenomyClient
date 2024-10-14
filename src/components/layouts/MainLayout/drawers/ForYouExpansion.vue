@@ -7,8 +7,6 @@
         <PersonalProfileLink />
         <UploadArtworkLink />
         <ViewHistoryLink />
-        <FavoriteArtworksLink />
-        <FollowedCreatorsLink />
         <ReportedLink />
     </q-expansion-item>
 </template>

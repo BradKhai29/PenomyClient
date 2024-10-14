@@ -5,6 +5,7 @@
         <CommentInputField />
         <UserComment />
         <comment-loader artworkId = '2336253634727936'/>
+        <span class="text-h1">{{ emoji }}</span>
     </q-page>
 </template>
 
@@ -17,6 +18,8 @@ import CommentLoader from "src/components/common/artwork/CommentLoader.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { ref } from "vue";
 const authStore = useAuthStore();
+
+const emoji = ref("😭");
 
 const counterInitValue = 0;
 const counter = ref(counterInitValue);

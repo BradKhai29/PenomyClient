@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { CategoryItem } from "src/api.models/creatorStudio/creatorStudio6Page/CategoryItem";
+import { CategoryItem } from "src/api.models/creatorStudio/common/CategoryItem";
 
 export default {
     emits: ["removeItem"],

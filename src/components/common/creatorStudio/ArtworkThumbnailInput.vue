@@ -1,5 +1,15 @@
 <template>
-    <section class="thumbnail-input">
+    <section class="thumbnail-input relative-position">
+        <div class="invalid-file-extension-chip text-center" v-show="isInvalid">
+            <q-chip
+                icon="info"
+                class="q-mt-sm"
+                clickable
+                @click="isInvalid = false"
+            >
+                {{ invalidMessage }}
+            </q-chip>
+        </div>
         <section
             class="display-area flex items-center justify-center"
             :class="{ error: hasError }"
@@ -70,15 +80,29 @@
             </div>
             <div class="q-mt-md">
                 Chọn ảnh bìa phù hợp và liên quan đến nội dung của tác phẩm.
-                Kích thước tối đa là 2MB và chỉ hỗ trợ các định dạng JPG, JPEG,
-                PNG.
+                Kích thước tối đa là
+                <span class="text-dark text-weight-bold">4MB</span> và chỉ hỗ
+                trợ các định dạng JPG, JPEG, PNG.
             </div>
         </div>
     </section>
 </template>
 
 <script>
+import { FileHelper } from "src/helpers/FileHelper";
+const inputName = "thumbnail";
+const invalidFormatMessage = "Yêu cầu định dạng PNG, JPG, JPEG";
+const invalidFileSizeMessage = "File ảnh kích thước tối đa 4MB";
+
 export default {
+    props: {
+        modelValue: {
+            required: true,
+        },
+        presetImageSrc: {
+            type: String,
+        },
+    },
     data() {
         return {
             thumbnailInput: null,
@@ -86,28 +110,23 @@ export default {
             imageSrc: null,
             hasImage: false,
             hasError: false,
+            isInvalid: false,
+            invalidMessage: null,
         };
     },
     mounted() {
         this.thumbnailInput = this.$refs.thumbnailInput;
 
         // Pre-load the image src if it is specified.
-        if (this.defaultImageSrc) {
-            this.imageSrc = this.defaultImageSrc;
+        if (this.presetImageSrc) {
+            this.imageSrc = this.presetImageSrc;
             this.hasImage = true;
         }
 
+        // Emit the verifyInput event contains this instance for later validation callback.
         this.$emit("verifyInput", this);
     },
-    props: {
-        modelValue: {
-            required: true,
-        },
-        defaultImageSrc: {
-            type: String,
-        },
-    },
-    emits: ["update:modelValue", "verifyInput"],
+    emits: ["update:modelValue", "verifyInput", "hasChange"],
     methods: {
         /**
          * @param {Event} event The event instance.
@@ -115,14 +134,31 @@ export default {
         onInputImage(event) {
             const uploadImageFile = event.target.files[0];
 
-            // If upload image file is not null, then preview it for user.
-            if (uploadImageFile) {
-                this.imageSrc = URL.createObjectURL(uploadImageFile);
-                this.imageFile = uploadImageFile;
-                this.hasImage = true;
-            } else {
-                this.clearImage();
+            if (!uploadImageFile) {
+                return;
             }
+
+            // Check if the upload file is image file or not.
+            if (!FileHelper.isImageFile(uploadImageFile)) {
+                this.isInvalid = true;
+                this.invalidMessage = invalidFormatMessage;
+
+                return;
+            }
+
+            // Check if the uploaded image file exceed the maximum size or not.
+            if (FileHelper.isImageFileExceedMaximumSize(uploadImageFile)) {
+                this.isInvalid = true;
+                this.invalidMessage = invalidFileSizeMessage;
+
+                return;
+            }
+
+            // Preview the upload image file to the user.
+            this.imageSrc = URL.createObjectURL(uploadImageFile);
+            this.imageFile = uploadImageFile;
+            this.hasImage = true;
+            this.isInvalid = false;
         },
         clearImage() {
             URL.revokeObjectURL(this.imageSrc);
@@ -138,6 +174,7 @@ export default {
         emitImageUpdateEvent() {
             // Emit the event(update:modelValue) to update the image file.
             this.$emit("update:modelValue", this.imageFile);
+            this.$emit("hasChange", inputName, true);
 
             this.verifyInput();
         },
@@ -169,6 +206,14 @@ export default {
     --dark: #120e36;
     --secondary-700: #dc5834;
     --border-radius: 6.4px;
+}
+
+.invalid-file-extension-chip {
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .thumbnail-input {

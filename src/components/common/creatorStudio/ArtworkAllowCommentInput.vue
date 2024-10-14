@@ -19,6 +19,7 @@
         </div>
         <div class="flex q-gutter-md">
             <RadioInput
+                @click="toggleInput"
                 v-model="allowComment"
                 :value="true"
                 :name="radioInputName"
@@ -26,6 +27,7 @@
                 :checked="props.modelValue == true"
             />
             <RadioInput
+                @click="toggleInput"
                 v-model="allowComment"
                 :value="false"
                 :name="radioInputName"
@@ -49,7 +51,11 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "hasChange"]);
+
+function toggleInput() {
+    emit("hasChange", radioInputName, true);
+}
 
 watch(
     () => allowComment.value,

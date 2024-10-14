@@ -1,6 +1,6 @@
 <template>
     <q-page>
-        <PageHeader />
+        <CreatorStudio6PageHeader />
         <form @submit.prevent class="q-pa-lg">
             <section id="general-info" class="row justify-center q-gutter-lg">
                 <section class="col-auto">
@@ -20,6 +20,7 @@
                             v-model="artworkDetail.title"
                             v-bind="titleInputBind"
                             class="q-mb-sm"
+                            @hasChange="detectInputChange"
                             ref="titleInput"
                         />
 
@@ -34,6 +35,7 @@
                             v-bind="introductionInputBind"
                             class="q-mb-sm"
                             ref="introductionInput"
+                            @hasChange="detectInputChange"
                         />
 
                         <CategoriesInput
@@ -60,9 +62,17 @@
                             v-model="artworkDetail.confirmPolicy"
                         />
                         <q-btn
+                            v-if="hasInputData"
                             class="q-mt-xs bg-primary text-dark text-weight-bold"
                             label="Xác nhận tạo"
+                            :loading="isCreating"
                             @click="createNewComic"
+                        />
+                        <q-btn
+                            v-else
+                            disable
+                            class="q-mt-xs bg-primary text-dark text-weight-bold"
+                            label="Xác nhận tạo"
                         />
                     </div>
                 </div>
@@ -73,9 +83,9 @@
 
 <script>
 import { useQuasar } from "quasar";
-import { ArtworkApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/ArtworkApiHandler";
+import { CreatorStudio6ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/CreatorStudio6ApiHandler";
 
-import PageHeader from "components/pages/creatorStudio/CreatorStudio6Page/CreatorStudio6PageHeader.vue";
+import CreatorStudio6PageHeader from "components/pages/creatorStudio/CreatorStudio6Page/CreatorStudio6PageHeader.vue";
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
 import TitleInput from "components/common/creatorStudio/ArtworkTitleInput.vue";
 import IntroductionInput from "components/common/creatorStudio/ArtworkIntroductionInput.vue";
@@ -85,6 +95,7 @@ import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevel
 import ThumbnailInput from "components/common/creatorStudio/ArtworkThumbnailInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
 import CategoriesInput from "components/common/creatorStudio/ArtworkCategoriesInput.vue";
+import { computed } from "vue";
 
 const errorNotification = {
     position: "top",
@@ -97,7 +108,7 @@ const errorNotification = {
 
 export default {
     components: {
-        PageHeader,
+        CreatorStudio6PageHeader,
         HeaderHighlight,
         TitleInput,
         IntroductionInput,
@@ -118,6 +129,13 @@ export default {
     },
     data() {
         return {
+            /**
+             * This flag used to check if creator inputs any
+             * data to create a comic, support for navigation guard
+             * when creator accidentally exits the page while inputting information
+             */
+            hasInputData: false,
+            isCreating: false,
             artworkDetail: {
                 title: "",
                 originId: 0,
@@ -128,6 +146,10 @@ export default {
                 confirmPolicy: false,
                 thumbnailImageFile: null,
             },
+            artworkDetailChangeDetect: {
+                titleChange: false,
+                introductionChange: false,
+            },
             titleInputBind: titleInputBind,
             introductionInputBind: introductionInputBind,
             titleInput: null,
@@ -137,7 +159,32 @@ export default {
             thumbnailInput: null,
         };
     },
+    provide() {
+        return {
+            hasInputData: computed(() => this.hasInputData),
+        };
+    },
     methods: {
+        /**
+         * @param {String} inputName The name of the input that has changed or input data.
+         */
+        detectInputChange(inputName, hasChange) {
+            // Just need to detect at 2 inputs, no need to detect all.
+            // Because if creator inputs into these 2 fields then creator
+            // actually wants to create a new comic.
+            if (inputName == "title") {
+                this.artworkDetailChangeDetect.titleChange = hasChange;
+            }
+
+            if (inputName == "introduction") {
+                this.artworkDetailChangeDetect.introductionChange = hasChange;
+            }
+
+            // Update hasInputData state if changes are detected.
+            this.hasInputData =
+                this.artworkDetailChangeDetect.titleChange ||
+                this.artworkDetailChangeDetect.introductionChange;
+        },
         async createNewComic() {
             const isValid = this.verifyAllInputs();
 
@@ -155,7 +202,25 @@ export default {
                 return;
             }
 
-            await ArtworkApiHandler.createArtworkAsync(this.artworkDetail);
+            // Turn on the isCreating flag to prevent user from clicking
+            // the button while the api is processing the data.
+            this.isCreating = true;
+
+            // Get the result after creating the artwork.
+            const result = await CreatorStudio6ApiHandler.createArtworkAsync(
+                this.artworkDetail
+            );
+
+            if (result.isSuccess) {
+                this.showSuccessNotification("Đã tạo thành công");
+            } else {
+                this.showErrorNotification(
+                    result.message ?? "Có lỗi xảy ra khi tạo"
+                );
+            }
+
+            // Turn off the isCreating flag after processing the data.
+            this.isCreating = false;
         },
         verifyAllInputs() {
             let isValid = true;
@@ -183,6 +248,23 @@ export default {
                     {
                         label: "Đóng",
                         color: "yellow",
+                    },
+                ],
+                progress: errorNotification.showTimeoutProgress,
+            });
+        };
+
+        const showSuccessNotification = (message) => {
+            quasar.notify({
+                type: "positive",
+                textColor: "light",
+                icon: "info",
+                message: message,
+                position: "top",
+                actions: [
+                    {
+                        label: "Đóng",
+                        color: "light",
                         handler: () => {
                             /* console.log('wooow') */
                         },
@@ -194,6 +276,7 @@ export default {
 
         return {
             showErrorNotification,
+            showSuccessNotification,
         };
     },
 };
