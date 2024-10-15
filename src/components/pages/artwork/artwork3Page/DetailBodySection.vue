@@ -35,15 +35,15 @@
             <q-card flat class="col-7 right-part">
                 <!-- Header -->
                 <div class="row items-center ">
-                    <div class="col total-chaps">Tổng 10 tập</div>
+                    <div class="col total-chaps">Tổng {{ count }} tập</div>
                     <div class="col-auto"><strong>Mới nhất</strong> | Từ tập 1</div>
                 </div>
                 <q-list class="episode-list right-panel">
                     <!-- Episode Items -->
-                    <q-item class="episode-item" v-for="(episode, index) in episodes" :key="index" clickable>
+                    <q-item class="episode-item" v-for="(episode, index) in chapterData" :key="index" clickable>
                         <q-item-section avatar>
                             <div class="image-container">
-                                <q-img :src="episode.imageUrl" class="episode-image" width="100px" height="100px" />
+                                <q-img :src="episode.thumbnailUrl" class="episode-image" width="100px" height="100px" />
                                 <q-icon v-if="episode.isLocked" name="ion-lock" class="lock-icon"
                                     :style="{ color: '#53BF94' }" />
                                 <div v-if="episode.isWatching" class="overlay-content">
@@ -53,16 +53,16 @@
                             </div>
                         </q-item-section>
                         <q-item-section>
-                            <q-item-label class="chap-num">Tập {{ episode.chapNumber }}</q-item-label>
-                            <q-item-label class="chap-title">{{ episode.title }}</q-item-label>
+                            <q-item-label class="chap-num">Tập {{ episode.uploadOrder }}</q-item-label>
+                            <q-item-label class="chap-title">{{ episode.chapterName }}</q-item-label>
                             <q-item-label class="chap-stats" caption>
-                                {{ episode.date }}
+                                {{ formatDate(episode.createdTime) }}
                                 <q-icon name="ion-eye stats-icon" class="q-ml-sm" />
-                                {{ episode.views }}
+                                {{ formatCount(episode.viewCount) }}
                                 <q-icon name="ion-heart stats-icon" class="q-ml-sm" />
-                                {{ episode.likes }}
+                                {{ formatCount(episode.favoriteCount) }}
                                 <q-icon name="ion-chatbubbles stats-icon" class="q-ml-sm" />
-                                {{ episode.comments }}
+                                {{ formatCount(episode.commentCount) }}
                             </q-item-label>
                         </q-item-section>
                     </q-item>
@@ -73,8 +73,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router';
 import StatDetaild from './StatDetaild.vue';
+import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
+function formatDate(createdTime) {
+    return createdTime.split('T')[0];
+}
+function formatCount(count) {
+    if (count >= 1000000) {
+        return (count / 1000000).toFixed(1) + 'M';
+    } else if (count >= 100000) {
+        return (count / 1000).toFixed(1) + 'K';
+    }
+    return count;
+}
 const props = defineProps({
     introduction: {
         type: String,
@@ -94,9 +107,13 @@ const props = defineProps({
     },
     starRates: {
         type: Number,
-        required: true,
-    },
+        required: true
+    }
 })
+const artworkId = ref(null);
+const route = useRoute();
+const count = ref(0);
+const chapterData = ref([]);
 const episodes = ref([
     {
         chapNumber: 10,
@@ -162,6 +179,20 @@ const episodes = ref([
     },
     // Add more episodes here...
 ]);
+onMounted(async () => {
+    artworkId.value = route.params.artworkId;
+    const id = route.params.artworkId;
+    try {
+        const [chapterResponse] = await Promise.all([
+            artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 10)
+        ]);
+        count.value = chapterResponse.chapterCount;
+        chapterData.value = chapterResponse.chapters;
+        console.log(chapterData.value);
+    } catch (error) {
+        console.log(error);
+    }
+});
 </script>
 
 <style scoped>

@@ -60,17 +60,22 @@ async function getArtworkChaptersByIdAsync(artworkId, startPage, pageSize) {
             return null;
         }
         const data = response.data.body;
-
-        return new ArtworkChapterResponse(
-            data.id,
-            data.uploadOrder,
-            data.chapterName,
-            data.createdTime,
-            data.commentCount,
-            data.favoriteCount,
-            data.viewCount,
-            data.thumbnailUrl
+        const isPagination = data.isPagination;
+        const chapterCount = data.chapterCount;
+        const chapters = data.result.map(
+            (chapter) =>
+                new ArtworkChapterResponse(
+                    chapter.id,
+                    chapter.uploadOrder,
+                    chapter.chapterName,
+                    chapter.createdTime,
+                    chapter.commentCount,
+                    chapter.favoriteCount,
+                    chapter.viewCount,
+                    chapter.thumbnailUrl
+                )
         );
+        return { chapters, chapterCount, isPagination };
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
         console.log(axiosError);
