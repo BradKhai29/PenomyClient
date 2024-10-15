@@ -9,13 +9,7 @@ import { PublicLevelItem } from "src/api.models/creatorStudio/common/PublicLevel
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { GetArtworkDetail } from "src/api.models/creatorStudio/creatorStudio8Page/GetArtworkDetail";
 import { UpdateArtworkErrorCodeParser } from "src/api.models/creatorStudio/creatorStudio8Page/UpdateArtworkError";
-
-class UpdateArtworkResult {
-    constructor(isSuccess, message) {
-        this.isSuccess = isSuccess;
-        this.message = message;
-    }
-}
+import { UpdateArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/UpdateArtworkResult";
 
 /**
  *  Parse the input data into category item array.
@@ -159,7 +153,7 @@ async function updateArtworkDetail(artworkDetail, isCategoriesUpdated) {
         result.isSuccess = true;
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
-        console.log(axiosError);
+        // console.log(axiosError);
 
         const errorMessage =
             UpdateArtworkErrorCodeParser.getMessageFromErrorCode(
@@ -236,4 +230,4 @@ const CreatorStudio8ApiHandler = {
     getAllPublicLevelsAsync: getAllPublicLevels,
 };
 
-export { CreatorStudio8ApiHandler, UpdateArtworkResult };
+export { CreatorStudio8ApiHandler };

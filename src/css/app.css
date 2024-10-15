@@ -4,7 +4,8 @@
     padding-bottom: 0 !important;
 }
 
-:root {
+:root,
+* {
     --primary: #53bf94;
     --primary-700-opacity-12: #e5f3ef;
     --dark: #120e36;

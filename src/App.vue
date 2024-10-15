@@ -10,4 +10,5 @@ defineOptions({
 
 <style>
 @import url("css/app.css");
+@import url("css/utilities.css");
 </style>

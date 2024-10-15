@@ -40,7 +40,7 @@ export default {
         label: {
             type: String,
             required: true,
-            default: "",
+            default: "Tiêu đề",
         },
         maxLength: {
             type: Number,

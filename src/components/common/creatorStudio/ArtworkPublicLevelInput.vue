@@ -14,7 +14,7 @@
                     :transition-duration="100"
                     class="text-subtitle2 text-light bg-dark"
                 >
-                    Giới hạn số người có thể truy cập vào tác phẩm này.
+                    {{ label }}
                 </q-tooltip>
             </span>
         </div>
@@ -61,6 +61,10 @@ const props = defineProps({
     },
     artworkPublicLevel: {
         default: null,
+    },
+    label: {
+        type: String,
+        default: "Giới hạn số người có thể truy cập vào tác phẩm này.",
     },
 });
 
