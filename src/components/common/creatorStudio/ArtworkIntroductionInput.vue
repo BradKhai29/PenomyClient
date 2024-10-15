@@ -6,7 +6,10 @@
         >
             <label class="text-weight-bold">
                 <span>{{ label }}</span>
-                <span class="asterisk">*</span>
+                <span v-if="required" class="asterisk">*</span>
+                <span v-else class="text-weight-regular q-ml-xs"
+                    >(Có thể để trống)</span
+                >
             </label>
 
             <span v-if="!hasError">
@@ -27,7 +30,6 @@
 </template>
 
 <script>
-import { watch } from "vue";
 import { StringHelper } from "src/helpers/StringHelper";
 
 const inputName = "introduction";

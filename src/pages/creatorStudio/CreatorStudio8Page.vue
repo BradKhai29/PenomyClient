@@ -102,7 +102,6 @@
 <script>
 import { computed } from "vue";
 import { useQuasar } from "quasar";
-import { useRoute } from "vue-router";
 import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
 
 import CreatorStudio8PageHeader from "components/pages/creatorStudio/CreatorStudio8Page/CreatorStudio8PageHeader.vue";
@@ -116,6 +115,7 @@ import ThumbnailInput from "components/common/creatorStudio/ArtworkThumbnailInpu
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
 import CategoriesInput from "components/common/creatorStudio/ArtworkCategoriesInput.vue";
 import { CategoryItem } from "src/api.models/creatorStudio/common/CategoryItem";
+import { NumberHelper } from "src/helpers/NumberHelper";
 
 const errorNotification = {
     position: "top",
@@ -188,14 +188,22 @@ export default {
             hasChangesInData: computed(() => this.hasChangesInData),
         };
     },
+    beforeMount() {
+        const artworkManagementRoute = "/studio/artworks";
+        const comicId = this.$route.params.comicId;
+
+        if (!NumberHelper.isNumber(comicId)) {
+            this.$router.push(artworkManagementRoute);
+        }
+    },
     async mounted() {
-        const route = useRoute();
-        const comicId = route.params.comicId;
+        const comicId = this.$route.params.comicId;
 
         // If comicId is null, then display not found.
         if (!comicId) {
             this.isNotFound = true;
             this.isLoading = false;
+
             return;
         }
 

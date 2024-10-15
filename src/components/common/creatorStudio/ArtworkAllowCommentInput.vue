@@ -2,7 +2,7 @@
     <section id="allow-comment">
         <div class="flex items-center q-mb-xs">
             <span class="text-weight-bold q-pr-xs">
-                Bật bình luận ở trang mô tả
+                {{ label }}
             </span>
             <span>
                 <q-icon name="info_outline" size="xs" />
@@ -48,6 +48,10 @@ const radioInputName = "allowComment";
 const props = defineProps({
     modelValue: {
         required: true,
+    },
+    label: {
+        type: String,
+        default: "Bật bình luận ở trang mô tả",
     },
 });
 
