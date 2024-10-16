@@ -20,7 +20,7 @@
                     <strong>Tác giả: </strong> {{ author }}
                 </div>
                 <div class="text-series col-6">
-                    <strong>Series: </strong> {{ series }}
+                    <strong>Series: </strong> {{ seriesName }}
                 </div>
             </div>
             <div class="row q-py-xs">
@@ -71,7 +71,7 @@ const props = defineProps({
     author: String,
     country: String,
     status: String,
-    series: String,
+    seriesName: String,
     buttons: {
         type: Array,
 

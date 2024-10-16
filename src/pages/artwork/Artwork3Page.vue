@@ -4,7 +4,7 @@
             <q-card class="row detail-header">
                 <image-section class="col-3 q-pr-md"></image-section>
                 <description-section :title="data.title" :author="data.authorName" :country="data.countryName"
-                    :status="data.artworkStatus" series="Học viện Anh Hùng" :buttons="buttons"
+                    :status="data.artworkStatus" :seriesName="data.serieName" :buttons="buttons"
                     class="col-9 q-pt-md"></description-section>
             </q-card>
             <q-card class="row justify-center subcribe-detail">
@@ -30,18 +30,15 @@ const route = useRoute();
 const backgroundImageUrl = ref('');
 const artworkId = ref(null);
 const data = ref({});
-const chapterData = ref({});
 onMounted(async () => {
     artworkId.value = route.params.artworkId;
     const id = route.params.artworkId;
     try {
-        const [artworkDetail, chapters] = await Promise.all([
+        const [artworkDetail] = await Promise.all([
             artworkDetailApiHandler.getArtworkDetailByIdAsync(id),
-            artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 3)
         ]);
 
         data.value = artworkDetail;
-        chapterData.value = chapters;
         backgroundImageUrl.value = '/src/assets/hero_academia.jpg';
     } catch (error) {
         console.log(error);

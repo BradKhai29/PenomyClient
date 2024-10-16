@@ -36,19 +36,19 @@ const props = defineProps({
         required: true,
     },
 });
-
-// Destructure into computed properties
-const viewCount = computed(() => `${props.viewCount}k`);
-const favoriteCount = computed(() => `${props.favoriteCount}k`);
-const commentCount = computed(() => `${props.commentCount}k`);
-const starRates = computed(() => `${props.starRates}`);
-
-// Use computed properties in the stats array
+function formatCount(count) {
+    if (count >= 1000000) {
+        return (count / 1000000).toFixed(1) + 'M';
+    } else if (count >= 100000) {
+        return (count / 1000).toFixed(1) + 'K';
+    }
+    return count;
+}
 const stats = computed(() => [
-    { icon: 'visibility', value: viewCount.value },
-    { icon: 'ion-heart', value: favoriteCount.value },
-    { icon: 'star', value: starRates.value },
-    { icon: 'add_box', value: commentCount.value },
+    { icon: 'visibility', value: `${formatCount(props.viewCount)}` },
+    { icon: 'ion-heart', value: `${formatCount(props.favoriteCount)}` },
+    { icon: 'star', value: `${formatCount(props.commentCount)}` },
+    { icon: 'add_box', value: `${formatCount(props.starRates)}` },
     { icon: 'info', value: 'Khác' }
 ]);
 
