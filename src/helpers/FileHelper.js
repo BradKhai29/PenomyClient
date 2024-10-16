@@ -64,10 +64,30 @@ function isImageFileExceedMaximumSize(imageFile, maximumFileSize) {
     return imageFile.size > MAXIMUM_IMAGE_FILE_SIZE;
 }
 
+/**
+ *
+ * @param {*} file The input to convert as file.
+ * @returns {File} The file after force to convert.
+ */
+function asFile(file) {
+    return file;
+}
+
+/**
+ *
+ * @param {*} file The input to convert as file.
+ * @returns {File[]} The list of file after force to convert.
+ */
+function asFiles(files) {
+    return files;
+}
+
 const FileHelper = {
     getFileExtension: getFileExtension,
     isImageFile: isImageFile,
     isImageFileExceedMaximumSize: isImageFileExceedMaximumSize,
+    asFile: asFile,
+    asFiles: asFiles,
 };
 
 export { FileHelper };

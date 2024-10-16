@@ -1,19 +1,20 @@
 <template>
-    <p-page>
-        <div class="q-pa-lg">
-            <q-btn rounded no-caps class="penomy-button text-weight-bold"
-                >Theo dõi
-            </q-btn>
-        </div>
-    </p-page>
+    <q-page>
+        <section class="row q-pa-md">
+            <ChapterImageListInput />
+        </section>
+    </q-page>
 </template>
 
-<style scoped>
-.penomy-button {
-    --light-100: #f9fafc;
-    --dark: #120e36;
+<script>
+import ChapterImageListInput from "src/components/common/creatorStudio/ChapterImageListInput.vue";
 
-    background-color: var(--light-100);
-    color: var(--dark);
-}
+export default {
+    components: {
+        ChapterImageListInput,
+    },
+};
+</script>
+
+<style scoped>
 </style>

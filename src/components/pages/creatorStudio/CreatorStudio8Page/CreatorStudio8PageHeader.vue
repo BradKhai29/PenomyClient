@@ -194,6 +194,6 @@ onBeforeRouteLeave((to, _) => {
     direction: ltr;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis ellipsis;
+    text-overflow: ellipsis;
 }
 </style>

@@ -19,10 +19,11 @@
         </div>
         <div class="input-wrapper" :class="{ error: hasError }">
             <textarea
-                rows="8"
+                :rows="rows"
                 :value="modelValue"
                 @input="onInput"
                 placeholder="Nhập phần giới thiệu tại đây"
+                :style="textareaStyle"
             />
         </div>
         <div class="input-footer">{{ footerCaption }}</div>
@@ -33,6 +34,7 @@
 import { StringHelper } from "src/helpers/StringHelper";
 
 const inputName = "introduction";
+const minHeightInPixel = 200;
 
 export default {
     name: "CreateArtworkInput",
@@ -56,6 +58,10 @@ export default {
             required: true,
             default: 0,
         },
+        rows: {
+            type: Number,
+            default: 8,
+        },
         footerCaption: {
             type: String,
             required: true,
@@ -70,6 +76,9 @@ export default {
         return {
             hasError: false,
             artworkOldIntro: null,
+            textareaStyle: {
+                "min-height": `${minHeightInPixel}px`,
+            },
         };
     },
     mounted() {
@@ -80,6 +89,14 @@ export default {
         // is used in update page, then set value for the artwork old intro.
         if (this.modelValue) {
             this.artworkOldIntro = this.modelValue;
+        }
+
+        if (this.rows) {
+            const defaultRows = 8;
+            const newMinHeight =
+                minHeightInPixel * (this.rows / (defaultRows * 1.0));
+
+            this.textareaStyle["min-height"] = `${newMinHeight}px`;
         }
     },
     emits: ["update:modelValue", "verifyInput", "hasChange"],
@@ -130,7 +147,6 @@ export default {
 <style scoped>
 textarea {
     resize: vertical;
-    min-height: 200px;
 }
 
 .input-wrapper textarea {
