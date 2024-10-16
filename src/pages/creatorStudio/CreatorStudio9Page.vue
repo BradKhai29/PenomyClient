@@ -28,6 +28,7 @@
                             label="Giới thiệu về tập"
                             :maxLength="1000"
                             :required="false"
+                            :rows="4"
                             footerCaption="Phần giới thiệu về tập này để đọc giả có thể nắm bắt thêm nội dung, tối đa 1000 ký tự"
                             class="q-mb-sm"
                         />
@@ -41,7 +42,10 @@
                         <AllowCommentInput
                             v-model="chapterDetail.allowComment"
                             label="Mở phần bình luận"
+                            class="q-mb-lg"
                         />
+
+                        <ChapterImageListInput />
                     </section>
 
                     <div
@@ -83,12 +87,11 @@ import CreatorStudio9PageHeader from "components/pages/creatorStudio/creatorStud
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
 import TitleInput from "components/common/creatorStudio/ArtworkTitleInput.vue";
 import IntroductionInput from "components/common/creatorStudio/ArtworkIntroductionInput.vue";
-import OriginInput from "components/common/creatorStudio/ArtworkOriginInput.vue";
+import ThumbnailInput from "components/common/creatorStudio/ChapterThumbnailInput.vue";
 import AllowCommentInput from "components/common/creatorStudio/ArtworkAllowCommentInput.vue";
 import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevelInput.vue";
-import ThumbnailInput from "components/common/creatorStudio/ChapterThumbnailInput.vue";
+import ChapterImageListInput from "components/common/creatorStudio/ChapterImageListInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
-import CategoriesInput from "components/common/creatorStudio/ArtworkCategoriesInput.vue";
 
 // Routing section.
 const router = useRouter();
