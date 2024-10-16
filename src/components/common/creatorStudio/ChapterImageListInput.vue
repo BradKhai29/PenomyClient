@@ -26,7 +26,7 @@
                     no-caps
                     unelevated
                     class="bg-dark text-light image-list-btn"
-                    @click="clearList"
+                    @click="showDialog = true"
                 >
                     <span class="q-mr-xs">Xem trước</span>
                     <q-icon name="tv" size="xs" />
@@ -34,7 +34,7 @@
             </section>
             <section class="flex items-center justify-end col-auto">
                 <span class="q-mr-xs">{{ imageItemList.length }} ảnh</span>
-                <span>(60KB / 32MB)</span>
+                <span>({{ totalImageSizesRef }}B / 32MB)</span>
             </section>
         </div>
         <section
@@ -68,80 +68,83 @@
                 >
                     <q-icon name="add" size="sm" />
                 </q-btn>
-                <q-img
+                <div
                     v-for="imageItem in imageItemList"
                     :key="imageItem.id"
                     :id="imageItem.id"
                     class="chapter-image-item border-sm-dark border-radius-sm"
-                    :src="imageItem.src"
                     @mousedown="onDragStart"
                 >
                     <span
-                        class="absolute-bottom text-subtitle2 q-pa-xs image-caption text-light"
+                        class="remove-image-button"
+                        @mousedown="removeImage(imageItem.id)"
                     >
-                        ({{ imageItem.position }}) {{ imageItem.imageName }}
+                        <q-icon name="close" size="xs" />
                     </span>
-                </q-img>
+                    <q-img :src="imageItem.src" width="100%" height="100%">
+                        <span
+                            class="absolute-bottom text-subtitle2 q-pa-xs image-caption text-light"
+                        >
+                            ({{ imageItem.position }}) {{ imageItem.imageName }}
+                        </span>
+                    </q-img>
+                </div>
             </section>
         </section>
-        <div class="image-list-footer-caption">
-            <div class="q-mt-xl">Image list</div>
-            <section
-                class="image-list-container border-sm-dark border-radius-sm row"
-            >
-                <q-btn
-                    class="add-image-placeholder"
-                    v-if="imageItemList.length == 0"
-                >
-                    <q-icon name="add" size="sm" />
-                </q-btn>
-                <q-img
-                    v-for="imageItem in imageItemList"
-                    :key="imageItem.id"
-                    :id="imageItem.id"
-                    class="chapter-image-item border-sm-dark border-radius-sm"
-                    :src="imageItem.src"
-                >
-                    <span
-                        class="absolute-bottom text-subtitle2 q-pa-xs image-caption text-light"
+        <div class="image-list-footer-caption"></div>
+        <q-dialog
+            v-model="showDialog"
+            persistent
+            :maximized="true"
+            transition-show="slide-up"
+            transition-hide="slide-down"
+        >
+            <q-card>
+                <q-bar class="fixed-top bg-dark" style="z-index: 999">
+                    <q-space />
+                    <q-btn
+                        flat
+                        icon="close"
+                        class="bg-light text-dark"
+                        v-close-popup
                     >
-                        ({{ imageItem.position }}) {{ imageItem.imageName }}
-                    </span>
-                </q-img>
-            </section>
-            <div class="q-mt-xl">Temp list</div>
-            <section
-                class="image-list-container border-sm-dark border-radius-sm row"
-            >
-                <q-btn
-                    class="add-image-placeholder"
-                    v-if="tempItemList.length == 0"
-                >
-                    <q-icon name="add" size="sm" />
-                </q-btn>
-                <q-img
-                    v-for="imageItem in tempItemList"
-                    :key="imageItem.id"
-                    :id="imageItem.id"
-                    class="chapter-image-item border-sm-dark border-radius-sm"
-                    :src="imageItem.src"
-                >
-                    <span
-                        class="absolute-bottom text-subtitle2 q-pa-xs image-caption text-light"
-                    >
-                        ({{ imageItem.position }}) {{ imageItem.imageName }}
-                    </span>
-                </q-img>
-            </section>
-        </div>
+                    </q-btn>
+                </q-bar>
+
+                <q-card-section class="q-mt-lg">
+                    <div class="flex column items-center">
+                        <img
+                            v-for="imageItem in imageItemList"
+                            :key="imageItem.id"
+                            :id="imageItem.id"
+                            :src="imageItem.src"
+                            class="preview-image-item"
+                            :alt="imageItem.imageName"
+                        />
+                    </div>
+                </q-card-section>
+            </q-card>
+        </q-dialog>
     </section>
 </template>
 
 <script>
 import Sortable from "sortablejs";
 import { FileHelper } from "src/helpers/FileHelper";
+import { StringHelper } from "src/helpers/StringHelper";
+import { NumberHelper } from "src/helpers/NumberHelper";
 
 class ImageItem {
+    /**
+     * Initializes a new instance of ImageItem with the given properties.
+     *
+     * @constructor
+     * @param {String} id - A unique identifier for the instance.
+     * @param {Number} position - The position of the image, typically with properties like x and y coordinates.
+     * @param {String} imageName - The name of the image.
+     * @param {String} src - The source URL or path of the image.
+     * @param {File} imageFile - The image file object (e.g., from file input or upload).
+     */
     constructor(id, position, imageName, src, imageFile) {
         this.id = id;
         this.position = position;
@@ -156,12 +159,16 @@ const invalidFileSizeMessage = "File ảnh kích thước tối đa 4MB";
 export default {
     data() {
         return {
+            showDialog: false,
             dragging: false,
+            pendingRemove: false,
             /**
              * @type {ImageItem[]} The list of image item to upload.
              */
             imageItemList: [],
             tempItemList: [],
+            totalImageSizes: 0,
+            maxImageSizes: 32 * 1024 * 1024,
             /**
              * The position will start at base zero.
              */
@@ -183,6 +190,11 @@ export default {
             invalidMessage: invalidFormatMessage,
         };
     },
+    computed: {
+        totalImageSizesRef() {
+            return NumberHelper.formatNumberShort(this.totalImageSizes, 2);
+        },
+    },
     mounted() {
         this.chapterImagesHtmlItem = document.querySelector(
             "#chapter-image-list"
@@ -200,23 +212,53 @@ export default {
         this.chapterImageInput = this.$refs.chapterImageInput;
     },
     methods: {
+        removeImage(imageId) {
+            // Prevent user to remove the image while dragging.
+            if (this.dragging) {
+                return;
+            }
+
+            // Turn on this flag to prevent user interact with drag n drop.
+            this.pendingRemove = true;
+
+            const removeItem = this.imageItemList.find(
+                (item) => item.id == imageId
+            );
+
+            for (
+                let i = removeItem.position + 1;
+                i < this.imageItemList.length;
+                i++
+            ) {
+                this.imageItemList[i].position--;
+            }
+
+            this.imageItemList.splice(removeItem.position, 1);
+            this.imageLastPosition--;
+            this.totalImageSizes -= removeItem.imageFile.size;
+            this.pendingRemove = false;
+        },
         clearList() {
             this.imageLastPosition = 0;
             this.imageItemList.splice(0, this.imageItemList.length);
             this.tempItemList.splice(0, this.tempItemList.length);
         },
         /**
+         * Tracking the element that being dragged by the user.
+         *
          * @param {MouseEvent} event
          */
         onDragStart(event) {
             this.currentDraggedElement = event.currentTarget;
             this.dragging = true;
         },
-        /**
-         * @param {MouseEvent} event
-         */
-        onDragEnd(event) {
+        onDragEnd() {
             this.dragging = false;
+
+            // Prevent drag and drop when the item is removed.
+            if (this.pendingRemove) {
+                return;
+            }
 
             const draggedElement = this.currentDraggedElement;
 
@@ -238,15 +280,9 @@ export default {
 
                 if (prevElement && nextElement) {
                     this.handleDragToMiddle(prevElement, draggedElement);
-
-                    return;
                 } else if (!prevElement && nextElement) {
-                    console.log("To first");
-
                     this.handleDragToFirst(draggedElement);
                 } else {
-                    console.log("To last");
-
                     this.handleDragToLast(draggedElement);
                 }
             }
@@ -288,6 +324,14 @@ export default {
             // Get the old and the new position of the dragged item.
             let oldPosition = draggedItem.position;
             let newPosition = 0;
+
+            // If the draggedItem's old position is equal to (prevItem's position + 1)
+            // then no need to process because the draggedItem is get back to its old position.
+            if (oldPosition == prevItem.position + 1) {
+                console.log("No need to handle");
+
+                return;
+            }
 
             // If the draggedItem's old position larger than the
             // prevItem position, then draggedItem is moved backward.
@@ -463,9 +507,11 @@ export default {
                     continue;
                 }
 
-                const imageId = `img_${imageFile.lastModified}`;
+                const randomString = StringHelper.generateSecureRandomString(6);
+                const imageId = `img_${imageFile.lastModified}_${randomString}`;
                 const imageName = imageFile.name;
                 const imageSrc = URL.createObjectURL(imageFile);
+                const imageSize = imageFile.size;
 
                 const imageItem = new ImageItem(
                     imageId,
@@ -477,6 +523,7 @@ export default {
 
                 this.imageItemList.push(imageItem);
                 this.imageLastPosition++;
+                this.totalImageSizes += imageSize;
             }
 
             // This line of code will let user to select
@@ -527,6 +574,23 @@ export default {
     left: 0;
 }
 
+.remove-image-button {
+    --secondary-700: #dc5834;
+
+    padding: 4px;
+    background-color: var(--secondary-700);
+    border-radius: 0 4px 0 4px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3000;
+}
+
+.remove-image-button:hover {
+    cursor: pointer;
+    background-color: #91341a;
+}
+
 .image-list-container,
 .add-image-placeholder {
     --gutter-width: 12px;
@@ -549,10 +613,20 @@ export default {
 
     cursor: move;
     display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
     width: var(--min-width);
     height: calc(var(--min-width) / var(--ratio));
     margin: var(--gutter-width) var(--gutter-width) 0 0;
+}
+
+.preview-image-item {
+    --ratio: 0.778;
+    --min-width: 800px;
+
+    width: 100% !important;
+    max-width: var(--min-width) !important;
+    height: 100% !important;
 }
 </style>
