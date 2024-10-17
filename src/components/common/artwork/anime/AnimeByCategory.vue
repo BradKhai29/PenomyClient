@@ -20,12 +20,12 @@
 </template>
 
 <script setup>
-import ArtworkCard from 'src/components/common/artwork/comic/ArtworkByCategoryCard.vue';
+import ArtworkCard from 'src/components/common/artwork/anime/AnimeByCategoryCard.vue';
 import { ref, computed, onMounted } from 'vue';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import axios from 'axios';
-const apiUrl = `${BaseWebApiUrl}/g4/ComicsByCategory/get`;
+const apiUrl = `${BaseWebApiUrl}/g14/AnimesByCategory/get`;
 const slide = ref(0);
 var categoryName = ref('');
 var artworks = ref([]);

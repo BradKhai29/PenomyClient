@@ -22,7 +22,7 @@
 
         </q-card>
         <div class="artwork-name">
-            <a href="#">{{ artwork.title }}</a>
+            <a href="#">{{ shortTitle }}</a>
             <q-icon name="more_vert" class="cursor-pointer">
                 <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
                         <q-item clickable v-close-popup>
@@ -57,6 +57,8 @@ const props = defineProps({
         })
     },
 })
+const shortTitle = Object.title.substring(0, 20) + '...';;
+// shortTitle = shortTitle.substring(0, 20) + '...';
 </script>
 <style scoped>
 a {

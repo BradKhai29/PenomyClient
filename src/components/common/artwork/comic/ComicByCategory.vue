@@ -6,8 +6,8 @@
         {{ page }} / {{ carouselSlides.length }}
         <q-btn flat dense text-color="black" icon="arrow_right" @click="$refs.carousel.next(); calculatePage('next')" />
     </div>
-    <q-carousel transition-prev="slide-right" transition-next="slide-left" animated v-model="slide"
-        ref="carousel" height="440px">
+    <q-carousel transition-prev="slide-right" transition-next="slide-left" animated v-model="slide" ref="carousel"
+        height="450px">
         <q-carousel-slide v-for="slide in carouselSlides" :key="slide.index" :name="slide.index" class="q-pa-sm">
             <div class="row q-col-gutter-md">
                 <div v-for="item in slide" class="col-2" :key="item">
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import ArtworkCard from 'src/components/common/artwork/comic/ArtworkByCategoryCard.vue';
+import ArtworkCard from 'src/components/common/artwork/comic/ComicByCategoryCard.vue';
 import { ref, computed, onMounted } from 'vue';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";

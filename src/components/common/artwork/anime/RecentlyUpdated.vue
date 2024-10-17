@@ -22,12 +22,12 @@
 </template>
 <script setup>
 
-import RecentlyUpdatedArtworkCard from 'src/components/common/artwork/comic/RecentlyUpdatedArtworkCard.vue';
+import RecentlyUpdatedArtworkCard from 'src/components/common/artwork/anime/RecentlyUpdatedArtworkCard.vue';
 import { ref, computed, onMounted } from 'vue'
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import axios from 'axios';
-const apiUrl = `${BaseWebApiUrl}/g3/RecentlyUpdatedComics`;
+const apiUrl = `${BaseWebApiUrl}/g13/RecentlyUpdatedAnimes`;
 const slide = ref(0);
 const page = ref(1);
 var artworks = ref([]);
