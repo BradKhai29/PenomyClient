@@ -25,7 +25,7 @@ import { ref, computed, onMounted } from 'vue';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import axios from 'axios';
-const apiUrl = `${BaseWebApiUrl}/g14/AnimesByCategory/get`;
+const apiUrl = `${BaseWebApiUrl}/G14/AnimesByCategory/get`;
 const slide = ref(0);
 var categoryName = ref('');
 var artworks = ref([]);
