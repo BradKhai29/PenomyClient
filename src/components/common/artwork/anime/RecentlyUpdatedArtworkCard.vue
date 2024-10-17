@@ -41,7 +41,8 @@
                 </div>
 
                 <div class="card-content-bottom q-pa-xs">
-                    <q-btn no-caps dense padding=".15rem .4rem" color="dark" size=".78rem">Xem ngay</q-btn>
+                    <q-btn no-caps dense padding=".15rem .4rem" color="dark" size=".78rem" @click="toDetail">Xem
+                        ngay</q-btn>
                     <q-icon name="more_vert" class="cursor-pointer">
                         <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
                                 <q-item clickable v-close-popup>
@@ -151,7 +152,9 @@
 </style>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+const router = useRouter()
 const props = defineProps({
     artwork: {
         type: Object,
@@ -161,4 +164,9 @@ const props = defineProps({
     },
 })
 const artworkTitle = ref(props.artwork.title.substring(0, 24) + '...')
+
+
+function toDetail() {
+    router.push(`/artwork/comic/${props.artwork.artworkId}`)
+}
 </script>

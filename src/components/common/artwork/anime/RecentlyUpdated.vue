@@ -26,6 +26,7 @@ import RecentlyUpdatedArtworkCard from 'src/components/common/artwork/anime/Rece
 import { ref, computed, onMounted } from 'vue'
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from 'src/api.common/HttpMethod';
+
 import axios from 'axios';
 const apiUrl = `${BaseWebApiUrl}/g13/RecentlyUpdatedAnimes`;
 const slide = ref(0);
@@ -80,7 +81,6 @@ onMounted(async () => {
         })
     });
 })
-
 </script>
 
 <style scoped>
