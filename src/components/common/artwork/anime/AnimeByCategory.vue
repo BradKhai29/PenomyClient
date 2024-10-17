@@ -1,13 +1,15 @@
 <template>
-    <div class="text-h6 q-pa-sm">{{ categoryName }}</div>
+    <div class="title-section">
+        <div class="text-h6 q-pa-sm title">{{ categoryName }} </div>
+    </div>
     <div>
         <q-btn flat dense text-color="black" icon="arrow_left"
             @click="$refs.carousel.previous(); calculatePage('previous')" />
         {{ page }} / {{ carouselSlides.length }}
         <q-btn flat dense text-color="black" icon="arrow_right" @click="$refs.carousel.next(); calculatePage('next')" />
     </div>
-    <q-carousel transition-prev="slide-right" transition-next="slide-left" animated v-model="slide"
-        ref="carousel" height="440px">
+    <q-carousel control-color="black" arrows swipeable transition-prev="slide-right" transition-next="slide-left"
+        animated v-model="slide" ref="carousel" height="440px">
         <q-carousel-slide v-for="slide in carouselSlides" :key="slide.index" :name="slide.index" class="q-pa-sm">
             <div class="row q-col-gutter-md">
                 <div v-for="item in slide" class="col-2" :key="item">
@@ -19,12 +21,12 @@
 </template>
 
 <script setup>
-import ArtworkCard from 'src/components/common/artwork/comic/ArtworkByCategoryCard.vue';
+import ArtworkCard from 'src/components/common/artwork/anime/AnimeByCategoryCard.vue';
 import { ref, computed, onMounted } from 'vue';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import axios from 'axios';
-const apiUrl = `${BaseWebApiUrl}/g4/ComicsByCategory/get`;
+const apiUrl = `${BaseWebApiUrl}/G14/AnimesByCategory/get`;
 const slide = ref(0);
 var categoryName = ref('');
 var artworks = ref([]);
@@ -63,7 +65,7 @@ onMounted(async () => {
         url: apiUrl,
         method: HttpMethod.GET,
         params: {
-            categoryId: 123456789012345685n
+            categoryId: "123456789012345682"
         },
     }).then((response) => {
         if (response.data.body.artworkList.length > 0) {
@@ -73,3 +75,22 @@ onMounted(async () => {
     });
 })
 </script>
+
+<style lang="css" scoped>
+.title-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    padding-bottom: .1rem;
+    border-bottom: 4px solid green;
+    width: max-content;
+}
+
+div:has(> .title) {
+    margin: 0 .5rem;
+    width: 99%;
+    border-bottom: solid 0.1px grey;
+}
+</style>
