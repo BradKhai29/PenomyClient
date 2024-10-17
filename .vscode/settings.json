@@ -11,5 +11,9 @@
     "javascriptreact",
     "typescript",
     "vue"
+  ],
+  "conventionalCommits.scopes": [
+    "(feat-art4)",
+    "art4"
   ]
 }

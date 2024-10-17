@@ -1,0 +1,28 @@
+@import url(app.css);
+
+:root {
+    --border-sm-width: 1px;
+    --border-md-width: 2px;
+
+    --border-radius-sm: 4px;
+    --border-radius-md: 6.4px;
+    --border-radius-lg: 8px;
+}
+
+/* Border section */
+.border-sm-dark {
+    border: 1px solid var(--dark);
+}
+
+/* Border radius section */
+.border-radius-sm {
+    border-radius: var(--border-radius-sm);
+}
+
+.border-radius-md {
+    border-radius: var(--border-radius-md);
+}
+
+.border-radius-lg {
+    border-radius: var(--border-radius-lg);
+}
