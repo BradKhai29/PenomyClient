@@ -49,6 +49,7 @@
     </div>
 </template>
 <script setup>
+import { ref } from 'vue';
 const props = defineProps({
     artwork: {
         type: Object,
@@ -57,7 +58,7 @@ const props = defineProps({
         })
     },
 })
-const shortTitle = Object.title.substring(0, 20) + '...';;
+const shortTitle = ref(props.artwork.title.substring(0, 20) + '...');
 // shortTitle = shortTitle.substring(0, 20) + '...';
 </script>
 <style scoped>

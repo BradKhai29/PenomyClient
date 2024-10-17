@@ -23,7 +23,7 @@
             <!-- right content -->
             <q-card-section class="card-content q-pa-sm">
                 <div class="text-subtitle1 text-weight-medium" style="padding-left: .2rem;">
-                    {{ artwork.title }}
+                    {{ artworkTitle }}
                 </div>
                 <div class="text-subtitle3 text-weight-regular">
                     <q-icon name="account_circle" size="1.7rem" />
@@ -160,4 +160,5 @@ const props = defineProps({
         })
     },
 })
+const artworkTitle = ref(props.artwork.title.substring(0, 24) + '...')
 </script>

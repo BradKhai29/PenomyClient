@@ -46,9 +46,13 @@ const props = defineProps({
         required: false
     }
 })
-
+const emit = defineEmits(['createComment', 'editComment']);
 const comment = ref(props.oldComment);
-const emit = defineEmits(['editComment']);
+if (props.isUpdate) {
+    emit.value = 'editComment';
+} else {
+    emit.value = 'createComment';
+}
 
 async function sendComment(user) {
     if (comment.value.match(/^\n+$/) == null) {
@@ -65,9 +69,9 @@ async function sendComment(user) {
                     userId: 123
                 },
             })
-                .then((response) => {
+                .then(() => {
                     comment.value = '';
-                    console.log(response);
+                    emit('createComment');
                 });
         } else {
             const apiUrl = `${BaseWebApiUrl}/G53/comment/edit`;

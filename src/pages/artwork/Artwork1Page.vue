@@ -2,10 +2,10 @@
     <q-page class="">
         <RecentlyUpdated />
         <RecommendArtworkByCategory />
-        <CommentInputField />
+        <!-- <CommentInputField /> -->
         <comment-loader artworkId='2336253634727936' />
         <RecentlyUpdatedAnime />
-
+        <anime-by-category/>
         <div class="q-pa-md">
             <q-btn color="primary" label="Handles click">
                 <q-popup-proxy>
@@ -20,6 +20,7 @@
 </template>
 
 <script setup>
+import AnimeByCategory from "src/components/common/artwork/anime/AnimeByCategory.vue";
 import CommentInputField from "src/components/common/artwork/CommentInputField.vue";
 import UserComment from "src/components/common/artwork/UserComment.vue";
 import RecentlyUpdated from "src/components/common/artwork/comic/RecentlyUpdated.vue";
