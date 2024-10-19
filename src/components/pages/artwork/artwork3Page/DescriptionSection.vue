@@ -20,7 +20,9 @@
                     <strong>Tác giả: </strong> {{ author }}
                 </div>
                 <div class="text-series col-6">
-                    <strong>Series: </strong> {{ seriesName }}
+                    <strong>Series: </strong>
+                    <span v-if="hasSeries">{{ seriesName }}</span>
+                    <span v-else>No Series</span>
                 </div>
             </div>
             <div class="row q-py-xs">
@@ -74,8 +76,8 @@ const props = defineProps({
     seriesName: String,
     buttons: {
         type: Array,
-
-    }
+    },
+    hasSeries: Boolean
 })
 </script>
 

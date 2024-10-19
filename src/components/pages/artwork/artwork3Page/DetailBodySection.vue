@@ -58,11 +58,11 @@
                             <q-item-label class="chap-stats" caption>
                                 {{ formatDate(episode.createdTime) }}
                                 <q-icon name="ion-eye stats-icon" class="q-ml-sm" />
-                                {{ formatCount(episode.viewCount) }}
+                                {{ NumberHelper.formatNumberShort(episode.viewCount) }}
                                 <q-icon name="ion-heart stats-icon" class="q-ml-sm" />
-                                {{ formatCount(episode.favoriteCount) }}
+                                {{ NumberHelper.formatNumberShort(episode.favoriteCount) }}
                                 <q-icon name="ion-chatbubbles stats-icon" class="q-ml-sm" />
-                                {{ formatCount(episode.commentCount) }}
+                                {{ NumberHelper.formatNumberShort(episode.commentCount) }}
                             </q-item-label>
                         </q-item-section>
                     </q-item>
@@ -77,17 +77,11 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router';
 import StatDetaild from './StatDetaild.vue';
 import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
+import { NumberHelper } from "src/helpers/NumberHelper";
 function formatDate(createdTime) {
     return createdTime.split('T')[0];
 }
-function formatCount(count) {
-    if (count >= 1000000) {
-        return (count / 1000000).toFixed(1) + 'M';
-    } else if (count >= 100000) {
-        return (count / 1000).toFixed(1) + 'K';
-    }
-    return count;
-}
+
 const props = defineProps({
     introduction: {
         type: String,
@@ -96,18 +90,22 @@ const props = defineProps({
     viewCount: {
         type: Number,
         required: true,
+        default: 0
     },
     favoriteCount: {
         type: Number,
         required: true,
+        default: 0
     },
     commentCount: {
         type: Number,
         required: true,
+        default: 0
     },
     starRates: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     }
 })
 const artworkId = ref(null);
