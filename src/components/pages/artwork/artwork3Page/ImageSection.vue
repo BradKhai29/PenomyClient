@@ -2,7 +2,6 @@
     <q-card class="my-card" flat>
         <q-card-section horizontal class="image-container">
             <q-img class="my-image" :src="imageUrl" height="280px" width="225px">
-
                 <q-btn no-caps unelevated color="white" text-color="#120E36"
                     class="button-overlay q-py-sm justify-start">
                     <q-icon name="computer" />
@@ -38,7 +37,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import heroAcademia from 'src/assets/hero_academia.jpg'
-const imageUrl = ref(heroAcademia)
+
 const imageTitle = ref('Có hoạt hình')
+const props = defineProps({
+    imageUrl: {
+        type: String,
+        Required: true,
+    }
+})
 </script>

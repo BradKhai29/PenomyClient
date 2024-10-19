@@ -2,10 +2,10 @@
     <q-card :style="backgroundStyle" class="">
         <div class="q-pt-lg q-pb-xs">
             <q-card class="row detail-header">
-                <image-section class="col-3 q-pr-md"></image-section>
-                <description-section :title="data.title" :author="data.authorName" :country="data.countryName"
-                    :status="data.artworkStatus" :seriesName="data.serieName" :buttons="buttons"
-                    class="col-9 q-pt-md"></description-section>
+                <image-section :imageUrl="data.thumbnailUrl" class="col-3 q-pr-md"></image-section>
+                <description-section :hasSeries="data.hasSeries" :title="data.title" :author="data.authorName"
+                    :country="data.countryName" :status="data.artworkStatus" :seriesName="data.serieName"
+                    :buttons="buttons" class="col-9 q-pt-md"></description-section>
             </q-card>
             <q-card class="row justify-center subcribe-detail">
                 <subcribe-detail class="col-12"></subcribe-detail>
@@ -37,9 +37,8 @@ onMounted(async () => {
         const [artworkDetail] = await Promise.all([
             artworkDetailApiHandler.getArtworkDetailByIdAsync(id),
         ]);
-
         data.value = artworkDetail;
-        backgroundImageUrl.value = '/src/assets/hero_academia.jpg';
+        backgroundImageUrl.value = artworkDetail.thumbnailUrl;
     } catch (error) {
         console.log(error);
     }
