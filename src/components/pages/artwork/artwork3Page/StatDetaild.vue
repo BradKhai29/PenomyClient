@@ -1,5 +1,5 @@
 <template>
-    <div class="row stats">
+    <div class="row stats" v-if="!isLoading">
         <div v-for="(stat, index) in stats" :key="index" class="col-2" style="display: flex; align-items: center;">
             <q-icon :name="stat.icon" :style="{ color: '#53BF94', fontSize: '16px', lineHeight: '16px' }" />
             <span class="stats-detail" style="line-height: 16px;">{{ stat.value }}</span>
@@ -15,42 +15,45 @@
 </style>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { defineProps } from 'vue'
-
+import { NumberHelper } from "src/helpers/NumberHelper";
+const isLoading = ref(true);
 const props = defineProps({
     viewCount: {
         type: Number,
         required: true,
+        default: 0,
     },
     favoriteCount: {
         type: Number,
         required: true,
+        default: 0,
     },
     commentCount: {
         type: Number,
         required: true,
+        default: 0,
     },
     starRates: {
         type: Number,
         required: true,
+        default: 0,
     },
 });
-function formatCount(count) {
-    if (count >= 1000000) {
-        return (count / 1000000).toFixed(1) + 'M';
-    } else if (count >= 100000) {
-        return (count / 1000).toFixed(1) + 'K';
-    }
-    return count;
-}
+
 const stats = computed(() => [
-    { icon: 'visibility', value: `${formatCount(props.viewCount)}` },
-    { icon: 'ion-heart', value: `${formatCount(props.favoriteCount)}` },
-    { icon: 'star', value: `${formatCount(props.commentCount)}` },
-    { icon: 'add_box', value: `${formatCount(props.starRates)}` },
+    { icon: 'visibility', value: NumberHelper.formatNumberShort(props.viewCount) },
+    { icon: 'ion-heart', value: NumberHelper.formatNumberShort(props.favoriteCount) },
+    { icon: 'star', value: NumberHelper.formatNumberShort(props.commentCount) },
+    { icon: 'add_box', value: NumberHelper.formatNumberShort(props.starRates) },
     { icon: 'info', value: 'Khác' }
 ]);
+onBeforeMount(handleBeforeMount)
+async function handleBeforeMount() {
+    // Turn off is loading flag to display component.
+    isLoading.value = false;
+}
 
 // const stats = ref([
 //     { icon: 'visibility', value: '100k' },

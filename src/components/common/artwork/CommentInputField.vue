@@ -54,9 +54,8 @@ const props = defineProps({
         required: false
     }
 })
-
+const emit = defineEmits(['createComment', 'editComment']);
 const comment = ref(props.oldComment);
-const emit = defineEmits(['editComment', 'createComment']);
 if (props.isUpdate) {
     emit.value = 'editComment';
 } else {
@@ -113,7 +112,7 @@ async function sendComment(user) {
                     userId: 123
                 },
             })
-                .then((response) => {
+                .then(() => {
                     comment.value = '';
                     emit('createComment');
                 });

@@ -1,5 +1,7 @@
 <template>
-    <div class="text-h6 q-pa-sm">{{ categoryName }}</div>
+    <div class="title-section">
+        <div class="text-h6 q-pa-sm title">{{ categoryName }} </div>
+    </div>
     <div>
         <q-btn flat dense text-color="black" icon="arrow_left"
             @click="$refs.carousel.previous(); calculatePage('previous')" />
@@ -73,3 +75,22 @@ onMounted(async () => {
     });
 })
 </script>
+
+<style lang="css" scoped>
+.title-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    padding-bottom: .1rem;
+    border-bottom: 4px solid green;
+    width: max-content;
+}
+
+div:has(> .title) {
+    margin: 0 .5rem;
+    width: 99%;
+    border-bottom: solid 0.1px grey;
+}
+</style>
