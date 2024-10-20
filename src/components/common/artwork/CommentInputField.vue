@@ -1,5 +1,5 @@
 <template>
-    <div class="input-container">
+    <div class="input-container" :class="isUpdate || isReply ? '' : 'create'">
         <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense"
             @keypress.prevent.enter="sendComment(user)"/>
         <q-item tag="div">
@@ -32,11 +32,19 @@ const props = defineProps({
         required: false,
         default: "0",
     },
+    parentCommentId: {
+
+    },
     commentId: {
         type: String,
         required: false,
     },
     isUpdate: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
+    isReply: {
         type: Boolean,
         required: false,
         default: false
@@ -48,11 +56,51 @@ const props = defineProps({
 })
 
 const comment = ref(props.oldComment);
-const emit = defineEmits(['editComment']);
+const emit = defineEmits(['editComment', 'createComment']);
+if (props.isUpdate) {
+    emit.value = 'editComment';
+} else {
+    emit.value = 'createComment';
+}
 
 async function sendComment(user) {
     if (comment.value.match(/^\n+$/) == null) {
-        if (!props.isUpdate) {
+        comment.value = comment.value.trimEnd();
+        if (props.isUpdate) {
+            const apiUrl = `${BaseWebApiUrl}/G53/comment/edit`;
+            await axios({
+                url: apiUrl,
+                method: HttpMethod.PUT,
+                data: {
+                    newComment: comment.value,
+                    commentId: (props.commentId),
+                },
+            })
+                .then(() => {
+                    emit('editComment', comment.value);
+                });
+
+        } else {
+            if (props.isReply) {
+                isDirectlyComment.value = false
+                const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
+                await axios({
+                    url: apiUrl,
+                    method: HttpMethod.POST,
+                    data: {
+                        artworkId: props.artworkId,
+                        chapterId: props.chapterId,
+                        isDirectlyComment: isDirectlyComment.value,
+                        commentContent: comment.value,
+                        userId: 123,
+                        parentCommentId: props.parentCommentId
+                    },
+                })
+                    .then((response) => {
+                        comment.value = '';
+                        emit('createComment');
+                    });
+            }
             const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
             await axios({
                 url: apiUrl,
@@ -67,20 +115,7 @@ async function sendComment(user) {
             })
                 .then((response) => {
                     comment.value = '';
-                    console.log(response);
-                });
-        } else {
-            const apiUrl = `${BaseWebApiUrl}/G53/comment/edit`;
-            await axios({
-                url: apiUrl,
-                method: HttpMethod.PUT,
-                data: {
-                    newComment: comment.value,
-                    commentId: (props.commentId),
-                },
-            })
-                .then(() => {
-                    emit('editComment', comment.value);
+                    emit('createComment');
                 });
         }
     }
@@ -94,6 +129,11 @@ async function sendComment(user) {
     gap: 1rem;
     border: 1px solid #120e36;
     border-radius: 7px;
-    margin: 1%;
+
+}
+
+.create {
+    margin-left: 260px;
+    margin-right: 260px;
 }
 </style>
