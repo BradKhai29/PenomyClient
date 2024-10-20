@@ -153,6 +153,7 @@
 
 <script setup>
 // import router from 'src/router';
+import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 const router = useRouter()
 const props = defineProps({
@@ -163,6 +164,10 @@ const props = defineProps({
         })
     },
 })
+
+function toDetail() {
+    router.push('artwork/comic/' + props.artwork.artworkId)
+}
 
 const shortTitle = ref(props.artwork.title);
 if (props.artwork.title.length > 25) {
