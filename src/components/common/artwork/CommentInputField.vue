@@ -1,7 +1,7 @@
 <template>
     <div class="input-container">
         <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense"
-            @keyup.enter="sendComment(user)" />
+            @keypress.prevent.enter="sendComment(user)"/>
         <q-item tag="div">
             <q-item-section>
                 <div>

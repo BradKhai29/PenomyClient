@@ -27,7 +27,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["changeState"]);
+const emit = (["changeState"]);
 
 const isSelected = ref(false);
 

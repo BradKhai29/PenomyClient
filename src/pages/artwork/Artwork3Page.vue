@@ -17,6 +17,9 @@
             :comment-count="data.commentCount" :favorite-count="data.favoriteCount" :star-rates="data.starRates"
             class="col-12"></detail-body-section>
     </q-card>
+    <div>
+        <commentloader :artworkId="route.params.artworkId"/>
+    </div>
     <div class="recommend-section">
         <recommendation-section></recommendation-section>
     </div>
@@ -25,6 +28,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import commentloader from 'src/components/common/artwork/CommentLoader.vue';
 import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
 const route = useRoute();
 const backgroundImageUrl = ref('');

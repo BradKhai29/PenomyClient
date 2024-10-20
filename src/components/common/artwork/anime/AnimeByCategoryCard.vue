@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div @click="$router.push(`artwork/comic/${artwork.id}`)">
         <q-card class="my-card bg-grey-2" bordered>
             <q-card-section horizontal>
                 <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="360px" width="100%" bordered>
@@ -22,7 +22,7 @@
 
         </q-card>
         <div class="artwork-name">
-            <a href="#">{{ artwork.title }}</a>
+            <a href="#">{{ shortTitle }}</a>
             <q-icon name="more_vert" class="cursor-pointer">
                 <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
                         <q-item clickable v-close-popup>
@@ -49,6 +49,7 @@
     </div>
 </template>
 <script setup>
+import { ref } from 'vue'
 const props = defineProps({
     artwork: {
         type: Object,
@@ -57,6 +58,11 @@ const props = defineProps({
         })
     },
 })
+
+const shortTitle = ref(props.artwork.title);
+if (props.artwork.title.length > 25) {
+    shortTitle.value = props.artwork.title.substring(0, 25) + '...'
+}
 </script>
 <style scoped>
 a {

@@ -2,7 +2,6 @@
     <q-page class="">
         <RecentlyUpdated />
         <RecommendArtworkByCategory />
-        <CommentInputField />
         <comment-loader artworkId='2336253634727936' />
         <RecentlyUpdatedAnime />
 

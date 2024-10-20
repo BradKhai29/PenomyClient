@@ -68,7 +68,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["update:modelValue", "hasChange"]);
+const emit = (["update:modelValue", "hasChange"]);
 
 // Load all public levels from api to display for the creator.
 onBeforeMount(handleBeforeMount);
