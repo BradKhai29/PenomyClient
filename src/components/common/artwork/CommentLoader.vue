@@ -1,5 +1,6 @@
 <template>
-    <CommentInputField @createComment="createCommentHandler" />
+    <comment-input-field :artworkId="props.artworkId" @createComment="onCreateComment" />
+    <h5 class="no-comment" v-if="comments.length === 0">No comments</h5>
     <UserComment v-for="comment in comments" :key="comment.id" :comment="comment" @deleteComment='onCommentDelete' />
 </template>
 <script setup>
@@ -19,7 +20,7 @@ var props = defineProps({
     }
 });
 onMounted(() => {
-    getComments();
+    getComments()
 })
 
 async function getComments() {
@@ -27,19 +28,24 @@ async function getComments() {
         url: apiUrl,
         method: HttpMethod.GET,
         params: {
-            artworkId: BigInt(props.artworkId)
+            artworkId: props.artworkId
         },
     })
         .then((response) => {
             comments.value = response.data.body.commentList;
         });
 }
-
 function onCommentDelete(id) {
     comments.value = comments.value.filter((comment) => comment.id !== id)
 }
 
-function createCommentHandler() {
-    getComments();
+function onCreateComment() {
+    getComments()
 }
 </script>
+
+<style scoped>
+.no-comment {
+    margin-left: 260px;
+}
+</style>

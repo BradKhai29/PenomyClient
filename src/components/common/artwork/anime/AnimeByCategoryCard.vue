@@ -1,5 +1,5 @@
 <template>
-    <div @click="toDetail">
+    <div @click="$router.push(`artwork/comic/${artwork.id}`)">
         <q-card class="my-card bg-grey-2" bordered>
             <q-card-section horizontal>
                 <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="360px" width="100%" bordered>
@@ -49,9 +49,7 @@
     </div>
 </template>
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-const router = useRouter()
+import { ref } from 'vue'
 const props = defineProps({
     artwork: {
         type: Object,
@@ -60,10 +58,10 @@ const props = defineProps({
         })
     },
 })
-const shortTitle = ref(props.artwork.title.substring(0, 20) + '...');
 
-function toDetail() {
-    router.push(`/artwork/comic/${props.artwork.artworkId}`)
+const shortTitle = ref(props.artwork.title);
+if (props.artwork.title.length > 25) {
+    shortTitle.value = props.artwork.title.substring(0, 25) + '...'
 }
 </script>
 <style scoped>

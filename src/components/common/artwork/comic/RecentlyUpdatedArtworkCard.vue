@@ -23,7 +23,7 @@
             <!-- right content -->
             <q-card-section class="card-content q-pa-sm">
                 <div class="text-subtitle1 text-weight-medium" style="padding-left: .2rem;">
-                    {{ artwork.title }}
+                    {{ shortTitle }}
                 </div>
                 <div class="text-subtitle3 text-weight-regular">
                     <q-icon name="account_circle" size="1.7rem" />
@@ -153,6 +153,7 @@
 
 <script setup>
 // import router from 'src/router';
+import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 const router = useRouter()
 const props = defineProps({
@@ -165,6 +166,11 @@ const props = defineProps({
 })
 
 function toDetail() {
-    router.push(`/artwork/comic/${props.artwork.artworkId}`)
+    router.push('artwork/comic/' + props.artwork.artworkId)
+}
+
+const shortTitle = ref(props.artwork.title);
+if (props.artwork.title.length > 25) {
+    shortTitle.value = props.artwork.title.substring(0, 25) + '...'
 }
 </script>
