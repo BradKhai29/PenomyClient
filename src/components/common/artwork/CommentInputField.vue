@@ -1,7 +1,6 @@
 <template>
     <div class="input-container" :class="isUpdate || isReply ? '' : 'create'">
-        <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense"
-            @keypress.prevent.enter="sendComment(user)"/>
+        <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense" />
         <q-item tag="div">
             <q-item-section>
                 <div>
@@ -62,9 +61,9 @@ if (props.isUpdate) {
     emit.value = 'createComment';
 }
 
-async function sendComment(user) {
-    if (comment.value.match(/^\n+$/) == null) {
-        comment.value = comment.value.trimEnd();
+async function sendComment() {
+    if (comment.value.match(/^\n+$/) == null && comment.value !== '') {
+        comment.value = comment.value.trim();
         if (props.isUpdate) {
             const apiUrl = `${BaseWebApiUrl}/G53/comment/edit`;
             await axios({
@@ -82,7 +81,7 @@ async function sendComment(user) {
         } else {
             if (props.isReply) {
                 isDirectlyComment.value = false
-                const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
+                const apiUrl = `${BaseWebApiUrl}/g??/comment/reply`;
                 await axios({
                     url: apiUrl,
                     method: HttpMethod.POST,
@@ -100,22 +99,24 @@ async function sendComment(user) {
                         emit('createComment');
                     });
             }
-            const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
-            await axios({
-                url: apiUrl,
-                method: HttpMethod.POST,
-                data: {
-                    artworkId: props.artworkId,
-                    chapterId: props.chapterId,
-                    isDirectlyComment: isDirectlyComment.value,
-                    commentContent: comment.value,
-                    userId: 123
-                },
-            })
-                .then(() => {
-                    comment.value = '';
-                    emit('createComment');
-                });
+            else {
+                const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
+                await axios({
+                    url: apiUrl,
+                    method: HttpMethod.POST,
+                    data: {
+                        artworkId: props.artworkId,
+                        chapterId: props.chapterId,
+                        isDirectlyComment: isDirectlyComment.value,
+                        commentContent: comment.value,
+                        userId: 123
+                    },
+                })
+                    .then(() => {
+                        comment.value = '';
+                        emit('createComment');
+                    });
+            }
         }
     }
 }
