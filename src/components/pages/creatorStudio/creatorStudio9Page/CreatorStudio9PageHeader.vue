@@ -99,6 +99,7 @@ const router = useRouter();
 const defaultRedirectRoute = "/studio/artworks";
 
 // Component refs.
+const hasInputData = ref(inject("hasInputData"));
 const showWarning = ref(false);
 const isRedirectedToOtherRoute = ref(false);
 const redirectRoute = ref(null);
@@ -126,7 +127,8 @@ function confirmToCancelOrRedirect() {
         return;
     }
 
-    // If redirect route is not specified, then redirect back to default route.
+    // If redirect route is not specified,
+    // then redirect back to default route.
     router.push(defaultRedirectRoute);
 }
 
@@ -136,11 +138,11 @@ function confirmToCancelOrRedirect() {
  */
 function preventRedirect(event) {
     // If creator has input data, then preventing the redirection.
-    // if (hasChangesInData.value) {
-    //     event.preventDefault();
-    //     event.returnValue = null;
-    //     return;
-    // }
+    if (hasInputData.value) {
+        event.preventDefault();
+        event.returnValue = null;
+        return;
+    }
 }
 
 // Component life-cycle events.
@@ -160,13 +162,13 @@ onBeforeRouteLeave((to, _) => {
     // redirection if creator confirms to redirect.
     redirectRoute.value = to.path;
 
-    // if (hasChangesInData.value) {
-    //     showWarning.value = true;
-    // }
+    if (hasInputData.value) {
+        showWarning.value = true;
+    }
 
     // If confirmToCancelUpdate is true or creator does not input any data
     // then allow the creator to redirect to other page.
-    return confirmToCancelUpdate.value || !hasChangesInData.value;
+    return confirmToCancelUpdate.value || !hasInputData.value;
 });
 </script>
 
@@ -179,10 +181,8 @@ onBeforeRouteLeave((to, _) => {
 
 .artwork-title {
     max-width: 200px !important;
-    text-align: left;
-    direction: ltr;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis ellipsis;
+    text-overflow: ellipsis !important;
 }
 </style>

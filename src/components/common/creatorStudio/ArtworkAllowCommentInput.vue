@@ -5,7 +5,7 @@
                 {{ label }}
             </span>
             <span>
-                <q-icon name="info_outline" size="xs" />
+                <q-icon name="info" size="xs" />
                 <q-tooltip
                     anchor="top middle"
                     self="bottom middle"

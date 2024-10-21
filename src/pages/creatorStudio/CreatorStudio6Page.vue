@@ -221,6 +221,11 @@ export default {
 
             // Turn off the isCreating flag after processing the data.
             this.isCreating = false;
+
+            if (result.isSuccess) {
+                this.hasInputData = false;
+                this.$router.push("/studio/artworks");
+            }
         },
         verifyAllInputs() {
             let isValid = true;

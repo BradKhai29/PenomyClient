@@ -6,8 +6,8 @@ const routeDefinition = [
         component: () => import("layouts/AuthLayout.vue"),
         children: [
             {
-                path: "register",
-                component: () => import("src/pages/auth/Auth2Page.vue"),
+                path: "confirm-register",
+                component: () => import("src/pages/auth/Auth3Page.vue"),
             },
         ],
     },

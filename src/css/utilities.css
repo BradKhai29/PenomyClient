@@ -1,8 +1,9 @@
 @import url(app.css);
 
 :root {
+    --dark-500: #78847e;
     --border-sm-width: 1px;
-    --border-md-width: 2px;
+    --border-md-width: 1.4px;
 
     --border-radius-sm: 4px;
     --border-radius-md: 6.4px;
@@ -14,15 +15,27 @@
     border: 1px solid var(--dark);
 }
 
+.border-md-dark-500 {
+    border: var(--border-md-width) solid var(--dark-500);
+}
+
+.border-md-invisible {
+    border: var(--border-md-width) solid transparent;
+}
+
 /* Border radius section */
 .border-radius-sm {
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-sm) !important;
 }
 
 .border-radius-md {
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-md) !important;
 }
 
 .border-radius-lg {
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-lg) !important;
+}
+
+.border-radius-rounded {
+    border-radius: 100% !important;
 }

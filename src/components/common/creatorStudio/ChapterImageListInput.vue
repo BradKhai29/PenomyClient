@@ -2,12 +2,16 @@
     <section class="col-grow">
         <div class="image-list-header row justify-between">
             <section class="flex items-center col-grow">
-                <span class="text-subtitle2 text-weight-bold q-mr-md"
-                    >Danh sách ảnh</span
+                <span
+                    class="text-subtitle2 text-weight-bold q-mr-md"
+                    :class="{ 'text-negative': hasError }"
                 >
+                    <q-icon v-if="hasError" name="report" size="xs" />
+                    <span>Danh sách ảnh</span>
+                </span>
                 <label
                     for="chapterImages"
-                    class="bg-dark text-light add-image-btn q-mr-sm"
+                    class="bg-dark text-light add-image-btn q-px-md q-mr-sm"
                 >
                     <span class="q-mr-xs">Tải ảnh</span>
                     <q-icon name="upload" size="xs" />
@@ -18,27 +22,33 @@
                     name="chapterImages"
                     accept="image/png, image/jpeg, image/jpg"
                     multiple
+                    hidden
                     @input="onInputImage"
                     ref="chapterImageInput"
                 />
-                <q-btn
-                    dense
-                    no-caps
-                    unelevated
+                <span
                     class="bg-dark text-light image-list-btn"
                     @click="showDialog = true"
                 >
                     <span class="q-mr-xs">Xem trước</span>
                     <q-icon name="tv" size="xs" />
-                </q-btn>
+                </span>
             </section>
-            <section class="flex items-center justify-end col-auto">
+            <section
+                v-if="hasError"
+                class="flex items-center justify-end col-auto"
+            >
+                <span class="text-negative text-weight-bold"
+                    >Chưa có ảnh nào</span
+                >
+            </section>
+            <section v-else class="flex items-center justify-end col-auto">
                 <span class="q-mr-xs">{{ imageItemList.length }} ảnh</span>
                 <span>({{ totalImageSizesRef }}B / 32MB)</span>
             </section>
         </div>
         <section
-            id="wrapper-chapter-image-list"
+            id="wrapper_chapter_image_list"
             class="image-list-container q-mt-sm row"
         >
             <section
@@ -62,12 +72,14 @@
                 class="image-list-container border-sm-dark border-radius-sm row"
                 @mouseup="onDragEnd"
             >
-                <q-btn
-                    class="add-image-placeholder"
+                <label
+                    for="chapterImages"
+                    id="add-image-btn"
+                    class="add-image-placeholder border-sm-dark border-radius-sm"
                     v-if="imageItemList.length == 0"
                 >
                     <q-icon name="add" size="sm" />
-                </q-btn>
+                </label>
                 <div
                     v-for="imageItem in imageItemList"
                     :key="imageItem.id"
@@ -91,7 +103,16 @@
                 </div>
             </section>
         </section>
-        <div class="image-list-footer-caption"></div>
+        <section class="image-list-footer-caption q-mt-sm">
+            <div class="text-subtitle2">
+                <q-icon name="info" size="xs" />
+                <span>
+                    Kéo thả các hình ảnh để thay đổi thứ tự. Kích thước tối đa
+                    của 1 ảnh là 2MB, nếu kích thước file ảnh trên 2MB hệ thống
+                    sẽ tự động giảm chất lượng ảnh hoặc từ chối tải lên.
+                </span>
+            </div>
+        </section>
         <q-dialog
             v-model="showDialog"
             persistent
@@ -133,37 +154,27 @@ import Sortable from "sortablejs";
 import { FileHelper } from "src/helpers/FileHelper";
 import { StringHelper } from "src/helpers/StringHelper";
 import { NumberHelper } from "src/helpers/NumberHelper";
+import { ChapterImageItem } from "src/api.models/creatorStudio/creatorStudio9Page/ChapterImageItem";
 
-class ImageItem {
-    /**
-     * Initializes a new instance of ImageItem with the given properties.
-     *
-     * @constructor
-     * @param {String} id - A unique identifier for the instance.
-     * @param {Number} position - The position of the image, typically with properties like x and y coordinates.
-     * @param {String} imageName - The name of the image.
-     * @param {String} src - The source URL or path of the image.
-     * @param {File} imageFile - The image file object (e.g., from file input or upload).
-     */
-    constructor(id, position, imageName, src, imageFile) {
-        this.id = id;
-        this.position = position;
-        this.imageName = imageName;
-        this.src = src;
-        this.imageFile = imageFile;
-    }
-}
 const invalidFormatMessage = "Yêu cầu định dạng PNG, JPG, JPEG";
 const invalidFileSizeMessage = "File ảnh kích thước tối đa 4MB";
 
 export default {
+    emits: ["update:modelValue", "verifyInput"],
+    props: {
+        modelValue: {
+            type: Array,
+            required: true,
+        },
+    },
     data() {
         return {
             showDialog: false,
             dragging: false,
             pendingRemove: false,
+            hasError: false,
             /**
-             * @type {ImageItem[]} The list of image item to upload.
+             * @type {ChapterImageItem[]} The list of image item to upload.
              */
             imageItemList: [],
             tempItemList: [],
@@ -174,14 +185,9 @@ export default {
              */
             imageLastPosition: 0,
             /**
-             * @type {Element} The chapter image list html item in DOM.
-             */
-            chapterImagesHtmlItem: null,
-            /**
              * @type {HTMLInputElement} The image file input.
              */
             chapterImageInput: null,
-            sortableInstance: null,
             /**
              * @type {HTMLElement} The dragged element to track.
              */
@@ -196,11 +202,14 @@ export default {
         },
     },
     mounted() {
-        this.chapterImagesHtmlItem = document.querySelector(
-            "#chapter-image-list"
+        this.chapterImageInput = this.$refs.chapterImageInput;
+        this.$emit("verifyInput", this);
+
+        const chapterImageList = document.querySelector(
+            "section#chapter-image-list"
         );
 
-        this.sortableInstance = Sortable.create(this.chapterImagesHtmlItem, {
+        Sortable.create(chapterImageList, {
             animation: 150,
             ghostClass: "ghost",
             dragClass: "drag",
@@ -208,17 +217,20 @@ export default {
             forceFallback: true,
             removeCloneOnHide: true,
         });
-
-        this.chapterImageInput = this.$refs.chapterImageInput;
     },
     methods: {
+        verifyInput() {
+            this.hasError = this.imageItemList.length == 0;
+
+            return this.imageItemList.length > 0;
+        },
         removeImage(imageId) {
             // Prevent user to remove the image while dragging.
             if (this.dragging) {
                 return;
             }
 
-            // Turn on this flag to prevent user interact with drag n drop.
+            // Turn on this flag to prevent user interact with drag-n-drop.
             this.pendingRemove = true;
 
             const removeItem = this.imageItemList.find(
@@ -233,8 +245,10 @@ export default {
                 this.imageItemList[i].position--;
             }
 
-            this.imageItemList.splice(removeItem.position, 1);
+            // Reveke the object url to prevent memory leak.
+            URL.revokeObjectURL(removeItem.src);
             this.imageLastPosition--;
+            this.imageItemList.splice(removeItem.position, 1);
             this.totalImageSizes -= removeItem.imageFile.size;
             this.pendingRemove = false;
         },
@@ -251,6 +265,13 @@ export default {
         onDragStart(event) {
             this.currentDraggedElement = event.currentTarget;
             this.dragging = true;
+        },
+        /**
+         * Emit the update model value to the parent component.
+         * The object to emit will the imageItemList.
+         */
+        emitUpdateModelValue() {
+            this.$emit("update:modelValue", this.imageItemList);
         },
         onDragEnd() {
             this.dragging = false;
@@ -285,6 +306,10 @@ export default {
                 } else {
                     this.handleDragToLast(draggedElement);
                 }
+
+                // After handling the drag-n-drop,
+                // emit the model to update the state.
+                this.emitUpdateModelValue();
             }
         },
         /**
@@ -328,8 +353,6 @@ export default {
             // If the draggedItem's old position is equal to (prevItem's position + 1)
             // then no need to process because the draggedItem is get back to its old position.
             if (oldPosition == prevItem.position + 1) {
-                console.log("No need to handle");
-
                 return;
             }
 
@@ -421,6 +444,11 @@ export default {
                 (item) => item.id == draggedElementId
             );
 
+            // If no item found, then return.
+            if (!draggedItem) {
+                return;
+            }
+
             const oldPosition = draggedItem.position;
             draggedItem.position = 0; // Move to first then new position is zero.
 
@@ -458,6 +486,11 @@ export default {
                 (item) => item.id == draggedElementId
             );
 
+            // If no item found, then return.
+            if (!draggedItem) {
+                return;
+            }
+
             const oldPosition = draggedItem.position;
             // Move to last then new position is (imageItemList.length - 1).
             const newPosition = this.imageItemList.length - 1;
@@ -480,9 +513,6 @@ export default {
             this.tempItemList.push(draggedItem);
 
             this.refillImageItemListWithTempList();
-        },
-        changeName() {
-            console.log("Image item list: ", this.imageItemList);
         },
         /**
          * @param {InputEvent} event The event instance.
@@ -508,12 +538,12 @@ export default {
                 }
 
                 const randomString = StringHelper.generateSecureRandomString(6);
-                const imageId = `img_${imageFile.lastModified}_${randomString}`;
+                const imageId = `img_${randomString}_${imageFile.lastModified}`;
                 const imageName = imageFile.name;
                 const imageSrc = URL.createObjectURL(imageFile);
                 const imageSize = imageFile.size;
 
-                const imageItem = new ImageItem(
+                const imageItem = new ChapterImageItem(
                     imageId,
                     this.imageLastPosition,
                     imageName,
@@ -526,10 +556,15 @@ export default {
                 this.totalImageSizes += imageSize;
             }
 
+            this.verifyInput();
             // This line of code will let user to select
             // again the same file when they clear the image.
             // Reference: https://stackoverflow.com/questions/12030686/html-input-file-selection-event-not-firing-upon-selecting-the-same-file
             this.chapterImageInput.value = null;
+
+            // After handling the file upload,
+            // emit the model to update the state.
+            this.emitUpdateModelValue();
         },
     },
 };
@@ -552,7 +587,7 @@ export default {
     opacity: 1;
 }
 
-#wrapper-chapter-image-list {
+#wrapper_chapter_image_list {
     position: relative;
 }
 
@@ -598,7 +633,14 @@ export default {
 
 .add-image-btn,
 .image-list-btn {
-    padding: 4px 6px !important;
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+.add-image-btn:hover,
+.image-list-btn:hover {
+    cursor: pointer;
+    opacity: 0.8;
 }
 
 .image-list-container {
@@ -619,6 +661,13 @@ export default {
     width: var(--min-width);
     height: calc(var(--min-width) / var(--ratio));
     margin: var(--gutter-width) var(--gutter-width) 0 0;
+}
+
+.add-image-placeholder:hover {
+    --light-300: #eeeeee;
+
+    cursor: pointer !important;
+    background-color: var(--light-300);
 }
 
 .preview-image-item {
