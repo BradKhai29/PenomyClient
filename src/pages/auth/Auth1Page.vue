@@ -1,103 +1,150 @@
 <template>
-    <q-card
-        class="q-pa-sm"
-        style="background-color: #f9fafc"
-        :style="$q.screen.lt.md ? { width: '90%' } : { width: '25%' }"
-    >
-        <q-card-section class="row justify-center">
-            <div
-                class="text-subtitle1 col-md-auto bg-primary-700 text-primary q-px-sm"
-                style="border-radius: 4px"
-            >
-                Đăng nhập
-            </div>
-        </q-card-section>
-        <q-card-section>
-            <q-form>
-                <q-input
-                    label="Email"
-                    class="bg-white q-mb-md"
-                    v-model="login.email"
-                    outlined
-                    color="green"
-                />
-                <q-input
-                    label="Nhập mật khẩu"
-                    class="bg-white q-mt-md"
-                    :type="isPwd ? 'password' : 'text'"
-                    v-model="login.password"
-                    outlined
-                    color="green"
+    <q-page class="row justify-center">
+        <section
+            class="q-ma-sm bg-light shadow-1 auth-form text-dark-500 text-subtitle1"
+        >
+            <div class="row justify-center auth-input-margin-bottom">
+                <span
+                    class="border-radius-sm col-md-auto bg-primary-700 text-primary q-px-sm"
                 >
-                    <template v-slot:append>
-                        <q-icon
-                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                            class="cursor-pointer"
-                            @click="isPwd = !isPwd"
-                        />
-                    </template>
-                </q-input>
-                <div class="row justify-between q-my-sm">
-                    <q-checkbox
-                        v-model="left"
-                        label="Giữ đăng nhập"
-                        checked-icon="check_circle"
-                        unchecked-icon="check_circle_outline"
-                        color="primary"
+                    Đăng nhập
+                </span>
+            </div>
+            <div id="input-section">
+                <EmailInput v-model="email" ref="emailInput" />
+
+                <PasswordInput
+                    v-model="password"
+                    :error="hasErrorPassword"
+                    ref="passwordInput"
+                />
+
+                <div class="row justify-between q-mb-md">
+                    <q-btn
+                        no-caps
                         dense
-                        :size="$q.screen.lt.sm ? 'sm' : 'lg'"
-                    />
-                    <router-link
-                        style="vertical-align: middle"
-                        class="col-6 text-right q-py-sm"
+                        padding="xs"
+                        unelevated
+                        class="flex items-center"
+                        @click="rememberLogin = !rememberLogin"
                     >
-                        <q-btn dense flat no-caps> Quên mật khẩu? </q-btn>
+                        <q-icon
+                            v-if="rememberLogin"
+                            name="check"
+                            :size="
+                                $q.screen.lt.sm
+                                    ? iconMobileSize
+                                    : iconDesktopSize
+                            "
+                            class="bg-primary text-dark border-md-invisible border-radius-rounded q-pa-xs"
+                        />
+                        <q-icon
+                            v-else
+                            name="check"
+                            :size="
+                                $q.screen.lt.sm
+                                    ? iconMobileSize
+                                    : iconDesktopSize
+                            "
+                            class="border-radius-rounded border-md-dark-500 q-pa-xs"
+                        />
+                        <span class="q-ml-xs">Giữ đăng nhập</span>
+                    </q-btn>
+                    <router-link to="/auth/forgot-password">
+                        <q-btn dense unelevated no-caps class="text-dark-500">
+                            Quên mật khẩu?
+                        </q-btn>
                     </router-link>
                 </div>
                 <div class="column">
                     <q-btn
-                        class="col-12 bg-primary text-dark text-subtitle1 text-bold q-py-sm"
+                        class="border-radius-md bg-primary text-subtitle1 text-dark text-bold q-py-sm"
                         type="submit"
                         no-caps
+                        :loading="isProcessing"
+                        :disable="isProcessing"
+                        @click="login"
                     >
                         Đăng nhập</q-btn
                     >
-                    <div style="color: #78847e" class="q-my-md text-center">
-                        Hoặc đăng nhập với
-                    </div>
-                    <q-btn type="button" class="q-py-sm" no-caps>
-                        <q-icon name="fa-brands fa-google" class="" />
-                        <span class="q-ml-xs text-subtitle1 text-weight-bold"
-                            >Google</span
-                        >
-                    </q-btn>
+                    <div class="q-my-md text-center">Hoặc đăng nhập với</div>
+
+                    <GoogleButton
+                        :isLoading="isProcessing"
+                        v-model="isProcessing"
+                    />
                 </div>
-            </q-form>
-        </q-card-section>
-    </q-card>
+            </div>
+        </section>
+    </q-page>
 </template>
 
 <script>
-import { ref } from "vue";
+// Import dependencies section.
+import { NotificationHelper } from "src/helpers/NotificationHelper";
+
+// Import components section.
+import EmailInput from "src/components/common/auth/EmailInput.vue";
+import PasswordInput from "src/components/common/auth/PasswordInput.vue";
+import GoogleButton from "src/components/common/auth/GoogleButton.vue";
 
 export default {
+    components: {
+        EmailInput,
+        PasswordInput,
+        GoogleButton,
+    },
     data() {
         return {
-            login: {
-                email: "",
-                password: "",
-            },
+            iconDesktopSize: "14px",
+            iconMobileSize: "12px",
+            rememberLogin: false,
+            showPassword: false,
+            isProcessing: false,
+            hasErrorPassword: false,
+            email: "",
+            password: "",
+            emailInput: null,
+            passwordInput: null,
         };
     },
-    setup() {
-        return {
-            left: ref(true),
-            isPwd: ref(true),
-        };
+    mounted() {
+        // Get the all input component references.
+        this.emailInput = this.$refs.emailInput;
+        this.passwordInput = this.$refs.passwordInput;
     },
     methods: {
-        checker() {
-            console.log("login");
+        verifyInput() {
+            let isValid = true;
+
+            isValid &= this.emailInput.verifyInput();
+            isValid &= this.passwordInput.verifyInput();
+
+            return isValid;
+        },
+        login() {
+            // Prevent user to click the button when the api is processing.
+            if (this.isProcessing) {
+                return;
+            }
+
+            // If verify input return false, then notify user to input required fields.
+            if (!this.verifyInput()) {
+                NotificationHelper.notifyError("Thông tin không hợp lệ");
+
+                return;
+            }
+
+            this.isProcessing = true;
+
+            setTimeout(() => {
+                this.isProcessing = false;
+            }, 2000);
+        },
+    },
+    watch: {
+        password() {
+            this.hasErrorPassword = this.password == "";
         },
     },
 };

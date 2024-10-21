@@ -44,17 +44,31 @@ function getSecureRandomNumber(min, max) {
  * @returns {string} - The formatted short version of the number (e.g., "1K", "2.3M").
  */
 function formatNumberShort(num, precision = 1) {
+    const zeroAfterFloatingPointRegExp = /\.0+$/;
+
     // If the number is greater than or equal to 1 billion, format as billions ("B")
     if (num >= 1e9) {
-        return (num / 1e9).toFixed(precision).replace(/\.0+$/, "") + "B";
+        return (
+            (num / 1e9)
+                .toFixed(precision)
+                .replace(zeroAfterFloatingPointRegExp, "") + "B"
+        );
     }
     // If the number is greater than or equal to 1 million, format as millions ("M")
     else if (num >= 1e6) {
-        return (num / 1e6).toFixed(precision).replace(/\.0+$/, "") + "M";
+        return (
+            (num / 1e6)
+                .toFixed(precision)
+                .replace(zeroAfterFloatingPointRegExp, "") + "M"
+        );
     }
     // If the number is greater than or equal to 1 thousand, format as thousands ("K")
     else if (num >= 1e3) {
-        return (num / 1e3).toFixed(precision).replace(/\.0+$/, "") + "K";
+        return (
+            (num / 1e3)
+                .toFixed(precision)
+                .replace(zeroAfterFloatingPointRegExp, "") + "K"
+        );
     }
     // If the number is less than 1000, return the number as is (no formatting)
     else {

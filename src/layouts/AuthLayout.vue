@@ -1,5 +1,5 @@
 <template>
-    <q-layout style="background-color: #eee" view="hHh lpR fFf">
+    <q-layout class="bg-light-300" view="hHh lpR fFf">
         <q-header bordered class="bg-white text-dark">
             <q-toolbar class="text-dark justify-center">
                 <q-tabs
@@ -21,8 +21,8 @@
             </q-toolbar>
         </q-header>
 
-        <q-page-container class="column items-center">
-            <penomy-avatar class="q-my-lg"></penomy-avatar>
+        <q-page-container>
+            <penomy-avatar class="q-my-md" />
             <router-view />
         </q-page-container>
     </q-layout>
@@ -34,7 +34,11 @@ import { domainRootPath } from "../router/common/DomainRootPath";
 import PenomyAvatar from "../components/common/auth/PenomyAvatar.vue";
 
 const tabsDefinition = [
-    { name: "login", label: "Đăng nhập", link: domainRootPath.auth + "/login" },
+    {
+        name: "login",
+        label: "Đăng nhập",
+        link: domainRootPath.auth + "/login",
+    },
     {
         name: "register",
         label: "Đăng ký",
@@ -52,16 +56,28 @@ const tabs = ref(tabsDefinition);
 </script>
 
 <style>
-.q-card {
-    border-radius: 16px;
+.auth-form,
+.auth-form-padding {
+    --min-width: 290px;
+    --max-width: 424px;
+    --padding-width: 28px;
 }
 
-a {
-    color: #78847e;
-    text-decoration: none;
+.auth-input-margin-bottom {
+    --margin-width: 20px;
+
+    margin-bottom: var(--margin-width);
 }
 
-.q-btn {
-    border-radius: 6px;
+.auth-form-mb {
+    margin-bottom: var(--padding-width);
+}
+
+.auth-form {
+    border-radius: 12px !important;
+    width: var(--max-width);
+    max-width: var(--max-width) !important;
+    height: min-content !important;
+    padding: var(--padding-width);
 }
 </style>

@@ -39,22 +39,19 @@ export default {
         },
         label: {
             type: String,
-            required: true,
             default: "Tiêu đề",
         },
         maxLength: {
             type: Number,
-            required: true,
             default: 0,
         },
         footerCaption: {
             type: String,
-            required: true,
             default: "",
         },
         errorMessage: {
             type: String,
-            default: "",
+            default: "Không để trống",
         },
     },
     data() {

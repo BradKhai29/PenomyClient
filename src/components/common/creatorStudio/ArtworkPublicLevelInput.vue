@@ -6,7 +6,7 @@
         <div class="flex items-center q-mb-xs">
             <span class="text-weight-bold q-pr-xs"> Chế độ xem </span>
             <span>
-                <q-icon name="info_outline" size="xs" />
+                <q-icon name="info" size="xs" />
                 <q-tooltip
                     anchor="top middle"
                     self="bottom middle"

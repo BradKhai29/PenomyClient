@@ -6,10 +6,18 @@
 
 :root,
 * {
+    /* Primary section */
     --primary: #53bf94;
     --primary-700-opacity-12: #e5f3ef;
+
+    /* Secondary section */
+    --secondary-100: #ffa086;
+    --secondary-500: #ef633d;
+    --secondary-900: #c04827;
+
     --dark: #120e36;
     --dark-500: #78847e;
+
     --light-100: #f9fafc;
     --light-300: #eeeeee;
     --light-500: #dddddd;
@@ -44,6 +52,10 @@
     background-color: var(--primary-700-opacity-12) !important;
 }
 
+.bg-secondary-100 {
+    background-color: var(--secondary-100) !important;
+}
+
 .bg-dark {
     background-color: var(--dark) !important;
 }
@@ -69,6 +81,14 @@
 .text-primary-700,
 .primary-700 {
     color: var(--primary-700-opacity-12) !important;
+}
+
+.text-secondary-900 {
+    color: var(--secondary-900) !important;
+}
+
+.text-secondary-500 {
+    color: var(--secondary-500) !important;
 }
 
 .underline-primary {

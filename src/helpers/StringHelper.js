@@ -1,7 +1,7 @@
 const accentRegExp =
     /([aáàạảãâấậẩẫầăắặẳẵằ])|([AÁÀẠẢÃÂẤẬẨẪẦĂẮẶẲẴẰ])|([eéẹẻẽèêếệểễề])|([EÉẸẺẼÈÊẾỆỂỄỀ])|([iíịỉĩì])|([IÍỊỈĨÌ])|([uúụủũùưứửữừự])|(UÚỤỦŨÙƯỨỬỮỪỰ)|([oóọỏõòôốộổỗồơớợởỡờ])|([OÓỌỎÕÒÔỐỘỔỖỒƠỚỢỞỠỜ])|([yýỳỹỷỵ])|([YÝỲỸỶỴ])|([đ])|([Đ])/g;
 
-function accentReplacer(inputString, a, A, e, E, i, I, u, U, o, O, y, Y, d, D) {
+function accentReplacer(_, a, A, e, E, i, I, u, U, o, O, y, Y, d, D) {
     if (a) return "a";
     if (A) return "A";
     if (e) return "e";

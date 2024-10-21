@@ -112,20 +112,20 @@ async function getAllPublicLevels() {
  * @returns {Promise<CreateArtworkResult>} The result of creating the artwork.
  */
 async function createArtwork(artworkDetail) {
-    const formData = new FormData();
+    const requestBody = new FormData();
     // For debug purpose.
     // console.log("Create artwork detail: ", artworkDetail);
 
-    formData.append("title", artworkDetail.title);
-    formData.append("originId", artworkDetail.originId);
-    formData.append("introduction", artworkDetail.introduction);
-    formData.append(
+    requestBody.append("title", artworkDetail.title);
+    requestBody.append("originId", artworkDetail.originId);
+    requestBody.append("introduction", artworkDetail.introduction);
+    requestBody.append(
         "selectedCategories",
         JSON.stringify(artworkDetail.selectedCategories)
     );
-    formData.append("allowComment", artworkDetail.allowComment);
-    formData.append("publicLevel", artworkDetail.publicLevel);
-    formData.append(
+    requestBody.append("allowComment", artworkDetail.allowComment);
+    requestBody.append("publicLevel", artworkDetail.publicLevel);
+    requestBody.append(
         "thumbnailImageFile",
         artworkDetail.thumbnailImageFile,
         artworkDetail.thumbnailImageFile.name
@@ -140,7 +140,7 @@ async function createArtwork(artworkDetail) {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
-            data: formData,
+            data: requestBody,
         });
 
         result.isSuccess = true;

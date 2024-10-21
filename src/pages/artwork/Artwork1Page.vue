@@ -1,16 +1,16 @@
 <template>
     <q-page class="">
         <RecentlyUpdated />
-        <RecommendArtworkByCategory />
-        <comment-loader artworkId='2336253634727936' />
-        <RecentlyUpdatedAnime />
-        <anime-by-category/>
+        <!-- <RecommendArtworkByCategory /> -->
+        <!-- <comment-loader artworkId="2336253634727936" /> -->
+        <!-- <RecentlyUpdatedAnime /> -->
+        <anime-by-category />
         <div class="q-pa-md">
             <q-btn color="primary" label="Handles click">
                 <q-popup-proxy>
                     <q-banner>
-
-                        You have lost connection to the internet. This app is offline.
+                        You have lost connection to the internet. This app is
+                        offline.
                     </q-banner>
                 </q-popup-proxy>
             </q-btn>
@@ -27,7 +27,6 @@ import RecommendArtworkByCategory from "src/components/common/artwork/comic/Comi
 import CommentLoader from "src/components/common/artwork/CommentLoader.vue";
 import RecentlyUpdatedAnime from "src/components/common/artwork/anime/RecentlyUpdated.vue";
 import { ref } from "vue";
-
 
 function clickMe() {
     authStore.increment();

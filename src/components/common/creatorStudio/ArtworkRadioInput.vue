@@ -17,10 +17,10 @@
 </template>
 
 <script setup>
-import { DateTimeHelper } from "src/helpers/DateTimeHelper";
+import { StringHelper } from "src/helpers/StringHelper";
 
-const dateTimeString = DateTimeHelper.currentDateTimeString();
-const randomId = dateTimeString * 1 + Math.floor(Math.random() * 1000);
+const length = 6;
+const randomId = StringHelper.generateSecureRandomString(length);
 
 const props = defineProps({
     modelValue: {
