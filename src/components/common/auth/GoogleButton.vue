@@ -8,7 +8,7 @@
     >
         <img
             id="google-icon"
-            src="/src/assets/logo/icons8-google.svg"
+            src="/public/icons8-google.svg"
             alt="google-icon"
             origin="https://icons8.com/icon/V5cGWnc9R4xj/google"
             :style="googleIconStyle"

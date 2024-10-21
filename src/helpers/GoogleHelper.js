@@ -1,3 +1,8 @@
+// This google helper implements the token-model flow (based on the recommedation from Google document)
+// Link: https://developers.google.com/identity/oauth2/web/guides/use-token-model
+// For more detail about the implicit grant-flow, you can reference from following link.
+// Link: https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow
+
 // Configuration section.
 const CLIENT_LIBRARY_URL = "https://accounts.google.com/gsi/client";
 const SCOPES = "email profile openid";
