@@ -1,17 +1,28 @@
 <template>
     <q-page>
-        <section class="row q-pa-md">
-            <ChapterImageListInput />
+        <section class="column q-pa-md q-gutter-md">
+            <AppPagination
+                :max="20"
+                :showBoundaryLinks="false"
+                :showInput="true"
+                v-model="pageNumber"
+            />
+            {{ pageNumber }}
         </section>
     </q-page>
 </template>
 
 <script>
-import ChapterImageListInput from "src/components/common/creatorStudio/ChapterImageListInput.vue";
+import AppPagination from "src/components/common/others/AppPagination.vue";
 
 export default {
     components: {
-        ChapterImageListInput,
+        AppPagination,
+    },
+    data() {
+        return {
+            pageNumber: 1,
+        };
     },
 };
 </script>

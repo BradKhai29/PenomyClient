@@ -39,3 +39,14 @@
 .border-radius-rounded {
     border-radius: 100% !important;
 }
+
+.penomy-tab {
+    --primary: #53bf94;
+    --border-width: 4px;
+
+    border-bottom: var(--border-width) solid transparent !important;
+}
+
+.penomy-tab.selected {
+    border-bottom: var(--border-width) solid var(--primary) !important;
+}

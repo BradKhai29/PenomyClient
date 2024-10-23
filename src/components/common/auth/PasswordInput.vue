@@ -1,13 +1,13 @@
 <template>
     <section id="password-input">
         <q-input
-            placeholder="Nhập mật khẩu"
+            :placeholder="label"
             class="text-subtitle1 bg-white"
             :type="showPassword ? 'text' : 'password'"
             v-model="password"
             color="green"
             outlined
-            :error="hasError"
+            :error="hasError || error"
         >
             <template v-if="!(error || hasError)" v-slot:append>
                 <q-btn dense flat @click="showPassword = !showPassword">
@@ -70,6 +70,10 @@ export default {
         minLength: {
             type: Number,
             default: 1,
+        },
+        label: {
+            type: String,
+            default: "Nhập mật khẩu",
         },
     },
     data() {
