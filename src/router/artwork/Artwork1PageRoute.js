@@ -11,6 +11,10 @@ const routeDefinition = [
                 path: "",
                 component: () => import("pages/artwork/Artwork1Page.vue"),
             },
+            {
+                path: "artwork/anime",
+                component: () => import("pages/artwork/Artwork1Page.vue"),
+            },
         ],
     },
     {
@@ -18,7 +22,7 @@ const routeDefinition = [
         component: () => import("layouts/MainLayout.vue"),
         children: [
             {
-                path: "",
+                path: "comic",
                 component: () => import("pages/artwork/Artwork1Page.vue"),
             },
         ],
