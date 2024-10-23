@@ -4,7 +4,13 @@
         <q-item tag="div">
             <q-item-section>
                 <div>
-                    <q-btn flat round dense icon="image" size=".9rem" />
+                    <q-btn flat round dense icon="emoji_emotions" size=".9rem">
+                        <q-menu>
+                            <emoji-picker-board @onIconSelected="onEmojiSelected" />
+
+                        </q-menu>
+                    </q-btn>
+
                     <q-btn flat round dense icon="image" size=".9rem" />
                     <q-btn flat round dense icon="image" size=".9rem" />
                 </div>
@@ -19,6 +25,7 @@ import { ref, defineEmits } from 'vue';
 import axios from 'axios';
 import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
 import { HttpMethod } from 'src/api.common/HttpMethod';
+import EmojiPickerBoard from './EmojiPickerBoard.vue';
 const isDirectlyComment = ref(true);
 const props = defineProps({
     artworkId: {
@@ -50,15 +57,22 @@ const props = defineProps({
     },
     oldComment: {
         type: String,
-        required: false
+        required: false,
+        default: ''
     }
 })
+
 const emit = defineEmits(['createComment', 'editComment']);
 const comment = ref(props.oldComment);
+
 if (props.isUpdate) {
     emit.value = 'editComment';
 } else {
     emit.value = 'createComment';
+}
+
+function onEmojiSelected(emoji) {
+    comment.value += emoji;
 }
 
 async function sendComment() {
