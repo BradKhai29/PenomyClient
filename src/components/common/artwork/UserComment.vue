@@ -48,8 +48,8 @@
             </q-item-label>
             <q-space></q-space>
             <q-item-label>
-                <q-btn color="primary" size=".7rem" dense icon="thumb_up">
-                    {{ comment.likeCount }}k
+                <q-btn color="primary" size=".7rem" dense icon="thumb_up" @click="likeComment()">
+                    {{ likeCount }}
                 </q-btn>
             </q-item-label>
         </q-item>
@@ -72,10 +72,6 @@ import ConfirmPopup from './ConfirmPopup.vue';
 import axios from 'axios';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 
-const emit = defineEmits(['deleteComment']);
-const isReply = ref(false);
-const isEdit = ref(false);
-const isDelete = ref(false);
 var props = defineProps({
     comment: {
         type: Object,
@@ -99,12 +95,20 @@ var props = defineProps({
         default: () => []
     }
 })
+
+const emit = defineEmits(['deleteComment']);
+const isReply = ref(false);
+const isEdit = ref(false);
+const isDelete = ref(false);
+const deleteUrl = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id}`
+const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`
+const likeCount = ref(props.comment.likeCount);
+
 var editCommentProps = {
     isUpdate: true,
     isReply: true,
-    oldComment: props.comment.content
+    oldComment: props.comment.content,
 }
-const url = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id}`
 
 async function getComments() {
     await axios({
@@ -134,12 +138,26 @@ function popupClickHandler(isDeleteClicked) {
 }
 async function deleteComment() {
     await axios({
-        url: url,
+        url: deleteUrl,
         method: HttpMethod.DELETE,
     })
         .then(() => {
             isDelete.value = false
             emit('deleteComment', props.comment.id)
+        });
+}
+
+async function likeComment() {
+    await axios({
+        url: likeUrl,
+        method: HttpMethod.POST,
+        data: {
+            commentId: `${props.comment.id}`,
+            userId: `${123}`
+        }
+    })
+        .then(() => {
+            likeCount.value += 1;
         });
 }
 
