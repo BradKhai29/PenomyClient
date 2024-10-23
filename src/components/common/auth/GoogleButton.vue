@@ -8,7 +8,7 @@
     >
         <img
             id="google-icon"
-            src="/public/icons8-google.svg"
+            src="https://res.cloudinary.com/dsjsmbdpw/image/upload/v1729522629/penomy_assets/google.svg"
             alt="google-icon"
             origin="https://icons8.com/icon/V5cGWnc9R4xj/google"
             :style="googleIconStyle"

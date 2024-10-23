@@ -1,5 +1,5 @@
 <template>
-    <div class="q-pa-md artwork-detail-card row">
+    <div :id="`art_${artworkId}`" class="q-pa-md artwork-detail-card row">
         <div class="col-auto q-mr-md">
             <q-img
                 class="artwork-detail-img shadow-1 border-radius-sm"
@@ -141,6 +141,9 @@ import { ArtworkPublicLevelHelper } from "src/helpers/ArtworkPublicLevelHelper";
 
 export default {
     props: {
+        id: {
+            type: String,
+        },
         artworkId: {
             required: true,
         },
@@ -172,6 +175,26 @@ export default {
             required: true,
         },
         totalChapters: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        totalViews: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        totalFavorites: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        totalFollowers: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        totalComments: {
             type: Number,
             required: true,
             default: 0,

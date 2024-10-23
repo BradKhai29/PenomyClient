@@ -3,7 +3,9 @@
         <router-link to="/">
             <q-btn flat no-caps no-wrap dense>
                 <q-avatar>
-                    <img src="/src/assets/logo/penomy.png" />
+                    <img
+                        src="https://res.cloudinary.com/dsjsmbdpw/image/upload/v1729522677/penomy_assets/penomy.png"
+                    />
                 </q-avatar>
                 <span class="q-pl-sm text-weight-bold text-h5 text-dark">
                     <span class="underline-primary">Penom</span>
