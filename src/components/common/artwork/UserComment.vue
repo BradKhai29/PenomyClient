@@ -48,7 +48,10 @@
             </q-item-label>
             <q-space></q-space>
             <q-item-label>
-                <q-btn color="primary" size=".7rem" dense icon="thumb_up" @click="likeComment()">
+                <q-btn v-if="!isLike" color="primary" size=".7rem" dense icon="thumb_up" @click="likeComment()">
+                    {{ likeCount }}
+                </q-btn>
+                <q-btn v-if="isLike" color="grey-10" size=".7rem" dense icon="thumb_up" @click="unlikeComment()">
                     {{ likeCount }}
                 </q-btn>
             </q-item-label>
@@ -86,7 +89,8 @@ var props = defineProps({
                 content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut doloribus maiores repellat sit, ad fuga nihil fugiat adipisci voluptate aliquid eum corrupti reiciendis, nam explicabo accusantium vitae voluptatum dolore asperiores?",
                 likeCount: 10,
                 totalReplies: 20,
-                isAuthor: true
+                isAuthor: true,
+                isLiked: false
             }
         }
     },
@@ -100,8 +104,10 @@ const emit = defineEmits(['deleteComment']);
 const isReply = ref(false);
 const isEdit = ref(false);
 const isDelete = ref(false);
+const isLike = ref(props.comment.isLiked);
 const deleteUrl = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id}`
 const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`
+const unlikeUrl = `${BaseWebApiUrl}/g57/comment/unlike/`
 const likeCount = ref(props.comment.likeCount);
 
 var editCommentProps = {
@@ -153,11 +159,26 @@ async function likeComment() {
         method: HttpMethod.POST,
         data: {
             commentId: `${props.comment.id}`,
-            userId: `${123}`
+            userId: `${1234}`
         }
     })
         .then(() => {
             likeCount.value += 1;
+            isLike.value = true
+        });
+}
+async function unlikeComment() {
+    await axios({
+        url: unlikeUrl,
+        method: HttpMethod.POST,
+        data: {
+            commentId: `${props.comment.id}`,
+            userId: `${1234}`
+        }
+    })
+        .then(() => {
+            likeCount.value -= 1;
+            isLike.value = false
         });
 }
 
