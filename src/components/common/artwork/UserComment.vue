@@ -48,10 +48,10 @@
             </q-item-label>
             <q-space></q-space>
             <q-item-label>
-                <q-btn v-if="!isLike" color="primary" size=".7rem" dense icon="thumb_up" @click="likeComment()">
+                <q-btn v-if="!isLike" color="grey-10" size=".7rem" dense icon="thumb_up" @click="likeComment()">
                     {{ likeCount }}
                 </q-btn>
-                <q-btn v-if="isLike" color="grey-10" size=".7rem" dense icon="thumb_up" @click="unlikeComment()">
+                <q-btn v-if="isLike" color="primary" size=".7rem" dense icon="thumb_up" @click="unlikeComment()">
                     {{ likeCount }}
                 </q-btn>
             </q-item-label>
