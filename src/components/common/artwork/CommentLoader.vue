@@ -28,11 +28,13 @@ async function getComments() {
         url: apiUrl,
         method: HttpMethod.GET,
         params: {
-            artworkId: props.artworkId
+            artworkId: `${props.artworkId}`,
+            userId: '1234'
         },
     })
         .then((response) => {
             comments.value = response.data.body.commentList;
+            console.log(comments.value)
         });
 }
 function onCommentDelete(id) {
