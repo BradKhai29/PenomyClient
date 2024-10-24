@@ -7,7 +7,7 @@
                     class="q-mb-md text-weight-bold"
                 />
 
-                <OverviewStatisticCard />
+                <OverviewStatisticCard ref="overview-statistic-card" />
             </div>
         </section>
         <section id="tab-content" :class="{ 'q-mx-sm': $q.screen.gt.sm }">
@@ -33,7 +33,10 @@
             </div>
             <q-tab-panels v-model="selectedTab" animated>
                 <q-tab-panel name="comic">
-                    <ArtworkSection :loadComic="true" />
+                    <ArtworkSection
+                        :loadComic="true"
+                        @updateSection="reloadPageState"
+                    />
                 </q-tab-panel>
 
                 <q-tab-panel name="animation">
@@ -92,10 +95,12 @@ export default {
         return {
             tabItems: tabItemsDefinition,
             selectedTab: null,
+            overviewStatisticCard: null,
         };
     },
     mounted() {
         this.selectedTab = tabItemsDefinition[0].name;
+        this.overviewStatisticCard = this.$refs["overview-statistic-card"];
     },
     methods: {
         selectTab(tabName) {
@@ -103,6 +108,9 @@ export default {
         },
         isSelected(tabName) {
             return this.selectedTab == tabName;
+        },
+        reloadPageState() {
+            this.overviewStatisticCard.reloadState();
         },
     },
 };

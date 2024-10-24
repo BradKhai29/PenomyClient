@@ -9,10 +9,6 @@ class ArtworkDetailResponseItem {
      * @param {Number} totalUsersRated
      * @param {Number} averageStarRate
      * @param {Number} totalChapters
-     * @param {Number} totalViews
-     * @param {Number} totalFavorites
-     * @param {Number} totalFollowers
-     * @param {Number} totalComments
      * @param {String} createdAt
      * @param {String} updatedAt
      */
@@ -20,30 +16,24 @@ class ArtworkDetailResponseItem {
         id,
         title,
         thumbnailUrl,
+        originImageUrl,
         artworkStatus,
         publicLevel,
         totalUsersRated,
         averageStarRate,
         totalChapters,
-        totalViews,
-        totalFavorites,
-        totalFollowers,
-        totalComments,
         createdAt,
         updatedAt
     ) {
         this.id = id;
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
+        this.originImageUrl = originImageUrl;
         this.artworkStatus = artworkStatus;
         this.publicLevel = publicLevel;
         this.totalUsersRated = totalUsersRated;
         this.averageStarRate = averageStarRate;
         this.totalChapters = totalChapters;
-        this.totalViews = totalViews;
-        this.totalFavorites = totalFavorites;
-        this.totalFollowers = totalFollowers;
-        this.totalComments = totalComments;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

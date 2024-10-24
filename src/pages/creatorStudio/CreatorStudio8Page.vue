@@ -1,13 +1,19 @@
 <template>
     <q-page v-if="isLoading"></q-page>
     <q-page v-if="isNotFound">
-        <CreatorStudio8PageHeader :isNotFound="true" />
+        <CreatorStudio8PageHeader
+            :isNotFound="true"
+            :comicId="artworkDetail.id"
+        />
         <section class="row justify-center items-center" style="height: 100vh">
             <div class="col-8 shadow-1">Không tìm thấy</div>
         </section>
     </q-page>
     <q-page v-if="!isLoading && !isNotFound">
-        <CreatorStudio8PageHeader :headerTitle="artworkDetail.titleRef" />
+        <CreatorStudio8PageHeader
+            :headerTitle="artworkDetail.titleRef"
+            :comicId="artworkDetail.id"
+        />
         <form @submit.prevent class="q-pa-lg">
             <section id="general-info" class="row justify-center q-gutter-lg">
                 <section class="col-auto">
@@ -100,10 +106,13 @@
 </template>
 
 <script>
+// Import dependencies section.
 import { computed } from "vue";
-import { useQuasar } from "quasar";
+import { NumberHelper } from "src/helpers/NumberHelper";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
 
+// Import components section.
 import CreatorStudio8PageHeader from "components/pages/creatorStudio/CreatorStudio8Page/CreatorStudio8PageHeader.vue";
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
 import TitleInput from "components/common/creatorStudio/ArtworkTitleInput.vue";
@@ -115,16 +124,6 @@ import ThumbnailInput from "components/common/creatorStudio/ArtworkThumbnailInpu
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
 import CategoriesInput from "components/common/creatorStudio/ArtworkCategoriesInput.vue";
 import { CategoryItem } from "src/api.models/creatorStudio/common/CategoryItem";
-import { NumberHelper } from "src/helpers/NumberHelper";
-
-const errorNotification = {
-    position: "top",
-    color: "negative",
-    textColor: "light",
-    message: "Bạn chưa điền đầy đủ thông tin",
-    icon: "warning",
-    showTimeoutProgress: true,
-};
 
 export default {
     components: {
@@ -194,6 +193,8 @@ export default {
 
         if (!NumberHelper.isNumber(comicId)) {
             this.$router.push(artworkManagementRoute);
+
+            NotificationHelper.notifyError("Mã truyện không hợp lệ");
         }
     },
     async mounted() {
@@ -288,13 +289,15 @@ export default {
             const isValid = this.verifyAllInputs();
 
             if (!isValid) {
-                this.showErrorNotification();
+                NotificationHelper.notifyError(
+                    "Bạn chưa điền đầy đủ thông tin"
+                );
 
                 return;
             }
 
             if (!this.artworkDetail.confirmPolicy) {
-                this.showErrorNotification(
+                NotificationHelper.notifyError(
                     "Bạn chưa xác nhận quy tắc nội dung"
                 );
 
@@ -312,9 +315,11 @@ export default {
                 );
 
             if (result.isSuccess) {
-                this.showSuccessNotification("Cập nhật thông tin thành công");
+                NotificationHelper.notifySuccess(
+                    "Cập nhật thông tin thành công"
+                );
             } else {
-                this.showErrorNotification(
+                NotificationHelper.notifyError(
                     result.message ?? "Có lỗi từ server khi cập nhật"
                 );
             }
@@ -339,54 +344,6 @@ export default {
 
             return isValid;
         },
-    },
-    setup() {
-        const quasar = useQuasar();
-
-        const showErrorNotification = (message) => {
-            quasar.notify({
-                color: errorNotification.color,
-                textColor: errorNotification.textColor,
-                icon: errorNotification.icon,
-                message: message ?? errorNotification.message,
-                position: errorNotification.position,
-                actions: [
-                    {
-                        label: "Đóng",
-                        color: "yellow",
-                        handler: () => {
-                            /* console.log('wooow') */
-                        },
-                    },
-                ],
-                progress: errorNotification.showTimeoutProgress,
-            });
-        };
-
-        const showSuccessNotification = (message) => {
-            quasar.notify({
-                type: "positive",
-                textColor: "light",
-                icon: "info",
-                message: message,
-                position: "top",
-                actions: [
-                    {
-                        label: "Đóng",
-                        color: "light",
-                        handler: () => {
-                            /* console.log('wooow') */
-                        },
-                    },
-                ],
-                progress: errorNotification.showTimeoutProgress,
-            });
-        };
-
-        return {
-            showErrorNotification,
-            showSuccessNotification,
-        };
     },
 };
 
