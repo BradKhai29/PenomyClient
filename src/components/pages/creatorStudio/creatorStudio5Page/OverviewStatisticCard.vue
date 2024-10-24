@@ -46,6 +46,9 @@
 <script>
 import { CreatorStudio5ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio5Page/CreatorStudio5ApiHandler";
 import { OverviewStatisticResponseItem } from "src/api.models/creatorStudio/creatorStudio5Page/OverviewStatisticResponseItem";
+import { useCreatorStudio5Store } from "stores/pages/creatorStudio5/CreatorStudio5Store";
+
+const store = useCreatorStudio5Store();
 
 export default {
     data() {
@@ -69,9 +72,22 @@ export default {
 
         if (result) {
             this.overviewStatistic = result;
+
+            store.setTotalComics(this.overviewStatistic.totalComics);
+            store.setTotalAnimations(this.overviewStatistic.totalAnimations);
+            store.setTotalSeries(this.overviewStatistic.totalSeries);
         }
 
         this.isLoading = false;
+    },
+    methods: {
+        reloadState() {
+            console.log("Hello");
+
+            this.overviewStatistic.totalComics = store.totalComics;
+            this.overviewStatistic.totalAnimations = store.totalAnimations;
+            this.overviewStatistic.totalSeries = store.totalSeries;
+        },
     },
 };
 </script>

@@ -8,8 +8,8 @@ import { OriginItem } from "src/api.models/creatorStudio/common/OriginItem";
 import { PublicLevelItem } from "src/api.models/creatorStudio/common/PublicLevelItem";
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { GetArtworkDetail } from "src/api.models/creatorStudio/creatorStudio8Page/GetArtworkDetail";
-import { UpdateArtworkErrorCodeParser } from "src/api.models/creatorStudio/creatorStudio8Page/UpdateArtworkError";
 import { UpdateArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/UpdateArtworkResult";
+import { TemporarilyRemoveArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/TemporarilyRemoveArtworkResult";
 
 /**
  *  Parse the input data into category item array.
@@ -138,7 +138,7 @@ async function updateArtworkDetail(artworkDetail, isCategoriesUpdated) {
         );
     }
 
-    let result = new UpdateArtworkResult(false, null);
+    const result = new UpdateArtworkResult(false, null);
 
     try {
         await axios({
@@ -155,10 +155,9 @@ async function updateArtworkDetail(artworkDetail, isCategoriesUpdated) {
         const axiosError = AxiosHelper.toAxiosError(error);
         // console.log(axiosError);
 
-        const errorMessage =
-            UpdateArtworkErrorCodeParser.getMessageFromErrorCode(
-                axiosError.response.data.appCode
-            );
+        const errorMessage = UpdateArtworkResult.getMessageFromErrorCode(
+            axiosError.response.data.appCode
+        );
 
         result.message = errorMessage;
     }
@@ -222,12 +221,43 @@ async function getArtworkDetailById(artworkId) {
     }
 }
 
+/**
+ * Temporarily remove the comic with specified input id.
+ *
+ * @param {String} comicId The id of the comic to remove.
+ * @returns {Promise<TemporarilyRemoveArtworkResult>} The result after removing the artwork.
+ */
+async function temporarilyRemoveComicByIdAsync(comicId) {
+    const result = new TemporarilyRemoveArtworkResult(false, null);
+
+    try {
+        await axios({
+            url: `${BaseWebApiUrl}/art8/temp-remove/${comicId}`,
+            method: HttpMethod.DELETE,
+        });
+
+        result.isSuccess = true;
+    } catch (error) {
+        const axiosError = AxiosHelper.toAxiosError(error);
+
+        const errorMessage =
+            TemporarilyRemoveArtworkResult.getMessageFromErrorCode(
+                axiosError.response.data.appCode
+            );
+
+        result.message = errorMessage;
+    }
+
+    return result;
+}
+
 const CreatorStudio8ApiHandler = {
     getArtworkDetailByIdAsync: getArtworkDetailById,
     updateArtworkDetailAsync: updateArtworkDetail,
     getAllCategoriesAsync: getAllCategories,
     getAllOriginsAsync: getAllOrigins,
     getAllPublicLevelsAsync: getAllPublicLevels,
+    temporarilyRemoveComicByIdAsync: temporarilyRemoveComicByIdAsync,
 };
 
 export { CreatorStudio8ApiHandler };

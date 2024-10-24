@@ -26,23 +26,29 @@
                     </q-btn>
                 </router-link>
             </div>
-            <div :id="`${componentId}_pagination`">
-                <AppPagination
-                    v-if="paginationOption.allowPagination"
-                    v-model="currentPageNumber"
-                    :max="paginationOption.totalPages"
-                    :showBoundaryLinks="false"
-                    :showInput="true"
-                    :disable="isProcessing"
-                />
-            </div>
         </div>
         <div
-            v-for="artwork in displayArtworks"
+            v-for="(artwork, index) in displayArtworks"
             :key="artwork.id"
             class="artwork-card-wrapper q-mb-md"
         >
-            <ArtworkDetailCard :artworkId="artwork.id" v-bind="artwork" />
+            <ArtworkDetailCard
+                v-bind="artwork"
+                :isComic="loadComic"
+                :itemOrder="index + 1"
+                @removeItem="handleRemoveItem"
+            />
+        </div>
+        <div :id="`${componentId}_footer`" class="row">
+            <q-btn
+                v-if="!reachMaxPage"
+                no-caps
+                :loading="isProcessing || isLoading"
+                @click="loadNextPage"
+                class="col-grow text-light bg-dark text-subtitle1 text-weight-bold"
+            >
+                Tải thêm
+            </q-btn>
         </div>
     </section>
 </template>
@@ -54,17 +60,18 @@ import {
     CreatorStudio5ApiHandler,
 } from "src/api.handlers/creatorStudio/creatorStudio5Page/CreatorStudio5ApiHandler";
 import { ArtworkDetailResponseItem } from "src/api.models/creatorStudio/creatorStudio5Page/ArtworkDetailResponseItem";
-import { ArtworkPaginationManager } from "src/api.models/creatorStudio/creatorStudio5Page/ArtworkPaginationManager";
 import { PaginationOptionResponseItem } from "src/api.models/creatorStudio/creatorStudio5Page/PaginationOptionResponseItem";
+import { useCreatorStudio5Store } from "src/stores/pages/creatorStudio5/CreatorStudio5Store";
 
 // Import component sections.
-import AppPagination from "src/components/common/others/AppPagination.vue";
 import ArtworkDetailCard from "./ArtworkDetailCard.vue";
+
+const store = useCreatorStudio5Store();
 
 export default {
     name: "ArtworkSection",
+    emits: ["updateSection"],
     components: {
-        AppPagination,
         ArtworkDetailCard,
     },
     props: {
@@ -102,13 +109,7 @@ export default {
              * @type {Number} The type of this refs.
              */
             currentPageNumber: 1,
-            /**
-             * The manager instance that used to manage the pagination.
-             *
-             * @type {ArtworkPaginationManager} The type of this property.
-             * @readonly This property is readonly.
-             */
-            artworkPaginationManager: new ArtworkPaginationManager(),
+            reachMaxPage: false,
             /**
              * The list of artworks that will be displayed when pagination.
              *
@@ -133,6 +134,8 @@ export default {
         CreatorStudio5ApiHandler.getPaginationOptionsAsync().then((result) => {
             if (result) {
                 this.paginationOption = result;
+                this.reachMaxPage =
+                    this.currentPageNumber == this.paginationOption.totalPages;
             }
         });
 
@@ -144,19 +147,12 @@ export default {
         this.isProcessing = false;
     },
     methods: {
-        async getArtworksByPaginationAsync() {
-            // Check if the entry is existed or not from the artwork pagination manager.
-            const foundEntry = this.artworkPaginationManager.getEntry(
-                this.currentPageNumber
-            );
-
-            // Display the belonged artwork list that stored in the entry.
-            if (foundEntry) {
-                this.displayArtworks = foundEntry.artworkList;
-
-                return;
+        loadNextPage() {
+            if (this.currentPageNumber < this.paginationOption.totalPages) {
+                this.currentPageNumber++;
             }
-
+        },
+        async getArtworksByPaginationAsync() {
             // Indicate the artwork type to load for
             // this section based on the props (loadComic).
             const artworkTypeToLoad = this.loadComic
@@ -172,19 +168,38 @@ export default {
                     this.currentPageNumber
                 );
 
-            // Add the loaded result as an entry the artwork pagination manager.
-            if (result) {
-                const key = this.currentPageNumber;
-                this.artworkPaginationManager.addEntry(key, result);
-            }
-
             // Turn off the flag and display the artwork list that fetched from the webapi.
             this.isProcessing = false;
-            this.displayArtworks = result;
+            this.displayArtworks.push(...result);
+        },
+        handleRemoveItem(artworkId) {
+            const foundIndex = this.displayArtworks.findIndex(
+                (item) => item.id == artworkId
+            );
+
+            const notFoundIndex = -1;
+            if (foundIndex == notFoundIndex) {
+                return;
+            }
+
+            // Remove the items from the display artwork list.
+            this.displayArtworks.splice(foundIndex, 1);
+            this.paginationOption.totalArtworks--;
+
+            if (this.loadComic) {
+                store.setTotalComics(this.paginationOption.totalArtworks);
+            } else {
+                store.setTotalAnimations(this.paginationOption.totalArtworks);
+            }
+
+            this.$emit("updateSection");
         },
     },
     watch: {
         currentPageNumber() {
+            this.reachMaxPage =
+                this.currentPageNumber >= this.paginationOption.totalPages;
+
             this.getArtworksByPaginationAsync();
         },
     },
