@@ -20,28 +20,28 @@
                     <div class="text-center">
                         <q-btn round v-if="isAuth" size="sm">
                             <q-avatar>
-                                <img :src="avatarUrl" />
+                                <img :src="userProfile.avatarUrl" />
                             </q-avatar>
                         </q-btn>
-                        <q-icon
-                            v-else
-                            name="account_circle"
-                            class="text-dark"
-                            size="xl"
-                        />
+                        <q-btn round v-else>
+                            <q-icon
+                                name="account_circle"
+                                class="text-dark"
+                                size="xl"
+                            />
+                        </q-btn>
                     </div>
                     <div
                         class="text-subtitle1 text-weight-bold text-center avatar-username"
                     >
-                        {{ userName ?? "Chưa đăng nhập" }}
+                        {{ userProfile.nickname ?? "Chưa đăng nhập" }}
                     </div>
                     <div class="text-center">
                         <q-badge
-                            v-if="!isCreator"
+                            v-if="!userProfile.isCreator"
                             class="text-subtitle2 inline bg-light-300 text-dark"
                         >
-                            <span v-if="!isAuth">Guest</span>
-                            <span v-else>User</span>
+                            <span>{{ isAuth ? "User" : "Guest" }}</span>
                         </q-badge>
                         <q-badge
                             v-else
@@ -55,7 +55,7 @@
 
             <div class="menu-item-separator"></div>
 
-            <div class="bg-light-100 text-subtitle1">
+            <div id="user-profile-actions" class="bg-light-100 text-subtitle1">
                 <q-item
                     v-if="isAuth"
                     id="btn-login"
@@ -149,21 +149,22 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 
-const authStore = useAuthStore();
 const router = useRouter();
+const authStore = useAuthStore();
 
 const showMenu = ref(false);
 const isAuth = ref(authStore.isAuth);
-const isCreator = ref(authStore.isCreator);
-const userName = ref(null);
-const avatarUrl = ref(authStore.avatarUrl);
+console.log(isAuth.value);
+
+const userProfile = ref(authStore.currentUserProfile);
 
 function toggleProfileButton() {
     // Close the avatar menu when toggling the button.
     showMenu.value = false;
 
-    if (authStore.checkAuth) {
+    if (authStore.isAuth) {
         console.log("Login success");
+
         return;
     }
 
@@ -171,37 +172,11 @@ function toggleProfileButton() {
     router.push("auth/login");
 }
 
-function signInAsUser() {
-    userName.value = "DuongKhai2904";
-    authStore.signInAsUser(null, null);
-}
-
-function signInAsCreator() {
-    userName.value = "DuongKhai2904";
-    authStore.signInAsCreator(null, null);
-}
-
 function signOut(event) {
     showMenu.value = false;
-
-    userName.value = null;
     authStore.signOut();
+    isAuth.value = false;
 }
-
-// Watch if any change in the state of authStore.
-watch(
-    () => authStore.isAuth,
-    () => {
-        isAuth.value = authStore.checkAuth;
-    }
-);
-
-watch(
-    () => authStore.isCreator,
-    () => {
-        isCreator.value = authStore.checkCreator;
-    }
-);
 </script>
 
 <style scoped>

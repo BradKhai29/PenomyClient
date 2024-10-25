@@ -204,6 +204,9 @@ export default {
 
             if (result.isSuccess) {
                 NotificationHelper.notifySuccess("Đăng ký thành công");
+
+                // Redirect to login page when success.
+                this.$router.push("/auth/login");
                 return;
             }
 

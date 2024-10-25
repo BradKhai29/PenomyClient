@@ -104,7 +104,7 @@
                 </div>
             </section>
             <div class="artwork-title q-mt-md">
-                <router-link :to="`/studio/comic/edit/${id}`">
+                <router-link :to="`/studio/comic/detail/${id}`">
                     <q-btn
                         dense
                         flat
