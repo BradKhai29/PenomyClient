@@ -84,8 +84,8 @@ async function sendComment() {
                 url: apiUrl,
                 method: HttpMethod.PUT,
                 data: {
-                    newComment: comment.value,
-                    commentId: (props.commentId),
+                    newComment: `${comment.value}`,
+                    commentId: props.commentId,
                 },
             })
                 .then(() => {
@@ -119,10 +119,10 @@ async function sendComment() {
                     url: apiUrl,
                     method: HttpMethod.POST,
                     data: {
-                        artworkId: props.artworkId,
-                        chapterId: props.chapterId,
+                        artworkId: `${props.artworkId}`,
+                        chapterId: `${props.chapterId}`,
                         isDirectlyComment: isDirectlyComment.value,
-                        commentContent: comment.value,
+                        commentContent: `${comment.value}`,
                         userId: 123
                     },
                 })
