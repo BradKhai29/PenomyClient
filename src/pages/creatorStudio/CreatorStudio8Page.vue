@@ -318,15 +318,15 @@ export default {
                 NotificationHelper.notifySuccess(
                     "Cập nhật thông tin thành công"
                 );
+
+                // Update the flag when the changes are updated successfully.
+                this.hasChangesInData = false;
+                this.isDetailUpdating = false;
             } else {
                 NotificationHelper.notifyError(
                     result.message ?? "Có lỗi từ server khi cập nhật"
                 );
             }
-
-            // Update the flag when the changes are updated successfully.
-            this.hasChangesInData = false;
-            this.isDetailUpdating = false;
         },
         addVerifyInputCallback(callback) {
             this.verifyInputCallbacks.push(callback);

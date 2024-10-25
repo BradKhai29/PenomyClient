@@ -2,7 +2,7 @@
     <q-btn
         @click="loginWithGoogle"
         no-caps
-        class="q-py-sm border-radius-md"
+        class="q-py-sm border-radius-md bg-light-100 shadow-1"
         :loading="isProcessing"
         :disable="isLoading || isProcessing || loadingMode"
     >

@@ -43,7 +43,7 @@ const props = defineProps({
     },
 });
 
-const emit = (["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 
 /**
  * @param {InputEvent} event

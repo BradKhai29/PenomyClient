@@ -25,10 +25,12 @@
 
 /* Border radius section */
 .border-radius-sm {
+    overflow: hidden !important;
     border-radius: var(--border-radius-sm) !important;
 }
 
 .border-radius-md {
+    overflow: hidden !important;
     border-radius: var(--border-radius-md) !important;
 }
 

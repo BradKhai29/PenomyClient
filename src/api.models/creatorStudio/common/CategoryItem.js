@@ -12,6 +12,24 @@ class CategoryItem {
         this.isSelected = isSelected ?? false;
         this.matchedSearch = matchedSearch ?? false;
     }
+
+    /**
+     * Map the input api response into an array of CategoryItem.
+     *
+     * @param {CategoryItem[]} responseBody The api resposne body to map.
+     * @returns {CategoryItem[]} An array of CategoryItem.
+     */
+    static asArray(responseBody) {
+        const categories = [];
+
+        for (const item of responseBody) {
+            const category = new CategoryItem(item.id, item.label);
+
+            categories.push(category);
+        }
+
+        return categories;
+    }
 }
 
 export { CategoryItem };

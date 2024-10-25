@@ -109,7 +109,7 @@ export default {
              * @type {Number} The type of this refs.
              */
             currentPageNumber: 1,
-            reachMaxPage: false,
+            reachMaxPage: true,
             /**
              * The list of artworks that will be displayed when pagination.
              *
@@ -134,8 +134,11 @@ export default {
         CreatorStudio5ApiHandler.getPaginationOptionsAsync().then((result) => {
             if (result) {
                 this.paginationOption = result;
-                this.reachMaxPage =
-                    this.currentPageNumber == this.paginationOption.totalPages;
+                if (this.paginationOption.totalPages > 0) {
+                    this.reachMaxPage =
+                        this.currentPageNumber ==
+                        this.paginationOption.totalPages;
+                }
             }
         });
 
