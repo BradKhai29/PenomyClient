@@ -92,8 +92,9 @@ export default {
 
             // Turn of the is processing flag.
             this.isProcessing = false;
+
             if (!result.isSuccess) {
-                NotificationHelper.notifyError("Có lỗi xảy ra khi lấy link");
+                NotificationHelper.notifyError(result.message);
 
                 return;
             }

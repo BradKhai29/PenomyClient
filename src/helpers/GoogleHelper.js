@@ -70,7 +70,6 @@ function loadClientLibrary(loadSuccessCallback) {
             loadSuccessCallback();
 
             clientLibraryState.google = window.google;
-            console.log(clientLibraryState.google);
         }
     });
 

@@ -82,6 +82,8 @@
 <script>
 // Import dependencies section.
 import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { LoginApiHandler } from "src/api.handlers/auth/auth1Page/LoginApiHandler";
+import { useAuthStore } from "src/stores/common/AuthStore";
 
 // Import components section.
 import EmailInput from "src/components/common/auth/EmailInput.vue";
@@ -122,7 +124,7 @@ export default {
 
             return isValid;
         },
-        login() {
+        async login() {
             // Prevent user to click the button when the api is processing.
             if (this.isProcessing) {
                 return;
@@ -135,11 +137,38 @@ export default {
                 return;
             }
 
+            // Turn on the isProcessing flag.
             this.isProcessing = true;
 
-            setTimeout(() => {
-                this.isProcessing = false;
-            }, 2000);
+            const result = await LoginApiHandler.loginAsync(
+                this.email,
+                this.password,
+                this.rememberLogin
+            );
+
+            // Turn of the is processing flag after handling the request.
+            this.isProcessing = false;
+
+            if (!result.isSuccess) {
+                NotificationHelper.notifyError(
+                    "Thông tin đăng nhập không đúng"
+                );
+
+                return;
+            }
+
+            // Store the related information to authStore.
+            const authStore = useAuthStore();
+
+            authStore.signIn(
+                result.accessToken,
+                result.refreshToken,
+                result.user
+            );
+
+            NotificationHelper.notifySuccess("Đăng nhập thành công");
+            // Redirect back to homepage.
+            this.$router.push("/");
         },
     },
     watch: {

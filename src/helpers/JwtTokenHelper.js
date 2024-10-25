@@ -17,7 +17,7 @@ class DecodeJwtPayload {
 
 const claimTypes = {
     userId: "userId",
-    email: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+    email: "app-user-email",
     role: "role",
 };
 
@@ -49,8 +49,6 @@ function decodeJwt(token) {
 
         // Parse the decoded payload string into a JSON object
         const jsonPayload = JSON.parse(decodedPayload);
-
-        console.log(jsonPayload);
 
         return new DecodeJwtPayload(
             jsonPayload[claimTypes.userId],

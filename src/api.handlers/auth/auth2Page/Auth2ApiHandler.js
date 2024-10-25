@@ -29,7 +29,9 @@ async function getRegisterLinkAsync(email) {
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
 
-        // const appCode = axiosError.data.appCode;
+        result.message = GetRegisterLinkResult.getMessageFromErrorCode(
+            axiosError.response.data.appCode
+        );
 
         return result;
     }
