@@ -34,7 +34,6 @@ async function getComments() {
     })
         .then((response) => {
             comments.value = response.data.body.commentList;
-            console.log(comments.value)
         });
 }
 function onCommentDelete(id) {

@@ -41,7 +41,7 @@
         <q-item tag="div">
             <q-item-label class="reply-container">
                 <a class="cursor-pointer" @click="isReply = !isReply"><q-icon name="chat_bubble" /> Phản hồi</a>
-                <a class="cursor-pointer">
+                <a class="cursor-pointer" @click="getReplyComments()">
                     {{ comment.totalReplies }} phản hồi<q-icon name="arrow_drop_down_circle" />
                 </a>
 
@@ -59,15 +59,18 @@
         <div class="q-pa-md">
             <child-comment v-for="reply in replies" :key="reply.id" :comment="reply" />
         </div>
-        <div v-if="isReply" class="q-pa-md"><comment-input-field :isReply='editCommentProps.isReply'
-                :parent-comment-id="props.comment.id" /></div>
+        <div v-if="isReply" class="q-pa-md">
+            Reply to this comment
+            <comment-input-field :isReply='editCommentProps.isReply' :parent-comment-id="props.comment.id"
+                />
+        </div>
         <q-separator />
     </div>
     <confirm-popup v-if="isDelete" message="You want to delete this comment?" @popupClick="popupClickHandler" />
 </template>
 
 <script setup>
-import { computed, ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 import ChildComment from './ChildComment.vue';
 import CommentInputField from './CommentInputField.vue';
 import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
@@ -108,6 +111,7 @@ const isLike = ref(props.comment.isLiked);
 const deleteUrl = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id}`
 const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`
 const unlikeUrl = `${BaseWebApiUrl}/g57/comment/unlike/`
+const replyUrl = `${BaseWebApiUrl}/g58/ArtworkComment/reply/`
 const likeCount = ref(props.comment.likeCount);
 
 var editCommentProps = {
@@ -116,9 +120,9 @@ var editCommentProps = {
     oldComment: props.comment.content,
 }
 
-async function getComments() {
+async function getReplyComments() {
     await axios({
-        url: apiUrl,
+        url: replyUrl,
         method: HttpMethod.GET,
         params: {
             artworkId: props.comment.id
