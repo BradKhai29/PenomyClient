@@ -78,6 +78,7 @@
                                 class="q-mt-xs bg-primary text-dark text-weight-bold col-grow"
                                 label="Xác nhận tạo"
                                 :loading="isCreating"
+                                :disable="isCreating"
                                 @click="createChapter(false)"
                             />
                             <q-btn
@@ -96,6 +97,8 @@
                             </q-btn>
                             <q-btn
                                 v-else-if="hasInputData"
+                                :loading="isCreating"
+                                :disable="isCreating"
                                 @click="createChapter(true)"
                                 class="q-mt-xs bg-dark text-light text-weight-bold col-grow"
                             >
@@ -129,17 +132,10 @@ import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevel
 import ChapterImageListInput from "components/common/creatorStudio/ChapterImageListInput.vue";
 import ChapterPublishOptionsInput from "src/components/common/creatorStudio/ChapterPublishOptionsInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Constansts support for page.
 const artworkManagementRoute = "/studio/artworks";
-const errorNotification = {
-    position: "top",
-    color: "negative",
-    textColor: "light",
-    message: "Bạn chưa điền đầy đủ thông tin",
-    icon: "warning",
-    showTimeoutProgress: true,
-};
 
 export default {
     components: {
@@ -214,48 +210,6 @@ export default {
         // Turn off the isLoading flag.
         this.isLoading = false;
     },
-    setup() {
-        const quasar = useQuasar();
-
-        const showErrorNotification = (message) => {
-            quasar.notify({
-                color: errorNotification.color,
-                textColor: errorNotification.textColor,
-                icon: errorNotification.icon,
-                message: message ?? errorNotification.message,
-                position: errorNotification.position,
-                actions: [
-                    {
-                        label: "Đóng",
-                        color: "yellow",
-                    },
-                ],
-                progress: errorNotification.showTimeoutProgress,
-            });
-        };
-
-        const showSuccessNotification = (message) => {
-            quasar.notify({
-                type: "positive",
-                textColor: "light",
-                icon: "info",
-                message: message,
-                position: "top",
-                actions: [
-                    {
-                        label: "Đóng",
-                        color: "light",
-                    },
-                ],
-                progress: errorNotification.showTimeoutProgress,
-            });
-        };
-
-        return {
-            showErrorNotification,
-            showSuccessNotification,
-        };
-    },
     methods: {
         /**
          * Detect if any change in input to trigger the hasInputData flag.
@@ -291,7 +245,7 @@ export default {
             const isValidInput = this.verifyInput();
 
             if (!isValidInput) {
-                this.showErrorNotification();
+                NotificationHelper.notifyError("Bạn điền thiếu thông tin");
 
                 return;
             }
@@ -301,20 +255,28 @@ export default {
                 isDrafted = false;
             }
 
+            this.isCreating = true;
+
             const result =
                 await CreatorStudio9ApiHandler.createComicChapterAsync(
                     this.chapterDetail,
                     isDrafted
                 );
 
+            this.isCreating = false;
+
             if (result.isSuccess) {
                 const message = isDrafted
                     ? "Bản nháp được lưu"
                     : "Tạo mới thành công";
 
-                this.showSuccessNotification(message);
+                this.hasInputData = false;
+                NotificationHelper.notifySuccess(message);
+                this.$router.push(
+                    `/studio/comic/detail/${this.chapterDetail.comicId}`
+                );
             } else {
-                this.showErrorNotification(result.message);
+                NotificationHelper.notifyError(result.message);
             }
         },
     },

@@ -47,6 +47,11 @@ function getFormatISODateString(
         // Format to "dd/mm/yyyy hh:mm" as default options.
         return `${day}/${month}/${year} - ${hours}:${minutes}`;
     }
+
+    if (outputFormat == DD_MM_YYYY_FORMAT) {
+        // Format to "dd/mm/yyyy".
+        return `${day}/${month}/${year}`;
+    }
 }
 
 /**
