@@ -1,5 +1,5 @@
 <template>
-    <div class="comment-container">
+    <div :class="isReplyComment ? '' : 'comment-container'">
         <q-item tag="div" class="user-infor q-pa-md">
             <q-avatar size="3em">
                 <img :src="comment.avatar" alt="">
@@ -41,7 +41,7 @@
         <q-item tag="div">
             <q-item-label class="reply-container">
                 <a class="cursor-pointer" @click="isReply = !isReply"><q-icon name="chat_bubble" /> Phản hồi</a>
-                <a class="cursor-pointer">
+                <a class="cursor-pointer" @click="isShowReplyComment = !isShowReplyComment">
                     {{ comment.totalReplies }} phản hồi<q-icon name="arrow_drop_down_circle" />
                 </a>
 
@@ -56,11 +56,12 @@
                 </q-btn>
             </q-item-label>
         </q-item>
-        <div class="q-pa-md">
-            <child-comment v-for="reply in replies" :key="reply.id" :comment="reply" />
+        <div class="q-pa-md" v-show="isShowReplyComment">
+            <child-comment-loader :parentCommentId='props.comment.id' />
         </div>
-        <div v-if="isReply" class="q-pa-md"><comment-input-field :isReply='editCommentProps.isReply'
-                :parent-comment-id="props.comment.id" /></div>
+        <div v-if="isReply" class="q-pa-md">
+            <comment-input-field :isReply='editCommentProps.isReply' :parent-comment-id="props.comment.id" />
+        </div>
         <q-separator />
     </div>
     <confirm-popup v-if="isDelete" message="You want to delete this comment?" @popupClick="popupClickHandler" />
@@ -70,6 +71,7 @@
 import { computed, ref, defineEmits } from 'vue';
 import ChildComment from './ChildComment.vue';
 import CommentInputField from './CommentInputField.vue';
+import ChildCommentLoader from './ChildCommentLoader.vue';
 import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
 import ConfirmPopup from './ConfirmPopup.vue';
 import axios from 'axios';
@@ -94,13 +96,14 @@ var props = defineProps({
             }
         }
     },
-    replies: {
-        type: Array,
-        default: () => []
+    isReplyComment: {
+        type: Boolean,
+        default: false
     }
 })
 
 const emit = defineEmits(['deleteComment']);
+const isShowReplyComment = ref(false);
 const isReply = ref(false);
 const isEdit = ref(false);
 const isDelete = ref(false);
@@ -114,19 +117,6 @@ var editCommentProps = {
     isUpdate: true,
     isReply: true,
     oldComment: props.comment.content,
-}
-
-async function getComments() {
-    await axios({
-        url: apiUrl,
-        method: HttpMethod.GET,
-        params: {
-            artworkId: props.comment.id
-        },
-    })
-        .then((response) => {
-            comments.value = response.data.body.commentList;
-        });
 }
 
 function handleKeydown(event) {
