@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { computed, ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 import ChildComment from './ChildComment.vue';
 import CommentInputField from './CommentInputField.vue';
 import ChildCommentLoader from './ChildCommentLoader.vue';
@@ -111,6 +111,7 @@ const isLike = ref(props.comment.isLiked);
 const deleteUrl = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id}`
 const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`
 const unlikeUrl = `${BaseWebApiUrl}/g57/comment/unlike/`
+const replyUrl = `${BaseWebApiUrl}/g58/ArtworkComment/reply/`
 const likeCount = ref(props.comment.likeCount);
 
 var editCommentProps = {

@@ -15,18 +15,20 @@
                     <q-btn flat round dense icon="image" size=".9rem" />
                 </div>
             </q-item-section>
-            <q-btn round dense icon="send" size=".5rem" color="primary" padding=".6rem" @click="sendComment(user)" />
+            <q-btn round dense icon="send" size=".5rem" color="primary" padding=".6rem" @click="sendComment(user)">
+            </q-btn>
         </q-item>
     </div>
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import EmojiPickerBoard from './EmojiPickerBoard.vue';
 const isDirectlyComment = ref(true);
+const isCommentEmpty = ref(false);
 const props = defineProps({
     artworkId: {
         type: String,
@@ -76,7 +78,7 @@ function onEmojiSelected(emoji) {
 }
 
 async function sendComment() {
-    if (comment.value.match(/^\n+$/) == null && comment.value !== '') {
+    if (comment.value.match(/^\s*$/) == null) {
         comment.value = comment.value.trim();
         if (props.isUpdate) {
             const apiUrl = `${BaseWebApiUrl}/G53/comment/edit`;
@@ -95,22 +97,22 @@ async function sendComment() {
         } else {
             if (props.isReply) {
                 isDirectlyComment.value = false
-                const apiUrl = `${BaseWebApiUrl}/g??/comment/reply`;
+                const apiUrl = `${BaseWebApiUrl}/g58/replycomment/create`;
                 await axios({
                     url: apiUrl,
                     method: HttpMethod.POST,
                     data: {
-                        artworkId: props.artworkId,
-                        chapterId: props.chapterId,
-                        isDirectlyComment: isDirectlyComment.value,
-                        commentContent: comment.value,
-                        userId: 123,
-                        parentCommentId: props.parentCommentId
+                        artworkId: `${props.artworkId}`,
+                        chapterId: `${props.chapterId}`,
+                        commentContent: `${comment.value}`,
+                        userId: `123456789012345678`,
+                        parentCommentId: `${props.parentCommentId}`,
                     },
                 })
                     .then((response) => {
+                        console.log(response);
                         comment.value = '';
-                        emit('createComment');
+                        emit('replyComment');
                     });
             }
             else {
@@ -128,10 +130,16 @@ async function sendComment() {
                 })
                     .then(() => {
                         comment.value = '';
+                        isCommentEmpty.value = false
                         emit('createComment');
                     });
             }
         }
+    } else {
+        isCommentEmpty.value = true
+        setTimeout(() => {
+            isCommentEmpty.value = false
+        }, 1000)
     }
 }
 
