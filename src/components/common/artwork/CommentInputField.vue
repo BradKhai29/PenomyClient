@@ -7,7 +7,6 @@
                     <q-btn flat round dense icon="emoji_emotions" size=".9rem">
                         <q-menu>
                             <emoji-picker-board @onIconSelected="onEmojiSelected" />
-
                         </q-menu>
                     </q-btn>
 
@@ -27,6 +26,7 @@ import axios from 'axios';
 import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import EmojiPickerBoard from './EmojiPickerBoard.vue';
+
 const isDirectlyComment = ref(true);
 const isCommentEmpty = ref(false);
 const props = defineProps({
@@ -64,14 +64,8 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['createComment', 'editComment']);
+const emit = defineEmits(['createComment', 'editComment','replyComment']);
 const comment = ref(props.oldComment);
-
-if (props.isUpdate) {
-    emit.value = 'editComment';
-} else {
-    emit.value = 'createComment';
-}
 
 function onEmojiSelected(emoji) {
     comment.value += emoji;
@@ -109,10 +103,9 @@ async function sendComment() {
                         parentCommentId: `${props.parentCommentId}`,
                     },
                 })
-                    .then((response) => {
-                        console.log(response);
+                    .then(() => {
                         comment.value = '';
-                        emit('replyComment');
+                        emit('replyComment', props.parentCommentId);
                     });
             }
             else {

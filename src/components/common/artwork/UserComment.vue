@@ -1,5 +1,5 @@
 <template>
-    <div :class="isReplyComment ? '' : 'comment-container'">
+    <div :class="!isReplyComment ? 'comment-container' : ''">
         <q-item tag="div" class="user-infor q-pa-md">
             <q-avatar size="3em">
                 <img :src="comment.avatar" alt="">
@@ -39,12 +39,11 @@
         </div>
 
         <q-item tag="div">
-            <q-item-label class="reply-container">
+            <q-item-label class="reply-container" v-if="!isReplyComment">
                 <a class="cursor-pointer" @click="isReply = !isReply"><q-icon name="chat_bubble" /> Phản hồi</a>
                 <a class="cursor-pointer" @click="isShowReplyComment = !isShowReplyComment">
                     {{ comment.totalReplies }} phản hồi<q-icon name="arrow_drop_down_circle" />
                 </a>
-
             </q-item-label>
             <q-space></q-space>
             <q-item-label>
@@ -56,20 +55,20 @@
                 </q-btn>
             </q-item-label>
         </q-item>
-        <div class="q-pa-md" v-show="isShowReplyComment">
-            <child-comment-loader :parentCommentId='props.comment.id' />
-        </div>
-        <div v-if="isReply" class="q-pa-md">
-            <comment-input-field :isReply='editCommentProps.isReply' :parent-comment-id="props.comment.id" />
-        </div>
         <q-separator />
+        <div v-if="isReply" class="q-pa-md">
+            <comment-input-field :isReply='editCommentProps.isReply' :parent-comment-id="props.comment.id"
+                @replyComment="onReplyCommentCreate" />
+        </div>
+        <div class="q-pa-xl" v-show="isShowReplyComment">
+            <child-comment-loader :parentCommentId='props.comment.id' @removeReplyComment="onReplyCommentDelete" />
+        </div>
     </div>
     <confirm-popup v-if="isDelete" message="You want to delete this comment?" @popupClick="popupClickHandler" />
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import ChildComment from './ChildComment.vue';
 import CommentInputField from './CommentInputField.vue';
 import ChildCommentLoader from './ChildCommentLoader.vue';
 import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
@@ -102,7 +101,7 @@ var props = defineProps({
     }
 })
 
-const emit = defineEmits(['deleteComment']);
+const emit = defineEmits(['deleteComment', 'replyComment', 'replyCommentDelete']);
 const isShowReplyComment = ref(false);
 const isReply = ref(false);
 const isEdit = ref(false);
@@ -111,7 +110,6 @@ const isLike = ref(props.comment.isLiked);
 const deleteUrl = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id}`
 const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`
 const unlikeUrl = `${BaseWebApiUrl}/g57/comment/unlike/`
-const replyUrl = `${BaseWebApiUrl}/g58/ArtworkComment/reply/`
 const likeCount = ref(props.comment.likeCount);
 
 var editCommentProps = {
@@ -177,6 +175,15 @@ function editCommentHandler(newComment) {
     isEdit.value = false
     editCommentProps.oldComment = newComment
 }
+
+function onReplyCommentCreate(parentCommentId) {
+    emit('replyComment', parentCommentId)
+}
+
+function onReplyCommentDelete(parentCommentId) {
+    emit('replyCommentDelete', parentCommentId)
+}
+
 </script>
 <script>
 export default {

@@ -1,17 +1,22 @@
 <template>
     <comment-input-field :artworkId="props.artworkId" @createComment="onCreateComment" />
     <h5 class="no-comment" v-if="comments.length === 0">No comments</h5>
-    <UserComment v-for="comment in comments" :key="comment.id" :comment="comment" @deleteComment='onCommentDelete' />
+    <UserComment v-for="comment in comments" :key="comment.id" :comment="comment" @deleteComment='onCommentDelete'
+        @replyComment='onReplyCommentCreate' @replyCommentDelete='onReplyCommentDelete' />
 </template>
+
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import UserComment from "./UserComment.vue";
 import CommentInputField from "./CommentInputField.vue";
+import { useArtwork3Store } from 'src/stores/pages/artwork3/Artwork3Store';
+
 var comments = ref([]);
 const apiUrl = `${BaseWebApiUrl}/g10/ArtworkComment/get`;
+const store = useArtwork3Store();
 
 var props = defineProps({
     artworkId: {
@@ -21,6 +26,11 @@ var props = defineProps({
 });
 onMounted(() => {
     getComments()
+})
+
+watch(() => store.target, () => {
+    console.log("store change")
+    comments.value.filter((comment) => comment.id == store.commentId).totalReplies = store.getTotalReply
 })
 
 async function getComments() {
@@ -42,6 +52,14 @@ function onCommentDelete(id) {
 
 function onCreateComment() {
     getComments()
+}
+
+function onReplyCommentCreate(parentCommentId) {
+    comments.value.find((comment) => comment.id == parentCommentId).totalReplies += 1;
+}
+
+function onReplyCommentDelete(parentCommentId) {
+    comments.value.find((comment) => comment.id == parentCommentId).totalReplies -= 1;
 }
 </script>
 
