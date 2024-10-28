@@ -41,7 +41,9 @@ const props = defineProps({
         default: "0",
     },
     parentCommentId: {
-
+        type: String,
+        required: false,
+        default: "0",
     },
     commentId: {
         type: String,
@@ -64,7 +66,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['createComment', 'editComment','replyComment']);
+const emit = defineEmits(['createComment', 'editComment', 'replyComment']);
 const comment = ref(props.oldComment);
 
 function onEmojiSelected(emoji) {

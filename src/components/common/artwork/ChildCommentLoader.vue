@@ -9,13 +9,9 @@ import axios from "axios";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import UserComment from "./UserComment.vue";
-import { defineExpose } from 'vue'
-// import { useArtwork3Store } from "src/stores/pages/artwork3/Artwork3Store";
 
 var comments = ref([]);
 const apiUrl = `${BaseWebApiUrl}/g59/replycomment/get`;
-// const store = useArtwork3Store();
-
 
 const emit = defineEmits(['removeReplyComment']);
 var props = defineProps({
@@ -28,12 +24,13 @@ var props = defineProps({
 onMounted(() => {
     getComments()
 })
+
 async function getComments() {
     await axios({
         url: apiUrl,
         method: HttpMethod.GET,
         params: {
-            parentCommentId: `${props.parentCommentId}`,
+            parentCommentId: props.parentCommentId,
             userId: '1234'
         },
     })
@@ -42,19 +39,9 @@ async function getComments() {
         });
 }
 
-defineExpose({
-    onReplyCommentCreate() {
-        getComments()
-    }
-})
-
 function onCommentDelete(id) {
     comments.value = comments.value.filter((comment) => comment.id !== id)
-    // store.setTotalReply(comments.value.length)
-    // store.setCommentId(props.parentCommentId)
-
     emit('removeReplyComment', props.parentCommentId)
-
 }
 
 function onReplyCommentCreate() {

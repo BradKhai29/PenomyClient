@@ -56,12 +56,13 @@
             </q-item-label>
         </q-item>
         <q-separator />
-        <div v-if="isReply" class="q-pa-md">
+        <div class="q-pr-xl q-pl-xl q-pt-md" v-if="isReply">
             <comment-input-field :isReply='editCommentProps.isReply' :parent-comment-id="props.comment.id"
                 @replyComment="onReplyCommentCreate" />
         </div>
-        <div class="q-pa-xl" v-show="isShowReplyComment">
-            <child-comment-loader :parentCommentId='props.comment.id' @removeReplyComment="onReplyCommentDelete" />
+        <div class="q-pr-xl q-pl-xl q-pt-md" v-show="isShowReplyComment">
+            <child-comment-loader :key="reloadKey" :parentCommentId='props.comment.id'
+                @removeReplyComment="onReplyCommentDelete" />
         </div>
     </div>
     <confirm-popup v-if="isDelete" message="You want to delete this comment?" @popupClick="popupClickHandler" />
@@ -88,9 +89,9 @@ var props = defineProps({
                 username: "username",
                 postDime: "today",
                 content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut doloribus maiores repellat sit, ad fuga nihil fugiat adipisci voluptate aliquid eum corrupti reiciendis, nam explicabo accusantium vitae voluptatum dolore asperiores?",
-                likeCount: 10,
-                totalReplies: 20,
-                isAuthor: true,
+                likeCount: 0,
+                totalReplies: 0,
+                isAuthor: false,
                 isLiked: false
             }
         }
@@ -111,6 +112,7 @@ const deleteUrl = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id
 const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`
 const unlikeUrl = `${BaseWebApiUrl}/g57/comment/unlike/`
 const likeCount = ref(props.comment.likeCount);
+const reloadKey = ref(0);
 
 var editCommentProps = {
     isUpdate: true,
@@ -177,6 +179,7 @@ function editCommentHandler(newComment) {
 }
 
 function onReplyCommentCreate(parentCommentId) {
+    reloadKey.value += 1
     emit('replyComment', parentCommentId)
 }
 
