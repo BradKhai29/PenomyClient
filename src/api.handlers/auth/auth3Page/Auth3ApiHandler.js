@@ -14,8 +14,11 @@ import { ConfirmRegisterResult } from "src/api.models/auth/auth3Page/ConfirmRegi
 async function verifyRegistrationTokenAsync(registrationToken) {
     try {
         await axios({
-            url: `${BaseWebApiUrl}/g1/register/verify/${registrationToken}`,
-            method: HttpMethod.GET,
+            url: `${BaseWebApiUrl}/g1/register/verify`,
+            data: {
+                registrationToken: `${registrationToken}`,
+            },
+            method: HttpMethod.POST,
         });
 
         return true;
