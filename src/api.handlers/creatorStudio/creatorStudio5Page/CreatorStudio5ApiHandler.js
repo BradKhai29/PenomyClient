@@ -5,7 +5,9 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { ArtworkDetailResponseItem } from "src/api.models/creatorStudio/creatorStudio5Page/ArtworkDetailResponseItem";
 import { OverviewStatisticResponseItem } from "src/api.models/creatorStudio/creatorStudio5Page/OverviewStatisticResponseItem";
 import { PaginationOptionResponseItem } from "src/api.models/creatorStudio/creatorStudio5Page/PaginationOptionResponseItem";
+import { useAuthStore } from "src/stores/common/AuthStore";
 
+const authStore = useAuthStore();
 /**
  * Map the response body from api to list of Artwork item.
  * @param {ArtworkDetailResponseItem[]} responseBody The response body to parse.
@@ -26,6 +28,9 @@ async function getArtworksByTypeWithPagination(artworkType, pageNumber) {
         const response = await axios({
             url: `${BaseWebApiUrl}/art1/artworks?artworkType=${artworkType}&pageNumber=${pageNumber}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken,
+            },
         });
 
         const result = mapToArtworkList(response.data.body);

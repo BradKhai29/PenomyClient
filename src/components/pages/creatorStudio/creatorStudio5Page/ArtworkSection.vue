@@ -9,7 +9,7 @@
                     no-caps
                     dense
                     unelevated
-                    class="bg-dark text-light q-px-sm text-subtitle1"
+                    class="bg-dark text-light border-radius-sm q-px-sm text-subtitle1"
                 >
                     Đã tạo: {{ paginationOption.totalArtworks }}
                 </q-btn>
@@ -18,8 +18,7 @@
                         no-caps
                         dense
                         color="grey-3"
-                        unelevated
-                        class="text-dark q-ml-sm q-px-sm text-subtitle1"
+                        class="text-dark border-radius-sm shadow-1 q-ml-sm q-px-sm text-subtitle1"
                     >
                         <span class="q-mr-xs">Tạo mới</span>
                         <q-icon name="add_circle" size="xs" />
@@ -173,7 +172,9 @@ export default {
 
             // Turn off the flag and display the artwork list that fetched from the webapi.
             this.isProcessing = false;
-            this.displayArtworks.push(...result);
+            if (result) {
+                this.displayArtworks.push(...result);
+            }
         },
         handleRemoveItem(artworkId) {
             const foundIndex = this.displayArtworks.findIndex(

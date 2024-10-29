@@ -149,8 +149,6 @@ export default {
                 titleChange: false,
                 introductionChange: false,
             },
-            titleInputBind: titleInputBind,
-            introductionInputBind: introductionInputBind,
             titleInput: null,
             introductionInput: null,
             originInput: null,

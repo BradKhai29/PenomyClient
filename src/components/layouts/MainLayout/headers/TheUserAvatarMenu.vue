@@ -78,7 +78,8 @@
                     <span class="q-ml-sm">Cài đặt</span>
                 </q-item>
                 <q-item
-                    id="btn-login"
+                    v-if="!isAtCreatorStudio"
+                    id="btn-support"
                     clickable
                     v-close-popup
                     class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
@@ -88,7 +89,8 @@
                     <span class="q-ml-sm">Hỗ trợ</span>
                 </q-item>
                 <q-item
-                    id="btn-login"
+                    v-if="!isAtCreatorStudio"
+                    id="btn-feedback"
                     clickable
                     v-close-popup
                     class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
@@ -96,6 +98,18 @@
                 >
                     <q-icon name="feedback" size="sm" />
                     <span class="q-ml-sm">Gửi phản hồi</span>
+                </q-item>
+                <q-item
+                    v-if="isAtCreatorStudio"
+                    id="btn-back-home"
+                    clickable
+                    v-close-popup
+                    class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
+                    dense
+                    @click="goToHome"
+                >
+                    <q-icon name="home" size="sm" />
+                    <span class="q-ml-sm">Trang người dùng</span>
                 </q-item>
             </div>
 
@@ -144,19 +158,20 @@
 </template>
 
 <script setup>
-import { route } from "quasar/wrappers";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { inject, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
+// Dependencies section.
+const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
+// Data ref section.
 const showMenu = ref(false);
 const isAuth = ref(authStore.isAuth);
-console.log(isAuth.value);
-
 const userProfile = ref(authStore.currentUserProfile);
+const isAtCreatorStudio = ref(inject("isAtCreatorStudio"));
 
 function toggleProfileButton() {
     // Close the avatar menu when toggling the button.
@@ -179,6 +194,10 @@ function signOut(event) {
 
     // Redirects to login page when logout success.
     router.push("/auth/login");
+}
+
+function goToHome() {
+    router.push("/");
 }
 </script>
 

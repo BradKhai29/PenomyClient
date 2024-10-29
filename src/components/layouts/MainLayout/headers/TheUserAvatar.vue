@@ -11,11 +11,22 @@
 <script setup>
 import TheUserAvatarMenu from "components/layouts/MainLayout/headers/TheUserAvatarMenu.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { ref, watch } from "vue";
+import { onBeforeMount, provide, ref, watch } from "vue";
 
 const authStore = useAuthStore();
-authStore.setUpAuthStore();
 const avatarUrl = ref(authStore.userProfile.avatarUrl);
+const props = defineProps({
+    atCreatorStudio: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+// Set up the auth store for the before mount hook.
+onBeforeMount(() => {
+    authStore.setUpAuthStore();
+    provide("isAtCreatorStudio", props.atCreatorStudio);
+});
 
 watch(
     () => authStore.userProfile.avatarUrl,
