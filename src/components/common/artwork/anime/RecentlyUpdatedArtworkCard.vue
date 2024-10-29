@@ -164,7 +164,7 @@ const props = defineProps({
     },
 })
 const shortTitle = ref(props.artwork.title);
-if (props.artwork.title.length > 25) {
-    shortTitle.value = props.artwork.title.substring(0, 25) + '...'
+if (props.artwork.title.length > 21) {
+    shortTitle.value = props.artwork.title.substring(0, 21) + '...'
 }
 </script>
