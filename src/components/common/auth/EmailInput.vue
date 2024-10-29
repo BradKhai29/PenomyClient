@@ -1,12 +1,14 @@
 <template>
-    <q-input
-        placeholder="Email"
-        class="text-subtitle1 bg-white border-radius-md"
-        v-model="email"
-        :error="hasError"
-        outlined
-        color="green"
-    />
+    <section id="email-input">
+        <q-input
+            placeholder="Email"
+            class="text-subtitle1 bg-white"
+            v-model="email"
+            :error="hasError"
+            outlined
+            color="green"
+        />
+    </section>
 </template>
 
 <script>

@@ -31,6 +31,12 @@ const claimTypes = {
  * @returns {DecodeJwtPayload} Returns the decoded payload as a DecodeJwtPayload instance, or null if parsing fails.
  */
 function decodeJwt(token) {
+    const MINIMUM_LENGTH = 10;
+
+    if (token == "" || token.length < MINIMUM_LENGTH) {
+        return null;
+    }
+
     try {
         // Split the token into its three parts: header, payload, and signature
         const parts = token.split(".");

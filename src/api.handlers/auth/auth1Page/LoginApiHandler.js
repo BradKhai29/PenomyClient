@@ -14,7 +14,7 @@ const apiUrl = `${BaseWebApiUrl}/g31/login`;
  * @param {Boolean} rememberMe Indicate to remember the login or not to generate different access & refresh token (default is false).
  * @returns {Promise<LoginApiResponse>} Response contains access token and refresh token.
  */
-async function loginAsync(email, password, rememberMe) {
+async function loginAsync(email, password) {
     try {
         const response = await axios({
             url: apiUrl,
@@ -22,7 +22,7 @@ async function loginAsync(email, password, rememberMe) {
             data: {
                 email: email,
                 password: password,
-                rememberMe: rememberMe,
+                rememberMe: true,
             },
         });
 
@@ -31,9 +31,11 @@ async function loginAsync(email, password, rememberMe) {
         return apiResponse;
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
-        console.log(axiosError.response.data);
+        const errorMessage = LoginApiResponse.getMessageFromErrorCode(
+            axiosError.response.data.appCode
+        );
 
-        return LoginApiResponse.failed();
+        return LoginApiResponse.failed(errorMessage);
     }
 }
 

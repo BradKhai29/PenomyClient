@@ -169,13 +169,16 @@ function toggleProfileButton() {
     }
 
     // If user is not auth, then redirects to login page.
-    router.push("auth/login");
+    router.push("/auth/login");
 }
 
 function signOut(event) {
     showMenu.value = false;
     authStore.signOut();
     isAuth.value = false;
+
+    // Redirects to login page when logout success.
+    router.push("/auth/login");
 }
 </script>
 

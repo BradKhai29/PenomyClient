@@ -142,17 +142,14 @@ export default {
 
             const result = await LoginApiHandler.loginAsync(
                 this.email,
-                this.password,
-                this.rememberLogin
+                this.password
             );
 
             // Turn of the is processing flag after handling the request.
             this.isProcessing = false;
 
             if (!result.isSuccess) {
-                NotificationHelper.notifyError(
-                    "Thông tin đăng nhập không đúng"
-                );
+                NotificationHelper.notifyError(result.errorMessage);
 
                 return;
             }
@@ -166,9 +163,9 @@ export default {
                 result.user
             );
 
-            NotificationHelper.notifySuccess("Đăng nhập thành công");
             // Redirect back to homepage.
             this.$router.push("/");
+            NotificationHelper.notifySuccess("Đăng nhập thành công");
         },
     },
     watch: {

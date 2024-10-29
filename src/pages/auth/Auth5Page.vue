@@ -21,7 +21,7 @@
                     Đặt mật khẩu mới cho tài khoản
                 </div>
                 <q-input
-                    class="bg-light-300 border-radius-md q-mb-md text-subtitle1"
+                    class="bg-light-300 q-mb-md text-subtitle1"
                     v-model="email"
                     disable
                     outlined
@@ -88,10 +88,11 @@ export default {
             resetPasswordToken: null,
         };
     },
-    async mounted() {
+    beforeMount() {
+        // Pre-validate the value of the token before getting into the mounted hook.
+        // If token is empty, then notify error to user.
         this.resetPasswordToken = this.$route.query.token;
 
-        // If registration token is empty, then notify error to user.
         if (!this.resetPasswordToken) {
             this.invalidToken = true;
             return;
@@ -104,24 +105,23 @@ export default {
 
         if (!decodedPayload) {
             this.invalidToken = true;
+        }
+    },
+    async mounted() {
+        // Check if the token is valid or not.
+        const result = await Auth5ApiHandler.verifyResetPasswordTokenAsync(
+            this.resetPasswordToken
+        );
+
+        // If the token is invalid, then notify error to user.
+        if (!result.isValid) {
+            this.invalidToken = true;
+
             return;
         }
 
-        // Display the email get from the decoded payload.
-        this.email = decodedPayload.email;
-
-        // Check if the token is valid or not.
-        // const result = await Auth3ApiHandler.verifyRegistrationTokenAsync(
-        //     this.registrationToken
-        // );
-
-        // // If the token is invalid, then notify error to user.
-        // if (!result) {
-        //     this.invalidToken = true;
-        //     return;
-        // }
-
         // Turn off isLoading flag to display input for user.
+        this.email = result.email;
         this.isLoading = false;
     },
     methods: {
@@ -167,21 +167,22 @@ export default {
             // Turn on is processing flag while the api is handling the request.
             this.isProcessing = true;
 
-            const result = await Auth5ApiHandler.confirmRegisterAsync(
-                this.registrationToken,
-                this.nickname,
-                this.password
+            const result = await Auth5ApiHandler.confirmResetPasswordAsync(
+                this.resetPasswordToken,
+                this.againPassword
             );
 
             // Turn off the flag after handling the request.
             this.isProcessing = false;
 
-            if (result.isSuccess) {
-                NotificationHelper.notifySuccess("Đăng ký thành công");
+            if (result) {
+                NotificationHelper.notifySuccess("Đặt lại mật khẩu thành công");
+
+                this.$router.push("/auth/login");
                 return;
             }
 
-            NotificationHelper.notifyError("Có lỗi xảy ra khi đăng ký");
+            NotificationHelper.notifyError("Có lỗi xảy ra");
         },
     },
     watch: {

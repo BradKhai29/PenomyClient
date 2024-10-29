@@ -121,10 +121,11 @@ export default {
             registrationToken: null,
         };
     },
-    async mounted() {
+    beforeMount() {
+        // Pre-validate the value of the token before getting into the mounted hook.
+        // If token is empty, then notify error to user.
         this.registrationToken = this.$route.query.token;
 
-        // If registration token is empty, then notify error to user.
         if (!this.registrationToken) {
             this.invalidToken = true;
             return;
@@ -140,6 +141,13 @@ export default {
 
         // Display the email get from the decoded payload.
         this.email = decodedPayload.email;
+    },
+    async mounted() {
+        // If the invalidToken is true after pre-validation, then return.
+        if (this.invalidToken) {
+            return;
+        }
+        console.log("Hi");
 
         // Check if the token is valid or not.
         const result = await Auth3ApiHandler.verifyRegistrationTokenAsync(
