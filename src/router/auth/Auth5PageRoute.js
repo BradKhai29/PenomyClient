@@ -6,7 +6,7 @@ const routeDefinition = [
         component: () => import("layouts/AuthLayout.vue"),
         children: [
             {
-                path: "reset-password",
+                path: "confirm-reset-password",
                 component: () => import("src/pages/auth/Auth5Page.vue"),
             },
         ],

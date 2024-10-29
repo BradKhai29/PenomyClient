@@ -37,6 +37,7 @@ class GoogleConsentResponse {
 const clientLibraryState = {
     loadSuccess: false,
     google: null,
+    tokenClient: null,
 };
 
 /**
@@ -77,14 +78,31 @@ function loadClientLibrary(loadSuccessCallback) {
     document.head.appendChild(script);
 }
 
-function loginWithGoogle(securityState, resolveCallback) {
-    const tokenClient =
-        clientLibraryState.google.accounts.oauth2.initTokenClient({
-            client_id: CLIENT_ID,
-            scope: SCOPES,
-            state: securityState,
-            callback: resolveCallback,
-        });
+/**
+ * Trigger the Google's token client and show the popup
+ * to retrieve the token from the user consent.
+ *
+ * @param {String} securityState The state that provided by the server to prevent the CSRF attack.
+ * @param {Callback} resolveCallback The callback that will be invoked when the user successfully consent.
+ * @param {Callback} errorCallback The callback that will be invoked when error happened or user deny the consent.
+ */
+function loginWithGoogle(securityState, resolveCallback, errorCallback) {
+    let tokenClient = clientLibraryState.tokenClient;
+
+    if (!clientLibraryState.tokenClient) {
+        clientLibraryState.tokenClient =
+            clientLibraryState.google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                state: securityState,
+                callback: resolveCallback,
+                error_callback: errorCallback,
+            });
+
+        tokenClient = clientLibraryState.tokenClient;
+    }
+
+    console.log("Token Client", tokenClient);
 
     tokenClient.requestAccessToken();
 }

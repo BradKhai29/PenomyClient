@@ -81,8 +81,6 @@ class ComicDetail {
 
     getStatusIcon() {
         switch (this.artworkStatus) {
-            case artworkStatuses.onGoing:
-                return "timelapse";
             case artworkStatuses.finished:
                 return "check";
             case artworkStatuses.onGoing:

@@ -4,7 +4,7 @@
         no-caps
         class="q-py-sm border-radius-md bg-light-100 shadow-1"
         :loading="isProcessing"
-        :disable="isLoading || isProcessing || loadingMode"
+        :disable="isLoading || isProcessing || isDisabled"
     >
         <img
             id="google-icon"
@@ -41,25 +41,26 @@ export default {
                 height: "28px",
             },
             isProcessing: false,
-            loadingMode: true,
+            isDisabled: true,
         };
     },
     mounted() {
-        GoogleHelper.loadClientLibrary(() => {
-            this.loadingMode = false;
-        });
+        GoogleHelper.loadClientLibrary(this.enableButton);
     },
     methods: {
         loginWithGoogle() {
             // Prevent user to click the button when is processing or being load.
-            if (this.isProcessing || this.isLoading || this.loadingMode) {
+            if (this.isProcessing || this.isLoading || this.isDisabled) {
                 return;
             }
 
-            this.loadingMode = true;
+            // Disable the button to wait for handling the request.
+            this.disableButton();
+
             GoogleHelper.loginWithGoogle(
                 "my_state",
-                this.handleLoginWithGoogle
+                this.handleLoginWithGoogle,
+                this.handleError
             );
         },
         /**
@@ -70,13 +71,24 @@ export default {
         handleLoginWithGoogle(response) {
             console.log("Google response", response);
 
-            this.loadingMode = false;
             this.isProcessing = true;
             this.emitEvent();
             setTimeout(() => {
-                this.isProcessing = false;
+                this.enableButton();
                 this.emitEvent();
             }, 2000);
+        },
+        handleError(error) {
+            this.enableButton();
+            console.log("Error", error);
+        },
+        disableButton() {
+            this.isDisabled = true;
+            this.isProcessing = false;
+        },
+        enableButton() {
+            this.isDisabled = false;
+            this.isProcessing = false;
         },
         emitEvent() {
             this.$emit("update:modelValue", this.isProcessing);

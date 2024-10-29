@@ -1,11 +1,7 @@
-const updateArtworkErrors = {
-    FileServiceError: {
-        errorCode: "Art7.FILE_SERVICE_ERROR.3",
-        message: "Server gặp lỗi khi tải ảnh",
-    },
-    InvalidFileFormat: {
-        errorCode: "Art7.INVALID_FILE_FORMAT.6",
-        message: "File có định dạng không hợp lệ hoặc bị chỉnh sửa",
+const getResetPasswordLinkErrors = {
+    UserNotExisted: {
+        errorCode: "G34.USER_NOT_EXIST",
+        message: "Email chưa được đăng ký",
     },
 };
 
@@ -17,19 +13,20 @@ const updateArtworkErrors = {
  */
 function internalGetMessageFromErrorCode(errorCode) {
     switch (errorCode) {
-        case updateArtworkErrors.FileServiceError.errorCode:
-            return updateArtworkErrors.FileServiceError.message;
-
-        case updateArtworkErrors.InvalidFileFormat.errorCode:
-            return updateArtworkErrors.InvalidFileFormat.message;
+        case getResetPasswordLinkErrors.UserNotExisted.errorCode:
+            return getResetPasswordLinkErrors.UserNotExisted.message;
 
         default:
-            return updateArtworkErrors.FileServiceError.message;
+            return getResetPasswordLinkErrors.UserNotExisted.message;
     }
 }
 
-class UpdateArtworkResult {
+/**
+ * An internal class support for representing the result of get reset password link.
+ */
+class GetResetPasswordLinkResult {
     /**
+     *
      *
      * @param {Boolean} isSuccess True if the operation is success.
      * @param {String} message The error message when the operation is failed.
@@ -50,4 +47,4 @@ class UpdateArtworkResult {
     }
 }
 
-export { UpdateArtworkResult };
+export { GetResetPasswordLinkResult };

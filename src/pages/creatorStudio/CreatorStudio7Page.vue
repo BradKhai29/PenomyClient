@@ -32,7 +32,7 @@
                 class="row q-mt-md q-pa-md shadow-1 bg-light border-radius-md"
             >
                 <q-img
-                    class="col-auto q-mr-md border-radius-md shadow-1"
+                    class="q-mr-md border-radius-md shadow-1"
                     :src="comicDetail.thumbnailUrl"
                     width="225px"
                     height="280px"
@@ -67,20 +67,12 @@
                                 <q-icon
                                     v-if="
                                         comicDetail.artworkStatus ==
-                                        artworkStatuses.onGoing
-                                    "
-                                    :name="comicDetail.getStatusIcon()"
-                                    size="16px"
-                                    class="bg-dark text-light border-radius-rounded"
-                                />
-                                <q-icon
-                                    v-else-if="
-                                        comicDetail.artworkStatus ==
                                         artworkStatuses.finished
                                     "
                                     :name="comicDetail.getStatusIcon()"
                                     size="16px"
-                                    class="bg-dark text-light border-radius-rounded"
+                                    class="bg-primary text-dark border-radius-rounded"
+                                    style="padding: 2px"
                                 />
                                 <q-icon
                                     v-else-if="
@@ -89,7 +81,8 @@
                                     "
                                     :name="comicDetail.getStatusIcon()"
                                     size="16px"
-                                    class="bg-dark text-light border-radius-rounded"
+                                    class="bg-secondary-500 text-light border-radius-rounded"
+                                    style="padding: 2px"
                                 />
                             </div>
                             <div class="q-mb-xs text-subtitle1">
@@ -107,7 +100,7 @@
                             dense
                             no-caps
                             unelevated
-                            class="bg-dark text-light text-subtitle1 border-radius-sm"
+                            class="bg-dark text-light text-subtitle2 text-weight-bold border-radius-sm q-px-sm"
                         >
                             {{ category.label }}
                         </q-btn>
@@ -120,7 +113,7 @@
                             @click="goToEdit"
                         >
                             <q-icon name="edit" size="sm" />
-                            <span class="q-ml-xs">Sửa thông tin</span>
+                            <span class="q-ml-xs">Sửa</span>
                         </q-btn>
                         <q-btn
                             class="bg-light-300 text-dark text-subtitle1 text-weight-bold"
@@ -128,7 +121,14 @@
                             rounded
                         >
                             <q-icon name="report" size="sm" />
-                            <span class="q-ml-xs">Bị báo cáo 0 đơn</span>
+                            <span class="q-ml-xs">Bị báo cáo</span>
+                            <q-badge
+                                rounded
+                                floating
+                                class="bg-dark text-light"
+                            >
+                                0 đơn
+                            </q-badge>
                         </q-btn>
                         <q-btn
                             class="bg-light-300 text-dark text-subtitle1 text-weight-bold"
@@ -197,14 +197,20 @@
                     >Tác giả</span
                 >"</span
             >
-            <q-btn
-                no-caps
-                dense
-                unelevated
-                class="bg-dark text-light text-weight-bold q-px-sm border-radius-sm"
+            <a
+                :href="`/artwork/comic/${comicDetail.id}`"
+                target="_blank"
+                rel="noopener noreferrer"
             >
-                Chế độ người dùng
-            </q-btn>
+                <q-btn
+                    no-caps
+                    dense
+                    unelevated
+                    class="bg-dark text-light text-weight-bold q-px-sm border-radius-sm"
+                >
+                    Chế độ người dùng
+                </q-btn>
+            </a>
         </div>
         <section
             id="artwork-introduction-and-chapters"
@@ -388,7 +394,7 @@ export default {
 #artwork-detail-breadcrumb,
 #artwork-detail-card,
 .artwork-detail-section {
-    --max-width: 90%;
+    --max-width: 80%;
 
     max-width: var(--max-width);
     width: var(--max-width);
