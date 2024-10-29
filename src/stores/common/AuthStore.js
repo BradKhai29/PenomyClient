@@ -153,6 +153,14 @@ const useAuthStore = defineStore("authStore", {
         refreshToken() {
             return this.tokenBag.refreshToken;
         },
+        /**
+         * Get the access token with Bearer prefix that stored in this auth store.
+         *
+         * @returns {String} The value of the access token.
+         */
+        bearerAccessToken() {
+            return `Bearer ${this.tokenBag.accessToken}`;
+        },
     },
 
     actions: {

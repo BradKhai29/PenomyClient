@@ -21,7 +21,7 @@
                     Tạo tài khoản mới và khám phá
                 </div>
                 <q-input
-                    class="bg-light-300 border-radius-md q-mb-md text-subtitle1"
+                    class="bg-light-300 q-mb-md text-subtitle1"
                     v-model="email"
                     disable
                     outlined
