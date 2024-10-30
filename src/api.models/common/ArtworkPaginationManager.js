@@ -1,4 +1,4 @@
-import { ArtworkDetailResponseItem } from "./ArtworkDetailResponseItem";
+import { ArtworkDetailResponseItem } from "../creatorStudio/creatorStudio5Page/ArtworkDetailResponseItem";
 
 class ArtworkListEntry {
     /**
