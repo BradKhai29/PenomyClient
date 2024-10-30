@@ -2,8 +2,6 @@
     <q-page class="">
         <RecentlyUpdated />
         <ComicByCategory />
-        <!-- <RecentlyUpdatedAnime /> -->
-        <!-- <anime-by-category /> -->
         <div class="q-pa-md">
             <q-btn color="primary" label="Handles click">
                 <q-popup-proxy>
