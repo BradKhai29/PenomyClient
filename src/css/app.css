@@ -100,3 +100,8 @@
     text-decoration-thickness: 3.2px;
     text-decoration-color: var(--primary);
 }
+
+.text-decoration-none {
+    text-decoration: none;
+    text-transform: none;
+}

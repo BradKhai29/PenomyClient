@@ -1,19 +1,26 @@
 <template>
     <div class="row items-center shadow-1 border-radius-sm">
-        <q-img
-            :src="thumbnailUrl"
-            style="width: 100px; height: 100px"
-            :ratio="1"
-        />
+        <router-link
+            :to="{
+                name: 'comic-chapter-detail',
+                params: { chapterId: id },
+            }"
+        >
+            <q-img
+                :src="thumbnailUrl"
+                style="width: 100px; height: 100px"
+                :ratio="1"
+            />
+        </router-link>
         <section class="col-grow q-pl-md q-pr-sm">
-            <div id="chapter_header" class="row text-subtitle2 q-mt-sm">
-                <div class="flex items-center q-mr-auto q-gutter-sm">
-                    <span v-if="!isDrafted" class="text-subtitle1">
-                        Tập {{ uploadOrder }}
-                    </span>
+            <div id="chapter_header" class="row text-subtitle2">
+                <div
+                    class="flex items-center q-mr-auto text-subtitle2 text-weight-bold"
+                >
+                    <span v-if="!isDrafted"> Tập {{ uploadOrder }} </span>
                     <span
                         v-else-if="isDrafted"
-                        class="text-subtitle2 border-radius-sm col-md-auto bg-primary-700 text-primary"
+                        class="border-radius-sm col-md-auto bg-primary-700 text-primary"
                         style="padding: 2px"
                     >
                         Bản nháp
@@ -28,20 +35,45 @@
                         class="text-subtitle2 bg-primary text-dark text-weight-bold q-px-sm"
                         >Xuất bản</q-btn
                     >
-                    <q-btn
-                        dense
-                        unelevated
-                        no-caps
-                        class="text-subtitle2 bg-dark text-light text-weight-bold q-px-sm"
-                        >Sửa</q-btn
+                    <router-link
+                        :to="{
+                            name: 'comic-chapter-detail',
+                            params: { chapterId: id },
+                        }"
                     >
+                    </router-link>
+                    <router-link
+                        :to="{
+                            name: 'comic-chapter-edit',
+                            params: { chapterId: id },
+                        }"
+                    >
+                        <q-btn
+                            dense
+                            unelevated
+                            no-caps
+                            class="text-subtitle2 bg-dark text-light text-weight-bold q-px-sm"
+                            >Sửa</q-btn
+                        >
+                    </router-link>
+
                     <q-btn dense unelevated no-caps icon="more_vert" />
                 </div>
             </div>
             <div>
-                <span> {{ title }} </span>
+                <router-link :to="`/studio/comic/chapter/detail/${id}`">
+                    <q-btn
+                        dense
+                        flat
+                        no-caps
+                        class="text-subtitle1 text-dark"
+                        padding="none"
+                    >
+                        {{ title }}
+                    </q-btn>
+                </router-link>
             </div>
-            <div class="row items-center text-dark-500 text-subtitle2">
+            <div class="row items-center text-dark-500 text-subtitle2 q-mt-sm">
                 <span> {{ createdAt }} </span>
                 <span class="q-ml-md"></span>
             </div>
@@ -54,6 +86,9 @@ import { PublishStatuses } from "src/api.handlers/creatorStudio/creatorStudio7Pa
 export default {
     name: "ComicChapterCard",
     props: {
+        id: {
+            required: true,
+        },
         title: {
             type: String,
             required: true,

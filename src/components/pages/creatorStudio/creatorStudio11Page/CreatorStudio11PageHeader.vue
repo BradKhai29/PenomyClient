@@ -33,7 +33,7 @@
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm"
             /></span>
-            <span> Thêm tập </span>
+            <span> Tập {{ uploadOrder }} </span>
         </div>
         <q-btn
             v-if="hasInputData"
@@ -108,9 +108,6 @@ const redirectRoute = ref(null);
 const confirmToCancelUpdate = ref(false);
 
 const props = defineProps({
-    comicId: {
-        required: true,
-    },
     headerTitle: {
         type: String,
         default: null,

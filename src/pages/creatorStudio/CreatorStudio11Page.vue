@@ -1,8 +1,8 @@
 <template>
     <q-page v-if="!isLoading">
-        <CreatorStudio9PageHeader
+        <CreatorStudio11PageHeader
+            headerTitle="Hel"
             :comicId="chapterDetail.comicId"
-            :headerTitle="chapterDetail.comicTitle"
         />
         <form @submit.prevent class="q-pa-lg">
             <section id="general-info" class="row justify-center q-gutter-lg">
@@ -119,12 +119,12 @@
 <script>
 // Import dependencies section.
 import { computed } from "vue";
-import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { NumberHelper } from "src/helpers/NumberHelper";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { CreatorStudio9ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio9Page/CreatorStudio9ApiHandler";
 
 // Import components section.
-import CreatorStudio9PageHeader from "components/pages/creatorStudio/creatorStudio9Page/CreatorStudio9PageHeader.vue";
+import CreatorStudio11PageHeader from "src/components/pages/creatorStudio/creatorStudio11Page/CreatorStudio11PageHeader.vue";
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
 import ChapterUploadOrderInput from "components/common/creatorStudio/ChapterUploadOrderInput.vue";
 import TitleInput from "components/common/creatorStudio/ArtworkTitleInput.vue";
@@ -138,7 +138,7 @@ import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPo
 
 export default {
     components: {
-        CreatorStudio9PageHeader,
+        CreatorStudio11PageHeader,
         HeaderHighlight,
         ChapterUploadOrderInput,
         TitleInput,
@@ -152,13 +152,13 @@ export default {
     },
     data() {
         return {
-            invalidComicId: false,
             isLoading: true,
             isCreating: false,
             hasInputData: false,
             titleInput: null,
             chapterImageListInput: null,
             chapterDetail: {
+                id: "",
                 comicId: "",
                 comicTitle: "",
                 title: "",
@@ -184,44 +184,27 @@ export default {
         };
     },
     beforeMount() {
-        const comicId = this.$route.query.id;
+        const chapterId = this.$route.params.chapterId;
 
         // Check if the comic id is valid or not.
-        if (!NumberHelper.isNumber(comicId)) {
+        if (!NumberHelper.isNumber(chapterId)) {
             this.invalidComicId = true;
 
             this.redirectToArtworkManagementPage();
             return;
         }
 
-        this.chapterDetail.comicId = comicId;
+        this.chapterDetail.id = chapterId;
     },
     async mounted() {
-        if (this.invalidComicId) {
-            return;
-        }
-
-        // Fetch the comic detail from api and check if the comic is existed or not.
-        const comicDetail =
-            await CreatorStudio9ApiHandler.getComicDetailToCreateChapterAsync(
-                this.chapterDetail.comicId
-            );
-
-        if (!comicDetail.isExisted) {
-            this.redirectToArtworkManagementPage();
-        }
-
-        // Populate important information to the chapter detail supported for creating.
-        this.chapterDetail.comicTitle = comicDetail.title;
-        this.chapterDetail.uploadOrder = comicDetail.lastChapterUploadOrder + 1;
-
         // Turn off the isLoading flag.
         this.isLoading = false;
     },
     methods: {
         redirectToArtworkManagementPage() {
-            const artworkManagementRoute = "/studio/artworks";
-            this.$router.push(artworkManagementRoute);
+            const managementRoute = "/studio/artworks";
+
+            this.$router.push(managementRoute);
         },
         /**
          * Detect if any change in input to trigger the hasInputData flag.

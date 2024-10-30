@@ -125,9 +125,9 @@
                             <q-badge
                                 rounded
                                 floating
-                                class="bg-dark text-light"
+                                class="bg-dark text-light text-weight-bold"
                             >
-                                0 đơn
+                                0
                             </q-badge>
                         </q-btn>
                         <q-btn
@@ -235,7 +235,7 @@
                 >
                     Số bản nháp: {{ draftedChapters.length }}
                 </q-btn>
-                <div class="text-subtitle1 q-mt-sm">
+                <div class="text-subtitle1 q-mt-sm q-gutter-sm">
                     <ComicChapterCard
                         v-for="chapter in draftedChapters"
                         :key="chapter.id"
@@ -268,7 +268,7 @@
                         <q-icon name="add_circle" size="xs" />
                     </q-btn>
                 </div>
-                <div class="text-subtitle1 q-mt-sm">
+                <div class="text-subtitle1 q-mt-md q-gutter-sm">
                     <ComicChapterCard
                         v-for="chapter in publishedChapters"
                         :key="chapter.id"

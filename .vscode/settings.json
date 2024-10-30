@@ -16,6 +16,8 @@
         "(feat-art4)",
         "art4",
         "art1",
-        "g34"
+        "g34",
+        "auth-store",
+        "pagination"
     ]
 }

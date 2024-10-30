@@ -13,6 +13,8 @@ import creatorStudio6PageRoute from "./creatorStudio/CreatorStudio6PageRoute";
 import creatorStudio7PageRoute from "./creatorStudio/CreatorStudio7PageRoute";
 import creatorStudio8PageRoute from "./creatorStudio/CreatorStudio8PageRoute";
 import creatorStudio9PageRoute from "./creatorStudio/CreatorStudio9PageRoute";
+import creatorStudio10PageRoute from "./creatorStudio/CreatorStudio10PageRoute";
+import creatorStudio11PageRoute from "./creatorStudio/CreatorStudio11PageRoute";
 import creatorStudio12PageRoute from "./creatorStudio/CreatorStudio12PageRoute";
 import creatorStudio22PageRoute from "./creatorStudio/CreatorStudio22PageRoute";
 import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
@@ -42,6 +44,8 @@ const routes = [
     ...creatorStudio7PageRoute,
     ...creatorStudio8PageRoute,
     ...creatorStudio9PageRoute,
+    ...creatorStudio10PageRoute,
+    ...creatorStudio11PageRoute,
     ...creatorStudio12PageRoute,
     ...creatorStudio22PageRoute,
     ...creatorStudio25PageRoute,
