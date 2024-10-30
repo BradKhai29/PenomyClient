@@ -12,7 +12,7 @@
             <q-btn v-if="comment.isAuthor" color="red" dense size=".7rem">Tác giả</q-btn>
             <q-space></q-space>
 
-            <q-icon name="more_vert" class="cursor-pointer">
+            <q-icon v-if="comment.isCommentAuthor" name="more_vert" class="cursor-pointer">
                 <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
                         <q-item clickable v-close-popup @click="isEdit = !isEdit">
                             <q-item-section>
@@ -65,6 +65,7 @@
                 @removeReplyComment="onReplyCommentDelete" />
         </div>
     </div>
+    <popup-login-required :open="openLoginPopup" />
     <confirm-popup v-if="isDelete" message="You want to delete this comment?" @popupClick="popupClickHandler" />
 </template>
 
@@ -76,6 +77,8 @@ import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
 import ConfirmPopup from './ConfirmPopup.vue';
 import axios from 'axios';
 import { HttpMethod } from 'src/api.common/HttpMethod';
+import { useAuthStore } from 'src/stores/common/AuthStore';
+import PopupLoginRequired from '../others/PopupLoginRequired.vue';
 
 var props = defineProps({
     comment: {
@@ -91,8 +94,9 @@ var props = defineProps({
                 content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut doloribus maiores repellat sit, ad fuga nihil fugiat adipisci voluptate aliquid eum corrupti reiciendis, nam explicabo accusantium vitae voluptatum dolore asperiores?",
                 likeCount: 0,
                 totalReplies: 0,
-                isAuthor: false,
-                isLiked: false
+                isArtworkAuthor: false,
+                isCommentAuthor: false,
+                isLiked: false,
             }
         }
     },
@@ -113,6 +117,8 @@ const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`
 const unlikeUrl = `${BaseWebApiUrl}/g57/comment/unlike/`
 const likeCount = ref(props.comment.likeCount);
 const reloadKey = ref(0);
+const openLoginPopup = ref(false)
+const store = useAuthStore()
 
 var editCommentProps = {
     isUpdate: true,
@@ -145,32 +151,40 @@ async function deleteComment() {
 }
 
 async function likeComment() {
-    await axios({
-        url: likeUrl,
-        method: HttpMethod.POST,
-        data: {
-            commentId: `${props.comment.id}`,
-            userId: `${1234}`
-        }
-    })
-        .then(() => {
-            likeCount.value += 1;
-            isLike.value = true
-        });
+    if (!store.isAuth)
+        openLoginPopup.value = true
+    else {
+        await axios({
+            url: likeUrl,
+            method: HttpMethod.POST,
+            data: {
+                commentId: `${props.comment.id}`,
+                userId: `${1234}`
+            }
+        })
+            .then(() => {
+                likeCount.value += 1;
+                isLike.value = true
+            });
+    }
 }
 async function unlikeComment() {
-    await axios({
-        url: unlikeUrl,
-        method: HttpMethod.POST,
-        data: {
-            commentId: `${props.comment.id}`,
-            userId: `${1234}`
-        }
-    })
-        .then(() => {
-            likeCount.value -= 1;
-            isLike.value = false
-        });
+    if (!store.isAuth)
+        openLoginPopup.value = true
+    else {
+        await axios({
+            url: unlikeUrl,
+            method: HttpMethod.POST,
+            data: {
+                commentId: `${props.comment.id}`,
+                userId: `${1234}`
+            }
+        })
+            .then(() => {
+                likeCount.value -= 1;
+                isLike.value = false
+            });
+    }
 }
 
 function editCommentHandler(newComment) {

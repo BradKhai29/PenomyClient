@@ -13,10 +13,12 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import UserComment from "./UserComment.vue";
 import CommentInputField from "./CommentInputField.vue";
 import { useArtwork3Store } from 'src/stores/pages/artwork3/Artwork3Store';
+import { useAuthStore } from "src/stores/common/AuthStore";
 
 var comments = ref([]);
 const apiUrl = `${BaseWebApiUrl}/g10/ArtworkComment/get`;
 const store = useArtwork3Store();
+const authStore = useAuthStore();
 
 var props = defineProps({
     artworkId: {
@@ -34,17 +36,33 @@ watch(() => store.target, () => {
 })
 
 async function getComments() {
-    await axios({
-        url: apiUrl,
-        method: HttpMethod.GET,
-        params: {
-            artworkId: `${props.artworkId}`,
-            userId: '1234'
-        },
-    })
-        .then((response) => {
-            comments.value = response.data.body.commentList;
-        });
+    if (authStore.isAuth) {
+        await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+            params: {
+                artworkId: props.artworkId,
+            },
+            headers: {
+                Authorization: authStore.bearerAccessToken
+            }
+        })
+            .then((response) => {
+                comments.value = response.data.body.commentList;
+            });
+    } else {
+        apiUrl.concat(`/anonymous`);
+        await axios({
+            url: apiUrl.concat(`/anonymous`),
+            method: HttpMethod.GET,
+            params: {
+                artworkId: props.artworkId,
+            },
+        })
+            .then((response) => {
+                comments.value = response.data.body.commentList;
+            });
+    }
 }
 function onCommentDelete(id) {
     comments.value = comments.value.filter((comment) => comment.id !== id)
