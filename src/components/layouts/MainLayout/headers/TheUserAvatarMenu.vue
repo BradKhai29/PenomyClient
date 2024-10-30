@@ -20,28 +20,28 @@
                     <div class="text-center">
                         <q-btn round v-if="isAuth" size="sm">
                             <q-avatar>
-                                <img :src="avatarUrl" />
+                                <img :src="userProfile.avatarUrl" />
                             </q-avatar>
                         </q-btn>
-                        <q-icon
-                            v-else
-                            name="account_circle"
-                            class="text-dark"
-                            size="xl"
-                        />
+                        <q-btn round v-else>
+                            <q-icon
+                                name="account_circle"
+                                class="text-dark"
+                                size="xl"
+                            />
+                        </q-btn>
                     </div>
                     <div
                         class="text-subtitle1 text-weight-bold text-center avatar-username"
                     >
-                        {{ userName ?? "Chưa đăng nhập" }}
+                        {{ userProfile.nickname ?? "Chưa đăng nhập" }}
                     </div>
                     <div class="text-center">
                         <q-badge
-                            v-if="!isCreator"
+                            v-if="!userProfile.isCreator"
                             class="text-subtitle2 inline bg-light-300 text-dark"
                         >
-                            <span v-if="!isAuth">Guest</span>
-                            <span v-else>User</span>
+                            <span>{{ isAuth ? "User" : "Guest" }}</span>
                         </q-badge>
                         <q-badge
                             v-else
@@ -55,7 +55,7 @@
 
             <div class="menu-item-separator"></div>
 
-            <div class="bg-light-100 text-subtitle1">
+            <div id="user-profile-actions" class="bg-light-100 text-subtitle1">
                 <q-item
                     v-if="isAuth"
                     id="btn-login"
@@ -78,7 +78,8 @@
                     <span class="q-ml-sm">Cài đặt</span>
                 </q-item>
                 <q-item
-                    id="btn-login"
+                    v-if="!isAtCreatorStudio"
+                    id="btn-support"
                     clickable
                     v-close-popup
                     class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
@@ -88,7 +89,8 @@
                     <span class="q-ml-sm">Hỗ trợ</span>
                 </q-item>
                 <q-item
-                    id="btn-login"
+                    v-if="!isAtCreatorStudio"
+                    id="btn-feedback"
                     clickable
                     v-close-popup
                     class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
@@ -96,6 +98,18 @@
                 >
                     <q-icon name="feedback" size="sm" />
                     <span class="q-ml-sm">Gửi phản hồi</span>
+                </q-item>
+                <q-item
+                    v-if="isAtCreatorStudio"
+                    id="btn-back-home"
+                    clickable
+                    v-close-popup
+                    class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
+                    dense
+                    @click="goToHome"
+                >
+                    <q-icon name="home" size="sm" />
+                    <span class="q-ml-sm">Trang người dùng</span>
                 </q-item>
             </div>
 
@@ -144,64 +158,47 @@
 </template>
 
 <script setup>
-import { route } from "quasar/wrappers";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { inject, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
-const authStore = useAuthStore();
+// Dependencies section.
+const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
 
+// Data ref section.
 const showMenu = ref(false);
 const isAuth = ref(authStore.isAuth);
-const isCreator = ref(authStore.isCreator);
-const userName = ref(null);
-const avatarUrl = ref(authStore.avatarUrl);
+const userProfile = ref(authStore.currentUserProfile);
+const isAtCreatorStudio = ref(inject("isAtCreatorStudio"));
 
 function toggleProfileButton() {
     // Close the avatar menu when toggling the button.
     showMenu.value = false;
 
-    if (authStore.checkAuth) {
+    if (authStore.isAuth) {
         console.log("Login success");
+
         return;
     }
 
     // If user is not auth, then redirects to login page.
-    router.push("auth/login");
-}
-
-function signInAsUser() {
-    userName.value = "DuongKhai2904";
-    authStore.signInAsUser(null, null);
-}
-
-function signInAsCreator() {
-    userName.value = "DuongKhai2904";
-    authStore.signInAsCreator(null, null);
+    router.push("/auth/login");
 }
 
 function signOut(event) {
     showMenu.value = false;
-
-    userName.value = null;
     authStore.signOut();
+    isAuth.value = false;
+
+    // Redirects to login page when logout success.
+    router.push("/auth/login");
 }
 
-// Watch if any change in the state of authStore.
-watch(
-    () => authStore.isAuth,
-    () => {
-        isAuth.value = authStore.checkAuth;
-    }
-);
-
-watch(
-    () => authStore.isCreator,
-    () => {
-        isCreator.value = authStore.checkCreator;
-    }
-);
+function goToHome() {
+    router.push("/");
+}
 </script>
 
 <style scoped>

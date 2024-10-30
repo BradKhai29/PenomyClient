@@ -1,10 +1,27 @@
 <template>
-    <div class="q-pa-md artwork-detail-card row">
-        <div class="col-auto q-mr-md">
+    <div :id="`artwork_${id}`" class="q-pa-md artwork-detail-card row">
+        <div class="col-auto q-mr-md relative-position">
             <q-img
                 class="artwork-detail-img shadow-1 border-radius-sm"
                 :src="thumbnailUrl"
             />
+            <div
+                class="absolute q-pa-sm"
+                style="bottom: 0; right: 0; z-index: 100"
+            >
+                <q-icon
+                    class="bg-dark text-light shadow-1 border-radius-sm q-mr-sm artwork-badge"
+                    :name="isComic ? 'palette' : 'videocam'"
+                    size="xs"
+                />
+                <q-img
+                    class="border-radius-sm shadow-1 artwork-badge"
+                    :src="
+                        originImageUrl ??
+                        'https://res.cloudinary.com/dsjsmbdpw/image/upload/v1727708598/penomy_assets/japan.png'
+                    "
+                />
+            </div>
         </div>
         <section class="col-grow artwork-detail-section q-my-xs">
             <section class="flex justify-between">
@@ -74,6 +91,9 @@
                                     <q-item-section>Chỉnh sửa</q-item-section>
                                 </q-item>
                                 <q-item clickable v-close-popup>
+                                    <q-item-section> Thống kê </q-item-section>
+                                </q-item>
+                                <q-item clickable v-close-popup>
                                     <q-item-section @click="showDialog = true">
                                         Xóa
                                     </q-item-section>
@@ -83,9 +103,24 @@
                     </q-btn>
                 </div>
             </section>
-            <div class="artwork-title text-h6 q-mt-md">{{ title }}</div>
+            <div class="artwork-title q-mt-md">
+                <router-link :to="`/studio/comic/detail/${id}`">
+                    <q-btn
+                        dense
+                        flat
+                        no-caps
+                        class="text-h6 text-dark"
+                        padding="none"
+                    >
+                        <q-badge class="q-mr-sm q-py-xs bg-dark text-light">
+                            {{ itemOrder }}
+                        </q-badge>
+                        {{ title }}
+                    </q-btn>
+                </router-link>
+            </div>
             <div class="artwork-total-chapters text-subtitle1 q-mt-sm">
-                <span class="q-mr-xs">Số tập đã đăng:</span>
+                <span class="q-mr-xs">Số tập đã xuất bản:</span>
                 <span class="text-weight-bold">{{ totalChapters }}</span>
             </div>
             <section class="row text-subtitle2 q-mt-md">
@@ -120,6 +155,7 @@
                     label="Hủy"
                     color="primary"
                     v-close-popup
+                    :disable="isProcessing"
                     class="text-subtitle1"
                 />
                 <q-btn
@@ -128,7 +164,8 @@
                     label="Xác nhận xóa"
                     color="primary"
                     class="text-subtitle1"
-                    v-close-popup
+                    @click="removeArtworkAsync"
+                    :disable="isProcessing"
                 />
             </q-card-actions>
         </q-card>
@@ -138,11 +175,22 @@
 <script>
 import { DateTimeHelper } from "src/helpers/DateTimeHelper";
 import { ArtworkPublicLevelHelper } from "src/helpers/ArtworkPublicLevelHelper";
+import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 export default {
+    emits: ["removeItem"],
     props: {
-        artworkId: {
+        id: {
             required: true,
+        },
+        itemOrder: {
+            type: Number,
+            default: 1,
+        },
+        isComic: {
+            type: Boolean,
+            default: true,
         },
         title: {
             type: String,
@@ -154,6 +202,10 @@ export default {
             required: true,
             default:
                 "https://fastly.picsum.photos/id/274/500/300.jpg?hmac=JQai5ZulqodPNmhQpK3-PAyGb2jFHjvmtFgIgBKOhBI",
+        },
+        originImageUrl: {
+            type: String,
+            required: true,
         },
         artworkStatus: {
             type: Number,
@@ -198,6 +250,7 @@ export default {
                 title: null,
             },
             showDialog: false,
+            isProcessing: false,
         };
     },
     mounted() {
@@ -213,13 +266,31 @@ export default {
     },
     methods: {
         goToEdit() {
-            this.$router.push(`/studio/comic/edit/${this.artworkId}`);
+            this.$router.push(`/studio/comic/edit/${this.id}`);
         },
         goToAddChapter() {
             this.$router.push({
                 name: "create-chapter",
-                query: { id: this.artworkId },
+                query: { id: this.id },
             });
+        },
+        async removeArtworkAsync() {
+            const result =
+                await CreatorStudio8ApiHandler.temporarilyRemoveComicByIdAsync(
+                    this.id
+                );
+
+            // Check the removing result.
+            if (result.isSuccess) {
+                NotificationHelper.notifySuccess("Tác phẩm bị tạm xóa");
+
+                // Emit the event to update the parent component state.
+                this.$emit("removeItem", this.id);
+            } else {
+                NotificationHelper.notifyError(result.message);
+            }
+
+            this.showDialog = false;
         },
     },
 };
@@ -247,5 +318,11 @@ export default {
     align-items: center !important;
     padding: 4px 8px !important;
     border-radius: 4px !important;
+}
+
+.artwork-badge {
+    width: 32px !important;
+    height: 24px !important;
+    text-align: center !important;
 }
 </style>

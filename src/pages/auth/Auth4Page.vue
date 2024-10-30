@@ -35,7 +35,7 @@
                         :disable="isProcessing"
                         no-caps
                     >
-                        Lấy link đặt lại
+                        Lấy lại mật khẩu
                     </q-btn>
                 </div>
             </div>
@@ -44,7 +44,11 @@
 </template>
 
 <script>
+// Import dependencies section.
 import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { Auth4ApiHandler } from "src/api.handlers/auth/auth4Page/Auth4ApiHandler";
+
+// Import components section.
 import EmailInput from "src/components/common/auth/EmailInput.vue";
 
 export default {
@@ -66,7 +70,7 @@ export default {
         verifyInput() {
             return this.emailInput.verifyInput();
         },
-        getResetPasswordLink() {
+        async getResetPasswordLink() {
             // Prevent user to click the button when the api is processing.
             if (this.isProcessing) {
                 return;
@@ -79,12 +83,24 @@ export default {
                 return;
             }
 
+            // Turn on the isProcessing flag to resolve the request.
             this.isProcessing = true;
 
-            setTimeout(() => {
-                this.isProcessing = false;
-                NotificationHelper.notifySuccess("Vui long kiem tra thong tin");
-            }, 2000);
+            const result = await Auth4ApiHandler.getResetPasswordLinkAsync(
+                this.email
+            );
+
+            // Turn off the isProcessing flag after resolving the request.
+            this.isProcessing = false;
+
+            // Check the result of getting the reset password link.
+            if (!result.isSuccess) {
+                NotificationHelper.notifyError(result.message);
+
+                return;
+            }
+
+            NotificationHelper.notifySuccess("Vui lòng kiểm tra email của bạn");
         },
     },
 };

@@ -56,6 +56,10 @@
     background-color: var(--secondary-100) !important;
 }
 
+.bg-secondary-500 {
+    background-color: var(--secondary-500) !important;
+}
+
 .bg-dark {
     background-color: var(--dark) !important;
 }
@@ -95,4 +99,9 @@
     text-decoration-line: underline;
     text-decoration-thickness: 3.2px;
     text-decoration-color: var(--primary);
+}
+
+.text-decoration-none {
+    text-decoration: none;
+    text-transform: none;
 }

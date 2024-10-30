@@ -21,7 +21,7 @@
                     Tạo tài khoản mới và khám phá
                 </div>
                 <q-input
-                    class="bg-light-300 border-radius-md q-mb-md text-subtitle1"
+                    class="bg-light-300 q-mb-md text-subtitle1"
                     v-model="email"
                     disable
                     outlined
@@ -121,10 +121,11 @@ export default {
             registrationToken: null,
         };
     },
-    async mounted() {
+    beforeMount() {
+        // Pre-validate the value of the token before getting into the mounted hook.
+        // If token is empty, then notify error to user.
         this.registrationToken = this.$route.query.token;
 
-        // If registration token is empty, then notify error to user.
         if (!this.registrationToken) {
             this.invalidToken = true;
             return;
@@ -140,6 +141,13 @@ export default {
 
         // Display the email get from the decoded payload.
         this.email = decodedPayload.email;
+    },
+    async mounted() {
+        // If the invalidToken is true after pre-validation, then return.
+        if (this.invalidToken) {
+            return;
+        }
+        console.log("Hi");
 
         // Check if the token is valid or not.
         const result = await Auth3ApiHandler.verifyRegistrationTokenAsync(
@@ -204,6 +212,9 @@ export default {
 
             if (result.isSuccess) {
                 NotificationHelper.notifySuccess("Đăng ký thành công");
+
+                // Redirect to login page when success.
+                this.$router.push("/auth/login");
                 return;
             }
 

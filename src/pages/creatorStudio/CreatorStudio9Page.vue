@@ -1,6 +1,9 @@
 <template>
     <q-page v-if="!isLoading">
-        <CreatorStudio9PageHeader :headerTitle="chapterDetail.comicTitle" />
+        <CreatorStudio9PageHeader
+            :comicId="chapterDetail.comicId"
+            :headerTitle="chapterDetail.comicTitle"
+        />
         <form @submit.prevent class="q-pa-lg">
             <section id="general-info" class="row justify-center q-gutter-lg">
                 <section class="col-auto">
@@ -78,6 +81,7 @@
                                 class="q-mt-xs bg-primary text-dark text-weight-bold col-grow"
                                 label="Xác nhận tạo"
                                 :loading="isCreating"
+                                :disable="isCreating"
                                 @click="createChapter(false)"
                             />
                             <q-btn
@@ -96,6 +100,8 @@
                             </q-btn>
                             <q-btn
                                 v-else-if="hasInputData"
+                                :loading="isCreating"
+                                :disable="isCreating"
                                 @click="createChapter(true)"
                                 class="q-mt-xs bg-dark text-light text-weight-bold col-grow"
                             >
@@ -113,7 +119,7 @@
 <script>
 // Import dependencies section.
 import { computed } from "vue";
-import { useQuasar } from "quasar";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { CreatorStudio9ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio9Page/CreatorStudio9ApiHandler";
 
@@ -129,17 +135,6 @@ import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevel
 import ChapterImageListInput from "components/common/creatorStudio/ChapterImageListInput.vue";
 import ChapterPublishOptionsInput from "src/components/common/creatorStudio/ChapterPublishOptionsInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
-
-// Constansts support for page.
-const artworkManagementRoute = "/studio/artworks";
-const errorNotification = {
-    position: "top",
-    color: "negative",
-    textColor: "light",
-    message: "Bạn chưa điền đầy đủ thông tin",
-    icon: "warning",
-    showTimeoutProgress: true,
-};
 
 export default {
     components: {
@@ -157,6 +152,7 @@ export default {
     },
     data() {
         return {
+            invalidComicId: false,
             isLoading: true,
             isCreating: false,
             hasInputData: false,
@@ -187,76 +183,46 @@ export default {
             hasInputData: computed(() => this.hasInputData),
         };
     },
-    async mounted() {
+    beforeMount() {
         const comicId = this.$route.query.id;
 
-        // Prevent user to access this page when no query param specified.
-        // Or the input query param is not a number.
+        // Check if the comic id is valid or not.
         if (!NumberHelper.isNumber(comicId)) {
-            this.$router.push(artworkManagementRoute);
+            this.invalidComicId = true;
+
+            this.redirectToArtworkManagementPage();
+            return;
+        }
+
+        this.chapterDetail.comicId = comicId;
+    },
+    async mounted() {
+        if (this.invalidComicId) {
+            return;
         }
 
         // Fetch the comic detail from api and check if the comic is existed or not.
         const comicDetail =
             await CreatorStudio9ApiHandler.getComicDetailToCreateChapterAsync(
-                comicId
+                this.chapterDetail.comicId
             );
 
         if (!comicDetail.isExisted) {
-            this.$router.push(artworkManagementRoute);
+            this.redirectToArtworkManagementPage();
         }
 
         // Populate important information to the chapter detail supported for creating.
         this.chapterDetail.comicTitle = comicDetail.title;
         this.chapterDetail.uploadOrder = comicDetail.lastChapterUploadOrder + 1;
-        this.chapterDetail.comicId = String(comicId);
 
         // Turn off the isLoading flag.
         this.isLoading = false;
     },
-    setup() {
-        const quasar = useQuasar();
-
-        const showErrorNotification = (message) => {
-            quasar.notify({
-                color: errorNotification.color,
-                textColor: errorNotification.textColor,
-                icon: errorNotification.icon,
-                message: message ?? errorNotification.message,
-                position: errorNotification.position,
-                actions: [
-                    {
-                        label: "Đóng",
-                        color: "yellow",
-                    },
-                ],
-                progress: errorNotification.showTimeoutProgress,
-            });
-        };
-
-        const showSuccessNotification = (message) => {
-            quasar.notify({
-                type: "positive",
-                textColor: "light",
-                icon: "info",
-                message: message,
-                position: "top",
-                actions: [
-                    {
-                        label: "Đóng",
-                        color: "light",
-                    },
-                ],
-                progress: errorNotification.showTimeoutProgress,
-            });
-        };
-
-        return {
-            showErrorNotification,
-            showSuccessNotification,
-        };
-    },
     methods: {
+        redirectToArtworkManagementPage() {
+            const artworkManagementRoute = "/studio/artworks";
+            this.$router.push(artworkManagementRoute);
+        },
         /**
          * Detect if any change in input to trigger the hasInputData flag.
          */
@@ -291,7 +257,7 @@ export default {
             const isValidInput = this.verifyInput();
 
             if (!isValidInput) {
-                this.showErrorNotification();
+                NotificationHelper.notifyError("Bạn điền thiếu thông tin");
 
                 return;
             }
@@ -301,20 +267,28 @@ export default {
                 isDrafted = false;
             }
 
+            this.isCreating = true;
+
             const result =
                 await CreatorStudio9ApiHandler.createComicChapterAsync(
                     this.chapterDetail,
                     isDrafted
                 );
 
+            this.isCreating = false;
+
             if (result.isSuccess) {
                 const message = isDrafted
                     ? "Bản nháp được lưu"
                     : "Tạo mới thành công";
 
-                this.showSuccessNotification(message);
+                this.hasInputData = false;
+                NotificationHelper.notifySuccess(message);
+                this.$router.push(
+                    `/studio/comic/detail/${this.chapterDetail.comicId}`
+                );
             } else {
-                this.showErrorNotification(result.message);
+                NotificationHelper.notifyError(result.message);
             }
         },
     },

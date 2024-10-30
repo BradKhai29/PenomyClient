@@ -14,8 +14,11 @@ import { ConfirmRegisterResult } from "src/api.models/auth/auth3Page/ConfirmRegi
 async function verifyRegistrationTokenAsync(registrationToken) {
     try {
         await axios({
-            url: `${BaseWebApiUrl}/g1/register/${registrationToken}`,
-            method: HttpMethod.GET,
+            url: `${BaseWebApiUrl}/g1/register/verify`,
+            data: {
+                registrationToken: `${registrationToken}`,
+            },
+            method: HttpMethod.POST,
         });
 
         return true;
@@ -37,7 +40,7 @@ async function confirmRegisterAsync(registrationToken, nickname, password) {
 
     try {
         const response = await axios({
-            url: `${BaseWebApiUrl}/g1/confirm/register`,
+            url: `${BaseWebApiUrl}/g1/register/complete`,
             method: HttpMethod.POST,
             data: {
                 preRegistrationToken: registrationToken,

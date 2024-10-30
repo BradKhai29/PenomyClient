@@ -20,14 +20,16 @@
         class="flex justify-between items-center page-header shadow-2"
     >
         <div class="text-subtitle1 flex items-center">
-            <q-btn
-                dense
-                flat
-                no-caps
-                class="text-weight-bold text-dark text-subtitle1 artwork-title"
-            >
-                {{ props.headerTitle }}
-            </q-btn>
+            <router-link :to="`/studio/comic/detail/${comicId}`">
+                <q-btn
+                    dense
+                    flat
+                    no-caps
+                    class="text-weight-bold text-dark text-subtitle1 artwork-title"
+                >
+                    {{ props.headerTitle }}
+                </q-btn>
+            </router-link>
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm"
             /></span>
@@ -96,7 +98,7 @@ import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 // Support for route.
 const route = useRoute();
 const router = useRouter();
-const defaultRedirectRoute = "/studio/artworks";
+const defaultRedirectRoute = ref(null);
 
 // Component refs.
 const hasInputData = ref(inject("hasInputData"));
@@ -106,6 +108,9 @@ const redirectRoute = ref(null);
 const confirmToCancelUpdate = ref(false);
 
 const props = defineProps({
+    comicId: {
+        required: true,
+    },
     headerTitle: {
         type: String,
         default: null,
@@ -129,7 +134,7 @@ function confirmToCancelOrRedirect() {
 
     // If redirect route is not specified,
     // then redirect back to default route.
-    router.push(defaultRedirectRoute);
+    router.push(defaultRedirectRoute.value);
 }
 
 /**
@@ -147,6 +152,7 @@ function preventRedirect(event) {
 
 // Component life-cycle events.
 onBeforeMount(() => {
+    defaultRedirectRoute.value = `/studio/comic/detail/${props.comicId}`;
     window.addEventListener("beforeunload", preventRedirect);
 });
 

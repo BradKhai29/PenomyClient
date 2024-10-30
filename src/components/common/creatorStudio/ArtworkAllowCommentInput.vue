@@ -55,7 +55,7 @@ const props = defineProps({
     },
 });
 
-const emit = (["update:modelValue", "hasChange"]);
+const emit = defineEmits(["update:modelValue", "hasChange"]);
 
 function toggleInput() {
     emit("hasChange", radioInputName, true);

@@ -32,7 +32,7 @@ const props = defineProps({
     },
 });
 
-const emit = (["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 
 function checkPolicy() {
     // Reverse the check policy when clicking on.

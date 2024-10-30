@@ -1,16 +1,18 @@
 import axios from "axios";
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { HttpMethod } from "src/api.common/HttpMethod";
-import { baseWebApiUrl } from "src/api.common/BaseWebApiUrl";
-import { LoginApiResponse } from "src/api.models/auth/auth01/LoginApiResponse";
+import { LoginApiResponse } from "src/api.models/auth/auth1Page/LoginApiResponse";
+import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 
-const apiUrl = `${baseWebApiUrl}/api/login`;
+const apiUrl = `${BaseWebApiUrl}/g31/login`;
 
 /**
+ * Send the request to login webapi.
  *
  * @param {String} email Email of the user account to login.
  * @param {String} password Password the user account to login.
- * @returns {LoginApiResponse} Response contains access token and refresh token.
+ * @param {Boolean} rememberMe Indicate to remember the login or not to generate different access & refresh token (default is false).
+ * @returns {Promise<LoginApiResponse>} Response contains access token and refresh token.
  */
 async function loginAsync(email, password) {
     try {
@@ -20,25 +22,25 @@ async function loginAsync(email, password) {
             data: {
                 email: email,
                 password: password,
+                rememberMe: true,
             },
         });
 
-        const data = response.data;
-        return new LoginApiResponse(
-            data.accessToken,
-            data.refreshToken,
-            data.isSuccess
-        );
+        const apiResponse = LoginApiResponse.mapFrom(response.data.body);
+
+        return apiResponse;
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
-        console.log(axiosError.response.data);
+        const errorMessage = LoginApiResponse.getMessageFromErrorCode(
+            axiosError.response.data.appCode
+        );
 
-        return LoginApiResponse.failed();
+        return LoginApiResponse.failed(errorMessage);
     }
 }
 
-const loginApiHandler = {
-    login: loginAsync,
+const LoginApiHandler = {
+    loginAsync: loginAsync,
 };
 
-export { loginApiHandler };
+export { LoginApiHandler };

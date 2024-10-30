@@ -4,15 +4,17 @@
         class="flex justify-between items-center page-header shadow-2"
     >
         <div class="text-subtitle1 flex items-center">
-            <q-btn
-                dense
-                flat
-                no-caps
-                class="text-weight-bold bg-dark text-light text-subtitle1"
-            >
-                <q-icon name="arrow_back" size="sm"></q-icon>
-                <span class="q-ml-xs"> Trở về trang quản lý </span>
-            </q-btn>
+            <router-link :to="defaultRedirectRoute">
+                <q-btn
+                    dense
+                    flat
+                    no-caps
+                    class="text-weight-bold bg-dark text-light text-subtitle1"
+                >
+                    <q-icon name="arrow_back" size="sm"></q-icon>
+                    <span class="q-ml-xs"> Trở về trang quản lý </span>
+                </q-btn>
+            </router-link>
         </div>
     </section>
     <section
@@ -20,14 +22,16 @@
         class="flex justify-between items-center page-header shadow-2"
     >
         <div class="text-subtitle1 flex items-center">
-            <q-btn
-                dense
-                flat
-                no-caps
-                class="text-weight-bold text-dark text-subtitle1 artwork-title"
-            >
-                {{ props.headerTitle }}
-            </q-btn>
+            <router-link :to="`/studio/comic/detail/${comicId}`">
+                <q-btn
+                    dense
+                    flat
+                    no-caps
+                    class="text-weight-bold text-dark text-subtitle1 artwork-title"
+                >
+                    {{ props.headerTitle }}
+                </q-btn>
+            </router-link>
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm"
             /></span>
@@ -53,11 +57,50 @@
             <q-btn
                 class="font-arial text-weight-bold flex items-center"
                 color="negative"
+                @click="showDeleteModal = true"
             >
                 <span class="q-mr-xs">Xóa</span>
                 <q-icon name="delete" size="xs" />
             </q-btn>
         </div>
+        <q-dialog v-model="showDeleteModal" persistent>
+            <q-card>
+                <q-card-section>
+                    <div class="text-h6">Tác phẩm: {{ headerTitle }}</div>
+                </q-card-section>
+                <q-card-section class="row items-center">
+                    <q-avatar
+                        icon="delete"
+                        color="primary"
+                        text-color="white"
+                    />
+                    <span class="q-ml-sm text-subtitle1">
+                        Bạn xác nhận xóa tác phẩm này
+                    </span>
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn
+                        flat
+                        no-caps
+                        label="Hủy"
+                        color="primary"
+                        v-close-popup
+                        class="text-subtitle1"
+                        :disable="isProcessing"
+                    />
+                    <q-btn
+                        flat
+                        no-caps
+                        label="Xác nhận xóa"
+                        color="primary"
+                        class="text-subtitle1"
+                        @click="temporarilyRemoveComicAsync"
+                        :disable="isProcessing"
+                    />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
         <q-dialog v-model="showWarning" persistent>
             <q-card>
                 <q-card-section>
@@ -102,6 +145,8 @@
 import { inject, onBeforeMount, onBeforeUnmount, ref } from "vue";
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Support for route.
 const route = useRoute();
@@ -110,15 +155,21 @@ const defaultRedirectRoute = "/studio/artworks";
 
 // Component refs.
 const showWarning = ref(false);
+const showDeleteModal = ref(false);
 const isRedirectedToOtherRoute = ref(false);
 const redirectRoute = ref(null);
 const confirmToCancelUpdate = ref(false);
 const hasChangesInData = ref(inject("hasChangesInData"));
+const isProcessing = ref(false);
 
 const props = defineProps({
     headerTitle: {
         type: String,
         default: null,
+    },
+    comicId: {
+        type: String,
+        required: true,
     },
     isNotFound: {
         type: Boolean,
@@ -150,8 +201,37 @@ function preventRedirect(event) {
     if (hasChangesInData.value) {
         event.preventDefault();
         event.returnValue = null;
+
         return;
     }
+}
+
+async function temporarilyRemoveComicAsync() {
+    // Prevent user to re-click the button
+    // when the api is handling the request.
+    if (isProcessing.value) {
+        return;
+    }
+
+    // Turn on the is processing flag.
+    isProcessing.value = true;
+
+    const result =
+        await CreatorStudio8ApiHandler.temporarilyRemoveComicByIdAsync(
+            props.comicId
+        );
+
+    if (result.isSuccess) {
+        hasChangesInData.value = false;
+        NotificationHelper.notifySuccess("Tác phẩm đã bị tạm xóa");
+
+        // Redirect to artwork manager page after removing success.
+        router.push(defaultRedirectRoute);
+        return;
+    }
+
+    // Notifiy the error if has.
+    NotificationHelper.notifyError(result.message);
 }
 
 // Component life-cycle events.

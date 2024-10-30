@@ -13,7 +13,7 @@
     </q-dialog>
 </template>
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, defineProps } from 'vue'
 
 const prop = defineProps({
     message: {

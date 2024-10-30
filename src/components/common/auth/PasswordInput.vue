@@ -1,17 +1,23 @@
 <template>
     <section id="password-input">
         <q-input
-            placeholder="Nhập mật khẩu"
+            :placeholder="label"
             class="text-subtitle1 bg-white"
             :type="showPassword ? 'text' : 'password'"
             v-model="password"
-            color="green"
+            :color="hasError || error ? 'negative' : 'green'"
             outlined
-            :error="hasError"
+            :error="false"
         >
-            <template v-if="!(error || hasError)" v-slot:append>
+            <template v-slot:append>
                 <q-btn dense flat @click="showPassword = !showPassword">
                     <q-icon
+                        v-if="hasError || error"
+                        name="info"
+                        color="negative"
+                    />
+                    <q-icon
+                        v-else
                         :name="showPassword ? 'visibility_off' : 'visibility'"
                     />
                 </q-btn>
@@ -70,6 +76,10 @@ export default {
         minLength: {
             type: Number,
             default: 1,
+        },
+        label: {
+            type: String,
+            default: "Nhập mật khẩu",
         },
     },
     data() {

@@ -17,7 +17,7 @@ class DecodeJwtPayload {
 
 const claimTypes = {
     userId: "userId",
-    email: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+    email: "app-user-email",
     role: "role",
 };
 
@@ -31,6 +31,12 @@ const claimTypes = {
  * @returns {DecodeJwtPayload} Returns the decoded payload as a DecodeJwtPayload instance, or null if parsing fails.
  */
 function decodeJwt(token) {
+    const MINIMUM_LENGTH = 10;
+
+    if (token == "" || token.length < MINIMUM_LENGTH) {
+        return null;
+    }
+
     try {
         // Split the token into its three parts: header, payload, and signature
         const parts = token.split(".");
@@ -49,8 +55,6 @@ function decodeJwt(token) {
 
         // Parse the decoded payload string into a JSON object
         const jsonPayload = JSON.parse(decodedPayload);
-
-        console.log(jsonPayload);
 
         return new DecodeJwtPayload(
             jsonPayload[claimTypes.userId],

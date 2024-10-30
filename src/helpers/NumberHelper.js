@@ -76,10 +76,23 @@ function formatNumberShort(num, precision = 1) {
     }
 }
 
+/**
+ * Returns a number whose value is limited to the given range.
+ *
+ * @param {Number} min The lower boundary
+ * @param {Number} value The initial value
+ * @param {Number} max The upper boundary
+ * @returns {Number} A number in the range (min, max)
+ */
+function clamp(min, value, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
 const NumberHelper = {
     isNumber: isNumber,
     getSecureRandomNumber: getSecureRandomNumber,
     formatNumberShort: formatNumberShort,
+    clamp: clamp,
 };
 
 export { NumberHelper };
