@@ -78,6 +78,7 @@ onMounted(async () => {
         artworks.value.forEach((item) => {
             item.lastUpdateAt = Math.round(calculateDayDifference(item.lastUpdateAt, new Date()))
         })
+        console.log(artworks.value[0])
     });
 })
 
@@ -91,7 +92,7 @@ onMounted(async () => {
 
 .recently-updated {
     padding-bottom: .1rem;
-    border-bottom: 4px solid green;
+    border-bottom: 4px solid var(--primary);
     width: max-content;
 }
 

@@ -179,7 +179,7 @@ function toggleProfileButton() {
 
     if (authStore.isAuth) {
         console.log("Login success");
-
+        router.push("/profile");
         return;
     }
 

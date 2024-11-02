@@ -91,7 +91,7 @@ onMounted(async () => {
 
 .recently-updated {
     padding-bottom: .1rem;
-    border-bottom: 4px solid green;
+    border-bottom: 4px solid var(--primary);
     width: max-content;
 }
 
