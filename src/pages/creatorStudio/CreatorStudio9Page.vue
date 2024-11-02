@@ -20,7 +20,9 @@
                         />
 
                         <ChapterUploadOrderInput
-                            v-model="chapterDetail.uploadOrder"
+                            label="Thứ tự tập"
+                            tooltipMessage="Thứ tự của tập truyện sẽ được đăng tải"
+                            :displayContent="`${chapterDetail.uploadOrder}`"
                             class="q-mb-sm"
                         />
 
@@ -126,7 +128,7 @@ import { CreatorStudio9ApiHandler } from "src/api.handlers/creatorStudio/creator
 // Import components section.
 import CreatorStudio9PageHeader from "components/pages/creatorStudio/creatorStudio9Page/CreatorStudio9PageHeader.vue";
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
-import ChapterUploadOrderInput from "components/common/creatorStudio/ChapterUploadOrderInput.vue";
+import ChapterUploadOrderInput from "src/components/common/creatorStudio/DisableDisplayInput.vue";
 import TitleInput from "components/common/creatorStudio/ArtworkTitleInput.vue";
 import IntroductionInput from "components/common/creatorStudio/ArtworkIntroductionInput.vue";
 import ThumbnailInput from "components/common/creatorStudio/ChapterThumbnailInput.vue";
@@ -135,6 +137,7 @@ import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevel
 import ChapterImageListInput from "components/common/creatorStudio/ChapterImageListInput.vue";
 import ChapterPublishOptionsInput from "src/components/common/creatorStudio/ChapterPublishOptionsInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
+import { ScheduleOptionDetail } from "src/api.models/creatorStudio/common/ScheduleOptionDetail";
 
 export default {
     components: {
@@ -169,11 +172,10 @@ export default {
                 allowComment: false,
                 confirmPolicy: false,
                 chapterImageItems: [],
-                scheduleOption: {
-                    isScheduled: false,
-                    scheduleDate: new Date(),
-                    scheduleDateTime: null,
-                },
+                /**
+                 * @type {ScheduleOptionDetail} The type of this property.
+                 */
+                scheduleOption: ScheduleOptionDetail.new(),
             },
             verifyInputCallbacks: [],
         };
@@ -253,7 +255,7 @@ export default {
          *
          * @param {Boolean} [isDrafted=false] Specify to create a draft for this chapter. (Default is false)
          */
-        async createChapter(isDrafted) {
+        async createChapter(isDrafted = false) {
             const isValidInput = this.verifyInput();
 
             if (!isValidInput) {
@@ -262,11 +264,7 @@ export default {
                 return;
             }
 
-            // Get the result of creating the chapter.
-            if (!isDrafted) {
-                isDrafted = false;
-            }
-
+            // Turn on is creating flag.
             this.isCreating = true;
 
             const result =
@@ -275,6 +273,7 @@ export default {
                     isDrafted
                 );
 
+            // Turn off is creating flag.
             this.isCreating = false;
 
             if (result.isSuccess) {

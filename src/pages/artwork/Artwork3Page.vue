@@ -3,7 +3,8 @@
         <div class="q-pt-lg q-pb-xs">
             <q-card class="row detail-header">
                 <image-section :imageUrl="data.thumbnailUrl" class="col-3 q-pr-md"></image-section>
-                <description-section :hasSeries="data.hasSeries" :title="data.title" :author="data.authorName"
+                <description-section :isUserFavorited="data.isUserFavorite" :artworkId="artworkId"
+                    :hasSeries="data.hasSeries" :title="data.title" :author="data.authorName"
                     :country="data.countryName" :status="data.artworkStatus" :seriesName="data.serieName"
                     :buttons="buttons" class="col-9 q-pt-md"></description-section>
             </q-card>
@@ -18,7 +19,7 @@
             class="col-12"></detail-body-section>
     </q-card>
     <div>
-        <commentloader :artworkId="route.params.artworkId"/>
+        <commentloader :artworkId="route.params.artworkId" />
     </div>
     <div class="recommend-section">
         <recommendation-section></recommendation-section>
@@ -28,18 +29,21 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAuthStore } from "src/stores/common/AuthStore";
+import commentloader from 'src/components/common/artwork/CommentLoader.vue';
 import commentloader from 'src/components/common/artwork/Common/CommentLoader.vue';
 import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
 const route = useRoute();
 const backgroundImageUrl = ref('');
 const artworkId = ref(null);
 const data = ref({});
+const authStore = useAuthStore();
 onMounted(async () => {
     artworkId.value = route.params.artworkId;
     const id = route.params.artworkId;
     try {
         const [artworkDetail] = await Promise.all([
-            artworkDetailApiHandler.getArtworkDetailByIdAsync(id),
+            artworkDetailApiHandler.getArtworkDetailByIdAsync(id, authStore.bearerAccessToken),
         ]);
         data.value = artworkDetail;
         backgroundImageUrl.value = artworkDetail.thumbnailUrl;

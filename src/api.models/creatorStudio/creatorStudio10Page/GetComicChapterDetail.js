@@ -1,5 +1,5 @@
 import { DateTimeHelper } from "src/helpers/DateTimeHelper";
-import { ComicChapterMediaResponseItem } from "./ComicChapterMediaResponseItem";
+import { ComicChapterMediaResponseItem } from "./ComicChapterMedia";
 
 const updateArtworkErrors = {
     FileServiceError: {
@@ -30,7 +30,7 @@ function getMessageFromErrorCode(errorCode) {
     }
 }
 
-class GetComicChapterDetailResponseDto {
+class ComicChapterDetail {
     /**
      *
      * @param {String} id Id of current comic chapter.
@@ -86,4 +86,4 @@ class GetComicChapterDetailResponseDto {
     }
 }
 
-export { GetComicChapterDetailResponseDto };
+export { ComicChapterDetail };

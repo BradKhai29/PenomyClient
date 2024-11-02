@@ -57,6 +57,18 @@
 
             <div id="user-profile-actions" class="bg-light-100 text-subtitle1">
                 <q-item
+                    v-if="isAtCreatorStudio"
+                    id="btn-back-home"
+                    clickable
+                    v-close-popup
+                    class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
+                    dense
+                    @click="goToHome"
+                >
+                    <q-icon name="home" size="sm" />
+                    <span class="q-ml-sm">Về lại trang chủ</span>
+                </q-item>
+                <q-item
                     v-if="isAuth"
                     id="btn-login"
                     clickable
@@ -98,18 +110,6 @@
                 >
                     <q-icon name="feedback" size="sm" />
                     <span class="q-ml-sm">Gửi phản hồi</span>
-                </q-item>
-                <q-item
-                    v-if="isAtCreatorStudio"
-                    id="btn-back-home"
-                    clickable
-                    v-close-popup
-                    class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
-                    dense
-                    @click="goToHome"
-                >
-                    <q-icon name="home" size="sm" />
-                    <span class="q-ml-sm">Trang người dùng</span>
                 </q-item>
             </div>
 

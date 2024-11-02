@@ -4,19 +4,21 @@ import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
-import { nextTick } from "vue";
 /**
  * Fetches the artwork detail by the given artwork ID.
  * @param {number} artworkId The artwork ID.
  * @returns {Promise<ArtworkDetailResponse>} The artwork detail response.
  */
-async function getArtworkDetailByIdAsync(artworkId) {
+async function getArtworkDetailByIdAsync(artworkId, accessToken) {
     try {
         const response = await axios({
             url: `${BaseWebApiUrl}/g5/artwork-detail`,
             method: HttpMethod.GET,
             params: {
                 id: artworkId,
+            },
+            headers: {
+                Authorization: accessToken,
             },
         });
         if (response.data.httpCode !== 200) {
@@ -37,7 +39,8 @@ async function getArtworkDetailByIdAsync(artworkId) {
             data.favoriteCount,
             data.starRates,
             data.introduction,
-            data.commentCount
+            data.commentCount,
+            data.isUserFavorite
         );
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);

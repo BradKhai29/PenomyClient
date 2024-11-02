@@ -11,6 +11,7 @@
                     </q-banner>
                 </q-popup-proxy>
             </q-btn>
+            <anime-by-category></anime-by-category>
         </div>
     </q-page>
 </template>

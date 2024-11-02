@@ -26,22 +26,15 @@
                         Bản nháp
                     </span>
                 </div>
-                <div class="flex items-center q-gutter-sm">
+                <div class="flex items-center">
                     <q-btn
                         v-if="isDrafted"
                         dense
                         unelevated
                         no-caps
-                        class="text-subtitle2 bg-primary text-dark text-weight-bold q-px-sm"
+                        class="text-subtitle2 bg-primary text-dark text-weight-bold q-px-sm q-mr-sm"
                         >Xuất bản</q-btn
                     >
-                    <router-link
-                        :to="{
-                            name: 'comic-chapter-detail',
-                            params: { chapterId: id },
-                        }"
-                    >
-                    </router-link>
                     <router-link
                         :to="{
                             name: 'comic-chapter-edit',

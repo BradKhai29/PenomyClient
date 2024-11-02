@@ -29,8 +29,10 @@ import ArtworkCard from 'src/components/common/artwork/anime/AnimeByCategoryCard
 import { ref, computed, onMounted } from 'vue';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
+import { useAuthStore } from "src/stores/common/AuthStore";
+import artworkCategoryApiHandler from "src/api.handlers/artwork/artwork14Page/ArtworkByCategoryHandler";
 import axios from 'axios';
-const apiUrl = `${BaseWebApiUrl}/G14/AnimesByCategory/get`;
+const apiUrl = `${BaseWebApiUrl}/g14/recommended-category`;
 const slide = ref(0);
 var categoryName = ref('');
 var artworks = ref([]);
@@ -63,21 +65,34 @@ const carouselSlides = computed(() => {
     }, []);
 })
 
+// onMounted(async () => {
+//     // get data from api
+//     await axios({
+//         url: apiUrl,
+//         method: HttpMethod.GET,
+//         params: {
+//             categoryId: "123456789012345682"
+//         },
+//     }).then((response) => {
+//         if (response.data.body.artworkList.length > 0) {
+//             artworks.value = response.data.body.artworkList
+//             categoryName.value = response.data.body.category
+//         }
+//     });
+// })
+
+const authStore = useAuthStore();
+const accessToken = authStore.accessToken;
 onMounted(async () => {
-    // get data from api
-    await axios({
-        url: apiUrl,
-        method: HttpMethod.GET,
-        params: {
-            categoryId: "123456789012345682"
-        },
-    }).then((response) => {
-        if (response.data.body.artworkList.length > 0) {
-            artworks.value = response.data.body.artworkList
-            categoryName.value = response.data.body.category
-        }
-    });
-})
+    try {
+        const [artwork] = await Promise.all([
+            artworkCategoryApiHandler.getArtworkByCategoryAsync(accessToken),
+        ]);
+        data.value = artwork;
+    } catch (error) {
+        console.log(error);
+    }
+});
 </script>
 
 <style lang="css" scoped>

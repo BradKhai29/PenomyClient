@@ -46,10 +46,10 @@
                     :style="{ fontSize: '16px', backgroundColor: '#120E36', color: 'white', }">
                     Xem từ đầu
                 </q-btn>
-                <q-btn class="col-2 q-mr-sm action-btn" unelevated rounded no-caps
-                    :style="{ fontSize: '16px', backgroundColor: '#EEEEEE', color: '#120E36', }">
+                <q-btn class="col-2 q-mr-sm action-btn" unelevated rounded no-caps @click="toggleFavorite(artworkId)"
+                    :style="{ fontSize: '16px', backgroundColor: !isFavorited ? '#EEEEEE' : '#120E36', color: !isFavorited ? '#120E36' : '#DC5834', }">
                     <q-icon name="ion-heart" class="q-mr-xs" />
-                    Yêu thích
+                    {{ isFavorited ? 'Đã yêu thích' : 'Yêu thích' }}
                 </q-btn>
                 <q-btn class="col-3 q-mr-sm action-btn" unelevated rounded no-caps
                     :style="{ fontSize: '16px', backgroundColor: '#EEEEEE', color: '#120E36', }">
@@ -63,7 +63,11 @@
 
 <script setup>
 import { ref } from 'vue'
-
+import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
+import { HttpMethod } from "src/api.common/HttpMethod";
+import { AxiosHelper } from "src/helpers/AxiosHelper";
+import { useAuthStore } from "src/stores/common/AuthStore";
+import axios from "axios";
 // Define reactive properties using `ref`
 import { defineProps } from 'vue'
 
@@ -77,9 +81,44 @@ const props = defineProps({
     buttons: {
         type: Array,
     },
-    hasSeries: Boolean
+    hasSeries: Boolean,
+    artworkId: Number,
+    isUserFavorited: Boolean
 })
+const authStore = useAuthStore();
+const isFavorited = ref(props.isUserFavorited);
+console.log(isFavorited.value)
+async function toggleFavorite() {
+    try {
+        const url = isFavorited.value
+            ? `${BaseWebApiUrl}/g47/favorite/remove` // Remove API endpoint
+            : `${BaseWebApiUrl}/g46/favorite/add`;
+        const response = await axios({
+            url: url,
+            method: HttpMethod.POST,
+            data: { artworkId: props.artworkId, },
+            headers: {
+                Authorization: authStore.bearerAccessToken,
+            }
+        });
+        if (response.data.httpCode !== 200) {
+            return null;
+        }
+        const data = response.data.httpCode;
+        if (data === 200) {
+            isFavorited.value = !isFavorited.value;
+        }
+        console.log(isFavorited.value);
+    }
+    catch (error) {
+        const axiosError = AxiosHelper.toAxiosError(error);
+        console.log(axiosError);
+        return null;
+    }
+}
+
 </script>
+
 
 <style scoped>
 .action-btn {
