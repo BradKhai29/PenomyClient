@@ -102,8 +102,6 @@ function loginWithGoogle(securityState, resolveCallback, errorCallback) {
         tokenClient = clientLibraryState.tokenClient;
     }
 
-    console.log("Token Client", tokenClient);
-
     tokenClient.requestAccessToken();
 }
 

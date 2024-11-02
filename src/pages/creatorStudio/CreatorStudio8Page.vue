@@ -74,6 +74,7 @@
 
                         <AllowCommentInput
                             v-model="artworkDetail.allowComment"
+                            :oldAllowComment="artworkDetail.allowComment"
                             @hasChange="detectInputChange"
                         />
                     </section>

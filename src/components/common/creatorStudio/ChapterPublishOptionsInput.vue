@@ -110,6 +110,8 @@ const publishOptions = {
     scheduled: "scheduled",
 };
 
+import { ScheduleOptionDetail } from "src/api.models/creatorStudio/common/ScheduleOptionDetail";
+
 export default {
     name: "ChapterPublishOptionsInput",
     components: {
@@ -118,10 +120,7 @@ export default {
     emit: ["update:modelValue", "hasChange"],
     props: {
         modelValue: {
-            type: {
-                isScheduled: Boolean,
-                scheduleDate: Date,
-            },
+            type: ScheduleOptionDetail,
             required: true,
         },
     },
@@ -135,6 +134,9 @@ export default {
             scheduleTime: null,
             clientTimezone: DateTimeHelper.getClientTimeZone(),
             publishOptions: publishOptions,
+            /**
+             * @type {Number} The enum value indicate the option of publishing the chapter.
+             */
             publishOption: null,
         };
     },
@@ -180,44 +182,28 @@ export default {
 
             return scheduleDateTime;
         },
+        emitUpdateModel() {
+            const scheduleDateTime = this.getScheduleDateTime();
+            const isScheduled = this.publishOption == publishOptions.scheduled;
+
+            const modelValue = new ScheduleOptionDetail(
+                isScheduled,
+                this.scheduleDate,
+                scheduleDateTime
+            );
+
+            this.$emit("update:modelValue", modelValue);
+        },
     },
     watch: {
         publishOption() {
-            const scheduleDateTime = this.getScheduleDateTime();
-
-            const modelValue = {
-                isScheduled: false,
-                scheduleDate: this.scheduleDate,
-                scheduleDateTime: scheduleDateTime,
-            };
-
-            if (this.publishOption == publishOptions.scheduled) {
-                modelValue.isScheduled = true;
-            }
-
-            this.$emit("update:modelValue", modelValue);
+            this.emitUpdateModel();
         },
         scheduleDate() {
-            const scheduleDateTime = this.getScheduleDateTime();
-
-            const modelValue = {
-                isScheduled: true,
-                scheduleDate: this.scheduleDate,
-                scheduleDateTime: scheduleDateTime,
-            };
-
-            this.$emit("update:modelValue", modelValue);
+            this.emitUpdateModel();
         },
         scheduleTime() {
-            const scheduleDateTime = this.getScheduleDateTime();
-
-            const modelValue = {
-                isScheduled: true,
-                scheduleDate: this.scheduleDate,
-                scheduleDateTime: scheduleDateTime,
-            };
-
-            this.$emit("update:modelValue", modelValue);
+            this.emitUpdateModel();
         },
     },
 };

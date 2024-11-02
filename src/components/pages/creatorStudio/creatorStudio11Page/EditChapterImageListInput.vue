@@ -7,7 +7,7 @@
                     :class="{ 'text-negative': hasError }"
                 >
                     <q-icon v-if="hasError" name="report" size="xs" />
-                    <span>Danh sách ảnh</span>
+                    <span @click="debugging">(Debug) Danh sách ảnh</span>
                 </span>
                 <label
                     for="chapterImages"
@@ -43,7 +43,9 @@
                 >
             </section>
             <section v-else class="flex items-center justify-end col-auto">
-                <span class="q-mr-xs">{{ imageItemList.length }} ảnh</span>
+                <span class="q-mr-xs"
+                    >{{ displayImageItemList.length }} ảnh</span
+                >
                 <span>({{ totalImageSizesRef }}B / 32MB)</span>
             </section>
         </div>
@@ -58,12 +60,14 @@
             ></section>
             <span
                 class="add-image-placeholder"
-                v-if="imageItemList.length == 0"
+                v-if="displayImageItemList.length == 0"
             >
             </span>
+            <!-- These placeholder span will be used for filling the container to prevent
+            the image from being hidden by the container -->
             <span
                 class="add-image-placeholder"
-                v-for="imageItem in imageItemList"
+                v-for="imageItem in displayImageItemList"
                 :key="imageItem.id"
             >
             </span>
@@ -76,12 +80,12 @@
                     for="chapterImages"
                     id="add-image-btn"
                     class="add-image-placeholder border-sm-dark border-radius-sm"
-                    v-if="imageItemList.length == 0"
+                    v-if="displayImageItemList.length == 0"
                 >
                     <q-icon name="add" size="sm" />
                 </label>
                 <div
-                    v-for="imageItem in imageItemList"
+                    v-for="imageItem in displayImageItemList"
                     :key="imageItem.id"
                     :id="imageItem.id"
                     class="chapter-image-item border-sm-dark border-radius-sm"
@@ -89,7 +93,7 @@
                 >
                     <span
                         class="remove-image-button"
-                        @mousedown="removeImage(imageItem.id)"
+                        @mousedown="removeImageItem(imageItem.id)"
                     >
                         <q-icon name="close" size="xs" />
                     </span>
@@ -135,7 +139,7 @@
                 <q-card-section class="q-mt-lg">
                     <div class="flex column items-center">
                         <img
-                            v-for="imageItem in imageItemList"
+                            v-for="imageItem in displayImageItemList"
                             :key="imageItem.id"
                             :id="imageItem.id"
                             :src="imageItem.src"
@@ -150,17 +154,20 @@
 </template>
 
 <script>
+// Import dependencies section.
 import Sortable from "sortablejs";
 import { FileHelper } from "src/helpers/FileHelper";
 import { StringHelper } from "src/helpers/StringHelper";
 import { NumberHelper } from "src/helpers/NumberHelper";
-import { ChapterImageItem } from "src/api.models/creatorStudio/creatorStudio9Page/ChapterImageItem";
+import { EditableChapterImageItem } from "src/api.models/creatorStudio/creatorStudio11Page/EditableChapterImageItem";
 
+// Support constants for component.
 const invalidFormatMessage = "Yêu cầu định dạng PNG, JPG, JPEG";
 const invalidFileSizeMessage = "File ảnh kích thước tối đa 4MB";
+const inputName = "chapterImages";
 
 export default {
-    emits: ["update:modelValue", "verifyInput"],
+    emits: ["update:modelValue", "verifyInput", "hasChange"],
     props: {
         modelValue: {
             type: Array,
@@ -174,11 +181,19 @@ export default {
             pendingRemove: false,
             hasError: false,
             /**
-             * @type {ChapterImageItem[]} The list of image item to upload.
+             * This array will used to display to the client when drag-n-drop.
+             *
+             * @type {EditableChapterImageItem[]} The list of image item to display to user.
+             */
+            displayImageItemList: [],
+            /**
+             * This array will used to store all chapter image items but not for display.
+             *
+             * @type {EditableChapterImageItem[]} The list of image item to upload.
              */
             imageItemList: [],
             /**
-             * @type {ChapterImageItem[]} The list of temporarily list to process the item to upload.
+             * @type {EditableChapterImageItem[]} The list of temporarily list to process the item to upload.
              */
             tempItemList: [],
             totalImageSizes: 0,
@@ -220,45 +235,76 @@ export default {
             forceFallback: true,
             removeCloneOnHide: true,
         });
+
+        this.displayImageItemList = this.modelValue;
+        this.imageItemList.push(...this.modelValue);
+        // The last position will now be the length of the display item list.
+        this.imageLastPosition = this.displayImageItemList.length;
+
+        const initialValue = 0;
+        this.totalImageSizes = this.displayImageItemList
+            .map((item) => item.fileSize)
+            .reduce(
+                (previousValue, currentValue) => previousValue + currentValue,
+                initialValue
+            );
     },
     methods: {
         verifyInput() {
-            this.hasError = this.imageItemList.length == 0;
+            this.hasError = this.displayImageItemList.length == 0;
 
-            return this.imageItemList.length > 0;
+            return this.displayImageItemList.length > 0;
         },
-        removeImage(imageId) {
+        removeImageItem(imageId) {
             // Prevent user to remove the image while dragging.
-            if (this.dragging) {
+            if (this.dragging || this.pendingRemove) {
                 return;
             }
 
             // Turn on this flag to prevent user interact with drag-n-drop.
             this.pendingRemove = true;
 
-            const removeItem = this.imageItemList.find(
+            const removeItem = this.displayImageItemList.find(
                 (item) => item.id == imageId
             );
 
             for (
                 let i = removeItem.position + 1;
-                i < this.imageItemList.length;
+                i < this.displayImageItemList.length;
                 i++
             ) {
-                this.imageItemList[i].position--;
+                const imageItem = this.displayImageItemList[i];
+                imageItem.position--;
+                imageItem.reloadNewUploadOrder();
             }
 
             // Reveke the object url to prevent memory leak.
             URL.revokeObjectURL(removeItem.src);
+
+            // Remove the item from the display list and update related state.
+            this.displayImageItemList.splice(removeItem.position, 1);
             this.imageLastPosition--;
-            this.imageItemList.splice(removeItem.position, 1);
-            this.totalImageSizes -= removeItem.imageFile.size;
+            this.totalImageSizes -= removeItem.fileSize;
+
+            // If the remove item is newly uploaded by user,
+            // then remove it from the imageItemList.
+            if (removeItem.isNewItem) {
+                const removeItemIndex = this.imageItemList.findIndex(
+                    (item) => item.id == removeItem.id
+                );
+
+                this.imageItemList.splice(removeItemIndex, 1);
+            }
+
+            // Mark the removeItem as deleted and reload the upload order.
+            removeItem.position = EditableChapterImageItem.DELETED_POSITION();
+            removeItem.reloadNewUploadOrder();
+
+            // Turn off the pending remove flag.
             this.pendingRemove = false;
         },
-        clearList() {
-            this.imageLastPosition = 0;
-            this.imageItemList.splice(0, this.imageItemList.length);
-            this.tempItemList.splice(0, this.tempItemList.length);
+        debugging() {
+            console.log("Image items", this.imageItemList);
         },
         /**
          * Tracking the element that being dragged by the user.
@@ -274,7 +320,15 @@ export default {
          * The object to emit will the imageItemList.
          */
         emitUpdateModelValue() {
+            console.log(this.imageItemList);
+
             this.$emit("update:modelValue", this.imageItemList);
+
+            // Emit has change event.
+            const hasChange = this.imageItemList.some(
+                (item) => item.isUploadOrderChanged() || item.isNewItem
+            );
+            this.$emit("hasChange", inputName, hasChange);
         },
         onDragEnd() {
             this.dragging = false;
@@ -287,7 +341,7 @@ export default {
             const draggedElement = this.currentDraggedElement;
 
             if (draggedElement) {
-                let prevElement = draggedElement.previousElementSibling;
+                const prevElement = draggedElement.previousElementSibling;
                 let nextElement = draggedElement.nextElementSibling;
 
                 // The sortablejs will create the clone element of the draggedElement,
@@ -323,8 +377,11 @@ export default {
         },
         refillImageItemListWithTempList() {
             // Clear the current image item list to update with the temp list.
-            this.imageItemList.splice(0, this.imageItemList.length);
-            this.imageItemList = [...this.tempItemList];
+            this.displayImageItemList.splice(
+                0,
+                this.displayImageItemList.length
+            );
+            this.displayImageItemList = [...this.tempItemList];
 
             // Clear the temp list after update the image item list.
             this.tempItemList.splice(0, this.tempItemList.length);
@@ -341,11 +398,11 @@ export default {
             const prevElementId = prevElement.id;
             const draggedElementId = draggedElement.id;
 
-            const prevItem = this.imageItemList.find(
+            const prevItem = this.displayImageItemList.find(
                 (item) => item.id == prevElementId
             );
 
-            const draggedItem = this.imageItemList.find(
+            const draggedItem = this.displayImageItemList.find(
                 (item) => item.id == draggedElementId
             );
 
@@ -372,56 +429,60 @@ export default {
             // Update the item list after drag.
             if (isMovedBackward) {
                 for (let i = 0; i < newPosition; i++) {
-                    const imageItem = this.imageItemList[i];
+                    const imageItem = this.displayImageItemList[i];
                     this.tempItemList.push(imageItem);
                 }
 
                 // Add the draggedItem to its new position.
-                this.tempItemList.push(this.imageItemList[oldPosition]);
+                this.tempItemList.push(this.displayImageItemList[oldPosition]);
 
                 // Add the items that positioned after the draggedItem,
                 // and increase the position of these items to 1.
                 for (let i = newPosition; i < oldPosition; i++) {
-                    const imageItem = this.imageItemList[i];
-                    imageItem.position++;
+                    const editableImageItem = this.displayImageItemList[i];
+                    editableImageItem.position++;
+                    // Update the new upload order corresponding their current position.
+                    editableImageItem.reloadNewUploadOrder();
 
-                    this.tempItemList.push(imageItem);
+                    this.tempItemList.push(editableImageItem);
                 }
 
                 // Skip the draggedItem and add the left items
                 // in the list to the temp list.
                 for (
                     let i = oldPosition + 1;
-                    i < this.imageItemList.length;
+                    i < this.displayImageItemList.length;
                     i++
                 ) {
-                    const imageItem = this.imageItemList[i];
+                    const imageItem = this.displayImageItemList[i];
                     this.tempItemList.push(imageItem);
                 }
             }
             // If move forward, then handle differently.
             else {
                 for (let i = 0; i < oldPosition; i++) {
-                    const imageItem = this.imageItemList[i];
+                    const imageItem = this.displayImageItemList[i];
 
                     this.tempItemList.push(imageItem);
                 }
 
                 for (let i = oldPosition + 1; i < newPosition + 1; i++) {
-                    const imageItem = this.imageItemList[i];
-                    imageItem.position--;
+                    const editableImageItem = this.displayImageItemList[i];
+                    editableImageItem.position--;
+                    // Update the new upload order corresponding their current position.
+                    editableImageItem.reloadNewUploadOrder();
 
-                    this.tempItemList.push(imageItem);
+                    this.tempItemList.push(editableImageItem);
                 }
 
-                this.tempItemList.push(this.imageItemList[oldPosition]);
+                this.tempItemList.push(this.displayImageItemList[oldPosition]);
 
                 for (
                     let i = newPosition + 1;
-                    i < this.imageItemList.length;
+                    i < this.displayImageItemList.length;
                     i++
                 ) {
-                    const imageItem = this.imageItemList[i];
+                    const imageItem = this.displayImageItemList[i];
 
                     this.tempItemList.push(imageItem);
                 }
@@ -429,6 +490,7 @@ export default {
 
             // Set the new position for the draggedItem
             draggedItem.position = newPosition;
+            draggedItem.reloadNewUploadOrder();
 
             this.refillImageItemListWithTempList();
         },
@@ -443,7 +505,7 @@ export default {
             // in the DOM to find their position to handle drag-n-drop.
             const draggedElementId = draggedElement.id;
 
-            const draggedItem = this.imageItemList.find(
+            const draggedItem = this.displayImageItemList.find(
                 (item) => item.id == draggedElementId
             );
 
@@ -454,6 +516,7 @@ export default {
 
             const oldPosition = draggedItem.position;
             draggedItem.position = 0; // Move to first then new position is zero.
+            draggedItem.reloadNewUploadOrder();
 
             // Add the dragged item to the first position of the list.
             this.tempItemList.push(draggedItem);
@@ -461,14 +524,20 @@ export default {
             // Add the items that positioned before the dragged item to temp list,
             // and increase these items position to 1.
             for (let i = 0; i < oldPosition; i++) {
-                const imageItem = this.imageItemList[i];
-                imageItem.position++;
+                const editableImageItem = this.displayImageItemList[i];
+                editableImageItem.position++;
+                // Update the new upload order corresponding their current position.
+                editableImageItem.reloadNewUploadOrder();
 
-                this.tempItemList.push(imageItem);
+                this.tempItemList.push(editableImageItem);
             }
 
-            for (let i = oldPosition + 1; i < this.imageItemList.length; i++) {
-                const imageItem = this.imageItemList[i];
+            for (
+                let i = oldPosition + 1;
+                i < this.displayImageItemList.length;
+                i++
+            ) {
+                const imageItem = this.displayImageItemList[i];
 
                 this.tempItemList.push(imageItem);
             }
@@ -485,7 +554,7 @@ export default {
             // in the DOM to find their position to handle drag-n-drop.
             const draggedElementId = draggedElement.id;
 
-            const draggedItem = this.imageItemList.find(
+            const draggedItem = this.displayImageItemList.find(
                 (item) => item.id == draggedElementId
             );
 
@@ -495,20 +564,24 @@ export default {
             }
 
             const oldPosition = draggedItem.position;
-            // Move to last then new position is (imageItemList.length - 1).
-            const newPosition = this.imageItemList.length - 1;
+            // Move to last then new position is (displayImageItemList.length - 1).
+            const newPosition = this.displayImageItemList.length - 1;
             draggedItem.position = newPosition;
+            draggedItem.reloadNewUploadOrder();
 
             for (let i = 0; i < oldPosition; i++) {
-                const imageItem = this.imageItemList[i];
+                const imageItem = this.displayImageItemList[i];
 
                 this.tempItemList.push(imageItem);
             }
 
             // Skip the draggedItem and take from the old position to new position.
             for (let i = oldPosition + 1; i <= newPosition; i++) {
-                const imageItem = this.imageItemList[i];
+                const imageItem = this.displayImageItemList[i];
                 imageItem.position--;
+
+                // Update the new upload order corresponding their current position.
+                imageItem.reloadNewUploadOrder();
 
                 this.tempItemList.push(imageItem);
             }
@@ -546,20 +619,25 @@ export default {
                 const imageSrc = URL.createObjectURL(imageFile);
                 const imageSize = imageFile.size;
 
-                const imageItem = new ChapterImageItem(
-                    imageId,
-                    this.imageLastPosition,
-                    imageName,
-                    imageSrc,
-                    imageFile
-                );
+                // Populate the information to the editable item.
+                const imageItem = new EditableChapterImageItem();
+                imageItem.id = imageId;
+                imageItem.position = this.imageLastPosition;
+                imageItem.oldUploadOrder = this.imageLastPosition;
+                imageItem.newUploadOrder = this.imageLastPosition;
+                imageItem.fileSize = imageFile.size;
+                imageItem.src = imageSrc;
+                imageItem.imageName = imageName;
+                imageItem.imageFile = imageFile;
+                imageItem.isNewItem = true;
 
+                // Add the item to the display list and update the related state.
+                this.displayImageItemList.push(imageItem);
                 this.imageItemList.push(imageItem);
                 this.imageLastPosition++;
                 this.totalImageSizes += imageSize;
             }
 
-            this.verifyInput();
             // This line of code will let user to select
             // again the same file when they clear the image.
             // Reference: https://stackoverflow.com/questions/12030686/html-input-file-selection-event-not-firing-upon-selecting-the-same-file

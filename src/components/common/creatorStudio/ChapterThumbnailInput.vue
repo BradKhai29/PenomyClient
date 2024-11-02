@@ -12,7 +12,7 @@
         </div>
         <section
             class="display-area flex items-center justify-center"
-            :class="{ error: hasError }"
+            :class="{ error: hasError && showError }"
         >
             <div
                 v-if="!hasImage"
@@ -64,7 +64,7 @@
             <div class="flex items-center justify-between text-weight-bold">
                 <span :class="{ error: hasError }" class="flex items-center">
                     <span :class="{ error: hasError }">Ảnh bìa tập</span>
-                    <q-icon v-if="hasError" name="warning" size="xs" />
+                    <q-icon v-if="hasError" name="report" size="xs" />
                 </span>
                 <label
                     for="chapterThumbnail"
@@ -87,7 +87,7 @@
 
 <script>
 import { FileHelper } from "src/helpers/FileHelper";
-const inputName = "thumbnail";
+const inputName = "chapterThumbnail";
 const invalidFormatMessage = "Yêu cầu định dạng PNG, JPG, JPEG";
 const invalidFileSizeMessage = "File ảnh kích thước tối đa 4MB";
 
@@ -98,6 +98,10 @@ export default {
         },
         presetImageSrc: {
             type: String,
+        },
+        showError: {
+            type: Boolean,
+            default: true,
         },
     },
     data() {

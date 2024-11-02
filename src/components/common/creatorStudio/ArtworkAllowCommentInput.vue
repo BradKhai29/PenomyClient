@@ -19,7 +19,6 @@
         </div>
         <div class="flex q-gutter-md">
             <RadioInput
-                @click="toggleInput"
                 v-model="allowComment"
                 :value="true"
                 :name="radioInputName"
@@ -27,7 +26,6 @@
                 :checked="props.modelValue == true"
             />
             <RadioInput
-                @click="toggleInput"
                 v-model="allowComment"
                 :value="false"
                 :name="radioInputName"
@@ -39,15 +37,19 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import RadioInput from "./ArtworkRadioInput.vue";
 
 const allowComment = ref(false);
+const oldValue = ref(false);
 const radioInputName = "allowComment";
 
 const props = defineProps({
     modelValue: {
         required: true,
+    },
+    oldAllowComment: {
+        default: null,
     },
     label: {
         type: String,
@@ -57,14 +59,18 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue", "hasChange"]);
 
-function toggleInput() {
-    emit("hasChange", radioInputName, true);
-}
+onBeforeMount(() => {
+    if (props.oldAllowComment != null) {
+        allowComment.value = Boolean(props.oldAllowComment);
+        oldValue.value = Boolean(props.oldAllowComment);
+    }
+});
 
 watch(
     () => allowComment.value,
     (newValue, _) => {
         emit("update:modelValue", newValue);
+        emit("hasChange", radioInputName, true);
     }
 );
 </script>
