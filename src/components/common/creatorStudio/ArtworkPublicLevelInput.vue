@@ -27,7 +27,7 @@
                 :label="publicLevelItem.label"
                 :checked="isPublicLevelSelected(publicLevelItem.value)"
                 v-model="selectedPublicLevel"
-                @click="toggleSelect"
+                :id="`${publicLevelItem.label}_${publicLevelItem.value}`"
             />
         </div>
     </section>
@@ -53,6 +53,7 @@ const publicLevelsRef = ref(publicLevels);
  * This public level ref will use to bind for input.
  */
 const selectedPublicLevel = ref(0);
+const oldPublicLevel = ref(1);
 const radioInputName = "publicLevel";
 
 const props = defineProps({
@@ -87,6 +88,7 @@ async function handleBeforeMount() {
         );
 
         selectedPublicLevel.value = foundItem.value;
+        oldPublicLevel.value = foundItem.value;
     } else if (publicLevelsRef.value[0]) {
         // If no artwork public level is specified, then take
         // the first option as a default selection.
@@ -103,14 +105,16 @@ function isPublicLevelSelected(publicLevelValue) {
     return result;
 }
 
-function toggleSelect() {
-    emit("hasChange", radioInputName, true);
-}
-
 watch(
     () => selectedPublicLevel.value,
     (_, __) => {
         emit("update:modelValue", selectedPublicLevel.value);
+
+        // Emit has change event.
+        const isDifferent =
+            selectedPublicLevel.value * 1 != oldPublicLevel.value * 1;
+
+        emit("hasChange", radioInputName, isDifferent);
     }
 );
 </script>

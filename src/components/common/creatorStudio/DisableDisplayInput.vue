@@ -2,7 +2,7 @@
     <div class="column">
         <div class="flex items-center justify-between input-header">
             <label class="text-weight-bold">
-                <span class="q-mr-xs">Thứ tự tập</span>
+                <span class="q-mr-xs">{{ label }}</span>
                 <span>
                     <q-icon name="info" size="xs" />
                     <q-tooltip
@@ -12,22 +12,31 @@
                         :transition-duration="100"
                         class="text-subtitle2 text-light bg-dark"
                     >
-                        Thứ tự của tập truyện sẽ được đăng tải.
+                        {{ tooltipMessage }}
                     </q-tooltip>
                 </span>
             </label>
         </div>
         <div class="input-wrapper">
-            <span>{{ modelValue }}</span>
+            <span>{{ displayContent }}</span>
         </div>
     </div>
 </template>
 
 <script>
 export default {
+    name: "DisableDisplayInput",
     props: {
-        modelValue: {
-            type: Number,
+        label: {
+            type: String,
+            required: true,
+        },
+        tooltipMessage: {
+            type: String,
+            required: true,
+        },
+        displayContent: {
+            type: String,
             required: true,
         },
     },
@@ -57,20 +66,5 @@ export default {
 
 .input-footer {
     padding: 4px 0px;
-}
-
-.asterisk {
-    color: #dc5834;
-    font-weight: bold;
-}
-
-/* Error section */
-.input-header.error {
-    color: #dc5834;
-}
-
-.input-wrapper.error input {
-    border-color: #dc5834;
-    outline-color: #dc5834;
 }
 </style>
