@@ -210,21 +210,19 @@ export default {
                 this.artworkDetail
             );
 
-            if (result.isSuccess) {
-                NotificationHelper;
-                NotificationHelper.notifySuccess("Đã tạo thành công");
-            } else {
-                NotificationHelper.notifyError(
-                    result.message ?? "Có lỗi xảy ra khi tạo"
-                );
-            }
-
             // Turn off the isCreating flag after processing the data.
             this.isCreating = false;
 
             if (result.isSuccess) {
                 this.hasInputData = false;
-                this.$router.push("/studio/artworks");
+                NotificationHelper.notifySuccess("Đã tạo thành công");
+
+                // Redirect to the comic detail page after creating success.
+                this.$router.push(`/studio/comic/detail/${result.comicId}`);
+            } else {
+                NotificationHelper.notifyError(
+                    result.message ?? "Có lỗi xảy ra khi tạo"
+                );
             }
         },
         verifyAllInputs() {

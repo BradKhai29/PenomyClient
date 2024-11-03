@@ -80,6 +80,7 @@
 
                         <EditChapterImageListInput
                             class="q-mb-sm"
+                            :disableMode="isUpdating"
                             v-model="chapterDetail.chapterMedias"
                             @verifyInput="addVerifyInputCallback"
                             @hasChange="detectInputChange"
@@ -320,25 +321,17 @@ export default {
                 );
 
             if (result.isSuccess) {
-                const reloadChapterImageResult =
-                    await CreatorStudio11ApiHandler.reloadChapterImagesAsync(
-                        this.chapterDetail.comicId,
-                        this.chapterDetail.id
-                    );
-
-                if (reloadChapterImageResult.isSuccess) {
-                    this.chapterDetail.chapterMedias =
-                        reloadChapterImageResult.chapterImageItems;
-                }
-            }
-
-            if (result.isSuccess) {
                 const message = isDrafted
                     ? "Bản nháp được lưu"
                     : "Cập nhật thành công";
 
                 this.hasChangesInData = false;
                 NotificationHelper.notifySuccess(message);
+
+                // Redirect back to the comic detail page.
+                this.$router.push(
+                    `/studio/comic/detail/${this.chapterDetail.comicId}`
+                );
             } else {
                 NotificationHelper.notifyError(result.message);
             }
