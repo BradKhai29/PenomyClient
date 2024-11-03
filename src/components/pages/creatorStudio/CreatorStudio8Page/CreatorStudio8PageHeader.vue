@@ -4,7 +4,7 @@
         class="flex justify-between items-center page-header shadow-2"
     >
         <div class="text-subtitle1 flex items-center">
-            <router-link :to="defaultRedirectRoute">
+            <router-link :to="artworkManagementRoute">
                 <q-btn
                     dense
                     flat
@@ -46,14 +46,15 @@
                 color="dark"
                 align="center"
             />
-            <q-btn
-                v-if="!hasChangesInData"
-                @click="confirmToCancelOrRedirect"
-                class="font-arial text-weight-bold"
-                label="Trở về"
-                color="dark"
-                align="center"
-            />
+            <router-link :to="`/studio/comic/detail/${comicId}`">
+                <q-btn
+                    v-if="!hasChangesInData"
+                    class="font-arial text-weight-bold"
+                    label="Trở về"
+                    color="dark"
+                    align="center"
+                />
+            </router-link>
             <q-btn
                 class="font-arial text-weight-bold flex items-center"
                 color="negative"
@@ -151,7 +152,8 @@ import { NotificationHelper } from "src/helpers/NotificationHelper";
 // Support for route.
 const route = useRoute();
 const router = useRouter();
-const defaultRedirectRoute = "/studio/artworks";
+const defaultRedirectRoute = ref(null);
+const artworkManagementRoute = "/studio/artworks";
 
 // Component refs.
 const showWarning = ref(false);
@@ -189,7 +191,7 @@ function confirmToCancelOrRedirect() {
     }
 
     // If redirect route is not specified, then redirect back to default route.
-    router.push(defaultRedirectRoute);
+    router.push(defaultRedirectRoute.value);
 }
 
 /**
@@ -226,7 +228,7 @@ async function temporarilyRemoveComicAsync() {
         NotificationHelper.notifySuccess("Tác phẩm đã bị tạm xóa");
 
         // Redirect to artwork manager page after removing success.
-        router.push(defaultRedirectRoute);
+        router.push(artworkManagementRoute);
         return;
     }
 
@@ -236,6 +238,8 @@ async function temporarilyRemoveComicAsync() {
 
 // Component life-cycle events.
 onBeforeMount(() => {
+    defaultRedirectRoute.value = `/studio/comic/detail/${props.comicId}`;
+
     window.addEventListener("beforeunload", preventRedirect);
 });
 

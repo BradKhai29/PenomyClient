@@ -41,7 +41,7 @@ class EditableChapterImageItem {
         imageFile,
         isNewItem = false
     ) {
-        this.id = id;
+        this.id = String(id);
         this.position = position;
         this.oldUploadOrder = oldUploadOrder;
         this.newUploadOrder = newUploadOrder;

@@ -10,7 +10,9 @@ import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { GetArtworkDetail } from "src/api.models/creatorStudio/creatorStudio8Page/GetArtworkDetail";
 import { UpdateArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/UpdateArtworkResult";
 import { TemporarilyRemoveArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/TemporarilyRemoveArtworkResult";
+import { useAuthStore } from "src/stores/common/AuthStore";
 
+const authStore = useAuthStore();
 /**
  *  Parse the input data into category item array.
  * @param {Array} data The array of response object.
@@ -234,6 +236,9 @@ async function temporarilyRemoveComicByIdAsync(comicId) {
         await axios({
             url: `${BaseWebApiUrl}/art8/temp-remove/${comicId}`,
             method: HttpMethod.DELETE,
+            headers: {
+                Authorization: authStore.bearerAccessToken,
+            },
         });
 
         result.isSuccess = true;

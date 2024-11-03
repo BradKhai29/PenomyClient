@@ -7,7 +7,6 @@ import { CategoryItem } from "src/api.models/creatorStudio/common/CategoryItem";
 import { OriginItem } from "src/api.models/creatorStudio/common/OriginItem";
 import { PublicLevelItem } from "src/api.models/creatorStudio/common/PublicLevelItem";
 import { AxiosHelper } from "src/helpers/AxiosHelper";
-import { CreateArtworkErrorCodeParser } from "src/api.models/creatorStudio/creatorStudio6Page/CreateArtworkError";
 import { CreateArtworkResult } from "src/api.models/creatorStudio/creatorStudio6Page/CreateArtworkResult";
 
 /**
@@ -131,10 +130,8 @@ async function createArtwork(artworkDetail) {
         artworkDetail.thumbnailImageFile.name
     );
 
-    let result = new CreateArtworkResult(false, null);
-
     try {
-        await axios({
+        const response = await axios({
             url: `${BaseWebApiUrl}/art4/comic/create`,
             method: HttpMethod.POST,
             headers: {
@@ -143,19 +140,18 @@ async function createArtwork(artworkDetail) {
             data: requestBody,
         });
 
-        result.isSuccess = true;
+        console.log(response);
+
+        return CreateArtworkResult.success(response.data.body.comicId);
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
 
-        const errorMessage =
-            CreateArtworkErrorCodeParser.getMessageFromErrorCode(
-                axiosError.response.data.appCode
-            );
+        console.log(axiosError);
 
-        result.message = errorMessage;
+        return CreateArtworkResult.failedWithErrorCode(
+            axiosError.response.data.appCode
+        );
     }
-
-    return result;
 }
 
 const CreatorStudio6ApiHandler = {

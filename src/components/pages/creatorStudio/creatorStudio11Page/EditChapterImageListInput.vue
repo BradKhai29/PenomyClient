@@ -25,6 +25,7 @@
                     hidden
                     @input="onInputImage"
                     ref="chapterImageInput"
+                    :disabled="isProcessing || disableMode"
                 />
                 <span
                     class="bg-dark text-light image-list-btn"
@@ -57,6 +58,11 @@
                 v-if="dragging"
                 id="wrapper-list-listener"
                 @mouseup="onDragEnd"
+            ></section>
+            <section
+                v-if="isProcessing || disableMode"
+                class="draggable-disable border-radius-sm"
+                :class="{ 'draggable-disable-blur': disableMode }"
             ></section>
             <span
                 class="add-image-placeholder"
@@ -101,7 +107,8 @@
                         <span
                             class="absolute-bottom text-subtitle2 q-pa-xs image-caption text-light"
                         >
-                            ({{ imageItem.position }}) {{ imageItem.imageName }}
+                            ({{ imageItem.position + 1 }})
+                            {{ imageItem.imageName }}
                         </span>
                     </q-img>
                 </div>
@@ -160,6 +167,7 @@ import { FileHelper } from "src/helpers/FileHelper";
 import { StringHelper } from "src/helpers/StringHelper";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { EditableChapterImageItem } from "src/api.models/creatorStudio/creatorStudio11Page/EditableChapterImageItem";
+import { ArrayHelper } from "src/helpers/ArrayHelper";
 
 // Support constants for component.
 const invalidFormatMessage = "Yêu cầu định dạng PNG, JPG, JPEG";
@@ -173,12 +181,20 @@ export default {
             type: Array,
             required: true,
         },
+        disableMode: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
             showDialog: false,
             dragging: false,
-            pendingRemove: false,
+            /**
+             * This flag is used to indicate the current component
+             * is resolving the dragging & uploading file operation.
+             */
+            isProcessing: false,
             hasError: false,
             /**
              * This array will used to display to the client when drag-n-drop.
@@ -192,10 +208,6 @@ export default {
              * @type {EditableChapterImageItem[]} The list of image item to upload.
              */
             imageItemList: [],
-            /**
-             * @type {EditableChapterImageItem[]} The list of temporarily list to process the item to upload.
-             */
-            tempItemList: [],
             totalImageSizes: 0,
             maxImageSizes: 32 * 1024 * 1024,
             /**
@@ -220,9 +232,17 @@ export default {
         },
     },
     mounted() {
+        // Turn on this flag to prevent user interact while component is mounting.
+        this.isProcessing = true;
+
+        // Get the input element from the template
+        // for handle inputEvent and input validation.
         this.chapterImageInput = this.$refs.chapterImageInput;
+
+        // Emit this component instance for later chapter detail input validation.
         this.$emit("verifyInput", this);
 
+        // Setup the chapter image list as a sortable container for drag-n-drop.
         const chapterImageList = document.querySelector(
             "section#chapter-image-list"
         );
@@ -236,359 +256,76 @@ export default {
             removeCloneOnHide: true,
         });
 
-        this.displayImageItemList = this.modelValue;
+        // Populate the item in the model value into the display list
+        // and imageItemList for later operation.
+        this.displayImageItemList.push(...this.modelValue);
         this.imageItemList.push(...this.modelValue);
+
         // The last position will now be the length of the display item list.
         this.imageLastPosition = this.displayImageItemList.length;
 
+        // Get the total image size to display.
         const initialValue = 0;
+
         this.totalImageSizes = this.displayImageItemList
             .map((item) => item.fileSize)
             .reduce(
                 (previousValue, currentValue) => previousValue + currentValue,
                 initialValue
             );
+
+        // Turn off flag after mounting success.
+        this.isProcessing = false;
     },
     methods: {
         verifyInput() {
+            // Check if the length of image item list must be larger than 0.
             this.hasError = this.displayImageItemList.length == 0;
 
             return this.displayImageItemList.length > 0;
-        },
-        removeImageItem(imageId) {
-            // Prevent user to remove the image while dragging.
-            if (this.dragging || this.pendingRemove) {
-                return;
-            }
-
-            // Turn on this flag to prevent user interact with drag-n-drop.
-            this.pendingRemove = true;
-
-            const removeItem = this.displayImageItemList.find(
-                (item) => item.id == imageId
-            );
-
-            for (
-                let i = removeItem.position + 1;
-                i < this.displayImageItemList.length;
-                i++
-            ) {
-                const imageItem = this.displayImageItemList[i];
-                imageItem.position--;
-                imageItem.reloadNewUploadOrder();
-            }
-
-            // Reveke the object url to prevent memory leak.
-            URL.revokeObjectURL(removeItem.src);
-
-            // Remove the item from the display list and update related state.
-            this.displayImageItemList.splice(removeItem.position, 1);
-            this.imageLastPosition--;
-            this.totalImageSizes -= removeItem.fileSize;
-
-            // If the remove item is newly uploaded by user,
-            // then remove it from the imageItemList.
-            if (removeItem.isNewItem) {
-                const removeItemIndex = this.imageItemList.findIndex(
-                    (item) => item.id == removeItem.id
-                );
-
-                this.imageItemList.splice(removeItemIndex, 1);
-            }
-
-            // Mark the removeItem as deleted and reload the upload order.
-            removeItem.position = EditableChapterImageItem.DELETED_POSITION();
-            removeItem.reloadNewUploadOrder();
-
-            // Turn off the pending remove flag.
-            this.pendingRemove = false;
-        },
-        debugging() {
-            console.log("Image items", this.imageItemList);
-        },
-        /**
-         * Tracking the element that being dragged by the user.
-         *
-         * @param {MouseEvent} event
-         */
-        onDragStart(event) {
-            this.currentDraggedElement = event.currentTarget;
-            this.dragging = true;
         },
         /**
          * Emit the update model value to the parent component.
          * The object to emit will the imageItemList.
          */
         emitUpdateModelValue() {
-            console.log(this.imageItemList);
-
             this.$emit("update:modelValue", this.imageItemList);
 
             // Emit has change event.
             const hasChange = this.imageItemList.some(
                 (item) => item.isUploadOrderChanged() || item.isNewItem
             );
+
             this.$emit("hasChange", inputName, hasChange);
         },
-        onDragEnd() {
-            this.dragging = false;
+        /**
+         * Delay the method invocation with
+         * the specified delay timeout.
+         * @param {Callback} resolveMethod The method that will be invoked after delay timeout.
+         * @param {Number} delayTimeout The delay timeout to invoke the method.
+         */
+        delayAndResolve(resolveMethod, delayTimeout) {
+            const DEFAULT_DELAY_TIMEOUT = 100;
 
-            // Prevent drag and drop when the item is removed.
-            if (this.pendingRemove) {
-                return;
+            // If the delay timeout to resolve is not set, then set default value.
+            if (!delayTimeout) {
+                delayTimeout = DEFAULT_DELAY_TIMEOUT;
             }
 
-            const draggedElement = this.currentDraggedElement;
-
-            if (draggedElement) {
-                const prevElement = draggedElement.previousElementSibling;
-                let nextElement = draggedElement.nextElementSibling;
-
-                // The sortablejs will create the clone element of the draggedElement,
-                // if the dragged element is moved to the last of the list,
-                // the next element will always the clone.
-                // Do this will prevent error in handling drag and drop.
-                if (nextElement && nextElement.id == draggedElement.id) {
-                    nextElement = null;
-                }
-
-                // console.log("Previous", prevElement);
-                // console.log("Dragged", draggedElement);
-                // console.log("Next", nextElement);
-
-                if (prevElement && nextElement) {
-                    this.handleDragToMiddle(prevElement, draggedElement);
-                } else if (!prevElement && nextElement) {
-                    this.handleDragToFirst(draggedElement);
-                } else {
-                    this.handleDragToLast(draggedElement);
-                }
-
-                // After handling the drag-n-drop,
-                // emit the model to update the state.
-                this.emitUpdateModelValue();
-            }
+            // Delay for a moment before invoking the method.
+            setTimeout(() => {
+                resolveMethod();
+            }, delayTimeout);
         },
         /**
-         * @returns {HTMLElement} element to return.
+         * Wait for the current component to process the drag-n-drop properly.
          */
-        asElement(e) {
-            return e;
-        },
-        refillImageItemListWithTempList() {
-            // Clear the current image item list to update with the temp list.
-            this.displayImageItemList.splice(
-                0,
-                this.displayImageItemList.length
-            );
-            this.displayImageItemList = [...this.tempItemList];
+        waitForProcessingDone() {
+            const PROCESSING_TIMEOUT = 50; // 50ms to wait for processing.
 
-            // Clear the temp list after update the image item list.
-            this.tempItemList.splice(0, this.tempItemList.length);
-        },
-        /**
-         * Handle drag & drop when the dragged element is move to the middle of the list.
-         *
-         * @param {HTMLElement} prevElement The previous sibling of the dragged element.
-         * @param {HTMLElement} draggedElement The element that is dragged by user.
-         */
-        handleDragToMiddle(prevElement, draggedElement) {
-            // Get the id of the prevElement and draggedElement
-            // in the DOM to find their position to handle drag-n-drop.
-            const prevElementId = prevElement.id;
-            const draggedElementId = draggedElement.id;
-
-            const prevItem = this.displayImageItemList.find(
-                (item) => item.id == prevElementId
-            );
-
-            const draggedItem = this.displayImageItemList.find(
-                (item) => item.id == draggedElementId
-            );
-
-            // Get the old and the new position of the dragged item.
-            let oldPosition = draggedItem.position;
-            let newPosition = 0;
-
-            // If the draggedItem's old position is equal to (prevItem's position + 1)
-            // then no need to process because the draggedItem is get back to its old position.
-            if (oldPosition == prevItem.position + 1) {
-                return;
-            }
-
-            // If the draggedItem's old position larger than the
-            // prevItem position, then draggedItem is moved backward.
-            const isMovedBackward = oldPosition > prevItem.position;
-
-            if (isMovedBackward) {
-                newPosition = prevItem.position * 1 + 1;
-            } else {
-                newPosition = prevItem.position;
-            }
-
-            // Update the item list after drag.
-            if (isMovedBackward) {
-                for (let i = 0; i < newPosition; i++) {
-                    const imageItem = this.displayImageItemList[i];
-                    this.tempItemList.push(imageItem);
-                }
-
-                // Add the draggedItem to its new position.
-                this.tempItemList.push(this.displayImageItemList[oldPosition]);
-
-                // Add the items that positioned after the draggedItem,
-                // and increase the position of these items to 1.
-                for (let i = newPosition; i < oldPosition; i++) {
-                    const editableImageItem = this.displayImageItemList[i];
-                    editableImageItem.position++;
-                    // Update the new upload order corresponding their current position.
-                    editableImageItem.reloadNewUploadOrder();
-
-                    this.tempItemList.push(editableImageItem);
-                }
-
-                // Skip the draggedItem and add the left items
-                // in the list to the temp list.
-                for (
-                    let i = oldPosition + 1;
-                    i < this.displayImageItemList.length;
-                    i++
-                ) {
-                    const imageItem = this.displayImageItemList[i];
-                    this.tempItemList.push(imageItem);
-                }
-            }
-            // If move forward, then handle differently.
-            else {
-                for (let i = 0; i < oldPosition; i++) {
-                    const imageItem = this.displayImageItemList[i];
-
-                    this.tempItemList.push(imageItem);
-                }
-
-                for (let i = oldPosition + 1; i < newPosition + 1; i++) {
-                    const editableImageItem = this.displayImageItemList[i];
-                    editableImageItem.position--;
-                    // Update the new upload order corresponding their current position.
-                    editableImageItem.reloadNewUploadOrder();
-
-                    this.tempItemList.push(editableImageItem);
-                }
-
-                this.tempItemList.push(this.displayImageItemList[oldPosition]);
-
-                for (
-                    let i = newPosition + 1;
-                    i < this.displayImageItemList.length;
-                    i++
-                ) {
-                    const imageItem = this.displayImageItemList[i];
-
-                    this.tempItemList.push(imageItem);
-                }
-            }
-
-            // Set the new position for the draggedItem
-            draggedItem.position = newPosition;
-            draggedItem.reloadNewUploadOrder();
-
-            this.refillImageItemListWithTempList();
-        },
-        /**
-         * Handle drag & drop when the dragged element is move to the first of the list.
-         *
-         * @param {HTMLElement} draggedElement The element that is dragged by user.
-         * @param {HTMLElement} nextElement The next element of the dragged element.
-         */
-        handleDragToFirst(draggedElement) {
-            // Get the id of the prevElement and draggedElement
-            // in the DOM to find their position to handle drag-n-drop.
-            const draggedElementId = draggedElement.id;
-
-            const draggedItem = this.displayImageItemList.find(
-                (item) => item.id == draggedElementId
-            );
-
-            // If no item found, then return.
-            if (!draggedItem) {
-                return;
-            }
-
-            const oldPosition = draggedItem.position;
-            draggedItem.position = 0; // Move to first then new position is zero.
-            draggedItem.reloadNewUploadOrder();
-
-            // Add the dragged item to the first position of the list.
-            this.tempItemList.push(draggedItem);
-
-            // Add the items that positioned before the dragged item to temp list,
-            // and increase these items position to 1.
-            for (let i = 0; i < oldPosition; i++) {
-                const editableImageItem = this.displayImageItemList[i];
-                editableImageItem.position++;
-                // Update the new upload order corresponding their current position.
-                editableImageItem.reloadNewUploadOrder();
-
-                this.tempItemList.push(editableImageItem);
-            }
-
-            for (
-                let i = oldPosition + 1;
-                i < this.displayImageItemList.length;
-                i++
-            ) {
-                const imageItem = this.displayImageItemList[i];
-
-                this.tempItemList.push(imageItem);
-            }
-
-            this.refillImageItemListWithTempList();
-        },
-        /**
-         * Handle drag & drop when the dragged element is move to the last of the list.
-         *
-         * @param {HTMLElement} draggedElement The element that is dragged by user.
-         */
-        handleDragToLast(draggedElement) {
-            // Get the id of the prevElement and draggedElement
-            // in the DOM to find their position to handle drag-n-drop.
-            const draggedElementId = draggedElement.id;
-
-            const draggedItem = this.displayImageItemList.find(
-                (item) => item.id == draggedElementId
-            );
-
-            // If no item found, then return.
-            if (!draggedItem) {
-                return;
-            }
-
-            const oldPosition = draggedItem.position;
-            // Move to last then new position is (displayImageItemList.length - 1).
-            const newPosition = this.displayImageItemList.length - 1;
-            draggedItem.position = newPosition;
-            draggedItem.reloadNewUploadOrder();
-
-            for (let i = 0; i < oldPosition; i++) {
-                const imageItem = this.displayImageItemList[i];
-
-                this.tempItemList.push(imageItem);
-            }
-
-            // Skip the draggedItem and take from the old position to new position.
-            for (let i = oldPosition + 1; i <= newPosition; i++) {
-                const imageItem = this.displayImageItemList[i];
-                imageItem.position--;
-
-                // Update the new upload order corresponding their current position.
-                imageItem.reloadNewUploadOrder();
-
-                this.tempItemList.push(imageItem);
-            }
-
-            this.tempItemList.push(draggedItem);
-
-            this.refillImageItemListWithTempList();
+            setTimeout(() => {
+                this.isProcessing = false;
+            }, PROCESSING_TIMEOUT);
         },
         /**
          * @param {InputEvent} event The event instance.
@@ -599,6 +336,9 @@ export default {
             if (!uploadImageFiles) {
                 return;
             }
+
+            // Turn on isProcessing flag.
+            this.isProcessing = true;
 
             for (const imageFile of uploadImageFiles) {
                 if (!FileHelper.isImageFile(imageFile)) {
@@ -634,6 +374,7 @@ export default {
                 // Add the item to the display list and update the related state.
                 this.displayImageItemList.push(imageItem);
                 this.imageItemList.push(imageItem);
+
                 this.imageLastPosition++;
                 this.totalImageSizes += imageSize;
             }
@@ -643,15 +384,315 @@ export default {
             // Reference: https://stackoverflow.com/questions/12030686/html-input-file-selection-event-not-firing-upon-selecting-the-same-file
             this.chapterImageInput.value = null;
 
+            // Turn off the isProcessing flag.
+            this.isProcessing = false;
+
             // After handling the file upload,
             // emit the model to update the state.
             this.emitUpdateModelValue();
+        },
+        removeImageItem(imageId) {
+            // Prevent user to remove the image while dragging or not finished
+            // in processing the previous operation.
+            if (this.dragging || this.isProcessing) {
+                return;
+            }
+
+            // Turn on this flag to prevent user interact with drag-n-drop.
+            this.isProcessing = true;
+
+            const removeItem = this.displayImageItemList.find(
+                (item) => item.id == imageId
+            );
+
+            for (
+                let i = removeItem.position + 1;
+                i < this.displayImageItemList.length;
+                i++
+            ) {
+                const imageItem = this.displayImageItemList[i];
+                imageItem.position--;
+                imageItem.reloadNewUploadOrder();
+            }
+
+            // Reveke the object url to prevent memory leak.
+            URL.revokeObjectURL(removeItem.src);
+
+            // Remove the item from the display list and update related state.
+            ArrayHelper.removeAt(
+                this.displayImageItemList,
+                removeItem.position
+            );
+            this.imageLastPosition--;
+            this.totalImageSizes -= removeItem.fileSize;
+
+            // If the remove item is newly uploaded by user,
+            // then remove it from the imageItemList.
+            if (removeItem.isNewItem) {
+                const removeItemIndex = this.imageItemList.findIndex(
+                    (item) => item.id == removeItem.id
+                );
+
+                ArrayHelper.removeAt(this.imageItemList, removeItemIndex);
+            }
+            // If the remove item is not newly uploaded then mark it.
+            else {
+                // Mark the removeItem as deleted and reload the upload order.
+                removeItem.position =
+                    EditableChapterImageItem.DELETED_POSITION();
+                removeItem.reloadNewUploadOrder();
+            }
+
+            // Turn off the isProcessing flag.
+            this.isProcessing = false;
+        },
+        debugging() {
+            console.log("Image items", this.imageItemList);
+        },
+        /**
+         * Tracking the element that being dragged by the user.
+         *
+         * @param {MouseEvent} event
+         */
+        onDragStart(event) {
+            // Turn on dragging flag to begin tracking the draggedElement.
+            this.dragging = true;
+            this.currentDraggedElement = event.currentTarget;
+        },
+        onDragEnd() {
+            // Turn off dragging flag and resolve the drag-n-drop.
+            this.dragging = false;
+
+            // Prevent drag and drop when the component is not
+            // finished to process the previous operation.
+            if (this.isProcessing) {
+                return;
+            }
+
+            // Turn on the isProcessing flag.
+            this.isProcessing = true;
+            const draggedElement = this.currentDraggedElement;
+
+            // Resolve only when the draggedElement is not null.
+            if (draggedElement) {
+                const prevElement = draggedElement.previousElementSibling;
+                let nextElement = draggedElement.nextElementSibling;
+
+                // The sortablejs will create the clone element of the draggedElement,
+                // if the dragged element is moved to the last of the list,
+                // the next element will always the clone.
+                // Do this will prevent error in handling drag and drop.
+                if (nextElement && nextElement.id == draggedElement.id) {
+                    nextElement = null;
+                }
+
+                // If both prevElement & nextElement is not null
+                // then the new position must be in the middle of the list.
+                if (prevElement && nextElement) {
+                    this.delayAndResolve(() => {
+                        this.handleDragToMiddle(prevElement, draggedElement);
+                        this.waitForProcessingDone();
+
+                        // After handling the drag-n-drop,
+                        // emit the model to update the state.
+                        this.emitUpdateModelValue();
+                    });
+                }
+                // If the prevItem is null, then the new position must be
+                // at the first of the list.
+                else if (!prevElement && nextElement) {
+                    this.delayAndResolve(() => {
+                        this.handleDragToFirst(draggedElement);
+                        this.waitForProcessingDone();
+                        this.emitUpdateModelValue();
+                    });
+                }
+                // If the nextItem is null, then the new position
+                // must be at the lasst of the list.
+                else {
+                    this.delayAndResolve(() => {
+                        this.handleDragToLast(draggedElement);
+                        this.waitForProcessingDone();
+                        this.emitUpdateModelValue();
+                    });
+                }
+            }
+        },
+        /**
+         * Handle drag & drop when the dragged element is move to the middle of the list.
+         *
+         * @param {HTMLElement} prevElement The previous sibling of the dragged element.
+         * @param {HTMLElement} draggedElement The element that is dragged by user.
+         */
+        handleDragToMiddle(prevElement, draggedElement) {
+            // Get the id of the prevElement and draggedElement
+            // in the DOM to find their position to handle drag-n-drop.
+            const prevElementId = prevElement.id;
+            const draggedElementId = draggedElement.id;
+
+            const prevItem = this.displayImageItemList.find(
+                (item) => item.id == prevElementId
+            );
+
+            const draggedItem = this.displayImageItemList.find(
+                (item) => item.id == draggedElementId
+            );
+
+            // Get the old and the new position of the dragged item.
+            let newPosition = 0;
+            const oldPosition = draggedItem.position;
+
+            // If the draggedItem's old position is equal to (prevItem's position + 1)
+            // then no need to process because the draggedItem is get back to its old position.
+            if (oldPosition == prevItem.position + 1) {
+                return;
+            }
+
+            // If the draggedItem's old position larger than the
+            // prevItem position, then draggedItem is moved backward.
+            const isMovedBackward = oldPosition > prevItem.position;
+
+            if (isMovedBackward) {
+                newPosition = prevItem.position + 1;
+            } else {
+                newPosition = prevItem.position;
+            }
+
+            // Update the item list after drag-n-drop.
+            if (isMovedBackward) {
+                // From the index(0) to the index(newPosition - 1), no action needed.
+
+                // The items that positioned after the draggedItem,
+                // must increase their newPosition by 1 (because move backward)
+                // and for later adding the draggedItem to its new position.
+                for (let i = newPosition; i < oldPosition; i++) {
+                    const imageItem = this.displayImageItemList[i];
+                    imageItem.position++;
+                    // Update the new upload order corresponding their current position.
+                    imageItem.reloadNewUploadOrder();
+                }
+
+                // From the index(oldPostion + 1) to the end, no action needed.
+            }
+            // If move forward, then handle differently.
+            else {
+                // From the index(0) to the index(newPosition - 1), no action needed.
+
+                for (let i = oldPosition + 1; i < newPosition + 1; i++) {
+                    const imageItem = this.displayImageItemList[i];
+                    imageItem.position--;
+                    // Update the new upload order corresponding their current position.
+                    imageItem.reloadNewUploadOrder();
+                }
+
+                // From the index(oldPostion + 1) to the end, no action needed.
+            }
+
+            // Set the new position for the draggedItem
+            draggedItem.position = newPosition;
+            draggedItem.reloadNewUploadOrder();
+
+            // Insert the dragged item into its new position.
+            ArrayHelper.removeAt(this.displayImageItemList, oldPosition);
+            ArrayHelper.insertAt(
+                this.displayImageItemList,
+                newPosition,
+                draggedItem
+            );
+        },
+        /**
+         * Handle drag & drop when the dragged element is move to the first of the list.
+         *
+         * @param {HTMLElement} draggedElement The element that is dragged by user.
+         */
+        handleDragToFirst(draggedElement) {
+            // Get the id of the prevElement and draggedElement
+            // in the DOM to find their position to handle drag-n-drop.
+            const draggedElementId = draggedElement.id;
+
+            const draggedItem = this.displayImageItemList.find(
+                (item) => item.id == draggedElementId
+            );
+
+            // If no item found, then return.
+            if (!draggedItem) {
+                return;
+            }
+
+            const oldPosition = draggedItem.position;
+            const newPosition = 0; // Move to first then new position is zero.
+            draggedItem.position = newPosition;
+            draggedItem.reloadNewUploadOrder();
+
+            // The items that positioned before the dragged item
+            // will increase their position by 1.
+            for (let i = 0; i < oldPosition; i++) {
+                const imageItem = this.displayImageItemList[i];
+                imageItem.position++;
+
+                // Update the new upload order corresponding their current position.
+                imageItem.reloadNewUploadOrder();
+            }
+
+            // Insert the dragged item into its new position.
+            ArrayHelper.removeAt(this.displayImageItemList, oldPosition);
+            ArrayHelper.insertAt(
+                this.displayImageItemList,
+                newPosition,
+                draggedItem
+            );
+        },
+        /**
+         * Handle drag & drop when the dragged element is move to the last of the list.
+         *
+         * @param {HTMLElement} draggedElement The element that is dragged by user.
+         */
+        handleDragToLast(draggedElement) {
+            // Get the id of the prevElement and draggedElement
+            // in the DOM to find their position to handle drag-n-drop.
+            const draggedElementId = draggedElement.id;
+
+            const draggedItem = this.displayImageItemList.find(
+                (item) => item.id == draggedElementId
+            );
+
+            // If no item found, then return.
+            if (!draggedItem) {
+                return;
+            }
+
+            const oldPosition = draggedItem.position;
+            // Move to last then new position is (displayImageItemList.length - 1).
+            const newPosition = this.displayImageItemList.length - 1;
+            draggedItem.position = newPosition;
+            draggedItem.reloadNewUploadOrder();
+
+            // Update all elements that positioned after the
+            // before inserting the draggedItem to its new position.
+            for (let i = oldPosition + 1; i <= newPosition; i++) {
+                const imageItem = this.displayImageItemList[i];
+                imageItem.position--;
+
+                // Update the new upload order corresponding their current position.
+                imageItem.reloadNewUploadOrder();
+            }
+
+            // Insert the dragged item into its new position.
+            ArrayHelper.removeAt(this.displayImageItemList, oldPosition);
+            this.displayImageItemList.push(draggedItem);
         },
     },
 };
 </script>
 
 <style scoped>
+* {
+    --wrapper-list-listener-z-index: 2000;
+    --chapter-image-list-z-index: 2200;
+    --remove-image-button-z-index: 2800;
+    --draggable-disable-z-index: 3000;
+}
+
 .image-caption {
     background-color: rgba(0, 0, 0, 0.6);
     text-align: left;
@@ -674,16 +715,41 @@ export default {
 
 #wrapper-list-listener {
     position: fixed;
-    z-index: 2000;
+    z-index: var(--wrapper-list-listener-z-index);
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
+    /* background: rgba(0, 0, 0, 0.6); */
+}
+
+#draggable-disable {
+    position: absolute;
+    z-index: var(--draggable-disable-z-index);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    cursor: not-allowed;
+}
+
+.draggable-disable {
+    position: absolute;
+    z-index: var(--draggable-disable-z-index);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    cursor: not-allowed;
+}
+
+.draggable-disable-blur {
+    background: rgba(64, 64, 64, 0.6);
 }
 
 #chapter-image-list {
     position: absolute;
-    z-index: 2200;
+    z-index: var(--chapter-image-list-z-index);
     top: 0;
     bottom: 0;
     right: 0;
@@ -699,7 +765,7 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
-    z-index: 3000;
+    z-index: var(--remove-image-button-z-index);
 }
 
 .remove-image-button:hover {
