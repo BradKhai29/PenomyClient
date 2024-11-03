@@ -1,57 +1,49 @@
 import axios from "axios";
-import { ArtworkType } from "src/api.common/ArtworkType";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
+import { useAuthStore } from "src/stores/common/AuthStore";
 
+const authStore = useAuthStore();
 async function GetArtworksByType(artworkType, pageNumber) {
-    if (artworkType === ArtworkType.COMIC) {
-        try {
-            const response = await axios({
-                url: `${BaseWebApiUrl}/profile/artworks?artworkType=${artworkType}&pageNumber=${pageNumber}`,
-                method: HttpMethod.GET,
-            });
+    var url = `${BaseWebApiUrl}/g28/user-profile/created-artworks/`;
 
-            return response.data.body;
-        } catch (error) {
-            console.log(error);
-        }
-    } else if (artworkType === ArtworkType.ANIMATION) {
-        try {
-            const response = await axios({
-                url: `${BaseWebApiUrl}/art2/artworks?artworkType=${artworkType}&pageNumber=${pageNumber}`,
-                method: HttpMethod.GET,
-            });
+    try {
+        const response = await axios({
+            url: url,
+            method: HttpMethod.GET,
+            params: {
+                artworkType: artworkType,
+                pageNumber: pageNumber,
+            },
+            headers: {
+                Authorization: authStore.bearerAccessToken,
+            },
+        });
 
-            return response.data.body;
-        } catch (error) {
-            console.log(error);
-        }
+        return response.data.body;
+    } catch (error) {
+        console.log(error);
     }
 }
 
 async function GetPageCount(artworkType) {
-    if (artworkType === ArtworkType.COMIC) {
-        try {
-            const response = await axios({
-                url: `${BaseWebApiUrl}/art1/pagination?artworkType=${artworkType}`,
-                method: HttpMethod.GET,
-            });
+    var url = `${BaseWebApiUrl}/g28/user-profile/created-artworks/page-count`;
 
-            return response.data.body;
-        } catch (error) {
-            console.log(error);
-        }
-    } else if (artworkType === ArtworkType.ANIMATION) {
-        try {
-            const response = await axios({
-                url: `${BaseWebApiUrl}/art2/pagination?artworkType=${artworkType}`,
-                method: HttpMethod.GET,
-            });
+    try {
+        const response = await axios({
+            url: url,
+            method: HttpMethod.GET,
+            params: {
+                artworkType: artworkType,
+            },
+            headers: {
+                Authorization: authStore.bearerAccessToken,
+            },
+        });
 
-            return response.data.body;
-        } catch (error) {
-            console.log(error);
-        }
+        return response.data.body;
+    } catch (error) {
+        console.log(error);
     }
 }
 

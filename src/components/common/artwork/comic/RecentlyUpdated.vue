@@ -1,4 +1,7 @@
 <template>
+    <div>
+        
+    </div>
     <div class="title">
         <div class="text-h6 recently-updated">Cập nhật gần đây</div>
         <div>
