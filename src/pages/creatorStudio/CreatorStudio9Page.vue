@@ -62,6 +62,7 @@
                         <ChapterImageListInput
                             class="q-mb-sm"
                             v-model="chapterDetail.chapterImageItems"
+                            :disableMode="isCreating"
                             @verifyInput="addVerifyInputCallback"
                         />
 
