@@ -7,7 +7,7 @@
                 <q-card-section>
 
                     <stat-detaild :view-count="viewCount" :comment-count="commentCount" :favorite-count="favoriteCount"
-                        :star-rates="starRates"></stat-detaild>
+                        :star-rates="star"></stat-detaild>
                     <div class="text-body1">
                         {{ introduction }}
                     </div>
@@ -15,11 +15,29 @@
                     <!-- Stats Row -->
                     <!-- Buttons Section -->
                     <div class="row">
-                        <q-btn class="col-12 q-mr-sm" unelevated rounded no-caps
+                        <q-btn-dropdown class="col-12 q-mr-sm" unelevated rounded no-caps
+                            :label="`${Math.round(ratingModel)} / 5`" icon="ion-star"
                             :style="{ fontSize: '16px', backgroundColor: '#120E36', color: '#EEEEEE', fontWeight: 'bold', marginBottom: '16px' }">
-                            <q-icon :color="'#120E36'" name="ion-star" class="q-mr-xs" />
-                            4 / 5
-                        </q-btn>
+                            <q-list>
+                                <q-item clickable @click="onItemClick" class="justify-center items-center ">
+                                    <div>
+                                        <div class="q-pa-md q-gutter-sm column"
+                                            :style="{ color: '#120E36', fontSize: '20px' }">Đánh giá: {{ ratingModel }}
+                                            sao
+                                        </div>
+                                        <div class="q-gutter-y-md column">
+                                            <q-rating v-model="ratingModel" size="3.5em" :style="{ color: '#53BF94' }"
+                                                icon="star_border" icon-selected="star" />
+                                        </div>
+                                        <div class="q-pa-md q-gutter-sm column">
+                                            <q-btn :ripple="{ color: 'green-5' }"
+                                                :style="{ backgroundColor: '#53BF94', fontWeight: 'bold', color: '#120E36', fontSize: '16px' }"
+                                                label="Gửi đánh giá" no-caps @click="RatingArtworkAsync(ratingModel)" />
+                                        </div>
+                                    </div>
+                                </q-item>
+                            </q-list>
+                        </q-btn-dropdown>
                     </div>
                     <div class="row">
                         <q-btn class="col-12 q-mr-sm" unelevated rounded no-caps
@@ -29,6 +47,7 @@
                         </q-btn>
                     </div>
                 </q-card-section>
+
             </q-card>
 
             <!-- Right Section (Episodes List) -->
@@ -76,8 +95,10 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router';
 import StatDetaild from './StatDetaild.vue';
+import artworkRatingApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkRatingApiHandler';
 import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
 import { NumberHelper } from "src/helpers/NumberHelper";
+import { useAuthStore } from "src/stores/common/AuthStore";
 function formatDate(createdTime) {
     return createdTime.split('T')[0];
 }
@@ -111,75 +132,12 @@ const props = defineProps({
 const artworkId = ref(null);
 const route = useRoute();
 const count = ref(0);
+const star = ref(props.starRates);
+
 const chapterData = ref([]);
-const episodes = ref([
-    {
-        chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
-        isLocked: true,
-        isWatching: false
-    },
-    {
-        chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
-        isLocked: true,
-        isWatching: false
-    }, {
-        chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
-        isLocked: false,
-        isWatching: true
-    }, {
-        chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
-        isLocked: false,
-        isWatching: true
-    }, {
-        chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
-        isLocked: false,
-        isWatching: true
-    }, {
-        chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
-        isLocked: false,
-        isWatching: true
-    },
-    // Add more episodes here...
-]);
+const id = route.params.artworkId;
 onMounted(async () => {
     artworkId.value = route.params.artworkId;
-    const id = route.params.artworkId;
     try {
         const [chapterResponse] = await Promise.all([
             artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 10)
@@ -191,8 +149,24 @@ onMounted(async () => {
         console.log(error);
     }
 });
+const authStore = useAuthStore();
+async function RatingArtworkAsync(starRate) {
+    const [starRateRes] = await Promise.all([
+        artworkRatingApiHandler.RatingArtworkAsync(id, starRate, authStore.bearerAccessToken)
+    ]);
+    star.value = starRateRes;
+}
 </script>
+<script>
 
+export default {
+    setup() {
+        return {
+            ratingModel: ref(3)
+        }
+    }
+}
+</script>
 <style scoped>
 .total-chaps {
     font-size: 20px;
