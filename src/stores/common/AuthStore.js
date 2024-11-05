@@ -168,10 +168,10 @@ const useAuthStore = defineStore("authStore", {
          * Set up the auth store for the application before starting any functions.
          * @remarks This method must be called first to load the access & refresh token.
          */
-            setUpAuthStore() {
-                this.tokenBag = internalLoadAllTokens();
-                this.userProfile = internalLoadUserProfile();
-            },
+        setUpAuthStore() {
+            this.tokenBag = internalLoadAllTokens();
+            this.userProfile = internalLoadUserProfile();
+        },
         /**
          * Sign in for the user and save the required credentials.
          *
@@ -187,7 +187,7 @@ const useAuthStore = defineStore("authStore", {
             this.userProfile.isCreator = false;
 
             // Store the information to local storage.
-                (this.tokenBag);
+            internalSetTokenBag(this.tokenBag);
             internalSetUserProfile(this.userProfile);
         },
         /**

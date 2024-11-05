@@ -12,19 +12,22 @@
 import TheUserAvatarMenu from "components/layouts/MainLayout/headers/TheUserAvatarMenu.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { onBeforeMount, provide, ref, watch } from "vue";
+import { useProfileStore } from "src/stores/pages/userProfile/ProfileStore";
 
+const profileStore = useProfileStore();
 const authStore = useAuthStore();
 const avatarUrl = ref(authStore.userProfile.avatarUrl);
 const props = defineProps({
     atCreatorStudio: {
         type: Boolean,
-        default: false,
+        default: false, 
     },
 });
 
 // Set up the auth store for the before mount hook.
 onBeforeMount(() => {
     authStore.setUpAuthStore();
+    profileStore.setupProfileStore();
     provide("isAtCreatorStudio", props.atCreatorStudio);
 });
 

@@ -1,12 +1,9 @@
 import { defineStore } from "pinia";
-import {
-    GetPageCount,
-    GetArtworksByType,
-} from "src/api.handlers/userProfile/UserProfile1Page";
+import { GetPageCount } from "src/api.handlers/userProfile/UserProfile1Page";
 import { ArtworkType } from "src/api.common/ArtworkType";
 
 const getPageCount = GetPageCount;
-const getArtworksByType = GetArtworksByType;
+//
 
 const useProfileStore = defineStore("profileStore", {
     state: () => ({
@@ -79,83 +76,98 @@ const useProfileStore = defineStore("profileStore", {
         seriePageCount() {
             return this.seriesTotalPage;
         },
+
+        /**
+         * Get the total number of comics created by the user.
+         * @returns {number} The total number of comics.
+         */
+        comicCount() {
+            return this.totalComics;
+        },
+
+        /**
+         * Get the total number of animations created by the user.
+         * @returns {number} The total number of animations.
+         */
+        animationCount() {
+            return this.totalAnimations;
+        },
+
+        /**
+         * Get the total number of series created by the user.
+         * @returns {number} The total number of series.
+         */
+        seriesCount() {
+            return this.totalSeries;
+        },
     },
 
     actions: {
+        /**
+         * Initialize the profile store by setting the page count and total artwork.
+         */
         setupProfileStore() {
+            // Set the page count and total number of artworks from the API
             this.setPageCountAndTotalArtwork();
         },
         //********************************* */
         // Get page count from api then assign to local state
         //********************************* */
-        setPageCountAndTotalArtwork() {
-            this.totalComics = getPageCount(ArtworkType.COMIC).result;
-            this.totalAnimations = getPageCount(ArtworkType.ANIMATION).result;
-            this.totalSeries = getPageCount(ArtworkType.SERIES).result;
+        async setPageCountAndTotalArtwork() {
+            this.totalComics = await getPageCount(ArtworkType.COMIC);
+            this.totalAnimations = await getPageCount(ArtworkType.ANIMATION);
+            this.totalSeries = await getPageCount(ArtworkType.SERIES);
 
             this.comicTotalPage = Math.round(this.totalComics / 8 + 0.5);
             this.animationTotalPage = Math.round(
                 this.totalAnimations / 8 + 0.5
             );
             this.seriesTotalPage = Math.round(this.totalSeries / 8 + 0.5);
-
-            this.setArtworksByType(ArtworkType.COMIC, 1);
-            this.setArtworksByType(ArtworkType.ANIMATION, 1);
-            this.setArtworksByType(ArtworkType.SERIES, 1);
+            localStorage.setItem("page1", this.comicTotalPage);
+            localStorage.setItem("page2", this.animationTotalPage);
+            localStorage.setItem("page3", this.seriesTotalPage);
+            localStorage.setItem("comic", this.totalComics);
+            localStorage.setItem("animation", this.totalAnimations);
+            localStorage.setItem("series", this.totalSeries);
         },
 
         //********************************* */
         // Get artwork in page from api then assign to local state
         //********************************* */
-        setArtworksByType(artworkType, currentPage) {
-            if (artworkType === ArtworkType.COMIC)
-                this.comics.push(
-                    getArtworksByType(artworkType, currentPage).artworkList
-                );
-            else if (artworkType === ArtworkType.ANIMATION)
-                this.animations.push(
-                    getArtworksByType(artworkType, currentPage).artworkList
-                );
+        async setArtworksByType(artworkType, list) {
+            // var result = [];
+            // result = await getArtworksByType(artworkType, currentPage);
+            if (artworkType === ArtworkType.COMIC) {
+                list.forEach((item) => {
+                    this.comics.push(item);
+                });
+            } else if (artworkType === ArtworkType.ANIMATION)
+                list.forEach((item) => {
+                    this.animations.push(item);
+                });
             else if (artworkType === ArtworkType.SERIES)
-                this.series.push(
-                    getArtworksByType(artworkType, currentPage).artworkList
-                );
+                list.forEach((item) => {
+                    this.series.push(item);
+                });
         },
 
         /**
-         * Find the artworks for the given page and type.
-         * If the artworks for the page have not been loaded yet, load them.
-         * @param {ArtworkType} artworkType The type of artwork to find.
-         * @param {number} currentPage The page number to find the artworks for.
-         * @returns {Array} The artworks for the page.
+         * Find the artworks in the page from the local state
+         *
+         * @param {ArtworkType} artworkType The type of the artworks to find
+         * @param {number} currentPage The current page number
+         * @returns {Array} The artworks in the current page
          */
         findArtworkByPage(artworkType, currentPage) {
-            // If the artworks for the requested page have not been loaded yet, load them
+            const startIndex = (currentPage - 1) * 8;
+            const endIndex = currentPage * 8;
+
             if (artworkType === ArtworkType.COMIC) {
-                if (this.comics.length <= (currentPage - 1) * 8) {
-                    this.setArtworksByType(ArtworkType.COMIC, currentPage);
-                }
-                // Return the artworks for the page
-                return this.comics.slice(
-                    (currentPage - 1) * 8,
-                    currentPage * 8
-                );
+                return this.comics.slice(startIndex, endIndex);
             } else if (artworkType === ArtworkType.ANIMATION) {
-                if (this.animations.length <= (currentPage - 1) * 8) {
-                    this.setArtworksByType(ArtworkType.ANIMATION, currentPage);
-                }
-                return this.animations.slice(
-                    (currentPage - 1) * 8,
-                    currentPage * 8
-                );
+                return this.animations.slice(startIndex, endIndex);
             } else if (artworkType === ArtworkType.SERIES) {
-                if (this.series.length <= (currentPage - 1) * 8) {
-                    this.setArtworksByType(ArtworkType.SERIES, currentPage);
-                }
-                return this.series.slice(
-                    (currentPage - 1) * 8,
-                    currentPage * 8
-                );
+                return this.series.slice(startIndex, endIndex);
             }
         },
     },

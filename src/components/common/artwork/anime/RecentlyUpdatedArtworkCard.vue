@@ -24,7 +24,7 @@
             <q-card-section class="card-content q-pa-sm">
                 <div class="text-subtitle1 flex items-center justify-between text-weight-medium"
                     style="padding-left: .2rem;">
-                    <div style="text-overflow: ellipsis; width: 11rem; white-space: nowrap; overflow: hidden;">
+                    <div style="text-overflow: ellipsis; width: 10rem; white-space: nowrap; overflow: hidden;">
                         {{ artwork.title }}
                     </div>
                     <q-icon name="videocam" />
@@ -39,7 +39,7 @@
                             Tập 1241
                         </div>
                         <div class="text-subtitle2 text-weight-thin col text-italic text-right">
-                            {{ artwork.lastUpdateAt }} ngày trước
+                            {{ artwork.lastUpdateAt }}
                         </div>
                     </div>
                 </div>

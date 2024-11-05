@@ -19,8 +19,11 @@ async function GetArtworksByType(artworkType, pageNumber) {
                 Authorization: authStore.bearerAccessToken,
             },
         });
-
-        return response.data.body;
+        var artworkList = response.data.body.artworkList;
+        artworkList.forEach((item) => {
+            item.lastUpdateAt = calculateDayDifference(item.lastUpdateAt);
+        });
+        return artworkList;
     } catch (error) {
         console.log(error);
     }
@@ -28,7 +31,6 @@ async function GetArtworksByType(artworkType, pageNumber) {
 
 async function GetPageCount(artworkType) {
     var url = `${BaseWebApiUrl}/g28/user-profile/created-artworks/page-count`;
-
     try {
         const response = await axios({
             url: url,
@@ -40,10 +42,22 @@ async function GetPageCount(artworkType) {
                 Authorization: authStore.bearerAccessToken,
             },
         });
-
-        return response.data.body;
+        return response.data.body.result;
     } catch (error) {
         console.log(error);
+    }
+}
+
+function calculateDayDifference(startDate) {
+    const start = new Date(startDate);
+    const end = new Date(new Date());
+    const millisecondsDifference = end.getTime() - start.getTime();
+    const delta = millisecondsDifference / 86400000;
+    if (delta < 30) {
+        return `${Math.floor(delta)} ngày trước`;
+    } else {
+        const months = Math.floor(delta / 30);
+        return `${months} tháng trước`;
     }
 }
 

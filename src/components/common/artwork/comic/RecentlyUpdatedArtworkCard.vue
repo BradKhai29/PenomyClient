@@ -2,7 +2,8 @@
     <q-card class="my-card bg-grey-2" bordered>
         <q-card-section horizontal>
             <!-- left content -->
-            <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="180px" width="37%" bordered>
+
+            <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="190px" width="37%" bordered>
                 <div class="rating">
                     <q-icon name="star" size="1rem" color="dark"></q-icon>
                     <span class="text-subtitle2">{{ artwork.rating }}</span>
@@ -19,12 +20,14 @@
                 <div class="overlay"><q-icon class="play-icon" name="play_arrow" color="white" size="2rem" /></div>
 
             </q-img>
+            <div style="height: 100px;">
 
+            </div>
             <!-- right content -->
             <q-card-section class="card-content q-pa-sm">
                 <div class="text-weight-medium flex items-center justify-between text-subtitle1"
                     style="padding-left: .2rem; ">
-                    <div style="text-overflow: ellipsis; width: 11rem; white-space: nowrap; overflow: hidden;">
+                    <div style="text-overflow: ellipsis; width: 10rem; white-space: nowrap; overflow: hidden;">
                         {{ artwork.title }}
                     </div>
                     <q-icon name="palette" />
@@ -34,12 +37,12 @@
                     by {{ artwork.supplier }}
                 </div>
                 <div class="card-content-center q-pa-sm">
-                    <div class="row">
-                        <div class="text-subtitle2 col-6">
-                            Tập 1241
+                    <div class="row justify-between">
+                        <div class="text-subtitle3">
+                            Tập 12411
                         </div>
-                        <div class="text-subtitle2 text-weight-thin col text-italic text-right">
-                            {{ artwork.lastUpdateAt }} ngày trước
+                        <div class="text-subtitle3 text-weight-thin text-italic text-right">
+                            {{ artwork.lastUpdateAt }}
                         </div>
                     </div>
                 </div>
@@ -77,6 +80,7 @@
 <style scoped>
 .my-card {
     width: 100%;
+    /* height: 12rem; */
 }
 
 .card-content {
