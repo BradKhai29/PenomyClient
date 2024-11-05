@@ -1,5 +1,5 @@
 <template>
-    <div @click="$router.push(`artwork/comic/${artwork.id}`)">
+    <div @click="$router.push(`artwork/anime/${artwork.id}`)">
         <q-card class="my-card bg-grey-2" bordered>
             <q-card-section horizontal>
                 <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="360px" width="100%" bordered>
@@ -129,7 +129,7 @@ a {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(135, 135, 135, 0.5);
+    background-color: black;
     z-index: 10;
     border-radius: 5px;
     display: flex;

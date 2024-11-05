@@ -138,7 +138,13 @@ const useArtwork3Store = defineStore("artwork3Store", {
         setCommentProps(commentProps) {
             this.commentProps = commentProps;
         },
+
+        getCommentsFromAPI(artworkId) {
+            
+        },
     },
+
+    
 });
 
 export { useArtwork3Store };

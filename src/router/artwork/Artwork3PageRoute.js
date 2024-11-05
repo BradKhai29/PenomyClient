@@ -8,6 +8,11 @@ const routeDefinition = [
                 path: "comic/:artworkId",
                 component: () => import("pages/artwork/Artwork3Page.vue"),
             },
+            {
+                path: "comic2/:artworkId",
+                component: () =>
+                    import("pages/artwork/KhaiND_Artwork3Page.vue"),
+            },
         ],
     },
 ];

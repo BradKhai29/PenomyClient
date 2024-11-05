@@ -2,14 +2,18 @@
     <div class="title-section">
         <div class="text-h6 q-pa-sm title">{{ categoryName }} </div>
     </div>
-    <div>
-        <q-btn flat dense text-color="black" icon="arrow_left"
-            @click="$refs.carousel.previous(); calculatePage('previous')" />
-        {{ page }} / {{ carouselSlides.length }}
-        <q-btn flat dense text-color="black" icon="arrow_right" @click="$refs.carousel.next(); calculatePage('next')" />
-    </div>
-    <q-carousel control-color="black" arrows swipeable transition-prev="slide-right" transition-next="slide-left"
-        animated v-model="slide" ref="carousel" height="440px">
+    <q-item tag="div">
+        <q-space />
+        <div>
+            <q-btn flat dense text-color="black" icon="arrow_left"
+                @click="$refs.carousel.previous(); calculatePage('previous')" />
+            {{ page }} / {{ carouselSlides.length }}
+            <q-btn flat dense text-color="black" icon="arrow_right"
+                @click="$refs.carousel.next(); calculatePage('next')" />
+        </div>
+    </q-item>
+    <q-carousel swipeable transition-prev="slide-right" transition-next="slide-left" animated v-model="slide"
+        ref="carousel" height="450px">
         <q-carousel-slide v-for="slide in carouselSlides" :key="slide.index" :name="slide.index" class="q-pa-sm">
             <div class="row q-col-gutter-md">
                 <div v-for="item in slide" class="col-2" :key="item">
@@ -94,12 +98,11 @@ onMounted(async () => {
 <style lang="css" scoped>
 .title-section {
     display: flex;
-    justify-content: space-between;
 }
 
 .title {
     padding-bottom: .1rem;
-    border-bottom: 4px solid green;
+    border-bottom: 4px solid var(--primary);
     width: max-content;
 }
 

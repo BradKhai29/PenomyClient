@@ -18,7 +18,7 @@
             </q-btn>
         </q-item>
     </div>
-    <popup-login-required :open="openLoginPopup"/>
+    <popup-login-required :open="openLoginPopup" />
 </template>
 
 <script setup>
@@ -28,7 +28,7 @@ import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import EmojiPickerBoard from './EmojiPickerBoard.vue';
 import { useAuthStore } from 'src/stores/common/AuthStore.js';
-import PopupLoginRequired from '../others/PopupLoginRequired.vue';
+import PopupLoginRequired from '../../others/PopupLoginRequired.vue';
 
 const authStore = useAuthStore()
 const isDirectlyComment = ref(true);
@@ -131,7 +131,6 @@ async function sendComment() {
                             chapterId: `${props.chapterId}`,
                             isDirectlyComment: isDirectlyComment.value,
                             commentContent: `${comment.value}`,
-                            userId: `123456789012345678`,
                         },
                         headers: {
                             Authorization: authStore.bearerAccessToken,
@@ -145,7 +144,7 @@ async function sendComment() {
                 }
             }
         }
-    } else{
+    } else {
         openLoginPopup.value = !openLoginPopup.value
     }
 }

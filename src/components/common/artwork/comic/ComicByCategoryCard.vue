@@ -1,6 +1,7 @@
 <template>
     <div>
-        <q-card class="my-card bg-grey-2" bordered @click="$router.push(`artwork/comic/${props.artwork.artworkId}`)">
+        <q-card class="my-card bg-grey-2 cursor-pointer" bordered
+            @click="$router.push(`artwork/comic/${props.artwork.artworkId}`)">
             <q-card-section horizontal>
                 <q-img class="col-5 image" fit="cover" :src="artwork.thumbnail" height="360px" width="100%" bordered>
                     <div class="rating">
@@ -17,12 +18,47 @@
                         </q-avatar>
                     </div>
                 </q-img>
-                <div class="overlay"><q-icon class="play-icon" name="play_arrow" color="white" size="4rem" /></div>
+                <div class="overlay text-white">
+                    <div class="overlay-background"></div>
+                    <div class="row last-update">
+                        <div class="text-subtitle2 col-5">
+                            Tập 1241
+                        </div>
+                        <div class="text-subtitle2 text-weight-thin col text-italic text-right">
+                            ngày trước
+                        </div>
+                    </div>
+                    <div class="row last-update">
+                        <div class="text-subtitle2 col-5">
+                            Tập 1241
+                        </div>
+                        <div class="text-subtitle2 text-weight-thin col text-italic text-right">
+                            ngày trước
+                        </div>
+                    </div>
+                    <div class="row last-update">
+                        <div class="text-subtitle2 col-5">
+                            Tập 1241
+                        </div>
+                        <div class="text-subtitle2 text-weight-thin col text-italic text-right">
+                            ngày trước
+                        </div>
+                    </div>
+                    <div class="q-ma-sm q-mt-md">
+                        <div class="text-subtitle3 text-weight-regular">
+                            <q-avatar size="2em">
+                                <img src="https://cdn.quasar.dev/img/avatar.png" alt="">
+                            </q-avatar>
+                            by {{ artwork.supplier }}
+                        </div>
+                    </div>
+                </div>
             </q-card-section>
 
         </q-card>
         <div class="artwork-name">
-            <p class="text-subtitle1 cursor-pointer" @click="$router.push(`artwork/comic/${props.artwork.artworkId}`)">{{ shortTitle }}</p>
+            <p class="text-subtitle1 cursor-pointer" @click="$router.push(`artwork/comic/${props.artwork.artworkId}`)">
+                {{ shortTitle }}</p>
             <q-icon name="more_vert" class="cursor-pointer">
                 <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
                         <q-item clickable v-close-popup>
@@ -73,13 +109,7 @@ a {
 
 .my-card {
     width: 100%;
-    height: 360px;
-    cursor: pointer;
-    /* margin-bottom: 3rem; */
-}
-
-.my-card :first-child {
-    border-radius: 5px;
+    height: 100%;
 }
 
 .rating,
@@ -128,33 +158,37 @@ a {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(135, 135, 135, 0.5);
     z-index: 10;
     border-radius: 5px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     visibility: hidden;
 }
 
-.play-icon {
-    border: solid 1px white;
-    padding: .3rem;
-    border-radius: 100px !important;
-    transition: transform 0.2s;
-    transform: scale(0.1);
+.overlay-background {
+    background-color: black;
+    opacity: 40%;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
 }
 
 .my-card:hover .overlay {
     visibility: visible;
 }
 
-.my-card:hover .play-icon {
-    transform: scale(1);
+.last-update {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem;
+    margin: .5rem;
+    border: solid white 2px;
+    border-radius: 5px;
 }
 
-.my-card:hover .artwork-name>a {
-    /* transform:  0.2s; */
+/* .my-card:hover .artwork-name>a {
     color: red;
-}
+} */
 </style>

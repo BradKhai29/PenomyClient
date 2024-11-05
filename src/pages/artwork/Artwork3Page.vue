@@ -31,7 +31,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useFavoriteStore } from "src/stores/pages/artwork3/ArtworkMetadataStore";
-import commentloader from 'src/components/common/artwork/CommentLoader.vue';
+import commentloader from 'src/components/common/artwork/Common/CommentLoader.vue';
 import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
 const route = useRoute();
 const backgroundImageUrl = ref('');

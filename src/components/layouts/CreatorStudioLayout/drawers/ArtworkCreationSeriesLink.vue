@@ -1,6 +1,6 @@
 <template>
     <DrawerLink
-        title="Tạo series"
+        title="Tạo chuỗi tác phẩm"
         icon="add_circle"
         link="/studio/series/create"
         :isSelected="isSelected"

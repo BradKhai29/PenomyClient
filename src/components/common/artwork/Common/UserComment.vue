@@ -78,7 +78,7 @@ import ConfirmPopup from './ConfirmPopup.vue';
 import axios from 'axios';
 import { HttpMethod } from 'src/api.common/HttpMethod';
 import { useAuthStore } from 'src/stores/common/AuthStore';
-import PopupLoginRequired from '../others/PopupLoginRequired.vue';
+import PopupLoginRequired from '../../others/PopupLoginRequired.vue';
 
 var props = defineProps({
     comment: {
@@ -159,12 +159,15 @@ async function likeComment() {
             method: HttpMethod.POST,
             data: {
                 commentId: `${props.comment.id}`,
-                userId: `${1234}`
+            },
+            headers: {
+                Authorization: store.bearerAccessToken
             }
         })
             .then(() => {
                 likeCount.value += 1;
                 isLike.value = true
+                console.log(store.accessToken)
             });
     }
 }
@@ -177,8 +180,11 @@ async function unlikeComment() {
             method: HttpMethod.POST,
             data: {
                 commentId: `${props.comment.id}`,
-                userId: `${1234}`
+            },
+            headers: {
+                Authorization: store.bearerAccessToken
             }
+
         })
             .then(() => {
                 likeCount.value -= 1;

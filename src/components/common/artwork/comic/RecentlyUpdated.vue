@@ -1,4 +1,7 @@
 <template>
+    <div>
+
+    </div>
     <div class="title">
         <div class="text-h6 recently-updated">Cập nhật gần đây</div>
         <div>
@@ -57,14 +60,19 @@ const carouselSlides = computed(() => {
         return acc;
     }, []);
 })
-function calculateDayDifference(startDate, endDate) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const millisecondsDifference = end.getTime() - start.getTime();
-    const daysDifference = millisecondsDifference / 86400000;
-    return daysDifference;
-}
 
+function calculateDayDifference(startDate) {
+    const start = new Date(startDate);
+    const end = new Date(new Date());
+    const millisecondsDifference = end.getTime() - start.getTime();
+    const delta = millisecondsDifference / 86400000;
+    if (delta < 30) {
+        return `${Math.floor(delta)} ngày trước`;
+    } else {
+        const months = Math.floor(delta / 30);
+        return `${months} tháng trước`;
+    }
+}
 onMounted(async () => {
     // get data from api
     await axios({
@@ -76,8 +84,9 @@ onMounted(async () => {
     }).then((response) => {
         artworks.value = response.data.body.artworkList
         artworks.value.forEach((item) => {
-            item.lastUpdateAt = Math.round(calculateDayDifference(item.lastUpdateAt, new Date()))
+            item.lastUpdateAt =calculateDayDifference(item.lastUpdateAt)
         })
+        console.log(artworks.value[0])
     });
 })
 
@@ -91,7 +100,7 @@ onMounted(async () => {
 
 .recently-updated {
     padding-bottom: .1rem;
-    border-bottom: 4px solid green;
+    border-bottom: 4px solid var(--primary);
     width: max-content;
 }
 
