@@ -26,6 +26,8 @@ import creatorStudio11PageRoute from "./creatorStudio/CreatorStudio11PageRoute";
 import creatorStudio12PageRoute from "./creatorStudio/CreatorStudio12PageRoute";
 import creatorStudio22PageRoute from "./creatorStudio/CreatorStudio22PageRoute";
 import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
+import artwork3PageRoute from "./artwork/Artwork3PageRoute";
+import userProfile from "./userProfile/UserProfile1PageRoute";
 
 // Always leave this as last one, but you can also remove it
 const errorNotFoundPageRoute = {
@@ -60,6 +62,7 @@ const routes = [
     ...creatorStudio12PageRoute,
     ...creatorStudio22PageRoute,
     ...creatorStudio25PageRoute,
+    ...userProfile,
     // Other routes.
     errorNotFoundPageRoute,
 ];
