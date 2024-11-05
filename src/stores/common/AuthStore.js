@@ -184,7 +184,7 @@ const useAuthStore = defineStore("authStore", {
             this.tokenBag.refreshToken = refreshToken;
             this.userProfile.nickname = userProfile.nickname;
             this.userProfile.avatarUrl = userProfile.avatarUrl;
-            this.userProfile.isCreator = false;
+            this.userProfile.isCreator = userProfile.isCreator ?? false;
 
             // Store the information to local storage.
             internalSetTokenBag(this.tokenBag);

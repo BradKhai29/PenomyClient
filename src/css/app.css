@@ -15,9 +15,15 @@
     --secondary-500: #ef633d;
     --secondary-900: #c04827;
 
+    /* Tertiary section */
+    --tertiary-500: #ffbb51;
+
+    /* Dark color section */
     --dark: #120e36;
     --dark-500: #78847e;
+    --dark-900: #1a1c22;
 
+    /* Light color section */
     --light-100: #f9fafc;
     --light-300: #eeeeee;
     --light-500: #dddddd;
@@ -44,6 +50,7 @@
     background-color: var(--light-500) !important;
 }
 
+/* Primary section */
 .bg-primary {
     background-color: var(--primary) !important;
 }
@@ -52,6 +59,7 @@
     background-color: var(--primary-700-opacity-12) !important;
 }
 
+/* Secondary section */
 .bg-secondary-100 {
     background-color: var(--secondary-100) !important;
 }
@@ -60,8 +68,18 @@
     background-color: var(--secondary-500) !important;
 }
 
+/* Tertiary section */
+.bg-tertiary-500 {
+    background-color: var(--tertiary-500) !important;
+}
+
+/* Dark section */
 .bg-dark {
     background-color: var(--dark) !important;
+}
+
+.bg-dark-900 {
+    background-color: var(--dark-900) !important;
 }
 
 /* Text color section */
@@ -87,12 +105,18 @@
     color: var(--primary-700-opacity-12) !important;
 }
 
+/* Secondary section */
 .text-secondary-900 {
     color: var(--secondary-900) !important;
 }
 
 .text-secondary-500 {
     color: var(--secondary-500) !important;
+}
+
+/* Tertiary section */
+.text-tertiary-500 {
+    color: var(--tertiary-500) !important;
 }
 
 .underline-primary {

@@ -313,9 +313,7 @@ export default {
             }
 
             // Delay for a moment before invoking the method.
-            setTimeout(() => {
-                resolveMethod();
-            }, delayTimeout);
+            setTimeout(resolveMethod, delayTimeout);
         },
         /**
          * Wait for the current component to process the drag-n-drop properly.
@@ -527,15 +525,15 @@ export default {
         handleDragToMiddle(prevElement, draggedElement) {
             // Get the id of the prevElement and draggedElement
             // in the DOM to find their position to handle drag-n-drop.
-            const prevElementId = prevElement.id;
-            const draggedElementId = draggedElement.id;
+            const prevElementId = String(prevElement.id);
+            const draggedElementId = String(draggedElement.id);
 
             const prevItem = this.displayImageItemList.find(
-                (item) => item.id == prevElementId
+                (item) => item.id === prevElementId
             );
 
             const draggedItem = this.displayImageItemList.find(
-                (item) => item.id == draggedElementId
+                (item) => item.id === draggedElementId
             );
 
             // Get the old and the new position of the dragged item.
@@ -608,7 +606,7 @@ export default {
         handleDragToFirst(draggedElement) {
             // Get the id of the prevElement and draggedElement
             // in the DOM to find their position to handle drag-n-drop.
-            const draggedElementId = draggedElement.id;
+            const draggedElementId = String(draggedElement.id);
 
             const draggedItem = this.displayImageItemList.find(
                 (item) => item.id == draggedElementId
