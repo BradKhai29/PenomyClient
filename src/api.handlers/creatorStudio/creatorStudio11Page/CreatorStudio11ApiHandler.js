@@ -13,6 +13,25 @@ import { UpdateComicChapterResult } from "src/api.models/creatorStudio/creatorSt
 import { FileHelper } from "src/helpers/FileHelper";
 import { ReloadChapterImageResult } from "src/api.models/creatorStudio/creatorStudio11Page/ReloadChapterImageResult";
 
+const ChapterUpdateModes = {
+    DRAFTED: {
+        name: "DRAFTED",
+        value: 1,
+    },
+    SCHEDULED: {
+        name: "SCHEDULED",
+        value: 2,
+    },
+    PUBLISHED: {
+        name: "PUBLISHED",
+        value: 3,
+    },
+    UPDATE_CONTENT_ONLY: {
+        name: "UPDATE_CONTENT_ONLY",
+        value: 4,
+    },
+};
+
 /**
  * Get the detail of the specified chapter with input id
  * support for updating the detail.
@@ -47,11 +66,8 @@ async function getChapterDetailByIdAsync(chapterId) {
  * @param {Boolean} isDrafted Specify to update a draft for this chapter.
  * @returns {Promise<UpdateComicChapterResult>} The result of chapter updating.
  */
-async function updateComicChapter(chapterDetail, isDrafted) {
+async function updateComicChapter(chapterDetail, updateMode) {
     const requestBody = new FormData();
-    const scheduledAt = DateTimeHelper.toISODate(
-        chapterDetail.scheduleOption.scheduleDateTime
-    );
 
     // Populate comic detail information to the request body.
     requestBody.append("comicId", chapterDetail.comicId);
@@ -61,8 +77,26 @@ async function updateComicChapter(chapterDetail, isDrafted) {
     requestBody.append("thumbnailImageFile", chapterDetail.thumbnailImageFile);
     requestBody.append("publicLevel", chapterDetail.publicLevel);
     requestBody.append("allowComment", chapterDetail.allowComment);
-    requestBody.append("isDrafted", isDrafted);
-    requestBody.append("scheduledAt", scheduledAt);
+    requestBody.append("updateMode", updateMode);
+
+    // Get the scheduled at from scheduleOption
+    // when the update mode is SCHEDULED.
+    if (updateMode == ChapterUpdateModes.SCHEDULED.value) {
+        const scheduledAt = DateTimeHelper.toISODate(
+            chapterDetail.scheduleOption.scheduleDateTime
+        );
+        requestBody.append("scheduledAt", scheduledAt);
+    }
+    // Otherwise ignore the schedule option
+    // and add the datetimeNow as default.
+    else {
+        const dateTimeNow = new Date();
+
+        requestBody.append(
+            "scheduledAt",
+            DateTimeHelper.toISODate(dateTimeNow)
+        );
+    }
 
     // Add the chapter image list to the request body.
     requestBody.append(
@@ -136,4 +170,4 @@ const CreatorStudio11ApiHandler = {
     reloadChapterImagesAsync: reloadChapterImagesAsync,
 };
 
-export { CreatorStudio11ApiHandler };
+export { CreatorStudio11ApiHandler, ChapterUpdateModes };

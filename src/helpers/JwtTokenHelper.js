@@ -4,21 +4,23 @@
  */
 class DecodeJwtPayload {
     /**
-     * @param {String} userId The id of the user that extracted from the payload
+     * @param {String} sub Contain the id of the user that extracted from the payload
      * @param {String} email The email of the user that extracted from the payload
      * @param {String} role The role name of of the user that extracted from the payload
      */
-    constructor(userId, email, role) {
-        this.userId = userId;
+    constructor(sub, email, role, purpose) {
+        this.sub = sub;
         this.email = email;
         this.role = role;
+        this.purpose = purpose;
     }
 }
 
 const claimTypes = {
-    userId: "userId",
+    sub: "sub",
     email: "app-user-email",
     role: "role",
+    purpose: "purpose",
 };
 
 /**
@@ -32,6 +34,7 @@ const claimTypes = {
  */
 function decodeJwt(token) {
     const MINIMUM_LENGTH = 10;
+    token = String(token);
 
     if (token == "" || token.length < MINIMUM_LENGTH) {
         return null;
@@ -57,17 +60,43 @@ function decodeJwt(token) {
         const jsonPayload = JSON.parse(decodedPayload);
 
         return new DecodeJwtPayload(
-            jsonPayload[claimTypes.userId],
+            jsonPayload[claimTypes.sub],
             jsonPayload[claimTypes.email],
-            jsonPayload[claimTypes.role]
+            jsonPayload[claimTypes.role],
+            jsonPayload[claimTypes.purpose]
         );
     } catch (error) {
         return null;
     }
 }
 
+/**
+ * Validate the payload of the provided access-token is correct format or not.
+ *
+ * @param {String} accessToken Access token to validate.
+ * @returns {Boolean} The result of validation.
+ */
+function validateAccessTokenPayload(accessToken) {
+    const decodeJwtPayload = decodeJwt(accessToken);
+
+    if (!decodeJwtPayload) {
+        return false;
+    }
+
+    // Check the purpose of the access-token.
+    const ACCESS_TOKEN_PURPOSE = "app-user-access";
+    const isValidPurpose = decodeJwtPayload.purpose == ACCESS_TOKEN_PURPOSE;
+
+    if (!isValidPurpose) {
+        return false;
+    }
+
+    return true;
+}
+
 const JwtTokenHelper = {
     decodeJwt: decodeJwt,
+    validateAccessTokenPayload: validateAccessTokenPayload,
 };
 
 export { JwtTokenHelper, DecodeJwtPayload };

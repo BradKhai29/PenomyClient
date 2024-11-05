@@ -109,14 +109,14 @@
                                         : 'Xuất bản'
                                 "
                                 :loading="isUpdating"
-                                :disable="!hasChangesInData"
+                                :disable="isUpdating"
                                 @click="updateChapterDetail(false)"
                             />
                             <q-btn
                                 v-if="!chapterDetail.isPublished()"
                                 :loading="isUpdating"
                                 :disable="!hasChangesInData"
-                                @click="updateChapterDetail(true)"
+                                @click="updateChapterDetail"
                                 class="q-mt-xs bg-dark text-light text-weight-bold col-grow"
                             >
                                 <q-icon name="description" size="sm" />
@@ -135,7 +135,10 @@
 import { computed } from "vue";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
-import { CreatorStudio11ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio11Page/CreatorStudio11ApiHandler";
+import {
+    ChapterUpdateModes,
+    CreatorStudio11ApiHandler,
+} from "src/api.handlers/creatorStudio/creatorStudio11Page/CreatorStudio11ApiHandler";
 import { UpdateComicChapterDetail } from "src/api.models/creatorStudio/creatorStudio11Page/UpdateComicChapterDetail";
 
 // Import components section.
@@ -302,7 +305,19 @@ export default {
          *
          * @param {Boolean} [isDrafted=false] Specify to create a draft for this chapter. (Default is false)
          */
-        async updateChapterDetail(isDrafted = false) {
+        async updateChapterDetail(updateMode) {
+            let selectUpdateMode = ChapterUpdateModes.UPDATE_CONTENT_ONLY;
+            let isDrafted = false;
+
+            if (updateMode == ChapterUpdateModes.DRAFTED.name) {
+                selectUpdateMode = ChapterUpdateModes.DRAFTED;
+                isDrafted = true;
+            } else if (updateMode == ChapterUpdateModes.SCHEDULED.name) {
+                selectUpdateMode = ChapterUpdateModes.SCHEDULED;
+            } else if (updateMode == ChapterUpdateModes.PUBLISHED.name) {
+                selectUpdateMode = ChapterUpdateModes.PUBLISHED;
+            }
+
             const isValidInput = this.verifyInput();
 
             if (!isValidInput) {
@@ -317,7 +332,7 @@ export default {
             const result =
                 await CreatorStudio11ApiHandler.updateComicChapterAsync(
                     this.chapterDetail,
-                    isDrafted
+                    selectUpdateMode.value
                 );
 
             if (result.isSuccess) {
