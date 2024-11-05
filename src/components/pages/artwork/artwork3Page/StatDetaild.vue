@@ -43,10 +43,10 @@ const props = defineProps({
 });
 
 const stats = computed(() => [
-    { icon: 'visibility', value: NumberHelper.formatNumberShort(props.viewCount) },
-    { icon: 'ion-heart', value: NumberHelper.formatNumberShort(props.favoriteCount) },
-    { icon: 'star', value: NumberHelper.formatNumberShort(props.commentCount) },
-    { icon: 'add_box', value: NumberHelper.formatNumberShort(props.starRates) },
+    { icon: 'visibility', value: NumberHelper.formatNumberShort(props.viewCount, 2) },
+    { icon: 'ion-heart', value: NumberHelper.formatNumberShort(props.favoriteCount, 2) },
+    { icon: 'star', value: NumberHelper.formatNumberShort(props.commentCount, 2) },
+    { icon: 'add_box', value: NumberHelper.formatNumberShort(props.starRates, 2) },
     { icon: 'info', value: 'Khác' }
 ]);
 onBeforeMount(handleBeforeMount)

@@ -1,9 +1,9 @@
 <template>
     <q-card :style="backgroundStyle" class="">
         <div class="q-pt-lg q-pb-xs">
-            <q-card class="row detail-header">
+            <q-card v-if="!isLoading" class="row detail-header">
                 <image-section :imageUrl="data.thumbnailUrl" class="col-3 q-pr-md"></image-section>
-                <description-section :isUserFavorited="data.isUserFavorite" :artworkId="artworkId"
+                <description-section :isUserFavorite="data.isUserFavorite" :artworkId="artworkId"
                     :hasSeries="data.hasSeries" :title="data.title" :author="data.authorName"
                     :country="data.countryName" :status="data.artworkStatus" :seriesName="data.serieName"
                     :buttons="buttons" class="col-9 q-pt-md"></description-section>
@@ -37,6 +37,7 @@ const backgroundImageUrl = ref('');
 const artworkId = ref(null);
 const data = ref({});
 const authStore = useAuthStore();
+const isLoading = ref(true);
 onMounted(async () => {
     artworkId.value = route.params.artworkId;
     const id = route.params.artworkId;
@@ -46,6 +47,7 @@ onMounted(async () => {
         ]);
         data.value = artworkDetail;
         backgroundImageUrl.value = artworkDetail.thumbnailUrl;
+        isLoading.value = false;
     } catch (error) {
         console.log(error);
     }
