@@ -2,7 +2,7 @@
     <q-page class="" style="min-height: 600px; height: auto; padding-right: 16px">
         <!-- Left Section -->
         <div class="row">
-            <q-card flat class="col-5 left-panel ">
+            <q-card flat class="col-5 left-panel">
                 <!-- Description -->
                 <q-card-section>
 
@@ -40,8 +40,12 @@
                         </q-btn-dropdown>
                     </div>
                     <div class="row">
-                        <q-btn class="col-12 q-mr-sm" unelevated rounded no-caps
-                            :style="{ fontSize: '16px', backgroundColor: '#120E36', color: '#EEEEEE', fontWeight: 'bold' }">
+                        <q-btn class="col-12 q-mr-sm" unelevated rounded no-caps :style="{
+                            fontSize: '16px',
+                            backgroundColor: '#120E36',
+                            color: '#EEEEEE',
+                            fontWeight: 'bold',
+                        }">
                             <q-icon :color="'#120E36'" name="ion-add-circle" class="q-mr-xs" />
                             Theo dõi tác phẩm
                         </q-btn>
@@ -53,9 +57,11 @@
             <!-- Right Section (Episodes List) -->
             <q-card flat class="col-7 right-part">
                 <!-- Header -->
-                <div class="row items-center ">
+                <div class="row items-center">
                     <div class="col total-chaps">Tổng {{ count }} tập</div>
-                    <div class="col-auto"><strong>Mới nhất</strong> | Từ tập 1</div>
+                    <div class="col-auto">
+                        <strong>Mới nhất</strong> | Từ tập 1
+                    </div>
                 </div>
                 <q-list class="episode-list right-panel">
                     <!-- Episode Items -->
@@ -71,17 +77,35 @@
                                 </div>
                             </div>
                         </q-item-section>
-                        <q-item-section>
+                        <q-item-section @click="() =>
+                            $router.push(
+                                `/artwork/comic/${artworkId}/chapter/${episode.id}`
+                            )
+                            ">
                             <q-item-label class="chap-num">Tập {{ episode.uploadOrder }}</q-item-label>
-                            <q-item-label class="chap-title">{{ episode.chapterName }}</q-item-label>
+                            <q-item-label class="chap-title">{{
+                                episode.chapterName
+                                }}</q-item-label>
                             <q-item-label class="chap-stats" caption>
                                 {{ formatDate(episode.createdTime) }}
                                 <q-icon name="ion-eye stats-icon" class="q-ml-sm" />
-                                {{ NumberHelper.formatNumberShort(episode.viewCount) }}
+                                {{
+                                    NumberHelper.formatNumberShort(
+                                        episode.viewCount
+                                    )
+                                }}
                                 <q-icon name="ion-heart stats-icon" class="q-ml-sm" />
-                                {{ NumberHelper.formatNumberShort(episode.favoriteCount) }}
+                                {{
+                                    NumberHelper.formatNumberShort(
+                                        episode.favoriteCount
+                                    )
+                                }}
                                 <q-icon name="ion-chatbubbles stats-icon" class="q-ml-sm" />
-                                {{ NumberHelper.formatNumberShort(episode.commentCount) }}
+                                {{
+                                    NumberHelper.formatNumberShort(
+                                        episode.commentCount
+                                    )
+                                }}
                             </q-item-label>
                         </q-item-section>
                     </q-item>
@@ -100,28 +124,28 @@ import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/Artwo
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { useAuthStore } from "src/stores/common/AuthStore";
 function formatDate(createdTime) {
-    return createdTime.split('T')[0];
+    return createdTime.split("T")[0];
 }
 
 const props = defineProps({
     introduction: {
         type: String,
-        default: 'No introduction'
+        default: "No introduction",
     },
     viewCount: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
     },
     favoriteCount: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
     },
     followCount: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
     },
     starRates: {
         type: Number,
@@ -137,11 +161,12 @@ const star = ref(props.starRates);
 
 const chapterData = ref([]);
 const id = route.params.artworkId;
+
 onMounted(async () => {
     artworkId.value = route.params.artworkId;
     try {
         const [chapterResponse] = await Promise.all([
-            artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 10)
+            artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 10),
         ]);
         count.value = chapterResponse.chapterCount;
         chapterData.value = chapterResponse.chapters;
@@ -160,7 +185,13 @@ async function RatingArtworkAsync(starRate) {
 </script>
 <script>
 
-
+export default {
+    setup() {
+        return {
+            ratingModel: ref(3)
+        }
+    }
+}
 </script>
 <style scoped>
 .total-chaps {
@@ -188,7 +219,7 @@ async function RatingArtworkAsync(starRate) {
 
 .stats-detail {
     font-family: Arial, Helvetica, sans-serif;
-    color: #120E36;
+    color: #120e36;
     font-size: 16px;
 }
 
@@ -203,13 +234,13 @@ async function RatingArtworkAsync(starRate) {
     height: 22px;
     left: 0;
     right: 0;
-    background-color: #53BF94;
+    background-color: #53bf94;
     /* Semi-transparent background */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #1A1C22;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1a1c22;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     padding: 5px;
 }
 
@@ -255,8 +286,6 @@ async function RatingArtworkAsync(starRate) {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
 }
-
-
 
 .stats {
     font-family: Arial, Helvetica, sans-serif;
