@@ -1,8 +1,5 @@
 <template>
-    <q-page
-        class=""
-        style="min-height: 600px; height: auto; padding-right: 16px"
-    >
+    <q-page class="" style="min-height: 600px; height: auto; padding-right: 16px">
         <!-- Left Section -->
         <div class="row">
             <q-card flat class="col-5 left-panel">
@@ -43,23 +40,13 @@
                         </q-btn-dropdown>
                     </div>
                     <div class="row">
-                        <q-btn
-                            class="col-12 q-mr-sm"
-                            unelevated
-                            rounded
-                            no-caps
-                            :style="{
-                                fontSize: '16px',
-                                backgroundColor: '#120E36',
-                                color: '#EEEEEE',
-                                fontWeight: 'bold',
-                            }"
-                        >
-                            <q-icon
-                                :color="'#120E36'"
-                                name="ion-add-circle"
-                                class="q-mr-xs"
-                            />
+                        <q-btn class="col-12 q-mr-sm" unelevated rounded no-caps :style="{
+                            fontSize: '16px',
+                            backgroundColor: '#120E36',
+                            color: '#EEEEEE',
+                            fontWeight: 'bold',
+                        }">
+                            <q-icon :color="'#120E36'" name="ion-add-circle" class="q-mr-xs" />
                             Theo dõi tác phẩm
                         </q-btn>
                     </div>
@@ -78,77 +65,42 @@
                 </div>
                 <q-list class="episode-list right-panel">
                     <!-- Episode Items -->
-                    <q-item
-                        class="episode-item"
-                        v-for="(episode, index) in chapterData"
-                        :key="index"
-                        clickable
-                    >
+                    <q-item class="episode-item" v-for="(episode, index) in chapterData" :key="index" clickable>
                         <q-item-section avatar>
                             <div class="image-container">
-                                <q-img
-                                    :src="episode.thumbnailUrl"
-                                    class="episode-image"
-                                    width="100px"
-                                    height="100px"
-                                />
-                                <q-icon
-                                    v-if="episode.isLocked"
-                                    name="ion-lock"
-                                    class="lock-icon"
-                                    :style="{ color: '#53BF94' }"
-                                />
-                                <div
-                                    v-if="episode.isWatching"
-                                    class="overlay-content"
-                                >
-                                    <q-icon
-                                        name="play_circle"
-                                        class="play-icon q-pr-xs"
-                                        :style="{ color: 'white' }"
-                                    />
+                                <q-img :src="episode.thumbnailUrl" class="episode-image" width="100px" height="100px" />
+                                <q-icon v-if="episode.isLocked" name="ion-lock" class="lock-icon"
+                                    :style="{ color: '#53BF94' }" />
+                                <div v-if="episode.isWatching" class="overlay-content">
+                                    <q-icon name="play_circle" class="play-icon q-pr-xs" :style="{ color: 'white' }" />
                                     <span>Đang xem</span>
                                 </div>
                             </div>
                         </q-item-section>
-                        <q-item-section
-                            @click="
-                                () =>
-                                    $router.push(
-                                        `/artwork/comic/${artworkId}/chapter/${episode.id}`
-                                    )
-                            "
-                        >
-                            <q-item-label class="chap-num"
-                                >Tập {{ episode.uploadOrder }}</q-item-label
-                            >
+                        <q-item-section @click="() =>
+                            $router.push(
+                                `/artwork/comic/${artworkId}/chapter/${episode.id}`
+                            )
+                            ">
+                            <q-item-label class="chap-num">Tập {{ episode.uploadOrder }}</q-item-label>
                             <q-item-label class="chap-title">{{
                                 episode.chapterName
-                            }}</q-item-label>
+                                }}</q-item-label>
                             <q-item-label class="chap-stats" caption>
                                 {{ formatDate(episode.createdTime) }}
-                                <q-icon
-                                    name="ion-eye stats-icon"
-                                    class="q-ml-sm"
-                                />
+                                <q-icon name="ion-eye stats-icon" class="q-ml-sm" />
                                 {{
                                     NumberHelper.formatNumberShort(
                                         episode.viewCount
                                     )
                                 }}
-                                <q-icon
-                                    name="ion-heart stats-icon"
-                                    class="q-ml-sm"
-                                />
+                                <q-icon name="ion-heart stats-icon" class="q-ml-sm" />
                                 {{
                                     NumberHelper.formatNumberShort(
                                         episode.favoriteCount
                                     )
                                 }}
-                                <q-icon
-                                    name="ion-chatbubbles stats-icon"
-                                    class="q-ml-sm"
-                                />
+                                <q-icon name="ion-chatbubbles stats-icon" class="q-ml-sm" />
                                 {{
                                     NumberHelper.formatNumberShort(
                                         episode.commentCount
@@ -202,9 +154,6 @@ const props = defineProps({
     }
 })
 const ratingModel = ref(3);
-        default: 0,
-    },
-});
 const artworkId = ref(null);
 const route = useRoute();
 const count = ref(0);
