@@ -30,7 +30,7 @@ const props = defineProps({
         required: true,
         default: 0,
     },
-    commentCount: {
+    followCount: {
         type: Number,
         required: true,
         default: 0,
@@ -45,8 +45,8 @@ const props = defineProps({
 const stats = computed(() => [
     { icon: 'visibility', value: NumberHelper.formatNumberShort(props.viewCount, 2) },
     { icon: 'ion-heart', value: NumberHelper.formatNumberShort(props.favoriteCount, 2) },
-    { icon: 'star', value: NumberHelper.formatNumberShort(props.commentCount, 2) },
-    { icon: 'add_box', value: NumberHelper.formatNumberShort(props.starRates, 2) },
+    { icon: 'star', value: NumberHelper.formatNumberShort(props.starRates, 2) },
+    { icon: 'add_box', value: NumberHelper.formatNumberShort(props.followCount, 2) },
     { icon: 'info', value: 'Khác' }
 ]);
 onBeforeMount(handleBeforeMount)

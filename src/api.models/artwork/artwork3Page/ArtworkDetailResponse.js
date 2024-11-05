@@ -26,6 +26,7 @@ class ArtworkDetailResponse {
         starRates,
         introduction,
         commentCount,
+        followCount,
         isUserFavorite
     ) {
         this.title = name;
@@ -41,6 +42,7 @@ class ArtworkDetailResponse {
         this.starRates = starRates;
         this.introduction = introduction;
         this.commentCount = commentCount;
+        this.followCount = followCount;
         this.isUserFavorite = isUserFavorite;
     }
 }
