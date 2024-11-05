@@ -78,7 +78,7 @@ const carouselSlides = computed(() => {
 // })
 
 const authStore = useAuthStore();
-const accessToken = authStore.accessToken;
+const accessToken = authStore.bearerAccessToken;
 onMounted(async () => {
     try {
         const [artwork] = await Promise.all([

@@ -47,9 +47,12 @@
                     Xem từ đầu
                 </q-btn>
                 <q-btn class="col-2 q-mr-sm action-btn" unelevated rounded no-caps @click="toggleFavorite(artworkId)"
-                    :style="{ fontSize: '16px', backgroundColor: !isFavorited ? '#EEEEEE' : '#120E36', color: !isFavorited ? '#120E36' : '#DC5834', }">
-                    <q-icon name="ion-heart" class="q-mr-xs" />
-                    {{ isFavorited ? 'Đã yêu thích' : 'Yêu thích' }}
+                    :style="{ fontSize: '16px', backgroundColor: isFavorited ? '#120E36' : '#EEEEEE', width: 'auto' }">
+
+                    <q-icon name="ion-heart" class="q-mr-xs" :style="{ color: isFavorited ? '#DC5834' : '#120E36' }" />
+                    <span :style="{ color: isFavorited ? '#EEEEEE' : '#120E36' }">
+                        {{ isFavorited ? 'Đã yêu thích' : 'Yêu thích' }}
+                    </span>
                 </q-btn>
                 <q-btn class="col-3 q-mr-sm action-btn" unelevated rounded no-caps
                     :style="{ fontSize: '16px', backgroundColor: '#EEEEEE', color: '#120E36', }">
@@ -83,15 +86,14 @@ const props = defineProps({
     },
     hasSeries: Boolean,
     artworkId: Number,
-    isUserFavorited: Boolean
+    isUserFavorite: Boolean
 })
 const authStore = useAuthStore();
-const isFavorited = ref(props.isUserFavorited);
-console.log(isFavorited.value)
+const isFavorited = ref(props.isUserFavorite);
 async function toggleFavorite() {
     try {
         const url = isFavorited.value
-            ? `${BaseWebApiUrl}/g47/favorite/remove` // Remove API endpoint
+            ? `${BaseWebApiUrl}/g47/favorite/remove`
             : `${BaseWebApiUrl}/g46/favorite/add`;
         const response = await axios({
             url: url,
