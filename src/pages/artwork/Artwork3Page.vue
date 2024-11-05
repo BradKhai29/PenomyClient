@@ -18,6 +18,10 @@
             :follow-count="data.followCount" :favorite-count="data.favoriteCount" :star-rates="data.starRates"
             class="col-12"></detail-body-section>
     </q-card>
+    <q-card v-else class="detail-body" style="">
+        <detail-body-section :view-count="0" :follow-count="0" :favorite-count="0" :star-rates="data.starRates"
+            class="col-12"></detail-body-section>
+    </q-card>
     <div>
         <commentloader :artworkId="route.params.artworkId" />
     </div>
