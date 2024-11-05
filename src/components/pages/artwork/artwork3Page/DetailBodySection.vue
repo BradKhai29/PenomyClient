@@ -9,7 +9,7 @@
                 <!-- Description -->
                 <q-card-section>
 
-                    <stat-detaild :view-count="viewCount" :comment-count="commentCount" :favorite-count="favoriteCount"
+                    <stat-detaild :view-count="viewCount" :follow-count="followCount" :favorite-count="favoriteCount"
                         :star-rates="star"></stat-detaild>
                     <div class="text-body1">
                         {{ introduction }}
@@ -190,7 +190,7 @@ const props = defineProps({
         required: true,
         default: 0,
     },
-    commentCount: {
+    followCount: {
         type: Number,
         required: true,
         default: 0,
@@ -198,6 +198,10 @@ const props = defineProps({
     starRates: {
         type: Number,
         required: true,
+        default: 0
+    }
+})
+const ratingModel = ref(3);
         default: 0,
     },
 });

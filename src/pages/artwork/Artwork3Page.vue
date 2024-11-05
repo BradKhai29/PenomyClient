@@ -13,9 +13,9 @@
             </q-card>
         </div>
     </q-card>
-    <q-card class="detail-body" style="">
+    <q-card v-if="!isLoading" class="detail-body" style="">
         <detail-body-section :introduction="data.introduction" :view-count="data.viewCount"
-            :comment-count="data.commentCount" :favorite-count="data.favoriteCount" :star-rates="data.starRates"
+            :follow-count="data.followCount" :favorite-count="data.favoriteCount" :star-rates="data.starRates"
             class="col-12"></detail-body-section>
     </q-card>
     <div>
@@ -30,6 +30,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { useFavoriteStore } from "src/stores/pages/artwork3/ArtworkMetadataStore";
 import commentloader from 'src/components/common/artwork/Common/CommentLoader.vue';
 import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
 const route = useRoute();
@@ -37,6 +38,7 @@ const backgroundImageUrl = ref('');
 const artworkId = ref(null);
 const data = ref({});
 const authStore = useAuthStore();
+const favoriteStore = useFavoriteStore();
 const isLoading = ref(true);
 onMounted(async () => {
     artworkId.value = route.params.artworkId;
@@ -52,7 +54,7 @@ onMounted(async () => {
         console.log(error);
     }
 });
-
+data.value.favoriteCount = computed(() => favoriteStore.favoriteCount);
 const backgroundStyle = computed(() => ({
     background: `url(${backgroundImageUrl.value}) no-repeat`,
     backgroundSize: 'cover',

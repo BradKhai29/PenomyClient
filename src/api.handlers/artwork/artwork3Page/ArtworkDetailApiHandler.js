@@ -40,6 +40,7 @@ async function getArtworkDetailByIdAsync(artworkId, accessToken) {
             data.starRates,
             data.introduction,
             data.commentCount,
+            data.followCount,
             data.isUserFavorite
         );
     } catch (error) {
