@@ -1,13 +1,19 @@
 <template>
-    <q-page class="" style="min-height: 600px; height: auto; padding-right: 16px">
+    <q-page
+        class=""
+        style="min-height: 600px; height: auto; padding-right: 16px"
+    >
         <!-- Left Section -->
         <div class="row">
-            <q-card flat class="col-5 left-panel ">
+            <q-card flat class="col-5 left-panel">
                 <!-- Description -->
                 <q-card-section>
-
-                    <stat-detaild :view-count="viewCount" :comment-count="commentCount" :favorite-count="favoriteCount"
-                        :star-rates="starRates"></stat-detaild>
+                    <stat-detaild
+                        :view-count="viewCount"
+                        :comment-count="commentCount"
+                        :favorite-count="favoriteCount"
+                        :star-rates="starRates"
+                    ></stat-detaild>
                     <div class="text-body1">
                         {{ introduction }}
                     </div>
@@ -15,16 +21,45 @@
                     <!-- Stats Row -->
                     <!-- Buttons Section -->
                     <div class="row">
-                        <q-btn class="col-12 q-mr-sm" unelevated rounded no-caps
-                            :style="{ fontSize: '16px', backgroundColor: '#120E36', color: '#EEEEEE', fontWeight: 'bold', marginBottom: '16px' }">
-                            <q-icon :color="'#120E36'" name="ion-star" class="q-mr-xs" />
+                        <q-btn
+                            class="col-12 q-mr-sm"
+                            unelevated
+                            rounded
+                            no-caps
+                            :style="{
+                                fontSize: '16px',
+                                backgroundColor: '#120E36',
+                                color: '#EEEEEE',
+                                fontWeight: 'bold',
+                                marginBottom: '16px',
+                            }"
+                        >
+                            <q-icon
+                                :color="'#120E36'"
+                                name="ion-star"
+                                class="q-mr-xs"
+                            />
                             4 / 5
                         </q-btn>
                     </div>
                     <div class="row">
-                        <q-btn class="col-12 q-mr-sm" unelevated rounded no-caps
-                            :style="{ fontSize: '16px', backgroundColor: '#120E36', color: '#EEEEEE', fontWeight: 'bold' }">
-                            <q-icon :color="'#120E36'" name="ion-add-circle" class="q-mr-xs" />
+                        <q-btn
+                            class="col-12 q-mr-sm"
+                            unelevated
+                            rounded
+                            no-caps
+                            :style="{
+                                fontSize: '16px',
+                                backgroundColor: '#120E36',
+                                color: '#EEEEEE',
+                                fontWeight: 'bold',
+                            }"
+                        >
+                            <q-icon
+                                :color="'#120E36'"
+                                name="ion-add-circle"
+                                class="q-mr-xs"
+                            />
                             Theo dõi tác phẩm
                         </q-btn>
                     </div>
@@ -34,35 +69,90 @@
             <!-- Right Section (Episodes List) -->
             <q-card flat class="col-7 right-part">
                 <!-- Header -->
-                <div class="row items-center ">
+                <div class="row items-center">
                     <div class="col total-chaps">Tổng {{ count }} tập</div>
-                    <div class="col-auto"><strong>Mới nhất</strong> | Từ tập 1</div>
+                    <div class="col-auto">
+                        <strong>Mới nhất</strong> | Từ tập 1
+                    </div>
                 </div>
                 <q-list class="episode-list right-panel">
                     <!-- Episode Items -->
-                    <q-item class="episode-item" v-for="(episode, index) in chapterData" :key="index" clickable>
+                    <q-item
+                        class="episode-item"
+                        v-for="(episode, index) in chapterData"
+                        :key="index"
+                        clickable
+                    >
                         <q-item-section avatar>
                             <div class="image-container">
-                                <q-img :src="episode.thumbnailUrl" class="episode-image" width="100px" height="100px" />
-                                <q-icon v-if="episode.isLocked" name="ion-lock" class="lock-icon"
-                                    :style="{ color: '#53BF94' }" />
-                                <div v-if="episode.isWatching" class="overlay-content">
-                                    <q-icon name="play_circle" class="play-icon q-pr-xs" :style="{ color: 'white' }" />
+                                <q-img
+                                    :src="episode.thumbnailUrl"
+                                    class="episode-image"
+                                    width="100px"
+                                    height="100px"
+                                />
+                                <q-icon
+                                    v-if="episode.isLocked"
+                                    name="ion-lock"
+                                    class="lock-icon"
+                                    :style="{ color: '#53BF94' }"
+                                />
+                                <div
+                                    v-if="episode.isWatching"
+                                    class="overlay-content"
+                                >
+                                    <q-icon
+                                        name="play_circle"
+                                        class="play-icon q-pr-xs"
+                                        :style="{ color: 'white' }"
+                                    />
                                     <span>Đang xem</span>
                                 </div>
                             </div>
                         </q-item-section>
-                        <q-item-section>
-                            <q-item-label class="chap-num">Tập {{ episode.uploadOrder }}</q-item-label>
-                            <q-item-label class="chap-title">{{ episode.chapterName }}</q-item-label>
+                        <q-item-section
+                            @click="
+                                () =>
+                                    $router.push(
+                                        `/artwork/comic/${artworkId}/chapter/${episode.id}`
+                                    )
+                            "
+                        >
+                            <q-item-label class="chap-num"
+                                >Tập {{ episode.uploadOrder }}</q-item-label
+                            >
+                            <q-item-label class="chap-title">{{
+                                episode.chapterName
+                            }}</q-item-label>
                             <q-item-label class="chap-stats" caption>
                                 {{ formatDate(episode.createdTime) }}
-                                <q-icon name="ion-eye stats-icon" class="q-ml-sm" />
-                                {{ NumberHelper.formatNumberShort(episode.viewCount) }}
-                                <q-icon name="ion-heart stats-icon" class="q-ml-sm" />
-                                {{ NumberHelper.formatNumberShort(episode.favoriteCount) }}
-                                <q-icon name="ion-chatbubbles stats-icon" class="q-ml-sm" />
-                                {{ NumberHelper.formatNumberShort(episode.commentCount) }}
+                                <q-icon
+                                    name="ion-eye stats-icon"
+                                    class="q-ml-sm"
+                                />
+                                {{
+                                    NumberHelper.formatNumberShort(
+                                        episode.viewCount
+                                    )
+                                }}
+                                <q-icon
+                                    name="ion-heart stats-icon"
+                                    class="q-ml-sm"
+                                />
+                                {{
+                                    NumberHelper.formatNumberShort(
+                                        episode.favoriteCount
+                                    )
+                                }}
+                                <q-icon
+                                    name="ion-chatbubbles stats-icon"
+                                    class="q-ml-sm"
+                                />
+                                {{
+                                    NumberHelper.formatNumberShort(
+                                        episode.commentCount
+                                    )
+                                }}
                             </q-item-label>
                         </q-item-section>
                     </q-item>
@@ -73,41 +163,41 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router';
-import StatDetaild from './StatDetaild.vue';
-import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import StatDetaild from "./StatDetaild.vue";
+import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
 import { NumberHelper } from "src/helpers/NumberHelper";
 function formatDate(createdTime) {
-    return createdTime.split('T')[0];
+    return createdTime.split("T")[0];
 }
 
 const props = defineProps({
     introduction: {
         type: String,
-        default: 'No introduction'
+        default: "No introduction",
     },
     viewCount: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
     },
     favoriteCount: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
     },
     commentCount: {
         type: Number,
         required: true,
-        default: 0
+        default: 0,
     },
     starRates: {
         type: Number,
         required: true,
-        default: 0
-    }
-})
+        default: 0,
+    },
+});
 const artworkId = ref(null);
 const route = useRoute();
 const count = ref(0);
@@ -115,65 +205,69 @@ const chapterData = ref([]);
 const episodes = ref([
     {
         chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
+        imageUrl: "/src/assets/hero_academia.jpg",
+        title: "10. Khởi đầu của trận chiến",
+        date: "22/07/2023",
+        views: "100K",
+        likes: "100K",
+        comments: "100K",
         isLocked: true,
-        isWatching: false
+        isWatching: false,
     },
     {
         chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
+        imageUrl: "/src/assets/hero_academia.jpg",
+        title: "10. Khởi đầu của trận chiến",
+        date: "22/07/2023",
+        views: "100K",
+        likes: "100K",
+        comments: "100K",
         isLocked: true,
-        isWatching: false
-    }, {
+        isWatching: false,
+    },
+    {
         chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
+        imageUrl: "/src/assets/hero_academia.jpg",
+        title: "10. Khởi đầu của trận chiến",
+        date: "22/07/2023",
+        views: "100K",
+        likes: "100K",
+        comments: "100K",
         isLocked: false,
-        isWatching: true
-    }, {
+        isWatching: true,
+    },
+    {
         chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
+        imageUrl: "/src/assets/hero_academia.jpg",
+        title: "10. Khởi đầu của trận chiến",
+        date: "22/07/2023",
+        views: "100K",
+        likes: "100K",
+        comments: "100K",
         isLocked: false,
-        isWatching: true
-    }, {
+        isWatching: true,
+    },
+    {
         chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
+        imageUrl: "/src/assets/hero_academia.jpg",
+        title: "10. Khởi đầu của trận chiến",
+        date: "22/07/2023",
+        views: "100K",
+        likes: "100K",
+        comments: "100K",
         isLocked: false,
-        isWatching: true
-    }, {
+        isWatching: true,
+    },
+    {
         chapNumber: 10,
-        imageUrl: '/src/assets/hero_academia.jpg',
-        title: '10. Khởi đầu của trận chiến',
-        date: '22/07/2023',
-        views: '100K',
-        likes: '100K',
-        comments: '100K',
+        imageUrl: "/src/assets/hero_academia.jpg",
+        title: "10. Khởi đầu của trận chiến",
+        date: "22/07/2023",
+        views: "100K",
+        likes: "100K",
+        comments: "100K",
         isLocked: false,
-        isWatching: true
+        isWatching: true,
     },
     // Add more episodes here...
 ]);
@@ -182,7 +276,7 @@ onMounted(async () => {
     const id = route.params.artworkId;
     try {
         const [chapterResponse] = await Promise.all([
-            artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 10)
+            artworkDetailApiHandler.getArtworkChaptersByIdAsync(id, 1, 10),
         ]);
         count.value = chapterResponse.chapterCount;
         chapterData.value = chapterResponse.chapters;
@@ -219,7 +313,7 @@ onMounted(async () => {
 
 .stats-detail {
     font-family: Arial, Helvetica, sans-serif;
-    color: #120E36;
+    color: #120e36;
     font-size: 16px;
 }
 
@@ -234,13 +328,13 @@ onMounted(async () => {
     height: 22px;
     left: 0;
     right: 0;
-    background-color: #53BF94;
+    background-color: #53bf94;
     /* Semi-transparent background */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #1A1C22;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1a1c22;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     padding: 5px;
 }
 
@@ -286,8 +380,6 @@ onMounted(async () => {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
 }
-
-
 
 .stats {
     font-family: Arial, Helvetica, sans-serif;
