@@ -71,6 +71,9 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import axios from "axios";
+import { useFavoriteStore } from "src/stores/pages/artwork3/ArtworkMetadataStore";
+
+
 // Define reactive properties using `ref`
 import { defineProps } from 'vue'
 
@@ -89,6 +92,8 @@ const props = defineProps({
     isUserFavorite: Boolean
 })
 const authStore = useAuthStore();
+const favoriteStore = useFavoriteStore();
+
 const isFavorited = ref(props.isUserFavorite);
 async function toggleFavorite() {
     try {
@@ -107,8 +112,10 @@ async function toggleFavorite() {
             return null;
         }
         const data = response.data.httpCode;
+        const count = response.data.favoriteCount;
         if (data === 200) {
             isFavorited.value = !isFavorited.value;
+            favoriteStore.setFavoriteCount(count);
         }
         console.log(isFavorited.value);
     }
