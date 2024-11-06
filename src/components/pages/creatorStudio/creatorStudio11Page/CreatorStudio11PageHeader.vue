@@ -33,7 +33,15 @@
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm"
             /></span>
-            <span> Tập {{ uploadOrder }} </span>
+            <div class="flex items-center">
+                <span> Tập {{ uploadOrder }} </span>
+                <span
+                    v-if="isDrafted"
+                    class="q-ml-xs text-subtitle2 text-weight-bold q-pa-xs bg-primary-700 text-primary border-radius-sm"
+                >
+                    Bản nháp
+                </span>
+            </div>
         </div>
         <q-btn
             v-if="hasChangesInData"
@@ -118,6 +126,10 @@ const props = defineProps({
     uploadOrder: {
         type: Number,
         required: true,
+    },
+    isDrafted: {
+        type: Boolean,
+        default: false,
     },
     isNotFound: {
         type: Boolean,

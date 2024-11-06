@@ -40,7 +40,7 @@ export default {
         this.appCode = this.$route.query.app_code;
 
         // Clear the path after extracting for cleaner url.
-        // this.$router.replace(this.$router.path);
+        this.$router.replace(this.$router.path);
 
         // Check if contains any null params when extracting from URL.
         const containNullParams =

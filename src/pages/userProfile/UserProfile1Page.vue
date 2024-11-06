@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-import UserInfor from 'src/components/pages/profile/profile1Page/UserInfor.vue';
-import PublishedArtworks from 'src/components/pages/profile/profile1Page/PublishedArtworks.vue';
-
+import UserInfor from "src/components/pages/profile/common/UserProfileCard.vue";
+import PublishedArtworks from "src/components/pages/profile/profile1Page/PublishedArtworks.vue";
 </script>

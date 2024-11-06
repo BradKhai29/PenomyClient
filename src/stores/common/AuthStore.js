@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { UserProfile } from "src/api.models/auth/auth1Page/UserProfile";
+import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
 import { CookieHelper } from "src/helpers/CookieHelper";
 
 const accessTokenKeyName = "user:access_token";
@@ -117,6 +118,7 @@ const useAuthStore = defineStore("authStore", {
          * @type {UserProfile} The type of this state property.
          */
         userProfile: new UserProfile(null, null, false),
+        hasLoadProfile: false,
     }),
 
     getters: {
@@ -206,6 +208,32 @@ const useAuthStore = defineStore("authStore", {
             localStorage.removeItem(nicknameKeyName);
             localStorage.removeItem(avatarUrlKeyName);
             localStorage.removeItem(isCreatorKeyName);
+        },
+        /**
+         * Update the current user profile state into store.
+         *
+         * @param {UserProfileResponseDto} userProfileToSet The profile to set new for this store.
+         */
+        setUserProfile(userProfileToSet) {
+            if (userProfileToSet.avatarUrl) {
+                this.userProfile.avatarUrl = userProfileToSet.avatarUrl;
+            }
+
+            if (userProfileToSet.nickname) {
+                this.userProfile.nickname = userProfileToSet.nickname;
+            }
+
+            if (userProfileToSet.aboutMe) {
+                this.userProfile.aboutMe = aboutMe;
+            }
+
+            if (userProfileToSet.isCreator != null) {
+                this.userProfile.isCreator = isCreator;
+            }
+
+            if (userProfileToSet.updatedAt) {
+                this.userProfile.updatedAt = userProfileToSet.updatedAt;
+            }
         },
     },
 });

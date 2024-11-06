@@ -1,6 +1,6 @@
 <template>
     <q-btn round flat>
-        <q-avatar v-if="avatarUrl">
+        <q-avatar v-if="avatarUrl" class="shadow-1">
             <img :src="avatarUrl" />
         </q-avatar>
         <q-icon v-else name="account_circle" class="text-dark" size="xl" />
@@ -20,7 +20,7 @@ const avatarUrl = ref(authStore.userProfile.avatarUrl);
 const props = defineProps({
     atCreatorStudio: {
         type: Boolean,
-        default: false, 
+        default: false,
     },
 });
 

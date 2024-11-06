@@ -58,7 +58,7 @@
                                 >
                             </q-tooltip>
                             <q-icon
-                                name="shuffle"
+                                name="casino"
                                 class="cursor-pointer"
                                 @click="getRandomNickname"
                             />

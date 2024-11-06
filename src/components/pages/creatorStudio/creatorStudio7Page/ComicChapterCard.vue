@@ -14,16 +14,23 @@
         </router-link>
         <section class="col-grow q-pl-md q-pr-sm">
             <div id="chapter_header" class="row text-subtitle2">
-                <div
-                    class="flex items-center q-mr-auto text-subtitle2 text-weight-bold"
-                >
-                    <span v-if="!isDrafted"> Tập {{ uploadOrder }} </span>
+                <div class="flex items-center q-mr-auto text-subtitle2">
+                    <span v-if="!isDrafted" class="text-weight-bold">
+                        Tập {{ uploadOrder }}
+                    </span>
                     <span
                         v-else-if="isDrafted"
-                        class="border-radius-sm col-md-auto bg-primary-700 text-primary"
-                        style="padding: 2px"
+                        class="border-radius-sm col-md-auto bg-primary-700 text-primary text-weight-bold"
+                        style="padding: 2px 4px"
                     >
                         Bản nháp
+                    </span>
+                    <span
+                        v-if="isScheduled"
+                        class="q-ml-sm border-radius-sm col-md-auto bg-light-500 text-dark"
+                        style="padding: 2px 4px"
+                    >
+                        Lên lịch
                     </span>
                 </div>
                 <div class="flex items-center">
@@ -67,8 +74,8 @@
                 </router-link>
             </div>
             <div class="row items-center text-dark-500 text-subtitle2 q-mt-sm">
-                <span> {{ createdAt }} </span>
-                <span class="q-ml-md"></span>
+                <span> Ngày tạo: {{ createdAt }} </span>
+                <span class="q-ml-md">Ngày xuất bản: {{ publishedAt }}</span>
             </div>
         </section>
     </div>
@@ -99,7 +106,15 @@ export default {
             type: Number,
             required: true,
         },
+        publicLevel: {
+            type: Number,
+            required: true,
+        },
         createdAt: {
+            type: String,
+            required: true,
+        },
+        publishedAt: {
             type: String,
             required: true,
         },
@@ -107,30 +122,20 @@ export default {
             type: Boolean,
             default: true,
         },
-        totalViews: {
-            type: Number,
-            default: 0,
-        },
-        totalFavorites: {
-            type: Number,
-            default: 0,
-        },
-        totalComments: {
-            type: Number,
-            default: 0,
-        },
     },
     data() {
         return {
             isDrafted: false,
+            isScheduled: false,
         };
     },
     beforeMount() {
-        this.isDrafted = this.checkDrafted();
+        this.checkChapterPublishStatus();
     },
     methods: {
-        checkDrafted() {
-            return this.publishStatus == PublishStatuses.DRAFTED;
+        checkChapterPublishStatus() {
+            this.isDrafted = this.publishStatus == PublishStatuses.DRAFTED;
+            this.isScheduled = this.publishStatus == PublishStatuses.SCHEDULED;
         },
     },
 };

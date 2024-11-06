@@ -1,10 +1,12 @@
 <template>
     <div :id="`artwork_${id}`" class="q-pa-md artwork-detail-card row">
         <div class="col-auto q-mr-md relative-position">
-            <q-img
-                class="artwork-detail-img shadow-1 border-radius-sm"
-                :src="thumbnailUrl"
-            />
+            <router-link :to="`/studio/comic/detail/${id}`">
+                <q-img
+                    class="artwork-detail-img shadow-1 border-radius-sm"
+                    :src="thumbnailUrl"
+                />
+            </router-link>
             <div
                 class="absolute q-pa-sm"
                 style="bottom: 0; right: 0; z-index: 100"
@@ -23,9 +25,11 @@
                 />
             </div>
         </div>
-        <section class="col-grow artwork-detail-section q-my-xs">
+        <section class="col-grow artwork-detail-section q-my-xs text-dark">
             <section class="flex justify-between">
-                <div class="artwork-metadata flex q-gutter-sm text-subtitle1">
+                <div
+                    class="artwork-metadata flex q-gutter-sm text-subtitle1 text-dark"
+                >
                     <q-btn
                         dense
                         no-caps
@@ -105,13 +109,7 @@
             </section>
             <div class="artwork-title q-mt-md">
                 <router-link :to="`/studio/comic/detail/${id}`">
-                    <q-btn
-                        dense
-                        flat
-                        no-caps
-                        class="text-h6 text-dark"
-                        padding="none"
-                    >
+                    <q-btn dense flat no-caps class="text-h6 text-dark">
                         <q-badge class="q-mr-sm q-py-xs bg-dark text-light">
                             {{ itemOrder }}
                         </q-badge>

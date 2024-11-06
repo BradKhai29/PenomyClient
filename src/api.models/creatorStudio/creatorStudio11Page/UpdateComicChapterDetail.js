@@ -85,6 +85,10 @@ class UpdateComicChapterDetail {
     isPublished() {
         return this.publishStatus == publishStatuses.PUBLISHED;
     }
+
+    isDrafted() {
+        return this.publishStatus == publishStatuses.DRAFTED;
+    }
 }
 
 export { UpdateComicChapterDetail };
