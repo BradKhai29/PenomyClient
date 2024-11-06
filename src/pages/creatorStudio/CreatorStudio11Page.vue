@@ -4,6 +4,7 @@
             :headerTitle="chapterDetail.comicTitle"
             :comicId="chapterDetail.comicId"
             :uploadOrder="chapterDetail.uploadOrder"
+            :isDrafted="chapterDetail.isDrafted()"
         />
         <form @submit.prevent class="q-pa-lg">
             <section id="general-info" class="row justify-center q-gutter-lg">
@@ -102,18 +103,25 @@
                         />
                         <div class="row q-gutter-sm">
                             <q-btn
+                                v-if="chapterDetail.isPublished()"
                                 class="q-mt-xs bg-primary text-dark text-weight-bold col-grow"
-                                :label="
-                                    chapterDetail.isPublished()
-                                        ? 'Lưu thay đổi'
-                                        : 'Xuất bản'
-                                "
+                                label="Lưu thay đổi"
                                 :loading="isUpdating"
                                 :disable="isUpdating"
-                                @click="updateChapterDetail(false)"
+                                @click="
+                                    updateChapterDetail('UPDATE_CONTENT_ONLY')
+                                "
                             />
                             <q-btn
-                                v-if="!chapterDetail.isPublished()"
+                                v-else
+                                class="q-mt-xs bg-primary text-dark text-weight-bold col-grow"
+                                label="Xuất bản"
+                                :loading="isUpdating"
+                                :disable="isUpdating"
+                                @click="updateChapterDetail('PUBLISHED')"
+                            />
+                            <q-btn
+                                v-if="chapterDetail.isDrafted()"
                                 :loading="isUpdating"
                                 :disable="!hasChangesInData"
                                 @click="updateChapterDetail"
@@ -309,13 +317,17 @@ export default {
             let selectUpdateMode = ChapterUpdateModes.UPDATE_CONTENT_ONLY;
             let isDrafted = false;
 
-            if (updateMode == ChapterUpdateModes.DRAFTED.name) {
-                selectUpdateMode = ChapterUpdateModes.DRAFTED;
-                isDrafted = true;
-            } else if (updateMode == ChapterUpdateModes.SCHEDULED.name) {
-                selectUpdateMode = ChapterUpdateModes.SCHEDULED;
-            } else if (updateMode == ChapterUpdateModes.PUBLISHED.name) {
-                selectUpdateMode = ChapterUpdateModes.PUBLISHED;
+            // If the update mode as published, then check
+            // if any schedule time is set or not to get the final update mode.
+            if (updateMode == ChapterUpdateModes.PUBLISHED.name) {
+                const isPublishedWithSchedule =
+                    this.chapterDetail.scheduleOption.isScheduled;
+
+                if (isPublishedWithSchedule) {
+                    selectUpdateMode = ChapterUpdateModes.SCHEDULED;
+                } else {
+                    selectUpdateMode = ChapterUpdateModes.PUBLISHED;
+                }
             }
 
             const isValidInput = this.verifyInput();
