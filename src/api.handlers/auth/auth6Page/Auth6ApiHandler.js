@@ -2,15 +2,11 @@ import axios from "axios";
 
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
-import { useAuthStore } from "src/stores/common/AuthStore";
-
-// Init authStore for later operation.
-const authStore = useAuthStore();
 
 /**
  * Verify the input refresh token is available or not.
  *
- * @param {String} accessToken The access token to verify.
+ * @param {String} accessToken The access token with bearer prefix to verify.
  * @param {String} refreshToken The refresh token to verify.
  * @returns {Promise<Boolean>} Returns true if the provided tokens are valid, false otherwise.
  */

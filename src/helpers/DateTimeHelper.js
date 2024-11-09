@@ -55,7 +55,7 @@ function getFormatISODateString(
 }
 
 /**
- * Get the ISO formatted date string of the input parameters.
+ * Convert the ISO formatted datetime string of the input datetime.
  *
  * @param {Date} inputDateTime The datetime to converted to ISO format.
  *
@@ -144,15 +144,53 @@ function getClientTimeZone() {
     return timeZoneString;
 }
 
-function getClientLocale() {
-    return Intl.DateTimeFormat().resolvedOptions().locale;
+/**
+ * Formats a Date object to the format "dd/mm/yyyy hh:mm:ss"
+ *
+ * @param {Date} date - The date to format
+ * @returns {string} - The formatted date and time string
+ */
+function formatLocaleDateTimeString(date) {
+    // Format the date part as "dd/mm/yyyy"
+    const formattedDate = date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+
+    // Format the time part as "hh:mm:ss" in 24-hour format
+    const formattedTime = date.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // use 24-hour format
+    });
+
+    // Combine date and time with a space in between
+    return `${formattedDate} ${formattedTime}`;
+}
+
+/**
+ * Get the date instance that converted from the input UNIX timestamps.
+ *
+ * @link For more detail: https://stackoverflow.com/questions/49621097/transform-tick-to-date-in-js
+ * @param {Number} unixTimestamp The timestamp that will be used to convert.
+ * @returns {Date} The date instance that converted from.
+ */
+function getDateFromUnixTimeStamps(unixTimestamp) {
+    let result = new Date(0);
+    result.setUTCSeconds(unixTimestamp);
+
+    return result;
 }
 
 const DateTimeHelper = {
     getFormatDateTimeString: getFormatDateTimeString,
     formatISODate: formatISODate,
-    toISODate: toISODateString,
+    formatLocaleDateTimeString: formatLocaleDateTimeString,
+    toISODateString: toISODateString,
     getClientTimeZone: getClientTimeZone,
+    getDateFromUnixTimeStamps: getDateFromUnixTimeStamps,
     DEFAULT_DATETIME_STRING_OUTPUT_FORMAT:
         DEFAULT_DATETIME_STRING_OUTPUT_FORMAT,
     YYYY_MM_DD_FORMAT: YYYY_MM_DD_FORMAT,

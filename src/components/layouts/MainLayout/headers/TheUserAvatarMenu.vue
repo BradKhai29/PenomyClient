@@ -10,54 +10,62 @@
         fit
     >
         <q-list class="avatar-menu-list">
-            <q-item
-                id="profile-button"
-                clickable
-                @click="toggleProfileButton"
-                class="text-weight-bold avatar-menu-item bg-light-100 q-py-md"
+            <router-link
+                :to="profileButtonLink"
+                class="text-decoration-none text-weight-bold bg-light-100 text-dark"
             >
-                <div class="flex column col-grow justify-center q-gutter-sm">
-                    <div class="text-center">
-                        <q-btn round v-if="isAuth" size="sm">
-                            <q-avatar>
-                                <img :src="userProfile.avatarUrl" />
-                            </q-avatar>
-                        </q-btn>
-                        <q-btn round v-else>
-                            <q-icon
-                                name="account_circle"
-                                class="text-dark"
-                                size="xl"
-                            />
-                        </q-btn>
-                    </div>
+                <q-item
+                    id="profile-button"
+                    clickable
+                    class="avatar-menu-item q-py-md"
+                >
                     <div
-                        class="text-subtitle1 text-weight-bold text-center avatar-username"
+                        class="flex column col-grow justify-center q-gutter-sm"
                     >
-                        {{ userProfile.nickname ?? "Chưa đăng nhập" }}
-                    </div>
-                    <div class="text-center">
-                        <q-badge
-                            v-if="!userProfile.isCreator"
-                            class="text-subtitle2 inline bg-light-300 text-dark"
+                        <div class="text-center">
+                            <q-btn round v-if="isAuth" size="sm">
+                                <q-avatar>
+                                    <img :src="userProfile.avatarUrl" />
+                                </q-avatar>
+                            </q-btn>
+                            <q-btn round v-else>
+                                <q-icon
+                                    name="account_circle"
+                                    class="text-dark"
+                                    size="xl"
+                                />
+                            </q-btn>
+                        </div>
+                        <div
+                            class="text-subtitle1 text-weight-bold text-center avatar-username"
                         >
-                            <span>{{ isAuth ? "User" : "Guest" }}</span>
-                        </q-badge>
-                        <q-badge
-                            v-else
-                            class="text-subtitle2 inline bg-primary-700 text-primary"
-                        >
-                            <span>Creator</span>
-                        </q-badge>
+                            <span v-if="isAuth">
+                                {{ userProfile.nickname }}
+                            </span>
+                            <span v-else> Chưa đăng nhập </span>
+                        </div>
+                        <div class="text-center">
+                            <q-badge
+                                v-if="!userProfile.isCreator"
+                                class="text-subtitle2 inline bg-light-300 text-dark"
+                            >
+                                <span>{{ isAuth ? "User" : "Guest" }}</span>
+                            </q-badge>
+                            <q-badge
+                                v-else-if="userProfile.isCreator"
+                                class="text-subtitle2 inline bg-primary-700 text-primary"
+                            >
+                                <span>Creator</span>
+                            </q-badge>
+                        </div>
                     </div>
-                </div>
-            </q-item>
-
+                </q-item>
+            </router-link>
             <div class="menu-item-separator"></div>
 
             <div id="user-profile-actions" class="bg-light-100 text-subtitle1">
                 <q-item
-                    v-if="isAtCreatorStudio"
+                    v-if="atCreatorStudio"
                     id="btn-back-home"
                     clickable
                     v-close-popup
@@ -90,7 +98,7 @@
                     <span class="q-ml-sm">Cài đặt</span>
                 </q-item>
                 <q-item
-                    v-if="!isAtCreatorStudio"
+                    v-if="!atCreatorStudio"
                     id="btn-support"
                     clickable
                     v-close-popup
@@ -101,7 +109,7 @@
                     <span class="q-ml-sm">Hỗ trợ</span>
                 </q-item>
                 <q-item
-                    v-if="!isAtCreatorStudio"
+                    v-if="!atCreatorStudio"
                     id="btn-feedback"
                     clickable
                     v-close-popup
@@ -157,48 +165,59 @@
     </q-menu>
 </template>
 
-<script setup>
+<script>
+// Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { inject, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 
-// Dependencies section.
-const route = useRoute();
-const router = useRouter();
+// Init store for later operation.
 const authStore = useAuthStore();
+const userProfileStore = useUserProfileStore();
 
-// Data ref section.
-const showMenu = ref(false);
-const isAuth = ref(authStore.isAuth);
-const userProfile = ref(authStore.currentUserProfile);
-const isAtCreatorStudio = ref(inject("isAtCreatorStudio"));
+export default {
+    name: "TheUserAvatarMenu",
+    props: {
+        atCreatorStudio: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    data() {
+        return {
+            showMenu: false,
+        };
+    },
+    computed: {
+        isAuth() {
+            return authStore.isAuth();
+        },
+        userProfile() {
+            return userProfileStore.userProfile;
+        },
+        profileButtonLink() {
+            // If user is already authenticated, then
+            // redirect to their personal profile page
+            if (authStore.isAuth) {
+                return "/profile/user";
+            }
 
-function toggleProfileButton() {
-    // Close the avatar menu when toggling the button.
-    showMenu.value = false;
-
-    if (authStore.isAuth) {
-        console.log("Login success");
-        router.push("/profile");
-        return;
-    }
-
-    // If user is not auth, then redirects to login page.
-    router.push("/auth/login");
-}
-
-function signOut(event) {
-    showMenu.value = false;
-    authStore.signOut();
-    isAuth.value = false;
-
-    // Redirects to login page when logout success.
-    router.push("/auth/login");
-}
-
-function goToHome() {
-    router.push("/");
-}
+            // If not auth, redirect guest to login page when clicking on.
+            return "/auth/login";
+        },
+    },
+    methods: {
+        goToHome() {
+            // Redirect to homepage.
+            this.$router.push("/");
+        },
+        async signOut() {
+            this.showMenu = false;
+            await authStore.signOut();
+            userProfileStore.router // Redirect to login page when logout success.
+                .push("/auth/login");
+        },
+    },
+};
 </script>
 
 <style scoped>

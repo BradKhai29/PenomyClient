@@ -1,11 +1,13 @@
+import { DateTimeHelper } from "src/helpers/DateTimeHelper";
+
 class UserProfileResponseDto {
     /**
      *
      * @param {String} userId Id of the current user.
      * @param {String} nickname Nickname of the current user.
      * @param {String} avatarUrl AvatarURL of the current user.
-     * @param {String} aboutMe About me section describe about the current user.
      * @param {Boolean} isCreator Flag to indicate current user has registered as a creator or not.
+     * @param {String} aboutMe About me section describe about the current user.
      * @param {Number} totalFollowedCreators Total creators that current user has followed.
      * @param {Number} totalFollowers Total followers of current user.
      * @param {Number} totalArtworks Total artworks that created by current user.
@@ -18,8 +20,8 @@ class UserProfileResponseDto {
         userId,
         nickname,
         avatarUrl,
-        aboutMe,
         isCreator,
+        aboutMe,
         totalFollowedCreators,
         totalFollowers,
         totalArtworks,
@@ -31,8 +33,8 @@ class UserProfileResponseDto {
         this.userId = userId;
         this.nickname = nickname;
         this.avatarUrl = avatarUrl;
-        this.aboutMe = aboutMe;
         this.isCreator = isCreator;
+        this.aboutMe = aboutMe;
         this.totalFollowedCreators = totalFollowedCreators;
         this.totalFollowers = totalFollowers;
         this.totalArtworks = totalArtworks;
@@ -40,6 +42,21 @@ class UserProfileResponseDto {
         this.registeredAt = registeredAt;
         this.becomeCreatorAt = becomeCreatorAt;
         this.updatedAt = updatedAt;
+    }
+
+    clear() {
+        this.userId = null;
+        this.nickname = null;
+        this.avatarUrl = null;
+        this.isCreator = false;
+        this.aboutMe = null;
+        this.totalFollowedCreators = null;
+        this.totalFollowers = null;
+        this.totalArtworks = null;
+        this.lastActiveAt = null;
+        this.registeredAt = null;
+        this.becomeCreatorAt = null;
+        this.updatedAt = null;
     }
 
     /**
@@ -50,10 +67,10 @@ class UserProfileResponseDto {
     static mapFrom(apiResponseBody) {
         return new UserProfileResponseDto(
             apiResponseBody.userId,
-            apiResponseBody.nickName,
+            apiResponseBody.nickname,
             apiResponseBody.avatarUrl,
+            apiResponseBody.isCreator ?? false,
             apiResponseBody.aboutMe,
-            apiResponseBody.isCreator,
             apiResponseBody.totalFollowedCreators,
             apiResponseBody.totalFollowers,
             apiResponseBody.totalArtworks,

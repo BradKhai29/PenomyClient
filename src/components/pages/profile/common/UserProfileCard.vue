@@ -53,10 +53,10 @@
 </template>
 
 <script>
-import { useAuthStore } from "src/stores/common/AuthStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 
-// Init authStore for later operation.
-const authStore = useAuthStore();
+// Init store for later operation.
+const userProfileStore = useUserProfileStore();
 
 export default {
     data() {
@@ -69,12 +69,9 @@ export default {
         };
     },
     async mounted() {
-        this.avatarUrl = authStore.currentUserProfile.avatarUrl;
-        this.nickname = authStore.currentUserProfile.nickname;
-        this.isCreator = authStore.currentUserProfile.isCreator;
-
-        if (authStore.isAuth) {
-        }
+        this.avatarUrl = userProfileStore.userProfile.avatarUrl;
+        this.nickname = userProfileStore.userProfile.nickname;
+        this.isCreator = userProfileStore.userProfile.isCreator;
     },
 };
 </script>

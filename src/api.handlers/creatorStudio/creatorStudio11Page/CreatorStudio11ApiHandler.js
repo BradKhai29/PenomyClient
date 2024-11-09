@@ -82,7 +82,7 @@ async function updateComicChapter(chapterDetail, updateMode) {
     // Get the scheduled at from scheduleOption
     // when the update mode is SCHEDULED.
     if (updateMode == ChapterUpdateModes.SCHEDULED.value) {
-        const scheduledAt = DateTimeHelper.toISODate(
+        const scheduledAt = DateTimeHelper.toISODateString(
             chapterDetail.scheduleOption.scheduleDateTime
         );
         requestBody.append("scheduledAt", scheduledAt);
@@ -94,7 +94,7 @@ async function updateComicChapter(chapterDetail, updateMode) {
 
         requestBody.append(
             "scheduledAt",
-            DateTimeHelper.toISODate(dateTimeNow)
+            DateTimeHelper.toISODateString(dateTimeNow)
         );
     }
 

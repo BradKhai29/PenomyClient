@@ -1,12 +1,20 @@
 <template>
     <div class="input-container" :class="isUpdate || isReply ? '' : 'create'">
-        <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense" />
+        <q-input
+            autogrow
+            class="q-pa-md"
+            v-model="comment"
+            borderless=""
+            dense="dense"
+        />
         <q-item tag="div">
             <q-item-section>
                 <div>
                     <q-btn flat round dense icon="emoji_emotions" size=".9rem">
                         <q-menu>
-                            <emoji-picker-board @onIconSelected="onEmojiSelected" />
+                            <emoji-picker-board
+                                @onIconSelected="onEmojiSelected"
+                            />
                         </q-menu>
                     </q-btn>
 
@@ -14,7 +22,15 @@
                     <q-btn flat round dense icon="image" size=".9rem" />
                 </div>
             </q-item-section>
-            <q-btn round dense icon="send" size=".5rem" color="primary" padding=".6rem" @click="sendComment(user)">
+            <q-btn
+                round
+                dense
+                icon="send"
+                size=".5rem"
+                color="primary"
+                padding=".6rem"
+                @click="sendComment(user)"
+            >
             </q-btn>
         </q-item>
     </div>
@@ -22,15 +38,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
-import { BaseWebApiUrl } from 'src/api.common/BaseWebApiUrl';
-import { HttpMethod } from 'src/api.common/HttpMethod';
-import EmojiPickerBoard from './EmojiPickerBoard.vue';
-import { useAuthStore } from 'src/stores/common/AuthStore.js';
-import PopupLoginRequired from '../../others/PopupLoginRequired.vue';
+import { ref } from "vue";
+import axios from "axios";
+import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
+import { HttpMethod } from "src/api.common/HttpMethod";
+import EmojiPickerBoard from "./EmojiPickerBoard.vue";
+import { useAuthStore } from "src/stores/common/AuthStore.js";
+import PopupLoginRequired from "../../others/PopupLoginRequired.vue";
 
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 const isDirectlyComment = ref(true);
 const isCommentEmpty = ref(false);
 const props = defineProps({
@@ -56,21 +72,21 @@ const props = defineProps({
     isUpdate: {
         type: Boolean,
         required: false,
-        default: false
+        default: false,
     },
     isReply: {
         type: Boolean,
         required: false,
-        default: false
+        default: false,
     },
     oldComment: {
         type: String,
         required: false,
-        default: ''
-    }
-})
+        default: "",
+    },
+});
 
-const emit = defineEmits(['createComment', 'editComment', 'replyComment']);
+const emit = defineEmits(["createComment", "editComment", "replyComment"]);
 const comment = ref(props.oldComment);
 const openLoginPopup = ref(false);
 
@@ -92,16 +108,14 @@ async function sendComment() {
                         commentId: props.commentId,
                     },
                     headers: {
-                        Authorization: authStore.bearerAccessToken,
-                    }
-                })
-                    .then(() => {
-                        emit('editComment', comment.value);
-                    });
-
+                        Authorization: authStore.bearerAccessToken(),
+                    },
+                }).then(() => {
+                    emit("editComment", comment.value);
+                });
             } else {
                 if (props.isReply) {
-                    isDirectlyComment.value = false
+                    isDirectlyComment.value = false;
                     const apiUrl = `${BaseWebApiUrl}/g58/replycomment/create`;
                     await axios({
                         url: apiUrl,
@@ -113,15 +127,13 @@ async function sendComment() {
                             parentCommentId: `${props.parentCommentId}`,
                         },
                         headers: {
-                            Authorization: authStore.bearerAccessToken,
-                        }
-                    })
-                        .then(() => {
-                            comment.value = '';
-                            emit('replyComment', props.parentCommentId);
-                        });
-                }
-                else {
+                            Authorization: authStore.bearerAccessToken(),
+                        },
+                    }).then(() => {
+                        comment.value = "";
+                        emit("replyComment", props.parentCommentId);
+                    });
+                } else {
                     const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
                     await axios({
                         url: apiUrl,
@@ -133,22 +145,20 @@ async function sendComment() {
                             commentContent: `${comment.value}`,
                         },
                         headers: {
-                            Authorization: authStore.bearerAccessToken,
-                        }
-                    })
-                        .then(() => {
-                            comment.value = '';
-                            isCommentEmpty.value = false
-                            emit('createComment');
-                        });
+                            Authorization: authStore.bearerAccessToken(),
+                        },
+                    }).then(() => {
+                        comment.value = "";
+                        isCommentEmpty.value = false;
+                        emit("createComment");
+                    });
                 }
             }
         }
     } else {
-        openLoginPopup.value = !openLoginPopup.value
+        openLoginPopup.value = !openLoginPopup.value;
     }
 }
-
 </script>
 <style scoped>
 .input-container {
@@ -157,7 +167,6 @@ async function sendComment() {
     gap: 1rem;
     border: 1px solid #120e36;
     border-radius: 7px;
-
 }
 
 .create {

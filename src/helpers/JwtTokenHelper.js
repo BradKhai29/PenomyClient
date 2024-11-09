@@ -1,3 +1,5 @@
+import { DateTimeHelper } from "./DateTimeHelper";
+
 /**
  * This class support for storing the credentials
  * from the jwt-payload after decoding.
@@ -6,13 +8,30 @@ class DecodeJwtPayload {
     /**
      * @param {String} sub Contain the id of the user that extracted from the payload
      * @param {String} email The email of the user that extracted from the payload
-     * @param {String} role The role name of of the user that extracted from the payload
+     * @param {String} role The role name of the user that extracted from the payload
+     * @param {String} purpose The purpose of the token that extracted from the payload
+     * @param {Number} iat The init datetime in UNIX seconds of the token that extracted from the payload
+     * @param {Number} exp The expired datetime in UNIX seconds of the token that extracted from the payload
      */
-    constructor(sub, email, role, purpose) {
+    constructor(sub, email, role, purpose, iat, exp) {
         this.sub = sub;
         this.email = email;
         this.role = role;
         this.purpose = purpose;
+        this.iat = iat;
+        this.exp = exp;
+    }
+
+    /**
+     * Checking if the current token is expired or not.
+     *
+     * @returns {Boolean} The result of checking.
+     */
+    isTokenExpired() {
+        // Get the current time in seconds
+        const currentTime = Math.ceil(Date.now() / 1000);
+
+        return currentTime > this.exp;
     }
 }
 
@@ -21,6 +40,8 @@ const claimTypes = {
     email: "app-user-email",
     role: "role",
     purpose: "purpose",
+    iat: "iat",
+    exp: "exp",
 };
 
 /**
@@ -63,9 +84,13 @@ function decodeJwt(token) {
             jsonPayload[claimTypes.sub],
             jsonPayload[claimTypes.email],
             jsonPayload[claimTypes.role],
-            jsonPayload[claimTypes.purpose]
+            jsonPayload[claimTypes.purpose],
+            jsonPayload[claimTypes.iat],
+            jsonPayload[claimTypes.exp]
         );
     } catch (error) {
+        console.log(error);
+
         return null;
     }
 }
@@ -85,18 +110,29 @@ function validateAccessTokenPayload(accessToken) {
 
     // Check the purpose of the access-token.
     const ACCESS_TOKEN_PURPOSE = "app-user-access";
-    const isValidPurpose = decodeJwtPayload.purpose == ACCESS_TOKEN_PURPOSE;
 
-    if (!isValidPurpose) {
-        return false;
+    return decodeJwtPayload.purpose == ACCESS_TOKEN_PURPOSE;
+}
+
+/**
+ * Check if the input access token is expired or not based on the payload detail.
+ *
+ * @param {String} accessToken The access token to check.
+ */
+function isTokenExpired(accessToken) {
+    const tokenPayload = decodeJwt(accessToken);
+
+    if (!tokenPayload) {
+        return true;
     }
 
-    return true;
+    return tokenPayload.isTokenExpired();
 }
 
 const JwtTokenHelper = {
     decodeJwt: decodeJwt,
     validateAccessTokenPayload: validateAccessTokenPayload,
+    isTokenExpired: isTokenExpired,
 };
 
 export { JwtTokenHelper, DecodeJwtPayload };

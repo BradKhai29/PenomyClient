@@ -4,7 +4,7 @@ const EMPTY_STRING = "";
 /**
  * The maximum size of an image file to upload to server.
  */
-const MAXIMUM_IMAGE_FILE_SIZE = 4 * 1024 * 1024;
+const MAXIMUM_IMAGE_FILE_SIZE = 2 * 1024 * 1024;
 
 /**
  * Get the extension of the input file.
@@ -52,7 +52,7 @@ function isImageFile(file) {
 
 /**
  * Check if the input image file is exceed the maximum size or not.
- * The default maximum file size is 4MB if the input file size is not defined.
+ * The default maximum file size is 2MB if the input file size is not defined.
  * @param {File} imageFile The image file to check the size.
  * @param {Number} maximumFileSize The maximum file size to check.
  */

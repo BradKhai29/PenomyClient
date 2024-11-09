@@ -5,11 +5,11 @@ const routeDefinition = [
         component: () => import("layouts/OverlayMainLayout.vue"),
         children: [
             {
-                path: "comic/:artworkId",
+                path: "comic2/:artworkId",
                 component: () => import("pages/artwork/Artwork3Page.vue"),
             },
             {
-                path: "comic2/:artworkId",
+                path: "comic/:artworkId",
                 component: () =>
                     import("pages/artwork/KhaiND_Artwork3Page.vue"),
             },

@@ -2,11 +2,22 @@
     <q-card :style="backgroundStyle" class="">
         <div class="q-pt-lg q-pb-xs">
             <q-card v-if="!isLoading" class="row detail-header">
-                <image-section :imageUrl="data.thumbnailUrl" class="col-3 q-pr-md"></image-section>
-                <description-section :isUserFavorite="data.isUserFavorite" :artworkId="artworkId"
-                    :hasSeries="data.hasSeries" :title="data.title" :author="data.authorName"
-                    :country="data.countryName" :status="data.artworkStatus" :seriesName="data.serieName"
-                    :buttons="buttons" class="col-9 q-pt-md"></description-section>
+                <image-section
+                    :imageUrl="data.thumbnailUrl"
+                    class="col-3 q-pr-md"
+                ></image-section>
+                <description-section
+                    :isUserFavorite="data.isUserFavorite"
+                    :artworkId="artworkId"
+                    :hasSeries="data.hasSeries"
+                    :title="data.title"
+                    :author="data.authorName"
+                    :country="data.countryName"
+                    :status="data.artworkStatus"
+                    :seriesName="data.serieName"
+                    :buttons="buttons"
+                    class="col-9 q-pt-md"
+                ></description-section>
             </q-card>
             <q-card class="row justify-center subcribe-detail">
                 <subcribe-detail class="col-12"></subcribe-detail>
@@ -14,13 +25,23 @@
         </div>
     </q-card>
     <q-card v-if="!isLoading" class="detail-body" style="">
-        <detail-body-section :introduction="data.introduction" :view-count="data.viewCount"
-            :follow-count="data.followCount" :favorite-count="data.favoriteCount" :star-rates="data.starRates"
-            class="col-12"></detail-body-section>
+        <detail-body-section
+            :introduction="data.introduction"
+            :view-count="data.viewCount"
+            :follow-count="data.followCount"
+            :favorite-count="data.favoriteCount"
+            :star-rates="data.starRates"
+            class="col-12"
+        ></detail-body-section>
     </q-card>
     <q-card v-else class="detail-body" style="">
-        <detail-body-section :view-count="0" :follow-count="0" :favorite-count="0" :star-rates="data.starRates"
-            class="col-12"></detail-body-section>
+        <detail-body-section
+            :view-count="0"
+            :follow-count="0"
+            :favorite-count="0"
+            :star-rates="data.starRates"
+            class="col-12"
+        ></detail-body-section>
     </q-card>
     <div>
         <commentloader :artworkId="route.params.artworkId" />
@@ -31,14 +52,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, computed } from "vue";
+import { useRoute } from "vue-router";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useFavoriteStore } from "src/stores/pages/artwork3/ArtworkMetadataStore";
-import commentloader from 'src/components/common/artwork/Common/CommentLoader.vue';
-import artworkDetailApiHandler from 'src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler'
+import commentloader from "src/components/common/artwork/Common/CommentLoader.vue";
+import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
 const route = useRoute();
-const backgroundImageUrl = ref('');
+const backgroundImageUrl = ref("");
 const artworkId = ref(null);
 const data = ref({});
 const authStore = useAuthStore();
@@ -49,7 +70,10 @@ onMounted(async () => {
     const id = route.params.artworkId;
     try {
         const [artworkDetail] = await Promise.all([
-            artworkDetailApiHandler.getArtworkDetailByIdAsync(id, authStore.bearerAccessToken),
+            artworkDetailApiHandler.getArtworkDetailByIdAsync(
+                id,
+                authStore.bearerAccessToken()
+            ),
         ]);
         data.value = artworkDetail;
         backgroundImageUrl.value = artworkDetail.thumbnailUrl;
@@ -61,10 +85,12 @@ onMounted(async () => {
 data.value.favoriteCount = computed(() => favoriteStore.favoriteCount);
 const backgroundStyle = computed(() => ({
     background: `url(${backgroundImageUrl.value}) no-repeat`,
-    backgroundSize: 'cover',
+    backgroundSize: "cover",
 }));
 const buttons = computed(() => {
-    return data.value.selectedCategories ? data.value.selectedCategories.map((item) => ({ label: item })) : [];
+    return data.value.selectedCategories
+        ? data.value.selectedCategories.map((item) => ({ label: item }))
+        : [];
 });
 </script>
 
@@ -88,7 +114,6 @@ export default {
 
 <style scoped>
 .subcribe-detail {
-
     margin-left: 260px;
     margin-right: 260px;
     margin-bottom: 16px;
@@ -106,8 +131,6 @@ export default {
     margin-left: 260px;
     margin-right: 260px;
 }
-
-
 
 .detail-header {
     padding: 16px;

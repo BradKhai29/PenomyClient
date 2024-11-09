@@ -11,8 +11,9 @@ const updateArtworkErrors = {
 
 /**
  * Get the error message corresponding to the input error code.
+ *
  * @param {String} errorCode The error code the get the message.
- * @returns An error message from the input error code.
+ * @returns {String} An error message from the input error code.
  */
 function getMessageFromErrorCode(errorCode) {
     switch (errorCode) {

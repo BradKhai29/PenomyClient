@@ -47,7 +47,7 @@ async function getComicDetailToCreateChapter(comicId) {
 async function createComicChapter(chapterDetail, isDrafted) {
     const requestBody = new FormData();
 
-    const scheduledAt = DateTimeHelper.toISODate(
+    const scheduledAt = DateTimeHelper.toISODateString(
         chapterDetail.scheduleOption.scheduleDateTime
     );
 

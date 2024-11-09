@@ -15,7 +15,7 @@ async function getArtworkDetailByIdAsync(artworkId, accessToken) {
             url: `${BaseWebApiUrl}/g5/artwork-detail`,
             method: HttpMethod.GET,
             params: {
-                id: artworkId,
+                artworkId: artworkId,
             },
             headers: {
                 Authorization: accessToken,

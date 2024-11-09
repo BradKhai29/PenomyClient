@@ -1,20 +1,48 @@
 <template>
     <div class="title-section">
-        <div class="text-h6 q-pa-sm title">{{ categoryName }} </div>
+        <div class="text-h6 q-pa-sm title">{{ categoryName }}</div>
     </div>
     <q-item tag="div">
         <q-space />
         <div>
-            <q-btn flat dense text-color="black" icon="arrow_left"
-                @click="$refs.carousel.previous(); calculatePage('previous')" />
+            <q-btn
+                flat
+                dense
+                text-color="black"
+                icon="arrow_left"
+                @click="
+                    $refs.carousel.previous();
+                    calculatePage('previous');
+                "
+            />
             {{ page }} / {{ carouselSlides.length }}
-            <q-btn flat dense text-color="black" icon="arrow_right"
-                @click="$refs.carousel.next(); calculatePage('next')" />
+            <q-btn
+                flat
+                dense
+                text-color="black"
+                icon="arrow_right"
+                @click="
+                    $refs.carousel.next();
+                    calculatePage('next');
+                "
+            />
         </div>
     </q-item>
-    <q-carousel swipeable transition-prev="slide-right" transition-next="slide-left" animated v-model="slide"
-        ref="carousel" height="450px">
-        <q-carousel-slide v-for="slide in carouselSlides" :key="slide.index" :name="slide.index" class="q-pa-sm">
+    <q-carousel
+        swipeable
+        transition-prev="slide-right"
+        transition-next="slide-left"
+        animated
+        v-model="slide"
+        ref="carousel"
+        height="450px"
+    >
+        <q-carousel-slide
+            v-for="slide in carouselSlides"
+            :key="slide.index"
+            :name="slide.index"
+            class="q-pa-sm"
+        >
             <div class="row q-col-gutter-md">
                 <div v-for="item in slide" class="col-2" :key="item">
                     <artwork-card :artwork="item" />
@@ -25,30 +53,30 @@
 </template>
 
 <script setup>
-import ArtworkCard from 'src/components/common/artwork/anime/AnimeByCategoryCard.vue';
-import { ref, computed, onMounted } from 'vue';
-import { HttpMethod } from 'src/api.common/HttpMethod';
+import ArtworkCard from "src/components/common/artwork/anime/AnimeByCategoryCard.vue";
+import { ref, computed, onMounted } from "vue";
+import { HttpMethod } from "src/api.common/HttpMethod";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import artworkCategoryApiHandler from "src/api.handlers/artwork/artwork14Page/ArtworkByCategoryHandler";
-import axios from 'axios';
+import axios from "axios";
 const apiUrl = `${BaseWebApiUrl}/g14/recommended-category`;
 const slide = ref(0);
-var categoryName = ref('');
+var categoryName = ref("");
 var artworks = ref([]);
 const page = ref(1);
 
 function calculatePage(operation) {
-    if (operation === 'next') {
-        page.value++
+    if (operation === "next") {
+        page.value++;
         if (page.value > carouselSlides.value.length) {
-            page.value = 1
+            page.value = 1;
         }
     }
-    if (operation === 'previous') {
-        page.value--
+    if (operation === "previous") {
+        page.value--;
         if (page.value < 1) {
-            page.value = carouselSlides.value.length
+            page.value = carouselSlides.value.length;
         }
     }
 }
@@ -63,7 +91,7 @@ const carouselSlides = computed(() => {
         acc[slideIndex].push(item);
         return acc;
     }, []);
-})
+});
 
 // onMounted(async () => {
 //     // get data from api
@@ -82,7 +110,7 @@ const carouselSlides = computed(() => {
 // })
 
 const authStore = useAuthStore();
-const accessToken = authStore.bearerAccessToken;
+const accessToken = authStore.bearerAccessToken();
 onMounted(async () => {
     try {
         const [artwork] = await Promise.all([
@@ -101,13 +129,13 @@ onMounted(async () => {
 }
 
 .title {
-    padding-bottom: .1rem;
+    padding-bottom: 0.1rem;
     border-bottom: 4px solid var(--primary);
     width: max-content;
 }
 
 div:has(> .title) {
-    margin: 0 .5rem;
+    margin: 0 0.5rem;
     width: 99%;
     border-bottom: solid 0.1px grey;
 }

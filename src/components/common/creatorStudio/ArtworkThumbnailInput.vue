@@ -81,7 +81,7 @@
             <div class="q-mt-md">
                 Chọn ảnh bìa phù hợp và liên quan đến nội dung của tác phẩm.
                 Kích thước tối đa là
-                <span class="text-dark text-weight-bold">4MB</span> và chỉ hỗ
+                <span class="text-dark text-weight-bold">2MB</span> và chỉ hỗ
                 trợ các định dạng JPG, JPEG, PNG.
             </div>
         </div>
@@ -92,7 +92,7 @@
 import { FileHelper } from "src/helpers/FileHelper";
 const inputName = "thumbnail";
 const invalidFormatMessage = "Yêu cầu định dạng PNG, JPG, JPEG";
-const invalidFileSizeMessage = "File ảnh kích thước tối đa 4MB";
+const invalidFileSizeMessage = "File ảnh kích thước tối đa 2MB";
 
 export default {
     props: {

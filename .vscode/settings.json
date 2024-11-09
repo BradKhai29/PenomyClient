@@ -19,6 +19,7 @@
         "g34",
         "auth-store",
         "pagination",
-        "art12"
+        "art12",
+        "refresh-token"
     ]
 }

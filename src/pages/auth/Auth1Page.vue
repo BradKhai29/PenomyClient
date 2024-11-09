@@ -84,6 +84,7 @@
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { LoginApiHandler } from "src/api.handlers/auth/auth1Page/LoginApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 
 // Import components section.
 import EmailInput from "src/components/common/auth/EmailInput.vue";
@@ -156,12 +157,10 @@ export default {
 
             // Store the related information to authStore.
             const authStore = useAuthStore();
+            const userProfileStore = useUserProfileStore();
 
-            authStore.signIn(
-                result.accessToken,
-                result.refreshToken,
-                result.user
-            );
+            authStore.signIn(result.accessToken, result.refreshToken);
+            userProfileStore.updateUserProfile(result.user);
 
             // Redirect back to homepage.
             this.$router.push("/");

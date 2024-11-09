@@ -15,6 +15,7 @@ import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { Auth6ApiHandler } from "src/api.handlers/auth/auth6Page/Auth6ApiHandler";
 import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 
 // Import components section.
 import LoadingPlaceholder from "src/components/common/auth/LoadingPlaceholder.vue";
@@ -95,8 +96,12 @@ export default {
 
         // Save the access token and refresh token to auth store.
         const authStore = useAuthStore();
+        const userProfileStore = useUserProfileStore();
 
-        authStore.signIn(this.accessToken, this.refreshToken, userProfile);
+        console.log("User profile page 6", userProfile);
+
+        authStore.signIn(this.accessToken, this.refreshToken);
+        userProfileStore.updateUserProfile(userProfile);
 
         // Redirect user back to homepage.
         this.$router.push("/");

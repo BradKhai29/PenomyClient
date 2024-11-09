@@ -74,8 +74,50 @@
                 </router-link>
             </div>
             <div class="row items-center text-dark-500 text-subtitle2 q-mt-sm">
-                <span> Ngày tạo: {{ createdAt }} </span>
-                <span class="q-ml-md">Ngày xuất bản: {{ publishedAt }}</span>
+                <div class="flex items-center">
+                    <q-icon name="save" size="xs" />
+                    <span class="q-ml-xs">{{ createdAt }}</span>
+                    <q-tooltip
+                        anchor="top middle"
+                        self="bottom middle"
+                        :offset="[4, 4]"
+                    >
+                        <strong class="text-subtitle2">Ngày tạo </strong>
+                    </q-tooltip>
+                </div>
+                <div class="q-ml-md flex items-center">
+                    <q-icon name="calendar_month" size="xs" />
+                    <span class="q-ml-xs">{{ publishedAt }}</span>
+                    <q-tooltip
+                        anchor="top middle"
+                        self="bottom middle"
+                        :offset="[4, 4]"
+                    >
+                        <strong class="text-subtitle2"
+                            >{{
+                                isScheduled ? "Ngày lên lịch" : "Ngày xuất bản"
+                            }}
+                        </strong>
+                    </q-tooltip>
+                </div>
+                <div class="q-ml-md flex items-center">
+                    <q-avatar
+                        size="xs"
+                        :class="
+                            allowComment
+                                ? 'bg-primary text-dark'
+                                : 'bg-secondary-100 text-secondary-900'
+                        "
+                    >
+                        <q-icon
+                            :name="allowComment ? 'check' : 'close'"
+                            size="12px"
+                        />
+                    </q-avatar>
+                    <span class="q-ml-xs">
+                        {{ allowComment ? "Bật bình luận" : "Tắt bình luận" }}
+                    </span>
+                </div>
             </div>
         </section>
     </div>

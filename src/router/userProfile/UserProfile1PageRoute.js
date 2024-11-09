@@ -8,7 +8,7 @@ const routeDefinition = [
         component: () => import("layouts/MainLayout.vue"),
         children: [
             {
-                path: "",
+                path: "user",
                 component: () =>
                     import("pages/userProfile/UserProfile1Page.vue"),
             },

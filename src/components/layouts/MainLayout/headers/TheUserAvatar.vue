@@ -1,40 +1,52 @@
 <template>
-    <q-btn round flat>
-        <q-avatar v-if="avatarUrl" class="shadow-1">
+    <q-btn round flat :loading="isLoading" :disable="isLoading">
+        <q-avatar v-if="isAuth" class="shadow-1">
             <img :src="avatarUrl" />
         </q-avatar>
         <q-icon v-else name="account_circle" class="text-dark" size="xl" />
-        <TheUserAvatarMenu />
+        <TheUserAvatarMenu :atCreatorStudio="atCreatorStudio" />
     </q-btn>
 </template>
 
-<script setup>
+<script>
 import TheUserAvatarMenu from "components/layouts/MainLayout/headers/TheUserAvatarMenu.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { onBeforeMount, provide, ref, watch } from "vue";
-import { useProfileStore } from "src/stores/pages/userProfile/ProfileStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 
-const profileStore = useProfileStore();
+// Init store for later operation.
 const authStore = useAuthStore();
-const avatarUrl = ref(authStore.userProfile.avatarUrl);
-const props = defineProps({
-    atCreatorStudio: {
-        type: Boolean,
-        default: false,
+const userProfileStore = useUserProfileStore();
+userProfileStore.setUp();
+
+export default {
+    name: "TheUserAvatar",
+    components: {
+        TheUserAvatarMenu,
     },
-});
-
-// Set up the auth store for the before mount hook.
-onBeforeMount(() => {
-    authStore.setUpAuthStore();
-    profileStore.setupProfileStore();
-    provide("isAtCreatorStudio", props.atCreatorStudio);
-});
-
-watch(
-    () => authStore.userProfile.avatarUrl,
-    () => {
-        avatarUrl.value = authStore.userProfile.avatarUrl;
-    }
-);
+    props: {
+        atCreatorStudio: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    data() {
+        return {
+            isLoading: true,
+        };
+    },
+    computed: {
+        isAuth() {
+            return authStore.isAuth();
+        },
+        avatarUrl() {
+            return userProfileStore.currentAvatarUrl;
+        },
+    },
+    async mounted() {
+        await authStore.setUpAuthStore();
+        userProfileStore.setUp();
+        this.isLoading = false;
+        // profileStore.setupProfileStore();
+    },
+};
 </script>

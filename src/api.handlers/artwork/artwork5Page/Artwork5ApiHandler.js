@@ -22,11 +22,13 @@ async function getChapterDetailByIdAsync(comicId, chapterId) {
     }
 
     try {
+        const bearerAccessToken = authStore.bearerAccessToken();
+
         const response = await axios({
             url: apiUrl,
             method: HttpMethod.GET,
             headers: {
-                Authorization: authStore.bearerAccessToken,
+                Authorization: bearerAccessToken,
             },
         });
 

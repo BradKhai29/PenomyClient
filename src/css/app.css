@@ -129,3 +129,7 @@
     text-decoration: none;
     text-transform: none;
 }
+
+.text-decoration-none:hover {
+    background-color: var(--light-100) !important;
+}
