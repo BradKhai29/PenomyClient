@@ -12,7 +12,12 @@
                 @click="$refs.carousel.next(); calculatePage('next')" />
         </div>
     </div>
-    <q-carousel swipeable transition-prev="slide-right" transition-next="slide-left" animated v-model="slide"
+    <div v-if="artworks.length == 0" class="row q-col-gutter-md q-pa-sm">
+        <div v-for="index in 4" :key="index" class="col-3">
+            <artwork1Skeleton />
+        </div>
+    </div>
+    <q-carousel v-if="artworks.length > 0" swipeable transition-prev="slide-right" transition-next="slide-left" animated v-model="slide"
         ref="carousel" infinite height="220px">
         <q-carousel-slide v-for="slide in carouselSlides" :key="slide.index" :name="slide.index">
             <div class="row q-col-gutter-md q-pa-sm">
@@ -29,7 +34,9 @@ import RecentlyUpdatedArtworkCard from 'src/components/common/artwork/comic/Rece
 import { ref, computed, onMounted } from 'vue'
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from 'src/api.common/HttpMethod';
+import artwork1Skeleton from '../Common/skeleton/artwork1Skeleton.vue';
 import axios from 'axios';
+
 const apiUrl = `${BaseWebApiUrl}/g3/RecentlyUpdatedComics`;
 const slide = ref(0);
 const page = ref(1);
@@ -84,7 +91,7 @@ onMounted(async () => {
     }).then((response) => {
         artworks.value = response.data.body.artworkList
         artworks.value.forEach((item) => {
-            item.lastUpdateAt =calculateDayDifference(item.lastUpdateAt)
+            item.lastUpdateAt = calculateDayDifference(item.lastUpdateAt)
         })
         console.log(artworks.value[0])
     });

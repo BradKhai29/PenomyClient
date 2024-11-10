@@ -1,48 +1,30 @@
 <template>
     <div class="title-section">
-        <div class="text-h6 q-pa-sm title">{{ categoryName }}</div>
+        <div v-if="categoryName != ''" class="text-h6 q-pa-sm title">{{ categoryName }}</div>
+        <div v-if="categoryName == ''" class="text-h6 q-pa-sm title">Thể loại</div>
     </div>
     <q-item tag="div">
         <q-space />
         <div>
-            <q-btn
-                flat
-                dense
-                text-color="black"
-                icon="arrow_left"
-                @click="
-                    $refs.carousel.previous();
-                    calculatePage('previous');
-                "
-            />
+            <q-btn flat dense text-color="black" icon="arrow_left" @click="
+                $refs.carousel.previous();
+            calculatePage('previous');
+            " />
             {{ page }} / {{ carouselSlides.length }}
-            <q-btn
-                flat
-                dense
-                text-color="black"
-                icon="arrow_right"
-                @click="
-                    $refs.carousel.next();
-                    calculatePage('next');
-                "
-            />
+            <q-btn flat dense text-color="black" icon="arrow_right" @click="
+                $refs.carousel.next();
+            calculatePage('next');
+            " />
         </div>
     </q-item>
-    <q-carousel
-        swipeable
-        transition-prev="slide-right"
-        transition-next="slide-left"
-        animated
-        v-model="slide"
-        ref="carousel"
-        height="450px"
-    >
-        <q-carousel-slide
-            v-for="slide in carouselSlides"
-            :key="slide.index"
-            :name="slide.index"
-            class="q-pa-sm"
-        >
+    <div v-if="artworks.length == 0" class="row q-col-gutter-md q-pa-sm">
+        <div v-for="index in 4" :key="index" class="col-3">
+            <artwork2Skeleton />
+        </div>
+    </div>
+    <q-carousel v-if="artworks.length > 0" swipeable transition-prev="slide-right" transition-next="slide-left" animated
+        v-model="slide" ref="carousel" height="450px">
+        <q-carousel-slide v-for="slide in carouselSlides" :key="slide.index" :name="slide.index" class="q-pa-sm">
             <div class="row q-col-gutter-md">
                 <div v-for="item in slide" class="col-2" :key="item">
                     <artwork-card :artwork="item" />
@@ -59,6 +41,7 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import artworkCategoryApiHandler from "src/api.handlers/artwork/artwork14Page/ArtworkByCategoryHandler";
+import artwork2Skeleton from "../Common/skeleton/artwork2Skeleton.vue";
 import axios from "axios";
 const apiUrl = `${BaseWebApiUrl}/g14/recommended-category`;
 const slide = ref(0);

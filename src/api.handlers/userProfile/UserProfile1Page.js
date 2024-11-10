@@ -16,7 +16,7 @@ async function GetArtworksByType(artworkType, pageNumber) {
                 pageNumber: pageNumber,
             },
             headers: {
-                Authorization: authStore.bearerAccessToken,
+                Authorization: authStore.bearerAccessToken(),
             },
         });
         var artworkList = response.data.body.artworkList;
@@ -39,7 +39,7 @@ async function GetPageCount(artworkType) {
                 artworkType: artworkType,
             },
             headers: {
-                Authorization: authStore.bearerAccessToken,
+                Authorization: authStore.bearerAccessToken(),
             },
         });
         return response.data.body.result;
