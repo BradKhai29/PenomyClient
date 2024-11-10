@@ -27,7 +27,8 @@ class ArtworkDetailResponse {
         introduction,
         commentCount,
         followCount,
-        isUserFavorite
+        isUserFavorite,
+        isAllowComment
     ) {
         this.title = name;
         this.countryName = countryName;
@@ -44,6 +45,7 @@ class ArtworkDetailResponse {
         this.commentCount = commentCount;
         this.followCount = followCount;
         this.isUserFavorite = isUserFavorite;
+        this.isAllowComment = isAllowComment;
     }
 }
 export { ArtworkDetailResponse };

@@ -2,22 +2,11 @@
     <q-card :style="backgroundStyle" class="">
         <div class="q-pt-lg q-pb-xs">
             <q-card v-if="!isLoading" class="row detail-header">
-                <image-section
-                    :imageUrl="data.thumbnailUrl"
-                    class="col-3 q-pr-md"
-                ></image-section>
-                <description-section
-                    :isUserFavorite="data.isUserFavorite"
-                    :artworkId="artworkId"
-                    :hasSeries="data.hasSeries"
-                    :title="data.title"
-                    :author="data.authorName"
-                    :country="data.countryName"
-                    :status="data.artworkStatus"
-                    :seriesName="data.serieName"
-                    :buttons="buttons"
-                    class="col-9 q-pt-md"
-                ></description-section>
+                <image-section :imageUrl="data.thumbnailUrl" class="col-3 q-pr-md"></image-section>
+                <description-section :isUserFavorite="data.isUserFavorite" :artworkId="artworkId"
+                    :hasSeries="data.hasSeries" :title="data.title" :author="data.authorName"
+                    :country="data.countryName" :status="data.artworkStatus" :seriesName="data.serieName"
+                    :buttons="data.selectedCategories" class="col-9 q-pt-md"></description-section>
             </q-card>
             <q-card class="row justify-center subcribe-detail">
                 <subcribe-detail class="col-12"></subcribe-detail>
@@ -25,23 +14,13 @@
         </div>
     </q-card>
     <q-card v-if="!isLoading" class="detail-body" style="">
-        <detail-body-section
-            :introduction="data.introduction"
-            :view-count="data.viewCount"
-            :follow-count="data.followCount"
-            :favorite-count="data.favoriteCount"
-            :star-rates="data.starRates"
-            class="col-12"
-        ></detail-body-section>
+        <detail-body-section :introduction="data.introduction" :view-count="data.viewCount"
+            :follow-count="data.followCount" :favorite-count="data.favoriteCount" :star-rates="data.starRates"
+            class="col-12"></detail-body-section>
     </q-card>
     <q-card v-else class="detail-body" style="">
-        <detail-body-section
-            :view-count="0"
-            :follow-count="0"
-            :favorite-count="0"
-            :star-rates="data.starRates"
-            class="col-12"
-        ></detail-body-section>
+        <detail-body-section :view-count="0" :follow-count="0" :favorite-count="0" :star-rates="data.starRates"
+            class="col-12"></detail-body-section>
     </q-card>
     <div>
         <commentloader :artworkId="route.params.artworkId" />
@@ -87,11 +66,6 @@ const backgroundStyle = computed(() => ({
     background: `url(${backgroundImageUrl.value}) no-repeat`,
     backgroundSize: "cover",
 }));
-const buttons = computed(() => {
-    return data.value.selectedCategories
-        ? data.value.selectedCategories.map((item) => ({ label: item }))
-        : [];
-});
 </script>
 
 <script>
