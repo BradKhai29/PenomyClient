@@ -2,6 +2,7 @@ import axios from "axios";
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
+import { ArtworkRatingResponse } from "src/api.models/artwork/artwork3Page/ArtworkRatingResponse";
 
 async function RatingArtworkAsync(artworkId, starRate, accessToken) {
     try {
@@ -14,11 +15,17 @@ async function RatingArtworkAsync(artworkId, starRate, accessToken) {
                 Authorization: accessToken,
             },
         });
-        const body = response.data;
-        if (body.httpCode !== 200) {
+        const res = response.data;
+        if (res.httpCode !== 200) {
             return null;
         }
-        return body.starRate;
+        console.log(res);
+        return new ArtworkRatingResponse(
+            res.body.starRate,
+            res.body.totalUsersRate,
+            res.body.totalStarRate,
+            res.body.currentUserRate
+        );
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
         console.log(axiosError);
