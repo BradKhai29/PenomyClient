@@ -12,10 +12,13 @@
 import TheUserAvatarMenu from "components/layouts/MainLayout/headers/TheUserAvatarMenu.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { useProfileStore } from "src/stores/pages/userProfile/ProfileStore";
 
 // Init store for later operation.
 const authStore = useAuthStore();
 const userProfileStore = useUserProfileStore();
+const profileStore = useProfileStore();
+profileStore.setupProfileStore();
 userProfileStore.setUp();
 
 export default {

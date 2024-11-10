@@ -237,7 +237,7 @@ async function temporarilyRemoveComicByIdAsync(comicId) {
             url: `${BaseWebApiUrl}/art8/temp-remove/${comicId}`,
             method: HttpMethod.DELETE,
             headers: {
-                Authorization: authStore.bearerAccessToken,
+                Authorization: authStore.bearerAccessToken(),
             },
         });
 

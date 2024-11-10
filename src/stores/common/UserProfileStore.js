@@ -114,6 +114,12 @@ const useUserProfileStore = defineStore("userProfileStore", {
             localStorage.removeItem(nicknameKeyName);
             localStorage.removeItem(avatarUrlKeyName);
             localStorage.removeItem(isCreatorKeyName);
+            localStorage.removeItem("page1");
+            localStorage.removeItem("page2");
+            localStorage.removeItem("page3");
+            localStorage.removeItem("comic");
+            localStorage.removeItem("animation");
+            localStorage.removeItem("series");
         },
     },
 });

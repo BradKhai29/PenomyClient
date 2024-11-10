@@ -36,7 +36,7 @@ async function getComments() {
                 parentCommentId: props.parentCommentId,
             },
             headers: {
-                Authorization: authStore.bearerAccessToken
+                Authorization: authStore.bearerAccessToken()
             }
         })
             .then((response) => {

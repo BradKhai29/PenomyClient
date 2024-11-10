@@ -29,7 +29,7 @@ async function getArtworksByTypeWithPagination(artworkType, pageNumber) {
             url: `${BaseWebApiUrl}/art1/artworks?artworkType=${artworkType}&pageNumber=${pageNumber}`,
             method: HttpMethod.GET,
             headers: {
-                Authorization: authStore.bearerAccessToken,
+                Authorization: authStore.bearerAccessToken(),
             },
         });
 

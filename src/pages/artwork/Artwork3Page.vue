@@ -23,7 +23,8 @@
             class="col-12"></detail-body-section>
     </q-card>
     <div>
-        <commentloader :artworkId="route.params.artworkId" />
+        <commentloader :is-allow-comment="data.isAllowComment" :artworkId="route.params.artworkId" />
+        
     </div>
     <div class="recommend-section">
         <recommendation-section></recommendation-section>

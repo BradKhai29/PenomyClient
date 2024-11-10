@@ -1,32 +1,17 @@
 <template>
     <q-page v-if="!isLoading" class="position-relative bg-dark-900">
-        <TheChapterHeaderBar
-            :comicId="comicId"
-            :comicTitle="chapterDetail.comicTitle"
-            :chapterId="chapterId"
-            :chapterTitle="chapterDetail.title"
-            :chapterOrder="chapterDetail.uploadOrder"
-        />
+        <TheChapterHeaderBar :comicId="comicId" :comicTitle="chapterDetail.comicTitle" :chapterId="chapterId"
+            :chapterTitle="chapterDetail.title" :chapterOrder="chapterDetail.uploadOrder" />
 
         <section id="chapter-images" class="flex column items-center">
-            <img
-                :id="`anh_${imageItem.uploadOrder + 1}`"
-                v-for="imageItem in chapterDetail.images"
-                :key="imageItem"
-                :src="imageItem.storageUrl"
-                class="preview-image-item"
-                :alt="`anh_${imageItem.uploadOrder + 1}`"
-            />
+            <img :id="`anh_${imageItem.uploadOrder + 1}`" v-for="imageItem in chapterDetail.images" :key="imageItem"
+                :src="imageItem.storageUrl" class="preview-image-item" :alt="`anh_${imageItem.uploadOrder + 1}`" />
         </section>
 
         <ChapterButtonGroup :totalFavorites="1000" />
 
-        <ComicChapterNavigation
-            :comicId="comicId"
-            :comicTitle="chapterDetail.comicTitle"
-            :chapterId="chapterId"
-            :chapterTitle="chapterDetail.title"
-        />
+        <ComicChapterNavigation :comicId="comicId" :comicTitle="chapterDetail.comicTitle" :chapterId="chapterId"
+            :chapterTitle="chapterDetail.title" />
     </q-page>
 </template>
 

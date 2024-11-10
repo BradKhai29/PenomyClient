@@ -5,7 +5,6 @@ import { LogoutApiHandler } from "src/api.handlers/auth/common/LogoutApiHandler"
 import { useUserProfileStore } from "./UserProfileStore";
 
 const userProfileStore = useUserProfileStore();
-
 const useAuthStore = defineStore("authStore", {
     state: () => ({
         isSetUp: false,
