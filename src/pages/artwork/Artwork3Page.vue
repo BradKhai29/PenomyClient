@@ -6,7 +6,7 @@
                 <description-section :isUserFavorite="data.isUserFavorite" :artworkId="artworkId"
                     :hasSeries="data.hasSeries" :title="data.title" :author="data.authorName"
                     :country="data.countryName" :status="data.artworkStatus" :seriesName="data.serieName"
-                    :buttons="buttons" class="col-9 q-pt-md"></description-section>
+                    :buttons="data.selectedCategories" class="col-9 q-pt-md"></description-section>
             </q-card>
             <q-card class="row justify-center subcribe-detail">
                 <subcribe-detail class="col-12"></subcribe-detail>
@@ -67,11 +67,6 @@ const backgroundStyle = computed(() => ({
     background: `url(${backgroundImageUrl.value}) no-repeat`,
     backgroundSize: "cover",
 }));
-const buttons = computed(() => {
-    return data.value.selectedCategories
-        ? data.value.selectedCategories.map((item) => ({ label: item }))
-        : [];
-});
 </script>
 
 <script>

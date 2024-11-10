@@ -2,15 +2,11 @@
     <q-card>
         <div class="row">
             <div class="text-title">{{ title }}</div>
-            <q-icon
-                class="text-center q-py-sm q-px-sm rotate-135 rounded"
-                name="link"
-                :style="{
-                    boxShadow: '0 0 5px 2px #F9FAFC',
-                    borderRadius: '50%',
-                    fontSize: '16px',
-                }"
-            ></q-icon>
+            <q-icon class="text-center q-py-sm q-px-sm rotate-135 rounded" name="link" :style="{
+                boxShadow: '0 0 5px 2px #F9FAFC',
+                borderRadius: '50%',
+                fontSize: '16px',
+            }"></q-icon>
         </div>
         <div class="description">
             <div class="row text-description">
@@ -19,11 +15,7 @@
                 </div>
                 <div class="text-status col-6">
                     <strong>Trạng thái: </strong> {{ status }}
-                    <q-icon
-                        class="q-px-xs"
-                        color="green"
-                        name="check_circle"
-                    ></q-icon>
+                    <q-icon class="q-px-xs" color="green" name="check_circle"></q-icon>
                 </div>
             </div>
             <div class="row text-description">
@@ -37,89 +29,47 @@
                 </div>
             </div>
             <div class="row q-py-xs">
-                <q-badge
-                    v-for="(button, index) in buttons"
-                    :key="index"
-                    unelevated
-                    :style="{
-                        backgroundColor: '#120E36', // Dark blue color
-                        color: 'white', // Make text bold
-                        fontSize: '16px', // Decrease font size
-                        padding: '8px 8px',
-                        marginRight: '8px', // Adjust padding for a smaller badge
-                    }"
-                    :label="button.label"
-                    class="q-mr-sm justify-center"
-                ></q-badge>
+                <div id="artwork-categories" class="q-gutter-sm q-my-sm">
+                    <q-btn v-for="category in buttons" :key="category" :id="category.categoryId" dense no-caps
+                        unelevated class="bg-dark text-light text-subtitle2 text-weight-bold border-radius-sm q-px-sm">
+                        {{ category.categoryName }}
+                    </q-btn>
+                </div>
             </div>
             <div class="row absolute-bottom q-pb-md">
-                <q-btn
-                    class="col-2 action-btn"
-                    unelevated
-                    rounded
-                    no-caps
-                    :style="{
-                        fontSize: '16px',
-                        backgroundColor: '#120E36',
-                        color: 'white',
-                    }"
-                >
-                    <q-icon
-                        name="arrow_right"
-                        class="q-mr-xs"
-                        :style="{
-                            fontSize: '32px',
-                        }"
-                    />
+                <q-btn class="col-2 action-btn" unelevated rounded no-caps :style="{
+                    fontSize: '16px',
+                    backgroundColor: '#120E36',
+                    color: 'white',
+                }">
+                    <q-icon name="arrow_right" class="q-mr-xs" :style="{
+                        fontSize: '32px',
+                    }" />
                     Xem tiếp
                 </q-btn>
-                <q-btn
-                    class="col-2 q-mr-sm action-btn"
-                    unelevated
-                    rounded
-                    no-caps
-                    :style="{
-                        fontSize: '16px',
-                        backgroundColor: '#120E36',
-                        color: 'white',
-                    }"
-                >
+                <q-btn class="col-2 q-mr-sm action-btn" unelevated rounded no-caps :style="{
+                    fontSize: '16px',
+                    backgroundColor: '#120E36',
+                    color: 'white',
+                }">
                     Xem từ đầu
                 </q-btn>
-                <q-btn
-                    class="col-2 q-mr-sm action-btn"
-                    unelevated
-                    rounded
-                    no-caps
-                    @click="toggleFavorite(artworkId)"
+                <q-btn class="col-2 q-mr-sm action-btn" unelevated rounded no-caps @click="toggleFavorite(artworkId)"
                     :style="{
                         fontSize: '16px',
                         backgroundColor: isFavorited ? '#120E36' : '#EEEEEE',
                         width: 'auto',
-                    }"
-                >
-                    <q-icon
-                        name="ion-heart"
-                        class="q-mr-xs"
-                        :style="{ color: isFavorited ? '#DC5834' : '#120E36' }"
-                    />
-                    <span
-                        :style="{ color: isFavorited ? '#EEEEEE' : '#120E36' }"
-                    >
+                    }">
+                    <q-icon name="ion-heart" class="q-mr-xs" :style="{ color: isFavorited ? '#DC5834' : '#120E36' }" />
+                    <span :style="{ color: isFavorited ? '#EEEEEE' : '#120E36' }">
                         {{ isFavorited ? "Đã yêu thích" : "Yêu thích" }}
                     </span>
                 </q-btn>
-                <q-btn
-                    class="col-3 q-mr-sm action-btn"
-                    unelevated
-                    rounded
-                    no-caps
-                    :style="{
-                        fontSize: '16px',
-                        backgroundColor: '#EEEEEE',
-                        color: '#120E36',
-                    }"
-                >
+                <q-btn class="col-3 q-mr-sm action-btn" unelevated rounded no-caps :style="{
+                    fontSize: '16px',
+                    backgroundColor: '#EEEEEE',
+                    color: '#120E36',
+                }">
                     <q-icon name="ion-alert" class="q-mr-xs" />
                     Báo cáo vi phạm
                 </q-btn>

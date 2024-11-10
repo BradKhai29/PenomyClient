@@ -41,7 +41,8 @@ async function getArtworkDetailByIdAsync(artworkId, accessToken) {
             data.introduction,
             data.commentCount,
             data.followCount,
-            data.isUserFavorite
+            data.isUserFavorite,
+            data.isAllowComment
         );
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
