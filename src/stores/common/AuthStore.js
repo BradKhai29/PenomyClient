@@ -7,16 +7,29 @@ import { useUserProfileStore } from "./UserProfileStore";
 const userProfileStore = useUserProfileStore();
 const useAuthStore = defineStore("authStore", {
     state: () => ({
-        isSetUp: false,
+        hasSetUp: false,
+        userHasAuthenticated: false,
     }),
+
+    getters: {
+        /**
+         * Get the state of current user is already authenticated or not.
+         *
+         * @returns {Boolean} True if the user is already authenticated.
+         */
+        isAuth() {
+            return this.userHasAuthenticated;
+        },
+    },
 
     actions: {
         /**
          * Asynchronously set up the auth store for the application before starting any functions.
+         *
          * @remarks This method must be called first to load the access & refresh token.
          */
         async setUpAuthStore() {
-            if (this.isSetUp) {
+            if (this.hasSetUp) {
                 return;
             }
 
@@ -26,6 +39,9 @@ const useAuthStore = defineStore("authStore", {
             // If verify success, then set up for this
             // store to refresh the token silently.
             if (verifyResult) {
+                // If verify the tokens success, then authenticated for current user.
+                this.userHasAuthenticated = true;
+
                 authStoreManager.setUpSilentRefreshToken();
             } else {
                 // If verify failed, try to refresh the token.
@@ -34,11 +50,18 @@ const useAuthStore = defineStore("authStore", {
 
                 // Only setup the silent refresh token when operation is success.
                 if (refreshResult.isSuccess) {
+                    // If refresh the tokens success, then authenticated for current user.
+                    this.userHasAuthenticated = true;
+
                     authStoreManager.setUpSilentRefreshToken();
+                }
+                // Otherwise, unauthenticate for current user.
+                else {
+                    this.userHasAuthenticated = false;
                 }
             }
 
-            this.isSetUp = true;
+            this.hasSetUp = true;
         },
         /**
          * Sign in for the user and save the required credentials.
@@ -48,6 +71,9 @@ const useAuthStore = defineStore("authStore", {
          */
         signIn(accessToken, refreshToken) {
             authStoreManager.signIn(accessToken, refreshToken);
+            // When sign in success, authenticate for current user.
+            this.userHasAuthenticated = true;
+
             // When sign in success, setup the silent refresh token.
             authStoreManager.setUpSilentRefreshToken();
         },
@@ -57,6 +83,9 @@ const useAuthStore = defineStore("authStore", {
         async signOut() {
             const bearerAccessToken = this.bearerAccessToken();
             await LogoutApiHandler.logoutAsync(bearerAccessToken);
+
+            // Unauthenticate for current user when sign out.
+            this.userHasAuthenticated = false;
 
             // Clear all tokens that stored on this authStore & user machine.
             authStoreManager.signOut();
@@ -93,12 +122,12 @@ const useAuthStore = defineStore("authStore", {
             return authStoreManager.getBearerAccessToken();
         },
         /**
-         * Get the state of current user is already authenticated or not.
+         * Get the access token asynchronously if the refresh-token operation is not complete.
          *
-         * @returns {Boolean} True if the user is already authenticated.
+         * @returns {Promise<String>} Promise contains the access token with bearer prefix.
          */
-        isAuth() {
-            return authStoreManager.isAuth();
+        getBearerAccessTokenAsync() {
+            return authStoreManager.getBearerAccessTokenAsync();
         },
     },
 });

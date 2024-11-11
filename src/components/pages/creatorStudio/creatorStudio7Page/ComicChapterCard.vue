@@ -1,11 +1,6 @@
 <template>
     <div class="row items-center shadow-1 border-radius-sm">
-        <router-link
-            :to="{
-                name: 'comic-chapter-detail',
-                params: { chapterId: id },
-            }"
-        >
+        <router-link :to="chapterDetailRoute">
             <q-img
                 :src="thumbnailUrl"
                 style="width: 100px; height: 100px"
@@ -42,12 +37,7 @@
                         class="text-subtitle2 bg-primary text-dark text-weight-bold q-px-sm q-mr-sm"
                         >Xuất bản</q-btn
                     >
-                    <router-link
-                        :to="{
-                            name: 'comic-chapter-edit',
-                            params: { chapterId: id },
-                        }"
-                    >
+                    <router-link :to="chapterEditRoute">
                         <q-btn
                             dense
                             unelevated
@@ -61,7 +51,7 @@
                 </div>
             </div>
             <div>
-                <router-link :to="`/studio/comic/chapter/detail/${id}`">
+                <router-link :to="chapterDetailRoute">
                     <q-btn
                         dense
                         flat
@@ -75,7 +65,7 @@
             </div>
             <div class="row items-center text-dark-500 text-subtitle2 q-mt-sm">
                 <div class="flex items-center">
-                    <q-icon name="save" size="xs" />
+                    <q-icon name="task" size="xs" />
                     <span class="q-ml-xs">{{ createdAt }}</span>
                     <q-tooltip
                         anchor="top middle"
@@ -124,7 +114,11 @@
 </template>
 
 <script>
+// Import dependencies section.
 import { PublishStatuses } from "src/api.handlers/creatorStudio/creatorStudio7Page/CreatorStudio7ApiHandler";
+import { CreatorStudio10RouteNames } from "src/router/creatorStudio/CreatorStudio10PageRoute";
+import { CreatorStudio11RouteNames } from "src/router/creatorStudio/CreatorStudio11PageRoute";
+
 export default {
     name: "ComicChapterCard",
     props: {
@@ -170,6 +164,20 @@ export default {
             isDrafted: false,
             isScheduled: false,
         };
+    },
+    computed: {
+        chapterDetailRoute() {
+            return {
+                name: CreatorStudio10RouteNames.ChapterDetail,
+                params: { chapterId: this.id },
+            };
+        },
+        chapterEditRoute() {
+            return {
+                name: CreatorStudio11RouteNames.ChapterEdit,
+                params: { chapterId: this.id },
+            };
+        },
     },
     beforeMount() {
         this.checkChapterPublishStatus();

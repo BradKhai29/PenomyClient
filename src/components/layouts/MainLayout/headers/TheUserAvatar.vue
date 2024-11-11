@@ -39,7 +39,7 @@ export default {
     },
     computed: {
         isAuth() {
-            return authStore.isAuth();
+            return authStore.isAuth;
         },
         avatarUrl() {
             return userProfileStore.currentAvatarUrl;
@@ -48,6 +48,7 @@ export default {
     async mounted() {
         await authStore.setUpAuthStore();
         userProfileStore.setUp();
+
         this.isLoading = false;
         // profileStore.setupProfileStore();
     },

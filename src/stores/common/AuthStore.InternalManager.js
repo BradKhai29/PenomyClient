@@ -241,6 +241,15 @@ class AuthStoreInternalManager {
     }
 
     /**
+     * Get the access token asynchronously if the refresh-token operation is not complete.
+     *
+     * @returns {Promise<String>} Promise contains the access token with bearer prefix.
+     */
+    getBearerAccessTokenAsync() {
+        return this.internalWaitToGetAccessTokenAsync(true);
+    }
+
+    /**
      * Verify the both access and refresh tokens
      * that stored in this instance token bag.
      *

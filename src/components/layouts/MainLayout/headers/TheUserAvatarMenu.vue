@@ -189,7 +189,7 @@ export default {
     },
     computed: {
         isAuth() {
-            return authStore.isAuth();
+            return authStore.isAuth;
         },
         userProfile() {
             return userProfileStore.userProfile;

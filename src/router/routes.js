@@ -30,6 +30,9 @@ import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
 // User profile page routes section.
 import userProfile from "./userProfile/UserProfile1PageRoute";
 
+// Creator profile page routes section.
+import creatorProfile1PageRoute from "./creatorProfile/CreatorProfile1PageRoute";
+
 // Always leave this as last one, but you can also remove it
 const errorNotFoundPageRoute = {
     path: "/:catchAll(.*)*",
@@ -65,6 +68,8 @@ const routes = [
     ...creatorStudio25PageRoute,
     // User profile routes.
     ...userProfile,
+    // Creator profile routes.
+    ...creatorProfile1PageRoute,
     // Other routes.
     errorNotFoundPageRoute,
 ];

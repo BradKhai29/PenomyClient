@@ -9,6 +9,7 @@ class ArtworkChapterResponse {
      * @param {number} favoriteCount The number of favorites on the chapter.
      * @param {number} viewCount The number of views on the chapter.
      * @param {string} thumbnailUrl The URL of the thumbnail image for the chapter.
+     * @param {Boolean} allowComment Check if the chapter allow to comment or not.
      */
     constructor(
         id,
@@ -18,7 +19,8 @@ class ArtworkChapterResponse {
         commentCount,
         favoriteCount,
         viewCount,
-        thumbnailUrl
+        thumbnailUrl,
+        allowComment
     ) {
         (this.id = id),
             (this.uploadOrder = uploadOrder),
@@ -28,6 +30,7 @@ class ArtworkChapterResponse {
             (this.favoriteCount = favoriteCount),
             (this.viewCount = viewCount),
             (this.thumbnailUrl = thumbnailUrl);
+        this.allowComment = allowComment;
     }
 }
 export { ArtworkChapterResponse };

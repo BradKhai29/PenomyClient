@@ -1,6 +1,12 @@
 @import url(app.css);
 
 :root {
+    /* Primary section */
+    --primary: #53bf94;
+
+    /* Light section */
+    --light-500: #dddddd;
+
     --dark-500: #78847e;
     --border-sm-width: 1px;
     --border-md-width: 1.4px;
@@ -11,8 +17,24 @@
 }
 
 /* Border section */
+.border-sm-top-light-500 {
+    border-top: 1px solid var(--light-500);
+}
+
+.border-sm-bottom-light-500 {
+    border-bottom: 1px solid var(--light-500);
+}
+
+.border-sm-light-500 {
+    border: 1px solid var(--light-500);
+}
+
 .border-sm-dark {
     border: 1px solid var(--dark);
+}
+
+.border-sm-dark-500 {
+    border: 1px solid var(--dark-500);
 }
 
 .border-md-dark-500 {
@@ -40,6 +62,11 @@
 
 .border-radius-rounded {
     border-radius: 100% !important;
+}
+
+.border-left-sm-primary {
+    border-left: 4px solid var(--primary);
+    padding-left: 4px;
 }
 
 .penomy-tab {

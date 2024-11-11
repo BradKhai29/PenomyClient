@@ -77,7 +77,8 @@ async function getArtworkChaptersByIdAsync(artworkId, startPage, pageSize) {
                     chapter.commentCount,
                     chapter.favoriteCount,
                     chapter.viewCount,
-                    chapter.thumbnailUrl
+                    chapter.thumbnailUrl,
+                    chapter.allowComment
                 )
         );
         return { chapters, chapterCount, isPagination };

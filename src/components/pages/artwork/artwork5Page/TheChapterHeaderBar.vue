@@ -14,30 +14,8 @@
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm" />
             </span>
-            <q-btn
-                dense
-                flat
-                no-caps
-                class="text-light text-subtitle1"
-                @click="copyChapterUrl"
-                @mouseleave="isCopyLink = false"
-            >
-                <q-tooltip
-                    anchor="center right"
-                    self="center left"
-                    :offset="[4, 10]"
-                >
-                    <strong class="text-subtitle2"
-                        >{{ isCopyLink ? "Đã lưu link" : "Lấy link" }}
-                    </strong>
-                </q-tooltip>
-                <span class="q-ml-xs">Tập {{ chapterOrder }}</span>
-                <q-icon
-                    name="link"
-                    size="sm"
-                    style="transform: rotate(-45deg)"
-                />
-            </q-btn>
+
+            <GetLinkButton :label="`Tập ${chapterOrder}`" />
         </div>
         <div class="col flex items-center justify-center">
             <q-btn
@@ -96,10 +74,17 @@
 </template>
 
 <script>
+// Import dependencies section.
 import { UrlHelper } from "src/helpers/UrlHelper";
+
+// Import components section.
+import GetLinkButton from "src/components/common/artwork/GetLinkButton.vue";
 
 export default {
     name: "TheChapterHeaderBar",
+    components: {
+        GetLinkButton,
+    },
     props: {
         comicId: {
             required: true,
@@ -124,13 +109,6 @@ export default {
         return {
             isCopyLink: false,
         };
-    },
-    methods: {
-        copyChapterUrl() {
-            // Copy current chapter url to clipboard.
-            UrlHelper.copyCurrentUrlToClipBoard();
-            this.isCopyLink = true;
-        },
     },
 };
 </script>

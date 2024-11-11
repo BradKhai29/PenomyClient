@@ -5,6 +5,7 @@ const domainRootPath = {
     creatorStudio: "/studio",
     socialMedia: "/social",
     userProfile: "/profile",
+    creatorProfile: "/profile/creator",
 };
 
 export { domainRootPath };

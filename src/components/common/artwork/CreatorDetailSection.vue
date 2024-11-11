@@ -3,7 +3,10 @@
         id="creator-detail-bar"
         class="q-pa-md bg-light border-radius-md flex items-center justify-between"
     >
-        <router-link class="text-decoration-none bg-light">
+        <router-link
+            :to="`/profile/creator/d/${creatorId}`"
+            class="text-decoration-none bg-light"
+        >
             <q-btn dense flat padding="none" no-caps class="flex items-center">
                 <q-avatar class="q-mr-sm" size="48px">
                     <img src="https://cdn.quasar.dev/img/avatar.png" />
@@ -20,7 +23,7 @@
         </router-link>
         <div>
             <router-link
-                v-if="isCreator"
+                v-if="isAuthor"
                 :to="`/studio/comic/detail/${artworkId}`"
             >
                 <q-btn
@@ -32,21 +35,24 @@
                     <span class="q-ml-xs">Sửa thông tin truyện</span>
                 </q-btn>
             </router-link>
-            <q-btn
-                v-else
-                class="bg-light-300 text-dark text-subtitle1 text-weight-bold"
-                no-caps
-                rounded
-            >
-                <span class="q-ml-xs">Theo dõi</span>
-            </q-btn>
+            <CreatorFollowButton v-else :creatorId="creatorId" />
         </div>
     </section>
 </template>
 
 <script>
+// Import dependencies section.
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import CreatorFollowButton from "./CreatorDetailSection.FollowButton.vue";
+
+// Init store for later operation.
+const userProfileStore = useUserProfileStore();
+
 export default {
-    name: "CreatorDetailBar",
+    name: "CreatorDetailSection",
+    components: {
+        CreatorFollowButton,
+    },
     props: {
         creatorId: {
             required: true,
@@ -57,8 +63,13 @@ export default {
     },
     data() {
         return {
-            isCreator: true,
+            isCreator: false,
         };
+    },
+    computed: {
+        isAuthor() {
+            return this.creatorId == userProfileStore.currentUserId;
+        },
     },
 };
 </script>

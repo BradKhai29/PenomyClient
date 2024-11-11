@@ -1,5 +1,5 @@
 <template>
-    <q-btn flat no-caps no-wrap dense @click="goToHome">
+    <q-btn :to="homeLink" flat no-caps no-wrap dense>
         <q-avatar>
             <img
                 src="https://res.cloudinary.com/dsjsmbdpw/image/upload/v1729522677/penomy_assets/penomy.png"
@@ -9,12 +9,13 @@
     </q-btn>
 </template>
 
-<script setup>
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-
-function goToHome() {
-    router.push("/");
-}
+<script>
+export default {
+    name: "TheLogoButton",
+    computed: {
+        homeLink() {
+            return "/";
+        },
+    },
+};
 </script>

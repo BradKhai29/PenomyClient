@@ -21,8 +21,13 @@
                     height="280px"
                 />
                 <div class="col-grow column q-py-xs">
-                    <h5 class="q-my-none text-weight-bold q-mb-md">
-                        {{ comicDetail.title }}
+                    <h5
+                        class="q-my-none text-weight-bold q-mb-md flex items-center"
+                    >
+                        <span class="q-mr-sm">
+                            {{ comicDetail.title }}
+                        </span>
+                        <GetLinkButton :darkMode="true" />
                     </h5>
                     <div id="artwork-metadata" class="row">
                         <div id="country-and-author" class="column col-grow">
@@ -55,6 +60,27 @@
                     </div>
                     <div id="artwork-categories" class="q-gutter-sm q-my-sm">
                         <q-btn
+                            dense
+                            flat
+                            no-caps
+                            class="shadow-1 text-dark bg-light-100"
+                        >
+                            <q-icon name="info_outline" />
+                            <span
+                                class="text-subtitle2 border-radius-sm q-ml-xs text-weight-bold"
+                                >Khác</span
+                            >
+                            <q-tooltip
+                                anchor="top middle"
+                                self="bottom middle"
+                                :offset="[10, 10]"
+                            >
+                                <strong class="text-subtitle2 text-weight-bold">
+                                    Thông tin khác về tác phẩm
+                                </strong>
+                            </q-tooltip>
+                        </q-btn>
+                        <q-btn
                             v-for="category in comicDetail.selectedCategories"
                             :key="category"
                             :id="category.categoryId"
@@ -84,29 +110,17 @@
                         </q-btn>
                         <AddFavoriteButton
                             :artworkId="comicId"
-                            :userId="1"
                             :isUserFavorite="comicDetail.isUserFavorite"
                         />
-                        <q-btn
-                            class="bg-light-300 text-dark text-subtitle1 text-weight-bold"
-                            no-caps
-                            rounded
-                        >
-                            <q-icon name="report" size="sm" />
-                            <span class="q-ml-xs">Báo cáo vi phạm</span>
-                            <q-badge
-                                rounded
-                                floating
-                                class="bg-dark text-light text-weight-bold"
-                            >
-                                0
-                            </q-badge>
-                        </q-btn>
+                        <ArtworkReportButton
+                            v-if="isAuth"
+                            :artworkId="comicId"
+                        />
                     </div>
                 </div>
             </section>
 
-            <CreatorDetailBar
+            <CreatorDetailSection
                 class="artwork-detail-section q-mt-md"
                 :creatorId="1"
                 :artworkId="comicId"
@@ -117,14 +131,14 @@
 
 <script>
 // Import dependencies section.
-import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork14Page/ArtworkResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Import components section.
-import CreatorDetailBar from "src/components/pages/artwork/artwork3Page/CreatorDetailBar.vue";
-import AddFavoriteButton from "src/components/pages/artwork/artwork3Page/AddFavoriteButton.vue";
+import CreatorDetailSection from "src/components/common/artwork/CreatorDetailSection.vue";
+import AddFavoriteButton from "src/components/common/artwork/AddFavoriteButton.vue";
+import GetLinkButton from "src/components/common/artwork/GetLinkButton.vue";
+import ArtworkReportButton from "src/components/common/artwork/ArtworkReportButton.vue";
 
 // Init authStore for later operation.
 const authStore = useAuthStore();
@@ -132,61 +146,39 @@ const authStore = useAuthStore();
 export default {
     name: "ComicDetailSection",
     components: {
-        CreatorDetailBar,
+        CreatorDetailSection,
         AddFavoriteButton,
+        ArtworkReportButton,
+        GetLinkButton,
     },
     props: {
         comicId: {
             required: true,
         },
+        isLoading: {
+            type: Boolean,
+            required: true,
+        },
+        comicDetail: {
+            type: ArtworkDetailResponse,
+            required: true,
+        },
     },
     data() {
         return {
-            isLoading: true,
-            /**
-             * @type {ArtworkDetailResponse} Type of this property.
-             */
-            comicDetail: null,
             comicDetailCardStyle: {
                 background: null,
                 backgroundSize: "cover",
             },
         };
     },
-    async mounted() {
-        const bearerAccessToken = authStore.bearerAccessToken();
-
-        console.log("Token", bearerAccessToken);
-
-        const result = await artworkDetailApiHandler.getArtworkDetailByIdAsync(
-            this.comicId,
-            bearerAccessToken
-        );
-
-        if (!result) {
-            NotificationHelper.notifyError("Không tìm thấy nội dung");
-
-            // this.$router.push("/");
-            return;
-        }
-
-        // If result is success, then get the information and bind to the comic detail.
-        this.comicDetail = result;
+    computed: {
+        isAuth() {
+            return authStore.isAuth;
+        },
+    },
+    mounted() {
         this.comicDetailCardStyle.background = `url(${this.comicDetail.thumbnailUrl}) no-repeat`;
-
-        // Turn off is loading flag.
-        this.isLoading = false;
     },
 };
 </script>
-
-<style scoped>
-#artwork-detail-breadcrumb,
-#artwork-detail-card,
-.artwork-detail-section {
-    --max-width: 72%;
-
-    max-width: var(--max-width);
-    width: var(--max-width);
-}
-</style>

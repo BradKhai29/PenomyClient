@@ -31,11 +31,6 @@ function internalLoadUserProfile() {
  * @param {UserProfileResponseDto} userProfile Contains the detail to persist
  */
 function persistToLocalStorage(userProfile) {
-    console.log("HEY", userProfile);
-    console.log("HEY", userProfile.isCreator);
-    console.log("HEY", userProfile.nickname);
-    console.log("HEY", userProfile.avatarUrl);
-
     localStorage.setItem(nicknameKeyName, userProfile.nickname);
     localStorage.setItem(avatarUrlKeyName, userProfile.avatarUrl);
     localStorage.setItem(isCreatorKeyName, userProfile.isCreator);
@@ -71,7 +66,6 @@ const useUserProfileStore = defineStore("userProfileStore", {
          */
         setUp() {
             const cachedUserProfile = internalLoadUserProfile();
-            console.log(cachedUserProfile);
 
             this.userProfile.nickname = cachedUserProfile.nickname;
             this.userProfile.avatarUrl = cachedUserProfile.avatarUrl;

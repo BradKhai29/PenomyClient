@@ -77,6 +77,23 @@ function formatNumberShort(num, precision = 1) {
 }
 
 /**
+ * Formats a number with periods (Example: 10000000 => 10.000.000)
+ *
+ * @param {number} number - The number to be formatted.
+ * @returns {string} The formatted number as a string with periods.
+ */
+function formatNumberWithPeriods(number) {
+    // Convert the number to a string
+    const numberString = number.toString();
+    const addPeriodRegExp = /\B(?=(\d{3})+(?!\d))/g;
+
+    // Use regex to insert a period every three digits from the end of the string
+    // \B asserts a position that is not a word boundary
+    // (?=(\d{3})+(?!\d)) matches positions where groups of three digits are followed by more digits
+    return numberString.replace(addPeriodRegExp, ".");
+}
+
+/**
  * Returns a number whose value is limited to the given range.
  *
  * @param {Number} min The lower boundary
@@ -92,6 +109,7 @@ const NumberHelper = {
     isNumber: isNumber,
     getSecureRandomNumber: getSecureRandomNumber,
     formatNumberShort: formatNumberShort,
+    formatNumberWithPeriods: formatNumberWithPeriods,
     clamp: clamp,
 };
 
