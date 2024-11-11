@@ -85,7 +85,7 @@
                             <q-item-label class="chap-num">Tập {{ episode.uploadOrder }}</q-item-label>
                             <q-item-label class="chap-title">{{
                                 episode.chapterName
-                                }}</q-item-label>
+                            }}</q-item-label>
                             <q-item-label class="chap-stats" caption>
                                 {{ formatDate(episode.createdTime) }}
                                 <q-icon name="ion-eye stats-icon" class="q-ml-sm" />
@@ -158,10 +158,10 @@ const artworkId = ref(null);
 const route = useRoute();
 const count = ref(0);
 const star = ref(props.starRates);
-
+const ratingResponse = ref(null);
 const chapterData = ref([]);
 const id = route.params.artworkId;
-
+const authStore = useAuthStore();
 onMounted(async () => {
     artworkId.value = route.params.artworkId;
     try {
@@ -175,12 +175,14 @@ onMounted(async () => {
         console.log(error);
     }
 });
-const authStore = useAuthStore();
+
 async function RatingArtworkAsync(starRate) {
     const [starRateRes] = await Promise.all([
-        artworkRatingApiHandler.RatingArtworkAsync(id, starRate, authStore.bearerAccessToken)
+        artworkRatingApiHandler.RatingArtworkAsync(id, starRate, authStore.bearerAccessToken())
     ]);
-    star.value = starRateRes;
+    console.log(starRateRes);
+    star.value = starRateRes.starRate;
+    ratingResponse.value = starRateRes;
 }
 </script>
 <script>
