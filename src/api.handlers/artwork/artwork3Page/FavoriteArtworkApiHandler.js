@@ -62,4 +62,8 @@ const FavoriteArtworkApiHandler = {
     removeFavoriteAsync: removeFavoriteAsync,
 };
 
-export { FavoriteArtworkApiHandler };
+export {
+    FavoriteArtworkApiHandler,
+    ADD_FAVORITE_FAILED_RESULT,
+    REMOVE_FAVORITE_FAILED_RESULT,
+};

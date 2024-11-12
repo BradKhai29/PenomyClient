@@ -136,9 +136,9 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 
 // Import components section.
 import CreatorDetailSection from "src/components/common/artwork/CreatorDetailSection.vue";
-import AddFavoriteButton from "src/components/common/artwork/AddFavoriteButton.vue";
-import GetLinkButton from "src/components/common/artwork/GetLinkButton.vue";
-import ArtworkReportButton from "src/components/common/artwork/ArtworkReportButton.vue";
+import AddFavoriteButton from "src/components/common/artwork/buttons/AddFavoriteButton.vue";
+import GetLinkButton from "src/components/common/artwork/buttons/GetLinkButton.vue";
+import ArtworkReportButton from "src/components/common/artwork/buttons/ArtworkReportButton.vue";
 
 // Init authStore for later operation.
 const authStore = useAuthStore();

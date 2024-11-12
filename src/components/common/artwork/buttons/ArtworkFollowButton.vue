@@ -1,39 +1,47 @@
 <template>
     <q-btn
         v-if="isAuth"
-        @click="toggleFollowCreator"
+        @click="toggleFollowArtwork"
         class="text-subtitle1 text-weight-bold"
         :class="isFollowed ? 'bg-dark text-light' : 'bg-light-300 text-dark'"
         no-caps
         rounded
     >
         <span v-if="isFollowed" class="q-ml-xs flex items-center">
-            <q-avatar size="sm" class="bg-primary text-dark">
-                <q-icon name="check" size="xs" />
-            </q-avatar>
-            <span class="q-ml-xs"> Theo dõi </span>
+            <q-icon name="add_box" size="sm" class="text-primary" />
+            <span class="q-ml-sm"> Đã theo dõi </span>
         </span>
-        <span v-else class="q-ml-xs"> Theo dõi </span>
-        <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
-            <strong v-if="isFollowed" class="text-subtitle2">
-                Đã theo dõi
-            </strong>
-            <strong v-else class="text-subtitle2"> Theo dõi tác giả </strong>
+        <span v-else class="q-ml-xs flex items-center">
+            <q-icon name="add_box" size="sm" />
+            <span class="q-ml-sm"> Theo dõi </span>
+        </span>
+
+        <q-tooltip
+            v-if="!isFollowed"
+            anchor="top middle"
+            self="bottom middle"
+            :offset="[8, 8]"
+        >
+            <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
         </q-tooltip>
     </q-btn>
     <q-btn
         v-else
         class="text-subtitle1 text-weight-bold bg-light-300 text-dark"
-        @click="showDialog = true"
         no-caps
         rounded
+        @click="showDialog = true"
     >
-        Theo dõi
+        <span class="q-ml-xs flex items-center">
+            <q-icon name="add_box" size="sm" />
+            <span class="q-ml-sm"> Theo dõi </span>
+        </span>
         <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
-            <strong class="text-subtitle2"> Theo dõi tác giả </strong>
+            <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
         </q-tooltip>
+
+        <RequireLoginDialog v-model="showDialog" />
     </q-btn>
-    <RequireLoginDialog v-if="!isAuth" v-model="showDialog" />
 </template>
 
 <script>
@@ -41,25 +49,25 @@
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 // Import components section.
-import RequireLoginDialog from "../others/RequireLoginDialog.vue";
+import RequireLoginDialog from "../../others/RequireLoginDialog.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
 
 export default {
-    name: "CreatorFollowButton",
+    name: "ArtworkFollowButton",
     components: {
         RequireLoginDialog,
     },
     props: {
-        creatorId: {
+        artworkId: {
             required: true,
         },
     },
     data() {
         return {
-            isFollowed: false,
             showDialog: false,
+            isFollowed: false,
         };
     },
     computed: {
@@ -68,7 +76,7 @@ export default {
         },
     },
     methods: {
-        toggleFollowCreator() {
+        toggleFollowArtwork() {
             this.isFollowed = !this.isFollowed;
         },
     },

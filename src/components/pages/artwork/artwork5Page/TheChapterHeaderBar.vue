@@ -78,7 +78,7 @@
 import { UrlHelper } from "src/helpers/UrlHelper";
 
 // Import components section.
-import GetLinkButton from "src/components/common/artwork/GetLinkButton.vue";
+import GetLinkButton from "src/components/common/artwork/buttons/GetLinkButton.vue";
 
 export default {
     name: "TheChapterHeaderBar",

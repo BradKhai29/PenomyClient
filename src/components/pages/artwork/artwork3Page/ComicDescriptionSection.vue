@@ -125,8 +125,8 @@ import { NumberHelper } from "src/helpers/NumberHelper";
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 
 // Import components section.
-import ArtworkRateStarButton from "src/components/common/artwork/ArtworkRateStarButton.vue";
-import ArtworkFollowButton from "src/components/common/artwork/ArtworkFollowButton.vue";
+import ArtworkRateStarButton from "src/components/common/artwork/buttons/ArtworkRateStarButton.vue";
+import ArtworkFollowButton from "src/components/common/artwork/buttons/ArtworkFollowButton.vue";
 
 export default {
     name: "ComicDescriptionSection",

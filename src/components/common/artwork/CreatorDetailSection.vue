@@ -43,7 +43,7 @@
 <script>
 // Import dependencies section.
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
-import CreatorFollowButton from "./CreatorDetailSection.FollowButton.vue";
+import CreatorFollowButton from "./buttons/CreatorDetailSection.FollowButton.vue";
 
 // Init store for later operation.
 const userProfileStore = useUserProfileStore();
