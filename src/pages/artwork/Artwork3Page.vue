@@ -23,7 +23,7 @@
             class="col-12"></detail-body-section>
     </q-card>
     <div>
-        <commentloader :is-allow-comment="data.isAllowComment" :artworkId="route.params.artworkId" />
+        <commentloader :isAllowComment="data.isAllowComment" :artworkId="route.params.artworkId" />
         
     </div>
     <div class="recommend-section">
@@ -58,6 +58,7 @@ onMounted(async () => {
         data.value = artworkDetail;
         backgroundImageUrl.value = artworkDetail.thumbnailUrl;
         isLoading.value = false;
+        console.log(data.value);
     } catch (error) {
         console.log(error);
     }

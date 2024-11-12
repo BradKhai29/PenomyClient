@@ -9,21 +9,21 @@
                     Bình luận ({{ comments.length }})</span>
             </div>
         </q-tab>
-        <div v-if="isAllowComment">
-            <q-tab name="2" @click="getComments()">
+        <!-- <div v-if="isAllowComment"> -->
+            <q-tab v-if="isAllowComment" name="2" @click="getComments()">
                 <span class="text-black">Top</span>
             </q-tab>
-            <q-tab name="3" @click="getComments()">
+            <q-tab v-if="isAllowComment" name="3" @click="getComments()">
                 <span class="text-black">Mới nhất</span>
             </q-tab>
-        </div>
+        <!-- </div> -->
         <q-space />
     </q-tabs>
     <div v-if="!isAllowComment" class="flex items-center justify-center"
         style="background-color: #f2f2f2; margin: 2rem 260px; height: 10rem; border-radius: 3px; box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);">
         <h6>Phần bình luận đã bị tắt !</h6>
     </div>
-    <div v-if="!isAllowComment">
+    <div v-if="isAllowComment">
         <h5 class="no-comment" v-if="comments.length === 0">No comments</h5>
         <UserComment v-for="comment in comments" :key="comment.id" :comment="comment" @deleteComment="onCommentDelete"
             @replyComment="onReplyCommentCreate" @replyCommentDelete="onReplyCommentDelete" />
@@ -52,7 +52,7 @@ var props = defineProps({
     isAllowComment: {
         type: Boolean,
         required: false,
-    }
+    },
 });
 onMounted(() => {
     getComments();
@@ -74,12 +74,12 @@ async function getComments() {
             comments.value = response.data.body.commentList;
         });
     } else {
-        apiUrl.concat(`/anonymous`);
         await axios({
             url: apiUrl.concat(`/anonymous`),
             method: HttpMethod.GET,
             params: {
                 artworkId: props.artworkId,
+                commentSection: commentSection.value,
             },
         }).then((response) => {
             comments.value = response.data.body.commentList;
