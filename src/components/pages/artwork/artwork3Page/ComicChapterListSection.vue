@@ -5,8 +5,12 @@
                 id="chapter-list-header"
                 class="flex items-center justify-between"
             >
-                <q-skeleton v-if="isLoading" width="120px" height="30px" />
-                <span v-if="!isLoading" class="text-subtitle1"
+                <q-skeleton
+                    v-if="!loadedPaginationOption"
+                    width="120px"
+                    height="30px"
+                />
+                <span v-if="loadedPaginationOption" class="text-subtitle1"
                     >Tổng {{ totalChapters }} tập</span
                 >
                 <div class="flex items-center">
@@ -47,6 +51,7 @@
                     <AppPagination
                         :maxDisplayPages="5"
                         :max="5"
+                        :disable="isLoading"
                         v-model="currentPage"
                     />
                 </section>
@@ -66,8 +71,8 @@
                     class="flex justify-center q-mt-md"
                 >
                     <AppPagination
-                        :maxDisplayPages="5"
-                        :max="5"
+                        :maxDisplayPages="maxDisplayPages"
+                        :max="totalPages"
                         v-model="currentPage"
                     />
                 </section>
@@ -108,6 +113,7 @@ export default {
     data() {
         return {
             isLoading: true,
+            loadedPaginationOption: false,
             /**
              * Indicate to display the chapter list in descending order.
              * If true, the chapter with highest upload order will be displayed first.
@@ -115,52 +121,62 @@ export default {
              * @note Default is set True to display the newest chapter of this comic.
              */
             isDisplayDescending: true,
-            currentPage: 1,
             /**
              * The list contains the chapters to be displayed.
              *
              * @type {ArtworkChapterResponse[]} The type of this array.
              */
             displayChapterList: [],
+            maxDisplayPages: 5, // Only display 5 pages when pagination for better UI.
+            currentPage: 1,
             isPagination: false,
             /**
              * The number of total chapters this comic have.
              */
             totalChapters: 0,
+            totalPages: 0,
         };
     },
     computed: {
-        chapterDetail() {
-            return new ArtworkChapterResponse(
-                12,
-                1,
-                "Testing chapter",
-                "12/10/2023",
-                12000,
-                30030,
-                56500,
-                "https://res.cloudinary.com/dsjsmbdpw/image/upload/v1729903327/comics/8857013803077632/8857013803077632.png"
-            );
-        },
         isAuthor() {
             return userProfileStore.currentUserId == this.creatorId;
         },
     },
-    async mounted() {
-        const apiResponse =
-            await artworkDetailApiHandler.getArtworkChaptersByIdAsync(
-                this.comicId,
-                this.currentPage,
-                10
-            );
+    mounted() {
+        this.getComicChapterPaginationOptions();
+        this.getComicChapterListWithPaginationAsync();
+    },
+    methods: {
+        async getComicChapterPaginationOptions() {
+            const paginationOption =
+                await artworkDetailApiHandler.getComicChapterPaginationOptionByIdAsync(
+                    this.comicId
+                );
 
-        // Populate the data that fetched from API.
-        this.isPagination = apiResponse.isPagination;
-        this.totalChapters = apiResponse.chapterCount;
-        this.displayChapterList.push(...apiResponse.chapters);
+            if (paginationOption) {
+                this.isPagination = paginationOption.isPagination;
+                this.totalChapters = paginationOption.totalChapters;
+                this.totalPages = paginationOption.totalPages;
+            }
 
-        // Turn off isLoading flag to display the content.
-        this.isLoading = false;
+            // Set true to display the pagination detail.
+            this.loadedPaginationOption = true;
+        },
+        async getComicChapterListWithPaginationAsync() {
+            const apiResponse =
+                await artworkDetailApiHandler.getArtworkChaptersByIdAsync(
+                    this.comicId,
+                    this.currentPage
+                );
+
+            // Populate the data that fetched from API.
+            this.isPagination = apiResponse.isPagination;
+            this.totalChapters = apiResponse.chapterCount;
+            this.displayChapterList.push(...apiResponse.chapters);
+
+            // Turn off isLoading flag to display the content.
+            this.isLoading = false;
+        },
     },
 };
 </script>

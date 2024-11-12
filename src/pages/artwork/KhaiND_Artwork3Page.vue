@@ -17,6 +17,11 @@
             :artworkId="comicId"
             :hasSeries="hasSeries"
         />
+
+        <CommentLoader
+            :isAllowComment="comicDetail.allowComment"
+            :artworkId="comicId"
+        />
     </q-page>
 </template>
 
@@ -32,6 +37,7 @@ import { NotificationHelper } from "src/helpers/NotificationHelper";
 import ComicDetailSection from "src/components/pages/artwork/artwork3Page/ComicDetailSection.vue";
 import DescriptionAndChapterSection from "src/components/pages/artwork/artwork3Page/ComicDescriptionAndChapterSection.vue";
 import ArtworkDetailRecommendedSection from "src/components/common/artwork/ArtworkDetailRecommendedSection.vue";
+import CommentLoader from "src/components/common/artwork/Common/CommentLoader.vue";
 
 // Init authStore for later operation.
 const authStore = useAuthStore();
@@ -41,6 +47,7 @@ export default {
         ComicDetailSection,
         DescriptionAndChapterSection,
         ArtworkDetailRecommendedSection,
+        CommentLoader,
     },
     data() {
         return {
@@ -65,11 +72,9 @@ export default {
         }
     },
     async mounted() {
-        const bearerAccessToken = authStore.bearerAccessToken();
-
         const result = await artworkDetailApiHandler.getArtworkDetailByIdAsync(
             this.comicId,
-            bearerAccessToken
+            authStore.accessToken()
         );
 
         if (!result) {

@@ -1,5 +1,6 @@
 <template>
     <q-btn
+        v-if="isAuth"
         @click="toggleFollowArtwork"
         class="text-subtitle1 text-weight-bold"
         :class="isFollowed ? 'bg-dark text-light' : 'bg-light-300 text-dark'"
@@ -21,14 +22,37 @@
             <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
         </q-tooltip>
     </q-btn>
+    <q-btn
+        v-else
+        class="text-subtitle1 text-weight-bold bg-light-300 text-dark"
+        no-caps
+        rounded
+        @click="showDialog = true"
+    >
+        Theo dõi
+        <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
+            <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
+        </q-tooltip>
+
+        <RequireLoginDialog v-model="showDialog" />
+    </q-btn>
 </template>
 
 <script>
 // Import dependencies section.
-import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { useAuthStore } from "src/stores/common/AuthStore";
+
+// Import components section.
+import RequireLoginDialog from "../others/RequireLoginDialog.vue";
+
+// Init store for later operation.
+const authStore = useAuthStore();
 
 export default {
     name: "ArtworkFollowButton",
+    components: {
+        RequireLoginDialog,
+    },
     props: {
         artworkId: {
             required: true,
@@ -36,8 +60,14 @@ export default {
     },
     data() {
         return {
+            showDialog: false,
             isFollowed: false,
         };
+    },
+    computed: {
+        isAuth() {
+            return authStore.isAuth;
+        },
     },
     methods: {
         toggleFollowArtwork() {

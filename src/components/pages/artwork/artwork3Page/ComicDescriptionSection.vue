@@ -51,7 +51,9 @@
                     <q-icon name="star" size="sm" class="text-primary" />
                     <span class="metadata-ml">
                         {{ starRates }}
-                        <span v-if="starVotes != 0"> ({{ starVotes }}) </span>
+                        <span v-if="totalUsersRated != 0">
+                            ({{ totalUsersRated }})
+                        </span>
                     </span>
                     <q-tooltip
                         anchor="top middle"
@@ -65,7 +67,7 @@
                             </span>
                             trên tổng số
                             <span class="text-primary text-weight-bold">
-                                {{ starVotes }}
+                                {{ totalUsersRated }}
                             </span>
                             lượt vote.
                         </strong>
@@ -166,8 +168,8 @@ export default {
                 2
             );
         },
-        starVotes() {
-            return 0;
+        totalUsersRated() {
+            return this.comicDetail.totalUsersRated;
         },
         starRates() {
             return this.comicDetail.starRates;

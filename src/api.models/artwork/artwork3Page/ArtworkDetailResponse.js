@@ -11,6 +11,7 @@ class ArtworkDetailResponse {
      * @param {Number} viewCount The view count of this artwork.
      * @param {Number} favoriteCount The favorite count of this artwork.
      * @param {Number} starRates The star rate of this artwork.
+     * @param {Number} totalUsersRated The total numbers of user has rated this artwork.
      */
     constructor(
         name,
@@ -28,7 +29,8 @@ class ArtworkDetailResponse {
         commentCount,
         followCount,
         isUserFavorite,
-        isAllowComment
+        isAllowComment,
+        totalUsersRated
     ) {
         this.title = name;
         this.countryName = countryName;
@@ -46,6 +48,7 @@ class ArtworkDetailResponse {
         this.followCount = followCount;
         this.isUserFavorite = isUserFavorite;
         this.isAllowComment = isAllowComment;
+        this.totalUsersRated = totalUsersRated;
     }
 }
 export { ArtworkDetailResponse };

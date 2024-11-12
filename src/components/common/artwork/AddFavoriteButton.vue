@@ -36,36 +36,7 @@
             <strong class="text-subtitle2"> Yêu thích tác phẩm </strong>
         </q-tooltip>
     </q-btn>
-    <q-dialog v-if="!isAuth" v-model="showDialog">
-        <q-card>
-            <q-card-section>
-                <HeaderHighlight
-                    label="Vui lòng đăng nhập"
-                    class="text-h6 text-weight-bold"
-                />
-            </q-card-section>
-
-            <q-card-section class="q-pt-none text-subtitle1">
-                <span>Vui lòng đăng nhập để thực hiện chức năng này.</span>
-            </q-card-section>
-
-            <q-card-actions align="right">
-                <q-btn
-                    flat
-                    label="Đóng"
-                    class="text-bold text-primary"
-                    v-close-popup
-                />
-                <q-btn
-                    to="/auth/login"
-                    class="text-bold text-primary"
-                    flat
-                    label="Đăng nhập ngay"
-                    v-close-popup
-                />
-            </q-card-actions>
-        </q-card>
-    </q-dialog>
+    <RequireLoginDialog v-if="!isAuth" v-model="showDialog" />
 </template>
 
 <script>
@@ -75,7 +46,7 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Import components section.
-import HeaderHighlight from "../creatorStudio/HeaderHighlight.vue";
+import RequireLoginDialog from "../others/RequireLoginDialog.vue";
 
 // Init auth store for later operation.
 const authStore = useAuthStore();
@@ -83,7 +54,7 @@ const authStore = useAuthStore();
 export default {
     name: "AddFavoriteButton",
     components: {
-        HeaderHighlight,
+        RequireLoginDialog,
     },
     props: {
         artworkId: {
