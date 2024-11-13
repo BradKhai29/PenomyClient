@@ -4,20 +4,40 @@
         label="Dành cho bạn"
         class="for-you-expansion"
     >
-        <PersonalProfileLink />
+        <PersonalProfileLink v-if="isAuth" />
         <UploadArtworkLink />
         <ViewHistoryLink />
-        <ReportedLink />
+        <ReportedLink v-if="isAuth" />
     </q-expansion-item>
 </template>
 
-<script setup>
+<script>
+// Import dependencies section.
+import { useAuthStore } from "src/stores/common/AuthStore";
+
+// Import components section.
 import PersonalProfileLink from "./PersonalProfileLink.vue";
 import UploadArtworkLink from "./UploadArtworkLink.vue";
 import ViewHistoryLink from "./ViewHistoryLink.vue";
-import FavoriteArtworksLink from "./FavoriteArtworksLink.vue";
-import FollowedCreatorsLink from "./FollowedCreatorsLink.vue";
 import ReportedLink from "./ReportedLink.vue";
+
+// Init store for later operation.
+const authStore = useAuthStore();
+
+export default {
+    name: "ForYouExpansion",
+    components: {
+        PersonalProfileLink,
+        UploadArtworkLink,
+        ViewHistoryLink,
+        ReportedLink,
+    },
+    computed: {
+        isAuth() {
+            return authStore.isAuth;
+        },
+    },
+};
 </script>
 
 <style scoped>

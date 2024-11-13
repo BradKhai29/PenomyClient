@@ -2,7 +2,7 @@
     <DrawerLink
         title="Trang cá nhân"
         icon="person"
-        link="/profile"
+        link="/profile/user"
         :isSelected="isSelected"
     />
 </template>

@@ -12,16 +12,13 @@
                 style="bottom: 0; right: 0; z-index: 100"
             >
                 <q-icon
-                    class="bg-dark text-light shadow-1 border-radius-sm q-mr-sm artwork-badge"
+                    class="bg-dark text-light shadow-1 border-radius-sm q-mr-sm metadata-badge"
                     :name="isComic ? 'palette' : 'videocam'"
                     size="xs"
                 />
                 <q-img
-                    class="border-radius-sm shadow-1 artwork-badge"
-                    :src="
-                        originImageUrl ??
-                        'https://res.cloudinary.com/dsjsmbdpw/image/upload/v1727708598/penomy_assets/japan.png'
-                    "
+                    class="border-radius-sm shadow-1 metadata-badge"
+                    :src="originImageUrl"
                 />
             </div>
         </div>
@@ -316,11 +313,5 @@ export default {
     align-items: center !important;
     padding: 4px 8px !important;
     border-radius: 4px !important;
-}
-
-.artwork-badge {
-    width: 32px !important;
-    height: 24px !important;
-    text-align: center !important;
 }
 </style>

@@ -12,10 +12,7 @@
                     <q-icon name="view_list" class="text-primary" size="sm" />
                     <span class="q-ml-xs text-subtitle1">Đề xuất</span>
                 </div>
-                <div
-                    id="tab-navigation-items"
-                    class="flex items-center q-ml-sm"
-                >
+                <div id="tab-navigation-items" class="flex items-center">
                     <q-btn
                         square
                         dense
@@ -109,5 +106,11 @@ export default {
 <style scoped>
 .border-bottom-dark {
     border-bottom: 3px solid dark !important;
+}
+
+@media screen and (min-width: 560px) {
+    .penomy-tab {
+        margin-right: 8px !important;
+    }
 }
 </style>

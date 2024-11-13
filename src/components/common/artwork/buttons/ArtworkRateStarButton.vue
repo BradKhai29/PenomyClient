@@ -89,7 +89,7 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 import ArtworkRatingApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkRatingApiHandler";
 
 // Import components section.
-import RequireLoginDialog from "../others/RequireLoginDialog.vue";
+import RequireLoginDialog from "../../others/RequireLoginDialog.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();

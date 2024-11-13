@@ -20,6 +20,7 @@
         "auth-store",
         "pagination",
         "art12",
-        "refresh-token"
+        "refresh-token",
+        "g2"
     ]
 }

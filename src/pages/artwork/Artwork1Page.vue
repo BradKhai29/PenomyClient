@@ -1,24 +1,25 @@
 <template>
-    <q-page class="">
+    <q-page>
+        <TopRecommendedArtworkSlider :isComic="true" class="q-ma-md" />
         <RecentlyUpdated />
         <ComicByCategory />
-        <anime-by-category></anime-by-category>
+        <AnimeByCategory />
     </q-page>
 </template>
 
-<script setup>
+<script>
+import TopRecommendedArtworkSlider from "src/components/common/artwork/slider/TopRecommendedArtworkSlider.vue";
 import AnimeByCategory from "src/components/common/artwork/anime/AnimeByCategory.vue";
 import RecentlyUpdated from "src/components/common/artwork/comic/RecentlyUpdated.vue";
 import ComicByCategory from "src/components/common/artwork/comic/ComicByCategory.vue";
-import RecentlyUpdatedAnime from "src/components/common/artwork/anime/RecentlyUpdated.vue";
-import { ref } from "vue";
 
-function clickMe() {
-    authStore.increment();
-    counter.value = authStore.counter;
-}
-
-defineOptions({
-    name: "IndexPage",
-});
+export default {
+    name: "Artwork1Page",
+    components: {
+        TopRecommendedArtworkSlider,
+        AnimeByCategory,
+        RecentlyUpdated,
+        ComicByCategory,
+    },
+};
 </script>

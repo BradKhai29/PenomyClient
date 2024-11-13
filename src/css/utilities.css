@@ -5,6 +5,7 @@
     --primary: #53bf94;
 
     /* Light section */
+    --light-100: #f9fafc;
     --light-500: #dddddd;
 
     --dark-500: #78847e;
@@ -25,6 +26,10 @@
     border-bottom: 1px solid var(--light-500);
 }
 
+.border-sm-light {
+    border: 1px solid var(--light-100);
+}
+
 .border-sm-light-500 {
     border: 1px solid var(--light-500);
 }
@@ -43,6 +48,14 @@
 
 .border-md-invisible {
     border: var(--border-md-width) solid transparent;
+}
+
+.border-sm-primary {
+    border: 1px solid var(--primary);
+}
+
+.border-md-primary {
+    border: 2px solid var(--primary);
 }
 
 /* Border radius section */
@@ -69,6 +82,7 @@
     padding-left: 4px;
 }
 
+/* Other section */
 .penomy-tab {
     --primary: #53bf94;
     --border-width: 4px;
@@ -78,4 +92,10 @@
 
 .penomy-tab.selected {
     border-bottom: var(--border-width) solid var(--primary) !important;
+}
+
+.metadata-badge {
+    width: 32px !important;
+    height: 24px !important;
+    text-align: center !important;
 }

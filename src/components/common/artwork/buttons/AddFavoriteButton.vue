@@ -41,12 +41,16 @@
 
 <script>
 // Import dependencies section.
-import { FavoriteArtworkApiHandler } from "src/api.handlers/artwork/artwork3Page/FavoriteArtworkApiHandler";
+import {
+    ADD_FAVORITE_FAILED_RESULT,
+    FavoriteArtworkApiHandler,
+    REMOVE_FAVORITE_FAILED_RESULT,
+} from "src/api.handlers/artwork/artwork3Page/FavoriteArtworkApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Import components section.
-import RequireLoginDialog from "../others/RequireLoginDialog.vue";
+import RequireLoginDialog from "../../others/RequireLoginDialog.vue";
 
 // Init auth store for later operation.
 const authStore = useAuthStore();
@@ -100,6 +104,7 @@ export default {
     methods: {
         toggleFavorite() {
             this.isProcessing = true;
+
             // Call api that corresponding to isFavorite's value when toggle.
             if (this.isFavorite) {
                 this.removeFromFavoriteList();
@@ -114,7 +119,7 @@ export default {
                     authStore.bearerAccessToken()
                 );
 
-            if (favoriteCount == -1) {
+            if (favoriteCount == REMOVE_FAVORITE_FAILED_RESULT) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
 
                 return;
@@ -131,7 +136,7 @@ export default {
                     authStore.bearerAccessToken()
                 );
 
-            if (favoriteCount == -1) {
+            if (favoriteCount == ADD_FAVORITE_FAILED_RESULT) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
 
                 return;
