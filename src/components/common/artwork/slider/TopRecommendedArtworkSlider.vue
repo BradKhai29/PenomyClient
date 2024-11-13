@@ -2,10 +2,13 @@
     <section
         id="top-recommended-artwork-slider"
         class="shadow-1 border-radius-md row relative-position"
+        @mouseenter="holdCurrentSlide"
+        @mouseleave="continueAutoSlide"
     >
         <!-- Slider Buttons section -->
         <q-btn
             @click="toPrevious"
+            :disable="isLoading"
             unelevated
             flat
             class="slider-button"
@@ -19,6 +22,7 @@
         </q-btn>
         <q-btn
             @click="toNext"
+            :disable="isLoading"
             unelevated
             flat
             class="slider-button"
@@ -29,154 +33,67 @@
         <!-- Slider Buttons section -->
 
         <!-- Slider Indicator section -->
-        <div
-            class="absolute q-mb-lg"
-            style="
-                bottom: 0;
-                z-index: 100;
-                left: 50%;
-                transform: translate(-50%, 0);
-            "
-        >
+        <div v-if="!isLoading" class="slider-indicator q-mb-lg">
             <q-btn
-                v-for="i in maxSlide"
-                :key="i"
+                @click="goToSlide(index)"
+                v-for="index in maxSlide"
+                :key="index"
                 dense
+                unelevated
+                flat
                 padding="none"
                 icon="circle"
                 size="xs"
                 class="q-mx-xs"
-                :class="i == currentSlide ? 'text-primary' : 'text-light'"
+                :class="
+                    index == currentSlideIndex ? 'text-primary' : 'text-light'
+                "
             />
         </div>
         <!-- Slider Indicator section -->
 
-        <q-tab-panels v-model="selectedTab" animated class="col-grow">
+        <ArtworkSliderCardSkeleton v-if="isLoading" />
+
+        <q-tab-panels
+            v-if="!isLoading"
+            v-model="selectedSlide"
+            animated
+            class="col-grow"
+        >
             <q-tab-panel
-                v-for="i in 5"
-                :key="i"
-                :name="`artwork_${i}`"
+                v-for="(artwork, index) in displayArtworks"
+                :key="index"
+                :name="`${sliderPrefix}_${index + 1}`"
                 class="q-pa-none row"
             >
-                <div class="slider-card-wrapper" :style="sliderCardStyle">
-                    <div class="q-py-lg q-px-xl row slider-artwork-card">
-                        <div class="col-9 column">
-                            <div
-                                class="artwork-title flex items-center q-mb-md"
-                            >
-                                <q-btn
-                                    no-caps
-                                    padding="none"
-                                    class="text-h5 text-light q-mr-sm text-weight-bold"
-                                >
-                                    My Hero Academy ({{ i }})
-                                </q-btn>
-                                <span
-                                    class="text-primary text-weight-bold q-px-xs border-md-primary border-radius-sm text-subtitle2"
-                                >
-                                    {{ artworkType }}
-                                </span>
-                            </div>
-                            <div class="artwork-chapters flex items-center">
-                                <span class="text-subtitle1 text-light">
-                                    <span class="text-weight-bold"
-                                        >Số tập:</span
-                                    >
-                                    <span class="q-ml-xs">12/12</span>
-                                </span>
-                                <span
-                                    class="border-sm-light q-mx-sm"
-                                    style="padding: 6.4px 0px"
-                                ></span>
-                                <q-btn
-                                    to="/"
-                                    no-caps
-                                    padding="none"
-                                    flat
-                                    class="text-subtitle1 text-light q-mr-sm"
-                                >
-                                    <span class="text-weight-bold"
-                                        >Tập 14:</span
-                                    >
-                                    <span class="q-ml-xs"
-                                        >Sự kiện ở thành phố A</span
-                                    >
-                                </q-btn>
-                            </div>
-                            <div
-                                class="artwork-categories q-mt-xs q-mb-md flex items-center q-gutter-sm"
-                            >
-                                <span
-                                    class="bg-primary text-dark flex items-center q-py-xs q-px-sm border-radius-sm"
-                                >
-                                    <q-icon name="star" size="xs" />
-                                    <span
-                                        class="text-subtitle2 q-ml-xs text-weight-bold"
-                                    >
-                                        4.8
-                                    </span>
-                                </span>
-                                <span
-                                    v-for="i in maxSlide"
-                                    :key="i"
-                                    class="bg-light-100 text-dark flex items-center q-pa-xs border-radius-sm"
-                                >
-                                    <span
-                                        class="text-subtitle2 q-ml-xs text-weight-bold"
-                                    >
-                                        category {{ i }}
-                                    </span>
-                                </span>
-                            </div>
-                            <p class="text-subtitle2 text-light q-mb-none">
-                                Lorem ipsum, dolor sit amet consectetur
-                                adipisicing elit. Quaerat, officiis! Ratione
-                                quibusdam, sint consectetur ducimus repudiandae
-                                recusandae totam illo iure, dolores fugit
-                                corporis nobis. Laborum adipisci magnam sed
-                                aliquam! Quod? Lorem ipsum dolor sit amet
-                                consectetur, adipisicing elit. Commodi officia,
-                                sint quasi vel impedit illo dolore soluta nisi
-                                deleniti sunt ullam magni quae quod et vero
-                                voluptate assumenda architecto minus?
-                            </p>
-                            <div class="flex items-center q-mt-auto">
-                                <q-btn
-                                    to="/"
-                                    no-caps
-                                    class="bg-primary text-dark q-pa-sm border-radius-sm"
-                                >
-                                    <span class="bg-dark play-button">
-                                        <q-icon
-                                            name="play_arrow"
-                                            size="xs"
-                                            class="text-primary"
-                                        />
-                                    </span>
-                                    <span
-                                        class="text-subtitle1 text-weight-bold q-ml-xs"
-                                    >
-                                        Xem ngay ({{ i }})
-                                    </span>
-                                </q-btn>
-                            </div>
-                        </div>
-                        <div class="q-ml-auto col-auto">
-                            <q-img
-                                :src="mockUrl"
-                                class="border-radius-sm slider-artwork-image"
-                            />
-                        </div>
-                    </div>
-                </div>
+                <ArtworkSliderCard
+                    :isComic="isComic"
+                    :artworkDetail="artwork"
+                />
             </q-tab-panel>
         </q-tab-panels>
     </section>
 </template>
 
 <script>
+// Import dependencies section.
+import { TopRecommendedArtworkResponse } from "src/api.models/artwork/artwork1Page/TopRecommendedArtworkResponse";
+import { TopRecommendedArtworkApiHandler } from "src/api.handlers/artwork/artwork1Page/TopRecommendedArtworkApiHandler";
+
+// Import components section.
+import ArtworkSliderCard from "./ArtworkSliderCard.vue";
+import ArtworkSliderCardSkeleton from "./ArtworkSliderCardSkeleton.vue";
+import { ArtworkTypes } from "src/api.handlers/creatorStudio/creatorStudio5Page/CreatorStudio5ApiHandler";
+
+// Component constants.
+const SLIDER_PREFIX = "slide";
+
 export default {
     name: "TopRecommendedArtworkSlider",
+    components: {
+        ArtworkSliderCard,
+        ArtworkSliderCardSkeleton,
+    },
     props: {
         isComic: {
             type: Boolean,
@@ -185,51 +102,143 @@ export default {
     },
     data() {
         return {
-            selectedTab: "artwork_1",
-            currentSlide: 1,
-            maxSlide: 5,
+            isLoading: true,
+            selectedSlide: null,
+            currentSlideIndex: 1,
+            maxSlide: 0,
+            autoSlideIntervalId: null,
+            /**
+             * @type {TopRecommendedArtworkResponse[]} The type of this array.
+             */
+            displayArtworks: [],
         };
     },
     computed: {
-        artworkType() {
-            if (this.isComic) {
-                return "Truyện tranh";
-            }
-
-            return "Hoạt hình";
-        },
-        mockUrl() {
-            return "https://res.cloudinary.com/dsjsmbdpw/image/upload/v1729903382/comics/9070500101804032/9070500101804032.jpg";
-        },
-        sliderCardStyle() {
-            return {
-                background: `url(${this.mockUrl}) no-repeat center`,
-                backgroundSize: "100%",
-            };
+        sliderPrefix() {
+            return SLIDER_PREFIX;
         },
     },
+    async mounted() {
+        const artworkType = this.isComic
+            ? ArtworkTypes.COMIC
+            : ArtworkTypes.ANIMATION;
+
+        const result = await TopRecommendedArtworkApiHandler.getAsync(
+            artworkType
+        );
+
+        if (!result.isSuccess) {
+            return;
+        }
+
+        // Set related state for the slider.
+        this.displayArtworks = result.responseBody;
+        this.maxSlide = this.displayArtworks.length;
+
+        this.setSelectedSlide();
+        this.setUpAutoSlide();
+
+        // Turn off the isLoading flag to display content.
+        this.isLoading = false;
+    },
     methods: {
+        /**
+         * Set up for the slider to automatically slide to
+         * the next content for each 5 seconds.
+         */
+        setUpAutoSlide() {
+            const GO_TO_NEXT_SLIDE_TIMEOUT = 5000; // 5 seconds.
+
+            this.autoSlideIntervalId = setInterval(() => {
+                this.toNext();
+            }, GO_TO_NEXT_SLIDE_TIMEOUT);
+        },
+        stopAutoSlide() {
+            // Clear the current interval to stop auto slide.
+            clearInterval(this.autoSlideIntervalId);
+
+            this.autoSlideIntervalId = null;
+        },
+        /**
+         * Set the selected slide that corresponding
+         * to the current slide index.
+         */
+        setSelectedSlide() {
+            this.selectedSlide = `${SLIDER_PREFIX}_${this.currentSlideIndex}`;
+        },
         toNext() {
-            this.currentSlide++;
-            if (this.currentSlide > this.maxSlide) {
-                this.currentSlide = 1;
+            // Increase the slide index by 1 and update related state.
+            this.currentSlideIndex++;
+
+            if (this.currentSlideIndex > this.maxSlide) {
+                this.currentSlideIndex = 1;
             }
 
-            this.selectedTab = `artwork_${this.currentSlide}`;
+            this.setSelectedSlide();
         },
         toPrevious() {
-            this.currentSlide--;
-            if (this.currentSlide <= 0) {
-                this.currentSlide = this.maxSlide;
+            // Decrease the slide index by 1 and update related state.
+            this.currentSlideIndex--;
+
+            if (this.currentSlideIndex <= 0) {
+                this.currentSlideIndex = this.maxSlide;
             }
 
-            this.selectedTab = `artwork_${this.currentSlide}`;
+            this.setSelectedSlide();
+        },
+        /**
+         * Go to the specified slide by the input slide index.
+         * @param {Number} slideIndex The index of the slide that used base 1.
+         */
+        goToSlide(slideIndex) {
+            console.log(slideIndex);
+
+            const isSameSlide = slideIndex == this.currentSlideIndex;
+
+            if (isSameSlide) {
+                return;
+            }
+
+            // Set the current slide index and update related state.
+            this.currentSlideIndex = slideIndex;
+            this.setSelectedSlide();
+        },
+        holdCurrentSlide() {
+            this.stopAutoSlide();
+        },
+        continueAutoSlide() {
+            this.setUpAutoSlide();
         },
     },
 };
 </script>
 
-<style scoped>
+<style>
+.slider-button {
+    position: absolute;
+    z-index: 100 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.left-slider-button {
+    transform: rotate(180deg);
+}
+
+.slider-indicator {
+    position: absolute !important;
+    z-index: 100 !important;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.slider-artwork-card-skeleton {
+    background-color: rgba(4, 2, 2, 0.468) !important;
+}
+
 .slider-artwork-card {
     --padding-width: 64px;
 
@@ -247,23 +256,10 @@ export default {
     height: var(--height);
 }
 
-.play-button {
+.card-play-button {
     padding: 4px 4px !important;
     border-radius: 100% !important;
     display: flex;
     align-items: center;
-}
-
-.slider-button {
-    position: absolute;
-    z-index: 100 !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-.left-slider-button {
-    transform: rotate(180deg);
 }
 </style>
