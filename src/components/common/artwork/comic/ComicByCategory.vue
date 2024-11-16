@@ -77,13 +77,14 @@ onMounted(async () => {
         url: apiUrl,
         method: HttpMethod.GET,
         params: {
-            categoryId: "123456789012345685",
+            categoryId: "123456789012345696",
         },
     }).then((response) => {
         if (response.data.body.artworkList.length > 0) {
             artworks.value = response.data.body.artworkList;
             categoryName.value = response.data.body.category;
         }
+        console.log(response)
     });
 });
 </script>
