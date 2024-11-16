@@ -25,7 +25,7 @@
             <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
         </q-tooltip>
     </q-btn>
-    <q-btn
+    <q-btn 
         v-else
         class="text-subtitle1 text-weight-bold bg-light-300 text-dark"
         no-caps
@@ -46,7 +46,12 @@
 
 <script>
 // Import dependencies section.
+import {
+    FollowArtworkApiHandler
+} from "src/api.handlers/artwork/artwork3Page/FollowArtworkApiHandler";
+// Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Import components section.
 import RequireLoginDialog from "../../others/RequireLoginDialog.vue";
@@ -77,8 +82,49 @@ export default {
     },
     methods: {
         toggleFollowArtwork() {
-            this.isFollowed = !this.isFollowed;
+            this.isProcessing = true;
+
+            // Call api that corresponding to isFollowed's value when toggle.
+            if (this.isFollowed) {
+                this.removeFromFollowList();
+            } else {
+                this.addToFollowList();
+            }
         },
+        async addToFollowList() {
+            const isSuccess =
+                await FollowArtworkApiHandler.addToFollowAsync(
+                    this.artworkId,
+                    authStore.bearerAccessToken()
+                );
+
+            if (!isSuccess) {
+                NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
+
+                return;
+            }
+
+            // Update the state.
+            this.isFollowed = true;
+            this.isProcessing = false;
+        },
+        async removeFromFollowList() {
+            const isSuccess =
+                await FollowArtworkApiHandler.removeFollowAsync(
+                    this.artworkId,
+                    authStore.bearerAccessToken()
+                );
+
+            if (!isSuccess) {
+                NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
+
+                return;
+            }
+
+            // Update the state.
+            this.isFollowed = false;
+            this.isProcessing = false;
+        }
     },
 };
 </script>
