@@ -18,8 +18,8 @@ import { useProfileStore } from "src/stores/pages/userProfile/ProfileStore";
 const authStore = useAuthStore();
 const userProfileStore = useUserProfileStore();
 const profileStore = useProfileStore();
-profileStore.setupProfileStore();
 userProfileStore.setUp();
+if (authStore.isAuth) profileStore.setupProfileStore();
 
 export default {
     name: "TheUserAvatar",

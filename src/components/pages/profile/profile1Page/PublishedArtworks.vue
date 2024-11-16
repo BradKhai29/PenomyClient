@@ -33,8 +33,8 @@
                             <ComicCard :artwork="item" />
                         </div>
                     </div>
-                    <AppPagination class="justify-center flex q-mt-md" :max="comicPages"
-                        :model-value="1" @update:model-value="getArtworkByPage" />
+                    <AppPagination class="justify-center flex q-mt-md" :max="comicPages" :model-value="1"
+                        @update:model-value="getArtworkByPage" />
                 </q-tab-panel>
 
                 <q-tab-panel name="animation">
@@ -79,8 +79,10 @@ import AnimeCard from 'src/components/common/artwork/anime/RecentlyUpdatedArtwor
 import AppPagination from 'src/components/common/others/AppPagination.vue';
 import { useProfileStore } from 'src/stores/pages/userProfile/ProfileStore';
 import { GetArtworksByType } from 'src/api.handlers/userProfile/UserProfile1Page';
+import { useAuthStore } from 'src/stores/common/AuthStore';
 
 const profileStore = useProfileStore();
+const authStore = useAuthStore();
 
 const tab = ref('artwork');
 const artworkType = ref('comic');
@@ -100,12 +102,14 @@ const totalSeries = ref(localStorage.getItem("series"));
 const getArtworkApi = GetArtworksByType;
 
 onMounted(() => {
-    getArtworkByPage(1);
+    if (authStore.isAuth)
+        getArtworkByPage(1);
 })
 watch(
     () => curArtworkType.value,
     () => {
-        getArtworkByPage(1);
+        if (authStore.isAuth)
+            getArtworkByPage(1);
     }
 );
 
