@@ -1,64 +1,28 @@
 <template>
     <section class="coverImage-Input relative-position">
         <div class="invalid-file-extension-chip text-center" v-show="isInvalid">
-            <q-chip
-                icon="info"
-                class="q-mt-sm"
-                clickable
-                @click="isInvalid = false"
-            >
+            <q-chip icon="info" class="q-mt-sm" clickable @click="isInvalid = false">
                 {{ invalidMessage }}
             </q-chip>
         </div>
-        <section
-            class="display-area flex items-center justify-center"
-            :class="{ error: hasError }"
-        >
-            <img src="../../../assets/placeholder/1000x350.png" alt="" style="position: absolute; z-index: 0;">
-            <div
-                v-if="!hasImage"
-                class="flex column items-center text-weight-bold"
-                style="z-index: 1;"
-            >
+        <section class="display-area flex items-center justify-center" :class="{ error: hasError }">
+            <img src="../../../assets/placeholder/1000x350.png"
+                style="position: absolute;width: 100%; height: 100%; z-index: 0;">
+            <div v-if="!hasImage" class="flex column items-center text-weight-bold" style="z-index: 1;">
                 <label for="coverImage" class="flex">
-                    <q-badge
-                        class="q-py-xs text-subtitle1 upload-button flex items-center"
-                    >
+                    <q-badge class="q-py-xs text-subtitle1 upload-button flex items-center">
                         <span class="q-pr-xs">Tải ảnh</span>
                         <q-icon name="image" size="xs" />
                     </q-badge>
                 </label>
             </div>
-            <input
-                required
-                hidden
-                type="file"
-                name="coverImage"
-                id="coverImage"
-                accept="image/png, image/jpeg, image/jpg"
-                @input="onInputImage"
-                ref="coverImageInput"
-            />
-            <label
-                for="coverImage"
-                v-if="hasImage"
-                class="upload-image"
-                style="height: 100%; width: 100%"
-            >
-                <q-img v-if="hasImage"
-                    :src="imageSrc"
-                    loading="lazy"
-                    spinner-color="white"
-                    ratio="0.778"
-                    width="100%"
-                    height="100%"
-                />
+            <input required hidden type="file" name="coverImage" id="coverImage"
+                accept="image/png, image/jpeg, image/jpg" @input="onInputImage" ref="coverImageInput" />
+            <label for="coverImage" v-if="hasImage" class="upload-image" style="height: 100%; width: 100%">
+                <q-img v-if="hasImage" :src="imageSrc" loading="lazy" spinner-color="white" ratio="0.778" width="100%"
+                    height="100%" />
             </label>
-            <span
-                v-if="hasImage"
-                class="remove-image-button"
-                @click="clearImage"
-            >
+            <span v-if="hasImage" class="remove-image-button" @click="clearImage">
                 <q-icon name="close" size="sm" />
             </span>
         </section>
@@ -202,7 +166,7 @@ export default {
     max-width: 100%;
     height: 350px;
     border: 2px 2px 0 0 solid var(--light-500);
-    border-radius: var(--border-radius);
+    /* border-radius: var(--border-radius); */
 }
 
 .error {
@@ -220,7 +184,7 @@ export default {
 }
 
 .upload-image {
-    border-radius: var(--border-radius) !important;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
     overflow: hidden;
 }
 
@@ -242,5 +206,3 @@ export default {
     cursor: pointer;
 }
 </style>
-
-

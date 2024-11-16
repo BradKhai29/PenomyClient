@@ -25,7 +25,8 @@
                 <div class="q-mt-md group-infor">
 
                     <q-input model-value="" class="q-mb-md" outlined v-model="groupInfo.groupName" label="Tên nhóm *"
-                        lazy-rules :rules="[val => val && val.length > 0 || 'Trường này không được trống!']" />
+                        lazy-rules
+                        :rules="[val => val && val.length > 0 || 'Trường này không được trống!', val => val && val.length <= 200 || 'Tối đa 200 ký tự']" />
                     <q-input class="q-mb-lg" outlined v-model="groupInfo.groupDescription"
                         label="Mô tả (Không bắt buộc)" />
 
@@ -56,7 +57,7 @@
                 </div>
 
                 <div class="row q-pt-sm q-gutter-sm group-buttons">
-                    <q-btn icon="close" />
+                    <q-btn icon="close" @click="router.back()" color="negative" />
                     <q-item-section>
                         <q-btn type="submit" :disable="groupInfo.groupName == '' || groupInfo.isPublic == ''"
                             label="Tạo nhóm" color="primary" />
@@ -136,6 +137,7 @@ import CreateGroupApiHandler from 'src/api.handlers/social/social2Page/CreateGro
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { useAuthStore } from 'src/stores/common/AuthStore';
 import { useRouter } from 'vue-router';
+import { route } from 'quasar/wrappers';
 
 const userProfileStore = useUserProfileStore();
 const authStore = useAuthStore();
@@ -186,7 +188,7 @@ const tabButtons = ref([
 
 onMounted(() => {
     setTimeout(() => {
-        if(!authStore.isAuth) router.push('/auth/login');
+        if (!authStore.isAuth) router.push('/auth/login');
     }, 25);
 })
 
@@ -200,7 +202,7 @@ async function onSubmit() {
 
         if (result.isSuccess) {
             NotificationHelper.notifySuccess("Đã tạo thành công");
-            
+
             // Redirect to the group detail page after creating success.
             router.push(`/social/groups`);
         } else {
