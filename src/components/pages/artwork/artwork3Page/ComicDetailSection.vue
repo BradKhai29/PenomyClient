@@ -122,7 +122,7 @@
 
             <CreatorDetailSection
                 class="artwork-detail-section q-mt-md"
-                :creatorId="1"
+                :creatorId="'123456789012345679'"
                 :artworkId="comicId"
             />
         </section>
