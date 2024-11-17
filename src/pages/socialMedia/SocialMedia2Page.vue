@@ -57,10 +57,10 @@
                 </div>
 
                 <div class="row q-pt-sm q-gutter-sm group-buttons">
-                    <q-btn icon="close" @click="router.back()" color="negative" />
+                    <q-btn :disable="isLoadingBtn" icon="close" @click="router.back()" color="negative" />
                     <q-item-section>
                         <q-btn type="submit" :disable="groupInfo.groupName == '' || groupInfo.isPublic == ''"
-                            label="Tạo nhóm" color="primary" />
+                            label="Tạo nhóm" color="primary" :loading="isLoadingBtn" />
                     </q-item-section>
                 </div>
             </q-form>
@@ -144,6 +144,7 @@ const authStore = useAuthStore();
 const createGroupApi = CreateGroupApiHandler.CreateGroup;
 const router = useRouter();
 const emptyProps = ref('');
+const isLoadingBtn = ref(false)
 const groupInfo = ref({
     groupName: '',
     groupDescription: '',
@@ -195,6 +196,7 @@ onMounted(() => {
 async function onSubmit() {
     verifyInput();
     if (isValidInput.value == 1) {
+        isLoadingBtn.value = true
         // Get the result after creating group.
         const result = await createGroupApi(
             groupInfo.value
@@ -204,12 +206,14 @@ async function onSubmit() {
             NotificationHelper.notifySuccess("Đã tạo thành công");
 
             // Redirect to the group detail page after creating success.
-            router.push(`/social/groups`);
+            console.log(result.responseBody);
+            router.push(`/social/group/${result.responseBody}`);
         } else {
             NotificationHelper.notifyError(
                 result.message ?? "Có lỗi xảy ra khi tạo"
             );
         }
+        isLoadingBtn.value = false
     }
 }
 

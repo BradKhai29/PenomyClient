@@ -7,21 +7,9 @@ const routeDefinition = [
         component: () => import("src/layouts/SocialLayout.vue"),
         children: [
             {
-                path: "feeds",
+                path: "group/:id",
                 component: () =>
-                    import("pages/socialMedia/SocialMedia1Page.vue"),
-            },
-        ],
-    },
-
-    {
-        path: domainRootPath.socialMedia,
-        component: () => import("src/layouts/OverlaySocialLayout.vue"),
-        children: [
-            {
-                path: "groups",
-                component: () =>
-                    import("pages/socialMedia/SocialMedia1Page.vue"),
+                    import("pages/socialMedia/SocialMedia3Page.vue"),
             },
         ],
     },
