@@ -36,6 +36,8 @@
                 <q-list class="drawer-gutter">
                     <HomeLink />
                     <SocialMediaLink />
+                    <DrawerGroupLink v-if="group == null" :title="''" link="/social/group/create" :isSelected="false"
+                        :createdAt="''" />
                 </q-list>
 
                 <MyGroupsExpansion />
@@ -68,6 +70,7 @@ import SocialMediaLink from "components/layouts/MainLayout/drawers/SocialMediaLi
 import MyGroupsExpansion from "src/components/layouts/MainLayout/drawers/MyGroupsExpansion.vue";
 import JoinGroupsExpansion from "src/components/layouts/MainLayout/drawers/JoinGroupsExpansion.vue";
 import OthersExpansion from "components/layouts/OthersExpansion.vue";
+import DrawerGroupLink from "src/components/layouts/DrawerGroupLink.vue";
 
 defineOptions({
     name: "MainLayout",

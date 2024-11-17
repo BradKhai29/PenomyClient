@@ -1,23 +1,34 @@
 <template>
-    <q-item clickable tag="a" :to="props.link" class="flex flex-row items-center app-drawer-link"
+    <q-item v-if="props.createdAt" clickable tag="a" :to="props.link" class="flex flex-row items-center app-drawer-link"
         :class="{ 'is-selected': isSelected }">
-        <q-tooltip v-if="props.createdAt" anchor="top middle" self="bottom middle" :offset="[10, 10]">
+        <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
             {{ props.title }}
         </q-tooltip>
 
-        <q-img v-if="props.createdAt" :src="props.image" width="3rem" height="3rem" style="border-radius: 5px;" />
-        <div class="q-pl-md" v-if="props.createdAt">
+        <q-img :src="props.image" width="3rem" height="3rem" style="border-radius: 5px;" />
+        <div class="q-pl-md">
             <div>
                 {{ props.title }}
             </div>
             <span class="text-caption">Ngày tạo: {{ props.createdAt }}</span>
         </div>
 
-        <!-- Create group link -->
-        <div class="q-pl-sm" v-if="!props.createdAt">
-            <q-icon name="add_circle" size="1.5rem" color="primary"/>
-            <span class="q-ml-sm">Tạo nhóm của bạn</span>
+    </q-item>
+    <!-- Create group link -->
+    <q-item v-if="!props.createdAt && !props.title" clickable tag="a" :to="props.link"
+        style="background-color: #e5f3ef;" class="flex flex-row items-center app-drawer-link"
+        :class="{ 'is-selected': isSelected }">
+        <div>
+            <q-icon name="add_circle" size="1.5rem" color="primary" />
+            <span class="q-ml-md">Tạo nhóm của bạn</span>
         </div>
+    </q-item>
+
+    <!-- View all groups -->
+    <q-item v-if="!props.createdAt && props.title" clickable tag="a" 
+        :to="props.link" style="background-color: #e5f3ef;"
+        class="flex flex-row items-center app-drawer-link justify-center">
+        {{ props.title }}
     </q-item>
 </template>
 

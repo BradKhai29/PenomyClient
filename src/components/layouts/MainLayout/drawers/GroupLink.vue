@@ -1,8 +1,8 @@
 <template>
     <DrawerLink v-if="group != null" :title="group.name" :link="toLink" :isSelected="isSelected"
-        :createdAt="group.createdAt" :image="group.coverImgUrl"/>
-    <DrawerLink v-if="group == null" :title="''" :link="toLink" :isSelected="false"
-        :createdAt="''" />
+        :createdAt="group.createdAt" :image="group.coverImgUrl" />
+    <DrawerLink v-if="group == null" :title="'Xem tất cả'" link="toLink" :isSelected="false" :createdAt="''" />
+
 </template>
 
 <script setup>
@@ -18,6 +18,7 @@ const props = defineProps({
 const toLink = props.group == null ? `/social/group/create` : `/social/group/${props.group.id}`
 onMounted(() => {
     if (props.group != null) {
+
         if (route.path == `/social/group/${props.group.id}`) {
             isSelected.value = true;
         }
