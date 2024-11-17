@@ -1,5 +1,8 @@
 <template>
-    <DrawerLink :title="group.name" :image="group.coverImgUrl" :link="toLink" :isSelected="isSelected" :createdAt="group.createdAt"/>
+    <DrawerLink v-if="group != null" :title="group.name" :link="toLink" :isSelected="isSelected"
+        :createdAt="group.createdAt" :image="group.coverImgUrl"/>
+    <DrawerLink v-if="group == null" :title="''" :link="toLink" :isSelected="false"
+        :createdAt="''" />
 </template>
 
 <script setup>
@@ -12,10 +15,12 @@ const isSelected = ref(false);
 const props = defineProps({
     group: Object,
 })
-const toLink = `/social/group/${props.group.id}`
+const toLink = props.group == null ? `/social/group/create` : `/social/group/${props.group.id}`
 onMounted(() => {
-    if (route.path == `/social/group/${props.group.id}`) {
-        isSelected.value = true;
+    if (props.group != null) {
+        if (route.path == `/social/group/${props.group.id}`) {
+            isSelected.value = true;
+        }
     }
 })
 watch(
@@ -28,4 +33,5 @@ watch(
         }
     }
 );
+
 </script>

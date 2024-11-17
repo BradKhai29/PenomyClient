@@ -7,7 +7,7 @@ const routeDefinition = [
         component: () => import("src/layouts/OverlaySocialLayout.vue"),
         children: [
             {
-                path: "groups/create",
+                path: "group/create",
                 component: () =>
                     import("pages/socialMedia/SocialMedia2Page.vue"),
             },

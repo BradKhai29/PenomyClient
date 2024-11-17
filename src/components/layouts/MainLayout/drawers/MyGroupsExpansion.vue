@@ -2,6 +2,7 @@
     <q-expansion-item default-opened label="Nhóm do bạn quản lý" class="my-groups-expansion">
         <div>
             <GroupLink v-for="group in createdGroups" :key="group.id" :group="group" />
+            <GroupLink/>
         </div>
     </q-expansion-item>
 </template>
