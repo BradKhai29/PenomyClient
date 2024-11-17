@@ -37,6 +37,7 @@
                     <HomeLink />
                     <SocialMediaLink />
                 </q-list>
+                
                 <MyGroupsExpansion />
                 <div class="drawer-gutter"></div>
 
@@ -54,13 +55,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 
 // Import components from header section.
 import TheLogoButton from "src/components/layouts/MainLayout/headers/TheLogoButton.vue";
 import TheSearchBar from "src/components/layouts/MainLayout/headers/TheSearchBar.vue";
-import TheWatchingAreaDropdown from "src/components/layouts/MainLayout/headers/TheWatchingAreaDropdown.vue";
-import TheCategoriesDropdown from "src/components/layouts/MainLayout/headers/TheCategoriesDropdown.vue";
 import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvatar.vue";
 
 // Import components from drawer section.

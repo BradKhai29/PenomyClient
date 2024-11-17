@@ -5,10 +5,10 @@
         class="my-groups-expansion"
     >
     <div>
+        <!-- <GroupLink/>
         <GroupLink/>
         <GroupLink/>
-        <GroupLink/>
-        <GroupLink/>
+        <GroupLink/> -->
     </div>
     </q-expansion-item>
 </template>
@@ -26,7 +26,7 @@ const authStore = useAuthStore();
 export default {
     name: "ForYouExpansion",
     components: {
-        GroupLink
+        // GroupLink
     },
     computed: {
         isAuth() {

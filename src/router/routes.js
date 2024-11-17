@@ -35,6 +35,7 @@ import creatorProfile1PageRoute from "./creatorProfile/CreatorProfile1PageRoute"
 
 // Social media page routes section.
 import socialMedia1PageRoute from "./socialMedia/SocialMedia1PageRoute";
+import socialMedia2PageRoute from "./socialMedia/SocialMedia2PageRoute";
 // Always leave this as last one, but you can also remove it
 const errorNotFoundPageRoute = {
     path: "/:catchAll(.*)*",
@@ -74,6 +75,7 @@ const routes = [
     ...creatorProfile1PageRoute,
     // Social media routes.
     ...socialMedia1PageRoute,
+    ...socialMedia2PageRoute,
     // Other routes.
     errorNotFoundPageRoute,
 ];
