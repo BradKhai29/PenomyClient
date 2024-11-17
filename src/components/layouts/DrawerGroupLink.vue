@@ -1,7 +1,11 @@
 <template>
     <q-item clickable tag="a" :to="props.link" class="flex flex-row items-center app-drawer-link"
         :class="{ 'is-selected': isSelected }">
-        <q-img v-if="props.createdAt" :src="props.image" width="3.6rem" height="3rem" style="border-radius: 5px;" />
+        <q-tooltip v-if="props.createdAt" anchor="top middle" self="bottom middle" :offset="[10, 10]">
+            {{ props.title }}
+        </q-tooltip>
+
+        <q-img v-if="props.createdAt" :src="props.image" width="3rem" height="3rem" style="border-radius: 5px;" />
         <div class="q-pl-md" v-if="props.createdAt">
             <div>
                 {{ props.title }}
@@ -11,7 +15,7 @@
 
         <!-- Create group link -->
         <div class="q-pl-sm" v-if="!props.createdAt">
-            <q-icon name="add_circle" size="1.5rem"/>
+            <q-icon name="add_circle" size="1.5rem" color="primary"/>
             <span class="q-ml-sm">Tạo nhóm của bạn</span>
         </div>
     </q-item>
