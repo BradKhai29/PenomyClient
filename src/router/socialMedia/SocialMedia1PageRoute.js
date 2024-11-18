@@ -11,6 +11,11 @@ const routeDefinition = [
                 component: () =>
                     import("pages/socialMedia/SocialMedia1Page.vue"),
             },
+            {
+                path: "group/:id",
+                component: () =>
+                    import("pages/socialMedia/SocialMedia1Page.vue"),
+            },
         ],
     },
 
@@ -22,11 +27,6 @@ const routeDefinition = [
                 path: "groups",
                 component: () =>
                     import("pages/socialMedia/SocialMedia1Page.vue"),
-            },
-            {
-                path: "groups/create",
-                component: () =>
-                    import("pages/socialMedia/SocialMedia2Page.vue"),
             },
         ],
     },

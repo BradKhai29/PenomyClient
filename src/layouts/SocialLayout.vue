@@ -36,7 +36,10 @@
                 <q-list class="drawer-gutter">
                     <HomeLink />
                     <SocialMediaLink />
+                    <DrawerGroupLink v-if="group == null" :title="''" link="/social/group/create" :isSelected="false"
+                        :createdAt="''" />
                 </q-list>
+
                 <MyGroupsExpansion />
                 <div class="drawer-gutter"></div>
 
@@ -54,13 +57,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 // Import components from header section.
 import TheLogoButton from "src/components/layouts/MainLayout/headers/TheLogoButton.vue";
 import TheSearchBar from "src/components/layouts/MainLayout/headers/TheSearchBar.vue";
-import TheWatchingAreaDropdown from "src/components/layouts/MainLayout/headers/TheWatchingAreaDropdown.vue";
-import TheCategoriesDropdown from "src/components/layouts/MainLayout/headers/TheCategoriesDropdown.vue";
 import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvatar.vue";
 
 // Import components from drawer section.
@@ -69,9 +70,19 @@ import SocialMediaLink from "components/layouts/MainLayout/drawers/SocialMediaLi
 import MyGroupsExpansion from "src/components/layouts/MainLayout/drawers/MyGroupsExpansion.vue";
 import JoinGroupsExpansion from "src/components/layouts/MainLayout/drawers/JoinGroupsExpansion.vue";
 import OthersExpansion from "components/layouts/OthersExpansion.vue";
+import DrawerGroupLink from "src/components/layouts/DrawerGroupLink.vue";
 
 defineOptions({
     name: "MainLayout",
+});
+
+onMounted(() => {
+    // if (window.performance && window.performance.getEntriesByType('navigation').length > 0) {
+    //     const navigationEntry = window.performance.getEntriesByType('navigation')[0];
+    //     if (navigationEntry.type === 'reload') {
+    //         showDrawer.value = false;
+    //     }
+    // }
 });
 
 const showDrawer = ref(false);

@@ -1,37 +1,38 @@
 <template>
-    <DrawerLink
-        :title="GroupName"
-        icon="person"
-        :link="toLink"
-        :isSelected="isSelected"
-    />
+    <DrawerLink v-if="group != null" :title="group.name" :link="toLink" :isSelected="isSelected"
+        :createdAt="group.createdAt" :image="group.coverImgUrl" />
+    <DrawerLink v-if="group == null" :title="'Xem tất cả'" link="toLink" :isSelected="false" :createdAt="''" />
+
 </template>
 
 <script setup>
-import { ref, watch, defineProps } from "vue";
+import { ref, watch, defineProps, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import DrawerLink from "components/layouts/DrawerLink.vue";
+import DrawerLink from "components/layouts/DrawerGroupLink.vue";
 
 const route = useRoute();
 const isSelected = ref(false);
 const props = defineProps({
-    GroupName: {
-        type: String,
-        required: true,
-        default: "default",
-    },
-    GroupId: String
+    group: Object,
 })
-const toLink = `/social/group/${props.GroupName}`
+const toLink = props.group == null ? `/social/group/create` : `/social/group/${props.group.id}`
+onMounted(() => {
+    if (props.group != null) {
 
+        if (route.path == `/social/group/${props.group.id}`) {
+            isSelected.value = true;
+        }
+    }
+})
 watch(
     () => route.path,
     (newPath, _) => {
-        if (newPath && newPath == `/social/group/:id`) {
+        if (newPath && newPath == `/social/group/${props.group.id}`) {
             isSelected.value = true;
         } else {
             isSelected.value = false;
         }
     }
 );
+
 </script>

@@ -9,6 +9,13 @@
         <GroupLink/>
         <GroupLink/>
         <GroupLink/>
+        <GroupLink/>
+        <GroupLink/>
+        <GroupLink/>
+        <GroupLink/>
+        <GroupLink/>
+        <GroupLink/>
+        <GroupLink/>
     </div>
     </q-expansion-item>
 </template>
@@ -42,10 +49,4 @@ export default {
     background-color: #f9fafc !important;
     font-weight: bold !important;
 }
-
-.my-groups-expansion div {
-    max-height: 30vh;
-    overflow-y: auto;
-}
-
 </style>
