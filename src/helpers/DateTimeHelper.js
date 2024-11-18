@@ -78,6 +78,7 @@ function toISODateString(inputDateTime) {
 
 /**
  * Formats an ISO-8601 datetime string to specified output format.
+ * @note if the output format is not specified, this method will use the default format ("dd/mm/yyyy hh:mm")
  *
  * @param {String} isoDateStr - The ISO 8601 datetime string (Ex: '2024-10-11T08:25:49.041481Z').
  * @param {String} outputFormat - The output format (Ex: 'dd/mm/yyyy hh:mm:ss').

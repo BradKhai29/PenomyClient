@@ -1,5 +1,6 @@
 <template>
     <section
+        v-if="hasContent"
         id="top-recommended-artwork-slider"
         class="shadow-1 border-radius-md row relative-position"
         @mouseenter="holdCurrentSlide"
@@ -58,6 +59,8 @@
             v-if="!isLoading"
             v-model="selectedSlide"
             animated
+            swipeable
+            @before-transition="handleTransition"
             class="col-grow"
         >
             <q-tab-panel
@@ -103,6 +106,7 @@ export default {
     data() {
         return {
             isLoading: true,
+            hasContent: true,
             selectedSlide: null,
             currentSlideIndex: 1,
             maxSlide: 0,
@@ -123,19 +127,21 @@ export default {
             ? ArtworkTypes.COMIC
             : ArtworkTypes.ANIMATION;
 
-        const result = await TopRecommendedArtworkApiHandler.getAsync(
-            artworkType
-        );
+        const topRecommendedArtworks =
+            await TopRecommendedArtworkApiHandler.getAsync(artworkType);
 
-        if (!result.isSuccess) {
+        // Only display the slider when the response top
+        // recommended artwork list is not emtpy.
+        if (!topRecommendedArtworks) {
+            this.hasContent = false;
             return;
         }
 
-        // Set related state for the slider.
-        this.displayArtworks = result.responseBody;
+        // Set related state for the slider to display the content.
+        this.displayArtworks = topRecommendedArtworks;
         this.maxSlide = this.displayArtworks.length;
 
-        this.setSelectedSlide();
+        this.moveToCurrentSlide();
         this.setUpAutoSlide();
 
         // Turn off the isLoading flag to display content.
@@ -144,10 +150,10 @@ export default {
     methods: {
         /**
          * Set up for the slider to automatically slide to
-         * the next content for each 5 seconds.
+         * the next content for each 8 seconds.
          */
         setUpAutoSlide() {
-            const GO_TO_NEXT_SLIDE_TIMEOUT = 5000; // 5 seconds.
+            const GO_TO_NEXT_SLIDE_TIMEOUT = 8000;
 
             this.autoSlideIntervalId = setInterval(() => {
                 this.toNext();
@@ -163,8 +169,12 @@ export default {
          * Set the selected slide that corresponding
          * to the current slide index.
          */
-        setSelectedSlide() {
+        moveToCurrentSlide() {
             this.selectedSlide = `${SLIDER_PREFIX}_${this.currentSlideIndex}`;
+        },
+        handleTransition(newSlide, oldSlide) {
+            console.log("Old", oldSlide);
+            console.log("New", newSlide);
         },
         toNext() {
             // Increase the slide index by 1 and update related state.
@@ -174,7 +184,7 @@ export default {
                 this.currentSlideIndex = 1;
             }
 
-            this.setSelectedSlide();
+            this.moveToCurrentSlide();
         },
         toPrevious() {
             // Decrease the slide index by 1 and update related state.
@@ -184,7 +194,7 @@ export default {
                 this.currentSlideIndex = this.maxSlide;
             }
 
-            this.setSelectedSlide();
+            this.moveToCurrentSlide();
         },
         /**
          * Go to the specified slide by the input slide index.
@@ -201,7 +211,7 @@ export default {
 
             // Set the current slide index and update related state.
             this.currentSlideIndex = slideIndex;
-            this.setSelectedSlide();
+            this.moveToCurrentSlide();
         },
         holdCurrentSlide() {
             this.stopAutoSlide();

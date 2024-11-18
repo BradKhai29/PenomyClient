@@ -165,7 +165,7 @@ export default {
         latestChapterLink() {
             if (this.isComic) {
                 return {
-                    name: Art5RouteNames.ChapterDetail,
+                    name: Art5RouteNames.ComicChapterDetail,
                     params: {
                         comicId: this.artworkDetail.id,
                         chapterId: this.artworkDetail.latestChapterId,
@@ -175,7 +175,7 @@ export default {
 
             // If the current area is animation, then get link for animation chapter.
             return {
-                name: Art5RouteNames.ChapterDetail,
+                name: Art5RouteNames.ComicChapterDetail,
                 params: {
                     comicId: this.artworkDetail.id,
                     chapterId: this.artworkDetail.latestChapterId,

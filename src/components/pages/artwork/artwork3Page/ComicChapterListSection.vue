@@ -1,5 +1,5 @@
 <template>
-    <section class="col-grow">
+    <section id="chapter-list-section" class="col-grow">
         <div class="q-pa-md">
             <div
                 id="chapter-list-header"
@@ -180,3 +180,11 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+#chapter-list-display-section {
+    --min-height: 400px;
+
+    min-height: var(--min-height);
+}
+</style>

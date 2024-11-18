@@ -181,7 +181,7 @@ export default {
          */
         chapterDetailRoute() {
             return {
-                name: Art5RouteNames.ChapterDetail,
+                name: Art5RouteNames.ComicChapterDetail,
                 params: {
                     comicId: this.comicId,
                     chapterId: this.chapterDetail.id,

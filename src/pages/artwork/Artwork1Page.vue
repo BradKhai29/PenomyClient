@@ -1,25 +1,26 @@
 <template>
     <q-page>
         <TopRecommendedArtworkSlider :isComic="true" class="q-ma-md" />
-        <RecentlyUpdated />
-        <ComicByCategory />
-        <AnimeByCategory />
+        <RecentlyUpdatedSection class="q-ma-md" />
+        <RecommendedByCategorySection :isComic="true" class="q-ma-md" />
     </q-page>
 </template>
 
 <script>
 import TopRecommendedArtworkSlider from "src/components/common/artwork/slider/TopRecommendedArtworkSlider.vue";
-import AnimeByCategory from "src/components/common/artwork/anime/AnimeByCategory.vue";
+import RecentlyUpdatedSection from "src/components/common/artwork/recently_updated/RecentlyUpdatedSection.vue";
 import RecentlyUpdated from "src/components/common/artwork/comic/RecentlyUpdated.vue";
-import ComicByCategory from "src/components/common/artwork/comic/ComicByCategory.vue";
+import RecommendedByCategorySection from "src/components/common/artwork/recommended/RecommendedByCategorySection.vue";
 
 export default {
     name: "Artwork1Page",
     components: {
         TopRecommendedArtworkSlider,
-        AnimeByCategory,
-        RecentlyUpdated,
-        ComicByCategory,
+        // RecentlyUpdated,
+        RecentlyUpdatedSection,
+        RecommendedByCategorySection,
+        // AnimeByCategory,
+        // ComicByCategory,
     },
 };
 </script>

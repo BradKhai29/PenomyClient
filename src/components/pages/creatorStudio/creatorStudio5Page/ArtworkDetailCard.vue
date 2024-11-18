@@ -66,7 +66,7 @@
                         dense
                         no-caps
                         class="add-chapter-btn bg-dark text-light"
-                        @click="goToAddChapter"
+                        :to="addChapterLink"
                     >
                         <q-icon name="add" size="xs" />
                         <span class="q-ml-xs">Thêm tập</span>
@@ -85,7 +85,7 @@
                                 style="min-width: 120px"
                             >
                                 <q-item
-                                    @click="goToEdit"
+                                    :to="artworkEditLink"
                                     clickable
                                     v-close-popup
                                 >
@@ -195,8 +195,6 @@ export default {
         thumbnailUrl: {
             type: String,
             required: true,
-            default:
-                "https://fastly.picsum.photos/id/274/500/300.jpg?hmac=JQai5ZulqodPNmhQpK3-PAyGb2jFHjvmtFgIgBKOhBI",
         },
         originImageUrl: {
             type: String,
@@ -248,6 +246,19 @@ export default {
             isProcessing: false,
         };
     },
+    computed: {
+        artworkEditLink() {
+            return `/studio/comic/edit/${this.id}`;
+        },
+        addChapterLink() {
+            const routeDefinition = {
+                name: "create-chapter",
+                query: { id: this.id },
+            };
+
+            return routeDefinition;
+        },
+    },
     mounted() {
         // Format the ISO datetime string received from API and display.
         this.formatCreatedAt = DateTimeHelper.formatISODate(this.createdAt);
@@ -260,15 +271,6 @@ export default {
         this.publicLevelRef.title = publicLevelItem.title;
     },
     methods: {
-        goToEdit() {
-            this.$router.push(`/studio/comic/edit/${this.id}`);
-        },
-        goToAddChapter() {
-            this.$router.push({
-                name: "create-chapter",
-                query: { id: this.id },
-            });
-        },
         async removeArtworkAsync() {
             const result =
                 await CreatorStudio8ApiHandler.temporarilyRemoveComicByIdAsync(
