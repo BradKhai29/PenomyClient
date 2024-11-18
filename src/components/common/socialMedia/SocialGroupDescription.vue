@@ -2,7 +2,8 @@
     <div class="group-header">
         <div>
             <q-img :src="groupInfo.coverPhotoUrl" width="100%" height="29rem" style="border-radius: 0 0 5px 5px">
-                <div v-if="groupInfo.isManager" class="absolute-bottom-right text-subtitle2 q-mb-lg q-mr-md" style="padding: 0;">
+                <div v-if="groupInfo.isManager" class="absolute-bottom-right text-subtitle2 q-mb-lg q-mr-md"
+                    style="padding: 0;">
                     <q-btn @click="console.log(123123)" color="grey" icon="edit" label="Chỉnh sửa" />
                 </div>
             </q-img>
@@ -24,10 +25,9 @@
 
                 <!-- Group Button -->
                 <div class="row q-gutter-md">
-                    <q-btn v-if="!groupInfo.hasJoin" color="primary">Tham gia</q-btn>
+                    <q-btn v-if="!groupInfo.hasJoin && !groupInfo.isManager" color="primary">Tham gia</q-btn>
                     <q-btn v-if="!groupInfo.isManager && groupInfo.hasJoin" icon="how_to_reg"
                         icon-right="keyboard_arrow_down" color="primary" label="Đã tham gia" />
-                    <q-btn v-if="groupInfo.isManager" color="primary" icon="add" label="Mời" />
                     <q-btn color="grey-4" text-color="black" icon="keyboard_arrow_down" />
                 </div>
             </div>
