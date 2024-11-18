@@ -7,8 +7,7 @@
     >
         <section
             id="artwork-detail-section"
-            class="q-py-lg row justify-center"
-            style="background-color: rgba(0, 0, 0, 0.4)"
+            class="q-py-lg row justify-center bg-dark-blur"
         >
             <section
                 id="artwork-detail-card"

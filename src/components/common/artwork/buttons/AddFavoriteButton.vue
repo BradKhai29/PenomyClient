@@ -122,6 +122,7 @@ export default {
             if (favoriteCount == REMOVE_FAVORITE_FAILED_RESULT) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
 
+                this.isProcessing = false;
                 return;
             }
 
@@ -139,6 +140,7 @@ export default {
             if (favoriteCount == ADD_FAVORITE_FAILED_RESULT) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
 
+                this.isProcessing = false;
                 return;
             }
 

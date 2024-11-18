@@ -30,6 +30,10 @@
     border: 1px solid var(--light-100);
 }
 
+.border-md-light {
+    border: 2px solid var(--light-100) !important;
+}
+
 .border-sm-light-500 {
     border: 1px solid var(--light-500);
 }
@@ -62,6 +66,16 @@
 .border-radius-sm {
     overflow: hidden !important;
     border-radius: var(--border-radius-sm) !important;
+}
+
+.border-radius-top-left-sm {
+    overflow: hidden !important;
+    border-top-left-radius: var(--border-radius-sm) !important;
+}
+
+.border-radius-bottom-right-sm {
+    overflow: hidden !important;
+    border-bottom-right-radius: var(--border-radius-sm) !important;
 }
 
 .border-radius-md {

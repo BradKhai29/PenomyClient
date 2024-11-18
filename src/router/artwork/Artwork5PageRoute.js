@@ -1,7 +1,7 @@
 import { domainRootPath } from "../common/DomainRootPath";
 
 const Art5RouteNames = {
-    ChapterDetail: "comic-chapter-detail",
+    ComicChapterDetail: "comic-chapter-detail",
 };
 
 const routeDefinition = [
@@ -10,7 +10,7 @@ const routeDefinition = [
         component: () => import("layouts/OverlayMainLayout.vue"),
         children: [
             {
-                name: Art5RouteNames.ChapterDetail,
+                name: Art5RouteNames.ComicChapterDetail,
                 path: "comic/:comicId/chapter/:chapterId",
                 component: () => import("pages/artwork/Artwork5Page.vue"),
             },

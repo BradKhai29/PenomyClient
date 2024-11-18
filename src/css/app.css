@@ -82,6 +82,14 @@
     background-color: var(--dark-900) !important;
 }
 
+.bg-dark-blur {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.bg-dark-blur-deep {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
 /* Text color section */
 .text-light {
     color: var(--light-100) !important;
@@ -123,6 +131,14 @@
     text-decoration-line: underline;
     text-decoration-thickness: 3.2px;
     text-decoration-color: var(--primary);
+}
+
+.underline-none {
+    text-decoration: none;
+}
+
+.underline-none:hover {
+    opacity: 0.8;
 }
 
 .text-decoration-none {
