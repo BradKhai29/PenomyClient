@@ -109,7 +109,6 @@ export default {
             hasSetup: false,
             maxPage: 1,
             currentPage: 1,
-            paginationActive: false,
             selectedSlide: null,
             /**
              * The total items to display per page (slide) when using navigation.
@@ -130,6 +129,11 @@ export default {
         },
         currentSlide() {
             return `${this.sliderPrefix}_${this.currentPage}`;
+        },
+        paginationActive() {
+            const isPaginationActive = this.maxPage > 1;
+
+            return isPaginationActive;
         },
         currentArtworkList() {
             const entry = this.paginationManager.getEntry(this.currentPage);
@@ -158,7 +162,7 @@ export default {
 
             // Minus 1 because array using zero-based index.
             let indexOfLastItemOfCurrentPage =
-                indexOfFirstItemOfCurrentPage + this.pageSize - 1;
+                indexOfFirstItemOfCurrentPage + this.pageSize;
 
             // Check if the index of last item after calculation is exceed the list index.
             const isOutOfIndex =
