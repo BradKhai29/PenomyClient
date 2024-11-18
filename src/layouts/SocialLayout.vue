@@ -36,15 +36,15 @@
                 <q-list class="drawer-gutter">
                     <HomeLink />
                     <SocialMediaLink />
-                    <DrawerGroupLink v-if="group == null" :title="''" link="/social/group/create" :isSelected="false"
+                    <DrawerGroupLink v-if="authStore.isAuth" :title="''" link="/social/group/create" :isSelected="false"
                         :createdAt="''" />
                 </q-list>
 
-                <MyGroupsExpansion />
-                <div class="drawer-gutter"></div>
+                <MyGroupsExpansion v-if="authStore.isAuth"/>
+                <div v-if="authStore.isAuth" class="drawer-gutter"></div>
 
-                <JoinGroupsExpansion />
-                <div class="drawer-gutter"></div>
+                <JoinGroupsExpansion v-if="authStore.isAuth" />
+                <div v-if="authStore.isAuth" class="drawer-gutter"></div>
 
                 <OthersExpansion />
             </q-list>
@@ -72,6 +72,10 @@ import JoinGroupsExpansion from "src/components/layouts/MainLayout/drawers/JoinG
 import OthersExpansion from "components/layouts/OthersExpansion.vue";
 import DrawerGroupLink from "src/components/layouts/DrawerGroupLink.vue";
 
+// Import auth store
+import { useAuthStore } from "src/stores/common/AuthStore";
+
+const authStore = useAuthStore();
 defineOptions({
     name: "MainLayout",
 });

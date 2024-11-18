@@ -1,8 +1,8 @@
 <template>
     <q-expansion-item default-opened label="Nhóm do bạn quản lý" class="my-groups-expansion">
         <div>
-            <GroupLink v-for="group in createdGroups" :key="group.id" :group="group" />
-            <GroupLink/>
+            <GroupLink v-for="group in getShowedGroups" :key="group.id" :group="group" />
+            <GroupLink v-if="createdGroups.length > 3" />
         </div>
     </q-expansion-item>
 </template>
@@ -32,6 +32,9 @@ export default {
         isAuth() {
             return authStore.isAuth;
         },
+        getShowedGroups() {
+            return this.createdGroups.slice(0, 3);
+        }
     },
 
     beforeMount() {
@@ -54,7 +57,7 @@ export default {
 }
 
 .my-groups-expansion div {
-    max-height: 30vh;
+    max-height: 33vh;
     overflow-y: auto;
 }
 </style>

@@ -27,10 +27,12 @@ onMounted(() => {
 watch(
     () => route.path,
     (newPath, _) => {
-        if (newPath && newPath == `/social/group/${props.group.id}`) {
-            isSelected.value = true;
-        } else {
-            isSelected.value = false;
+        if (props.group != null) {
+            if (newPath && newPath == `/social/group/${props.group.id}`) {
+                isSelected.value = true;
+            } else {
+                isSelected.value = false;
+            }
         }
     }
 );
