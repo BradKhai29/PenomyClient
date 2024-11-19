@@ -25,7 +25,7 @@
             <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
         </q-tooltip>
     </q-btn>
-    <q-btn 
+    <q-btn
         v-else
         class="text-subtitle1 text-weight-bold bg-light-300 text-dark"
         no-caps
@@ -46,9 +46,7 @@
 
 <script>
 // Import dependencies section.
-import {
-    FollowArtworkApiHandler
-} from "src/api.handlers/artwork/artwork3Page/FollowArtworkApiHandler";
+import { FollowArtworkApiHandler } from "src/api.handlers/artwork/artwork3Page/FollowArtworkApiHandler";
 // Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -68,6 +66,10 @@ export default {
         artworkId: {
             required: true,
         },
+        hasUserFollowed: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
@@ -79,6 +81,9 @@ export default {
         isAuth() {
             return authStore.isAuth;
         },
+    },
+    beforeMount() {
+        this.isFollowed = this.hasUserFollowed;
     },
     methods: {
         toggleFollowArtwork() {
@@ -92,11 +97,10 @@ export default {
             }
         },
         async addToFollowList() {
-            const isSuccess =
-                await FollowArtworkApiHandler.addToFollowAsync(
-                    this.artworkId,
-                    authStore.bearerAccessToken()
-                );
+            const isSuccess = await FollowArtworkApiHandler.addToFollowAsync(
+                this.artworkId,
+                authStore.bearerAccessToken()
+            );
 
             if (!isSuccess) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
@@ -109,11 +113,10 @@ export default {
             this.isProcessing = false;
         },
         async removeFromFollowList() {
-            const isSuccess =
-                await FollowArtworkApiHandler.removeFollowAsync(
-                    this.artworkId,
-                    authStore.bearerAccessToken()
-                );
+            const isSuccess = await FollowArtworkApiHandler.removeFollowAsync(
+                this.artworkId,
+                authStore.bearerAccessToken()
+            );
 
             if (!isSuccess) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
@@ -124,7 +127,7 @@ export default {
             // Update the state.
             this.isFollowed = false;
             this.isProcessing = false;
-        }
+        },
     },
 };
 </script>

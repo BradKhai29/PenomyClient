@@ -86,6 +86,24 @@
                             Xem ngay
                         </span>
                     </q-btn>
+                    <q-btn
+                        :to="creatorProfileLink"
+                        class="q-ml-sm bg-light"
+                        round
+                    >
+                        <q-avatar class="shadow-1">
+                            <img :src="creatorAvatarUrl" />
+                        </q-avatar>
+                        <q-tooltip
+                            anchor="center right"
+                            self="center left"
+                            :offset="[4, 10]"
+                        >
+                            <strong class="text-subtitle2">
+                                Tác giả: {{ creatorName }}
+                            </strong>
+                        </q-tooltip>
+                    </q-btn>
                 </div>
             </div>
             <div class="q-ml-auto col-auto">
@@ -190,6 +208,18 @@ export default {
         },
         categoryList() {
             return this.artworkDetail.categories;
+        },
+        creatorId() {
+            return this.artworkDetail.creatorId;
+        },
+        creatorName() {
+            return this.artworkDetail.creatorName;
+        },
+        creatorAvatarUrl() {
+            return this.artworkDetail.creatorAvatarUrl;
+        },
+        creatorProfileLink() {
+            return `/profile/creator/d/${this.creatorId}`;
         },
     },
 };

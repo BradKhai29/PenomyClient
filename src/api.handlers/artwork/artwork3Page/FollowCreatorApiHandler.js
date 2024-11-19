@@ -57,11 +57,26 @@ async function removeFollowAsync(creatorId, bearerAccessToken) {
     }
 }
 
+async function checkHasFollowCreatorAsync(creatorId, bearerAccessToken) {
+    const apiUrl = `${BaseWebApiUrl}/g61/check-follow`;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.POST,
+            data: { creatorId: creatorId, accessToken: bearerAccessToken },
+        });
+
+        return response.data.body.hasFollowed;
+    } catch (error) {
+        return false;
+    }
+}
+
 const FollowCreatorApiHandler = {
     addToFollowAsync: addToFollowAsync,
     removeFollowAsync: removeFollowAsync,
+    checkHasFollowCreatorAsync,
 };
 
-export {
-    FollowCreatorApiHandler,
-};
+export { FollowCreatorApiHandler };

@@ -112,6 +112,7 @@
                     <ArtworkFollowButton
                         class="col-grow q-mt-md"
                         :artworkId="comicId"
+                        :hasUserFollowed="comicDetail.hasFollowed"
                     />
                 </section>
             </div>

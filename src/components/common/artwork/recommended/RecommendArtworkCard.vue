@@ -76,10 +76,10 @@
                 <!-- Artwork image section -->
             </div>
         </router-link>
-        <div class="q-mt-sm flex items-center">
+        <div class="q-mt-sm flex items-center justify-between">
             <router-link
                 :to="artworkLink"
-                class="text-dark text-subtitle2 text-weight-bold underline-none"
+                class="text-dark text-subtitle2 text-weight-bold underline-none artwork-title"
             >
                 {{ title }}
             </router-link>
@@ -240,5 +240,12 @@ export default {
     left: 0;
     right: 0;
     z-index: 50;
+}
+
+.artwork-title {
+    max-width: 168px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

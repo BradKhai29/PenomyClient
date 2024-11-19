@@ -46,8 +46,9 @@
                                 class="q-mb-xs text-subtitle1 row items-center"
                             >
                                 <span class="text-weight-bold">
-                                    Trạng thái: Còn cập nhật
+                                    Trạng thái:
                                 </span>
+                                <span class="q-ml-xs"> Còn cập nhật </span>
                             </div>
                             <div class="q-mb-xs text-subtitle1">
                                 <span class="text-weight-bold"> Series: </span>
@@ -121,7 +122,7 @@
 
             <CreatorDetailSection
                 class="artwork-detail-section q-mt-md"
-                :creatorId="'123456789012345679'"
+                :creatorId="comicDetail.authorId"
                 :artworkId="comicId"
             />
         </section>

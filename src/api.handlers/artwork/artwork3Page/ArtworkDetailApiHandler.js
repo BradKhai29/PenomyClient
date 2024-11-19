@@ -2,6 +2,8 @@ import axios from "axios";
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
+
+// Support models for binding from api response.
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
 import { ComicChapterPaginationOptionResponse } from "src/api.models/artwork/artwork3Page/ComicChapterPaginationOptionResponse";
@@ -28,30 +30,9 @@ async function getArtworkDetailByIdAsync(artworkId, accessToken) {
             },
         });
 
-        if (response.data.httpCode !== 200) {
-            return null;
-        }
         const data = response.data.body;
 
-        return new ArtworkDetailResponse(
-            data.name,
-            data.countryName,
-            data.authorName,
-            data.categories,
-            data.artworkStatus,
-            data.seriesName,
-            data.hasSeries,
-            data.thumbnailUrl,
-            data.viewCount,
-            data.favoriteCount,
-            data.starRates,
-            data.introduction,
-            data.commentCount,
-            data.followCount,
-            data.isUserFavorite,
-            data.isAllowComment,
-            data.totalUsersRated
-        );
+        return ArtworkDetailResponse.mapFrom(data);
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
         console.log(axiosError);

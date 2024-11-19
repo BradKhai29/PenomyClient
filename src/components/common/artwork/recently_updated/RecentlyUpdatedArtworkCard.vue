@@ -42,7 +42,9 @@
                 :to="artworkLink"
                 class="flex items-center justify-between text-dark underline-none"
             >
-                <span class="text-subtitle1 text-weight-bold col-grow">
+                <span
+                    class="text-subtitle1 text-weight-bold col-grow artwork-title"
+                >
                     {{ title }}
                 </span>
                 <q-icon name="palette" size="xs" />
@@ -218,5 +220,12 @@ export default {
     bottom: 0 !important;
     left: 0 !important;
     width: 100%;
+}
+
+.artwork-title {
+    max-width: 136px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
