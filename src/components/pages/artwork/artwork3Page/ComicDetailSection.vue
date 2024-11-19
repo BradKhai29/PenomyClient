@@ -81,7 +81,8 @@
                             </q-tooltip>
                         </q-btn>
                         <q-btn
-                            v-for="category in comicDetail.selectedCategories"
+                            :to="`${$route.path}?categoryId=${category.categoryId}`"
+                            v-for="category in comicDetail.categories"
                             :key="category"
                             :id="category.categoryId"
                             dense
