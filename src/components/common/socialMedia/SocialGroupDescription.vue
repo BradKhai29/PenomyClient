@@ -4,7 +4,15 @@
             <q-img :src="groupInfo.coverPhotoUrl" width="100%" height="29rem" style="border-radius: 0 0 5px 5px">
                 <div v-if="groupInfo.isManager" class="absolute-bottom-right text-subtitle2 q-mb-lg q-mr-md"
                     style="padding: 0;">
-                    <q-btn @click="console.log(123123)" color="grey" icon="edit" label="Chỉnh sửa" />
+                    <q-btn-dropdown @click="console.log(123123)" color="grey" icon="edit" label="Chỉnh sửa">
+                        <q-item clickable v-close-popup @click="onItemClick">
+                            <q-item-section>
+                                <q-item-label>
+                                    <q-icon class="q-mr-sm" size="1.5rem" name="upload" />Tải ảnh lên
+                                </q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </q-btn-dropdown>
                 </div>
             </q-img>
         </div>

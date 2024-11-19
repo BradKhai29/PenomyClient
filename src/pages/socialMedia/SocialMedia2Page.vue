@@ -25,8 +25,9 @@
                 <div class="q-mt-md group-infor">
 
                     <q-input model-value="" class="q-mb-md" outlined v-model="groupInfo.groupName" label="Tên nhóm *"
-                        lazy-rules
-                        :rules="[val => val && val.length > 0 || 'Trường này không được trống!', val => val && val.length <= 200 || 'Tối đa 200 ký tự']" />
+                        lazy-rules :rules="[val => val && val.length > 0 || 'Trường này không được trống!',
+                        val => val && val.length <= 200 || 'Tối đa 200 ký tự',
+                        val => val.match(/^\s*$/) == null || 'Không được nhập ký tự trống!']" />
                     <q-input class="q-mb-lg" outlined v-model="groupInfo.groupDescription"
                         label="Mô tả (Không bắt buộc)" />
 
@@ -193,7 +194,15 @@ onMounted(() => {
     }, 25);
 })
 
+/**
+ * Handle the event when the user submits the create group form.
+ * @param {object} groupInfo The object contains the group information that the user inputs.
+ * @returns {Promise<void>} The promise that resolves when the group is created successfully.
+ */
 async function onSubmit() {
+    // Trim the group name.
+    groupInfo.value.groupName = groupInfo.value.groupName.trim();
+    groupInfo.value.groupName = groupInfo.value.groupName.replace(/\s+/g, " ");
     verifyInput();
     if (isValidInput.value == 1) {
         isLoadingBtn.value = true
@@ -215,6 +224,7 @@ async function onSubmit() {
         }
         isLoadingBtn.value = false
     }
+
 }
 
 function verifyInput() {
