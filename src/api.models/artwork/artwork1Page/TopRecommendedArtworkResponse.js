@@ -27,7 +27,10 @@ class TopRecommendedArtworkResponse {
         latestChapterId,
         latestChapterTitle,
         averageStarRates,
-        categories
+        categories,
+        creatorId,
+        creatorName,
+        creatorAvatarUrl
     ) {
         this.id = id;
         this.title = title;
@@ -41,6 +44,10 @@ class TopRecommendedArtworkResponse {
         this.latestChapterTitle = latestChapterTitle;
         this.averageStarRates = averageStarRates;
         this.categories = categories;
+        // Creator section.
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
+        this.creatorAvatarUrl = creatorAvatarUrl;
     }
 
     /**
@@ -61,7 +68,10 @@ class TopRecommendedArtworkResponse {
             apiResponseItem.latestChapterId,
             apiResponseItem.latestChapterTitle,
             apiResponseItem.averageStarRates,
-            apiResponseItem.categories
+            apiResponseItem.categories,
+            apiResponseItem.creatorId,
+            apiResponseItem.creatorName,
+            apiResponseItem.creatorAvatarUrl
         );
     }
 

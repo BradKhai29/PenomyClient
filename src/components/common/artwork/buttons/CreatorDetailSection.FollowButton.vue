@@ -1,6 +1,14 @@
 <template>
-    <q-btn v-if="isAuth" @click="toggleFollowCreator" class="text-subtitle1 text-weight-bold"
-        :class="isFollowed ? 'bg-dark text-light' : 'bg-light-300 text-dark'" no-caps rounded>
+    <q-btn
+        v-if="isAuth"
+        @click="toggleFollowCreator"
+        class="text-subtitle1 text-weight-bold"
+        :class="isFollowed ? 'bg-dark text-light' : 'bg-light-300 text-dark'"
+        no-caps
+        rounded
+        :loading="isLoading"
+        :disable="isLoading"
+    >
         <span v-if="isFollowed" class="q-ml-xs flex items-center">
             <q-avatar size="sm" class="bg-primary text-dark">
                 <q-icon name="check" size="xs" />
@@ -15,8 +23,13 @@
             <strong v-else class="text-subtitle2"> Theo dõi tác giả </strong>
         </q-tooltip>
     </q-btn>
-    <q-btn v-else class="text-subtitle1 text-weight-bold bg-light-300 text-dark" @click="showDialog = true" no-caps
-        rounded>
+    <q-btn
+        v-else
+        class="text-subtitle1 text-weight-bold bg-light-300 text-dark"
+        @click="showDialog = true"
+        no-caps
+        rounded
+    >
         Theo dõi
         <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
             <strong class="text-subtitle2"> Theo dõi tác giả </strong>
@@ -27,9 +40,7 @@
 
 <script>
 // Import dependencies section.
-import {
-    FollowCreatorApiHandler
-} from "src/api.handlers/artwork/artwork3Page/FollowCreatorApiHandler";
+import { FollowCreatorApiHandler } from "src/api.handlers/artwork/artwork3Page/FollowCreatorApiHandler";
 // Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -48,20 +59,29 @@ export default {
     props: {
         creatorId: {
             type: String,
-            required: true
-
+            required: true,
         },
     },
     data() {
         return {
             isFollowed: false,
             showDialog: false,
+            isLoading: true,
         };
     },
     computed: {
         isAuth() {
             return authStore.isAuth;
         },
+    },
+    async mounted() {
+        this.isFollowed =
+            await FollowCreatorApiHandler.checkHasFollowCreatorAsync(
+                this.creatorId,
+                authStore.bearerAccessToken()
+            );
+
+        this.isLoading = false;
     },
     methods: {
         toggleFollowCreator() {
@@ -75,15 +95,13 @@ export default {
             }
         },
         async addToFollowList() {
-            const isSuccess =
-                await FollowCreatorApiHandler.addToFollowAsync(
-                    this.creatorId,
-                    authStore.bearerAccessToken()
-                );
+            const isSuccess = await FollowCreatorApiHandler.addToFollowAsync(
+                this.creatorId,
+                authStore.bearerAccessToken()
+            );
 
             if (!isSuccess) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
-                NotificationHelper.notifyError(this.creatorId);
 
                 return;
             }
@@ -93,11 +111,10 @@ export default {
             this.isProcessing = false;
         },
         async removeFromFollowList() {
-            const isSuccess =
-                await FollowCreatorApiHandler.removeFollowAsync(
-                    this.creatorId,
-                    authStore.bearerAccessToken()
-                );
+            const isSuccess = await FollowCreatorApiHandler.removeFollowAsync(
+                this.creatorId,
+                authStore.bearerAccessToken()
+            );
 
             if (!isSuccess) {
                 NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
@@ -108,7 +125,7 @@ export default {
             // Update the state.
             this.isFollowed = false;
             this.isProcessing = false;
-        }
+        },
     },
 };
 </script>
