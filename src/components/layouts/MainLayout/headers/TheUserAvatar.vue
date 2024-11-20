@@ -17,9 +17,6 @@ import { useProfileStore } from "src/stores/pages/userProfile/ProfileStore";
 // Init store for later operation.
 const authStore = useAuthStore();
 const userProfileStore = useUserProfileStore();
-const profileStore = useProfileStore();
-userProfileStore.setUp();
-if (authStore.isAuth) profileStore.setupProfileStore();
 
 export default {
     name: "TheUserAvatar",
@@ -46,8 +43,12 @@ export default {
         },
     },
     async mounted() {
-        await authStore.setUpAuthStore();
-        userProfileStore.setUp();
+        await authStore.setUp();
+        await userProfileStore.setUp(
+            authStore.isAuth,
+            authStore.accessToken(),
+            authStore.userId
+        );
 
         this.isLoading = false;
         // profileStore.setupProfileStore();

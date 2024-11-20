@@ -3,10 +3,14 @@ import { defineStore } from "pinia";
 import { authStoreManager } from "./AuthStore.InternalManager";
 import { LogoutApiHandler } from "src/api.handlers/auth/common/LogoutApiHandler";
 import { useUserProfileStore } from "./UserProfileStore";
+import { JwtTokenHelper } from "src/helpers/JwtTokenHelper";
 
+// Init store for later operation.
 const userProfileStore = useUserProfileStore();
+
 const useAuthStore = defineStore("authStore", {
     state: () => ({
+        userId: null,
         hasSetUp: false,
         userHasAuthenticated: false,
     }),
@@ -24,11 +28,11 @@ const useAuthStore = defineStore("authStore", {
 
     actions: {
         /**
-         * Asynchronously set up the auth store for the application before starting any functions.
+         * Asynchronously set up the auth store for the application before starting any function.
          *
          * @remarks This method must be called first to load the access & refresh token.
          */
-        async setUpAuthStore() {
+        async setUp() {
             if (this.hasSetUp) {
                 return;
             }
@@ -41,6 +45,7 @@ const useAuthStore = defineStore("authStore", {
             if (verifyResult) {
                 // If verify the tokens success, then authenticated for current user.
                 this.userHasAuthenticated = true;
+                this.userId = JwtTokenHelper.decodeJwt(this.accessToken()).sub;
 
                 authStoreManager.setUpSilentRefreshToken();
             } else {
@@ -73,6 +78,7 @@ const useAuthStore = defineStore("authStore", {
             authStoreManager.signIn(accessToken, refreshToken);
             // When sign in success, authenticate for current user.
             this.userHasAuthenticated = true;
+            this.userId = JwtTokenHelper.decodeJwt(this.accessToken).sub;
 
             // When sign in success, setup the silent refresh token.
             authStoreManager.setUpSilentRefreshToken();
@@ -86,6 +92,7 @@ const useAuthStore = defineStore("authStore", {
 
             // Unauthenticate for current user when sign out.
             this.userHasAuthenticated = false;
+            this.userId = null;
 
             // Clear all tokens that stored on this authStore & user machine.
             authStoreManager.signOut();

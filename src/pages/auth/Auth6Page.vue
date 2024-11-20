@@ -90,18 +90,19 @@ export default {
         }
 
         // Get the user profile from the provided access-token.
+        const userId = JwtTokenHelper.decodeJwt(this.accessToken).sub;
+
         const userProfile = await UserProfile1ApiHandler.getUserProfileAsync(
-            this.accessToken
+            this.accessToken,
+            userId
         );
 
         // Save the access token and refresh token to auth store.
         const authStore = useAuthStore();
         const userProfileStore = useUserProfileStore();
 
-        console.log("User profile page 6", userProfile);
-
         authStore.signIn(this.accessToken, this.refreshToken);
-        userProfileStore.updateUserProfile(userProfile);
+        userProfileStore.signIn(userProfile);
 
         // Redirect user back to homepage.
         this.$router.push("/");

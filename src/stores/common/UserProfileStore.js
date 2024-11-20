@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
 import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
+import { useAuthStore } from "./AuthStore";
+import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
 
+// Support constants.
 const nicknameKeyName = "user:nickname";
 const avatarUrlKeyName = "user:avatar_url";
-const isCreatorKeyName = "user:is_creator";
 
 /**
  * Load the cached user profile from the local storage.
@@ -13,16 +15,8 @@ const isCreatorKeyName = "user:is_creator";
 function internalLoadUserProfile() {
     const nickname = localStorage.getItem(nicknameKeyName);
     const avatarUrl = localStorage.getItem(avatarUrlKeyName);
-    const isCreatorValue = String(localStorage.getItem(isCreatorKeyName));
-    let isCreator = false;
 
-    if (isCreatorValue != "true") {
-        isCreator = false;
-    } else {
-        isCreator = true;
-    }
-
-    return new UserProfileResponseDto(null, nickname, avatarUrl, isCreator);
+    return new UserProfileResponseDto(null, nickname, avatarUrl, false);
 }
 
 /**
@@ -33,12 +27,12 @@ function internalLoadUserProfile() {
 function persistToLocalStorage(userProfile) {
     localStorage.setItem(nicknameKeyName, userProfile.nickname);
     localStorage.setItem(avatarUrlKeyName, userProfile.avatarUrl);
-    localStorage.setItem(isCreatorKeyName, userProfile.isCreator);
 }
 
 const useUserProfileStore = defineStore("userProfileStore", {
     state: () => ({
         userProfile: new UserProfileResponseDto(null, null, null, false),
+        isProcessing: true,
     }),
 
     getters: {
@@ -58,62 +52,132 @@ const useUserProfileStore = defineStore("userProfileStore", {
         currentAvatarUrl() {
             return this.userProfile.avatarUrl;
         },
+        isCreator() {
+            return this.userProfile.isCreator;
+        },
     },
 
     actions: {
         /**
-         * Load the cached profile from the local storage.
+         * Asynchronously set up the user profile store before the application run.
          */
-        setUp() {
+        async setUp(isAuth, accessToken, userId) {
             const cachedUserProfile = internalLoadUserProfile();
 
             this.userProfile.nickname = cachedUserProfile.nickname;
             this.userProfile.avatarUrl = cachedUserProfile.avatarUrl;
-            this.userProfile.isCreator = cachedUserProfile.isCreator ?? false;
+
+            if (isAuth) {
+                await this.internalLoadUserProfileAsync(accessToken, userId);
+
+                return;
+            }
+
+            // If the current user is not authenticated, then no need to process.
+            this.isProcessing = false;
         },
-
         /**
-         * Update the user profile with the detail provided in the input updateUserProfile.
-         *
-         * @param {UserProfileResponseDto} updateUserProfile Contains detail to update the profile.
+         * @param {String} accessToken The access token that will be used to fetch user profile.
+         * @param {String} userId The userId belonged to the current user to get the profile
          */
-        updateUserProfile(updateUserProfile) {
-            if (updateUserProfile.userId) {
-                this.userProfile.userId = updateUserProfile.userId;
-            }
+        async internalLoadUserProfileAsync(accessToken, userId) {
+            const loadedUserProfile =
+                await UserProfile1ApiHandler.getUserProfileAsync(
+                    accessToken,
+                    userId
+                );
 
-            if (updateUserProfile.nickname) {
-                this.userProfile.nickname = updateUserProfile.nickname;
-            }
+            this.signIn(loadedUserProfile);
+            this.isProcessing = false;
+        },
+        /**
+         * Set the profile detail when user has signed in successfully.
+         *
+         * @param {UserProfileResponseDto} signedInUserProfile Contains detail to set the profile.
+         */
+        signIn(signedInUserProfile) {
+            this.userProfile.userId = signedInUserProfile.userId;
+            this.userProfile.nickname = signedInUserProfile.nickname;
+            this.userProfile.avatarUrl = signedInUserProfile.avatarUrl;
+            this.userProfile.isCreator = signedInUserProfile.isCreator ?? false;
+            this.userProfile.aboutMe = signedInUserProfile.aboutMe;
+            this.userProfile.lastActiveAt = signedInUserProfile.lastActiveAt;
+            this.userProfile.registeredAt = signedInUserProfile.registeredAt;
+            this.userProfile.totalFollowedCreators =
+                signedInUserProfile.totalFollowedCreators;
 
-            if (updateUserProfile.avatarUrl) {
-                this.userProfile.avatarUrl = updateUserProfile.avatarUrl;
-            }
+            // Creator profile section.
+            this.userProfile.totalArtworks = signedInUserProfile.totalArtworks;
+            this.userProfile.becomeCreatorAt =
+                signedInUserProfile.becomeCreatorAt;
+            this.userProfile.totalFollowers =
+                signedInUserProfile.totalFollowers;
 
-            if (updateUserProfile.isCreator) {
-                this.userProfile.isCreator =
-                    updateUserProfile.isCreator ?? false;
-            }
-
-            if (updateUserProfile.aboutMe) {
-                this.userProfile.aboutMe = updateUserProfile.aboutMe;
-            }
-
-            // Persist to local storage after updating.
+            // Persist to local storage some information for later loading.
             persistToLocalStorage(this.userProfile);
+        },
+        /**
+         * Set the user's new nickname.
+         *
+         * @param {String} nickname Nick name to set new.
+         */
+        setNickname(nickname) {
+            this.userProfile.nickname = nickname;
+            persistToLocalStorage(this.userProfile);
+        },
+        /**
+         * Set the user's new avatar url.
+         *
+         * @param {String} avatarUrl Avatar URL to set new.
+         */
+        setAvatarUrl(avatarUrl) {
+            this.userProfile.avatarUrl = avatarUrl;
+            persistToLocalStorage(this.userProfile);
+        },
+        setAboutMe(aboutMe) {
+            this.userProfile.aboutMe = aboutMe;
+        },
+        becomeCreator() {
+            this.userProfile.isCreator = true;
+        },
+        setBecomeCreatorAt(becomeCreatorAt) {
+            this.userProfile.becomeCreatorAt = becomeCreatorAt;
+        },
+        setTotalFollowedCreators(totalFollowedCreators) {
+            this.userProfile.totalFollowedCreators = totalFollowedCreators;
         },
         clearProfile() {
             this.userProfile.clear();
 
             localStorage.removeItem(nicknameKeyName);
             localStorage.removeItem(avatarUrlKeyName);
-            localStorage.removeItem(isCreatorKeyName);
             localStorage.removeItem("page1");
             localStorage.removeItem("page2");
             localStorage.removeItem("page3");
             localStorage.removeItem("comic");
             localStorage.removeItem("animation");
             localStorage.removeItem("series");
+        },
+        /**
+         * Internal wait to get the access token if the refresh-token operation is not complete.
+         *
+         * @param {boolean} withBearerPrefix True if want to get the access token with bearer prefix.
+         * @returns {Promise<String>} Promise contains the access token value.
+         */
+        waitToLoadOwnerProfile() {
+            // Check the isProcessing flag every 50 ms
+            const CHECKING_INTERVAL_TIMEOUT = 50;
+
+            return new Promise((resolve) => {
+                const intervalId = setInterval(() => {
+                    if (!this.isProcessing) {
+                        // Stop checking once it's false
+                        clearInterval(intervalId);
+
+                        resolve("COMPLETED");
+                    }
+                }, CHECKING_INTERVAL_TIMEOUT);
+            });
         },
     },
 });

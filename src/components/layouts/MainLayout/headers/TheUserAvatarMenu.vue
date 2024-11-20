@@ -198,7 +198,7 @@ export default {
             // If user is already authenticated, then
             // redirect to their personal profile page
             if (authStore.isAuth) {
-                return "/profile/user";
+                return `/user/${authStore.userId}`;
             }
 
             // If not auth, redirect guest to login page when clicking on.

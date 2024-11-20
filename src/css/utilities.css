@@ -26,6 +26,10 @@
     border-bottom: 1px solid var(--light-500);
 }
 
+.border-md-bottom-light-500 {
+    border-bottom: 2px solid var(--light-500);
+}
+
 .border-sm-light {
     border: 1px solid var(--light-100);
 }
@@ -112,4 +116,26 @@
     width: 32px !important;
     height: 24px !important;
     text-align: center !important;
+}
+
+/* Custom scrollbar */
+/* width */
+.penomy-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.penomy-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+.penomy-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 16px;
+}
+
+/* Handle on hover */
+.penomy-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }

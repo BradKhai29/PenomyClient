@@ -159,8 +159,17 @@ export default {
             const authStore = useAuthStore();
             const userProfileStore = useUserProfileStore();
 
+            // Get the user profile from the provided access-token.
+            const userId = JwtTokenHelper.decodeJwt(result.accessToken).sub;
+
+            const userProfile =
+                await UserProfile1ApiHandler.getUserProfileAsync(
+                    this.accessToken,
+                    userId
+                );
+
             authStore.signIn(result.accessToken, result.refreshToken);
-            userProfileStore.updateUserProfile(result.user);
+            userProfileStore.signIn(userProfile);
 
             // Redirect back to homepage.
             this.$router.push("/");

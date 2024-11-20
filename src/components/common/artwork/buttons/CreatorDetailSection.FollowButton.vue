@@ -18,7 +18,7 @@
         <span v-else class="q-ml-xs"> Theo dõi </span>
         <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
             <strong v-if="isFollowed" class="text-subtitle2">
-                Đã theo dõi
+                Đã theo dõi tác giả
             </strong>
             <strong v-else class="text-subtitle2"> Theo dõi tác giả </strong>
         </q-tooltip>

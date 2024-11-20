@@ -4,8 +4,8 @@ const domainRootPath = {
     chat: "/chat",
     creatorStudio: "/studio",
     socialMedia: "/social",
-    userProfile: "/profile",
-    creatorProfile: "/profile/creator",
+    userProfile: "/user",
+    creatorProfile: "/creator",
 };
 
 export { domainRootPath };

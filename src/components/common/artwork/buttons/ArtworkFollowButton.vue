@@ -16,13 +16,11 @@
             <span class="q-ml-sm"> Theo dõi </span>
         </span>
 
-        <q-tooltip
-            v-if="!isFollowed"
-            anchor="top middle"
-            self="bottom middle"
-            :offset="[8, 8]"
-        >
-            <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
+        <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
+            <strong v-if="isFollowed" class="text-subtitle2">
+                Đã theo dõi tác phẩm
+            </strong>
+            <strong v-else class="text-subtitle2"> Theo dõi tác phẩm </strong>
         </q-tooltip>
     </q-btn>
     <q-btn
