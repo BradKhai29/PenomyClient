@@ -6,27 +6,20 @@ import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
 
 /**
- * Get the profile information of the specified user with input id.
+ * Get the profile information of the specified creator with input id.
  *
- * @param {String} accessToken The access token of the user that make the request.
- * @param {String} userId Id of the user to get the profile.
+ * @param {String} creatorId Id of the creator to get the profile.
  * @returns {Promise<UserProfileResponseDto>} Promise contains the UserProfileResponseDto instance.
  */
-async function getUserProfileAsync(accessToken, userId) {
-    const apiUrl = `${BaseWebApiUrl}/g35/user/profile`;
-    const MINIMUM_LENGTH = 10;
-
-    if (String(accessToken).length < MINIMUM_LENGTH) {
-        accessToken = "accessToken";
-    }
+async function getProfileAsync(creatorId) {
+    const apiUrl = `${BaseWebApiUrl}/g35/creator/profile`;
 
     try {
         const response = await axios({
             url: apiUrl,
             method: HttpMethod.GET,
             params: {
-                accessToken: accessToken,
-                userId: userId,
+                creatorId: creatorId,
             },
         });
 
@@ -38,8 +31,8 @@ async function getUserProfileAsync(accessToken, userId) {
     }
 }
 
-const UserProfile1ApiHandler = {
-    getUserProfileAsync,
+const CreatorProfileApiHandler = {
+    getProfileAsync,
 };
 
-export { UserProfile1ApiHandler };
+export { CreatorProfileApiHandler };

@@ -189,6 +189,7 @@ class AuthStoreInternalManager {
 
     /**
      * Internal wait to get the access token if the refresh-token operation is not complete.
+     *
      * @param {boolean} withBearerPrefix True if want to get the access token with bearer prefix.
      * @returns {Promise<String>} Promise contains the access token value.
      */

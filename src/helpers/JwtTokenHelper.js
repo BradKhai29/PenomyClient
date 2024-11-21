@@ -33,6 +33,16 @@ class DecodeJwtPayload {
 
         return currentTime > this.exp;
     }
+
+    /**
+     * Check if the specify claim type is included in current jwt payload.
+     *
+     * @param {String} claimType The claim type to check.
+     * @returns {Boolean} True if the current token payload contains specified claim.
+     */
+    containsClaim(claimType) {
+        return this[claimType] != null;
+    }
 }
 
 const claimTypes = {
@@ -111,7 +121,10 @@ function validateAccessTokenPayload(accessToken) {
     // Check the purpose of the access-token.
     const ACCESS_TOKEN_PURPOSE = "app-user-access";
 
-    return decodeJwtPayload.purpose == ACCESS_TOKEN_PURPOSE;
+    return (
+        decodeJwtPayload.purpose == ACCESS_TOKEN_PURPOSE &&
+        decodeJwtPayload.containsClaim(claimTypes.sub)
+    );
 }
 
 /**

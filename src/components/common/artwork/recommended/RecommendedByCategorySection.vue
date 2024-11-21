@@ -13,8 +13,8 @@
                 v-for="item in totalSkeletonSections"
                 :key="item"
                 :isLoading="isLoading"
-                :categoryId="items"
-                :categoryName="item"
+                :categoryId="item"
+                :categoryName="`category_${item}`"
                 :recommendedArtworks="[]"
             />
         </section>

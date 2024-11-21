@@ -1,23 +1,23 @@
 import { domainRootPath } from "../common/DomainRootPath";
 
-// The route definition of artwork-1 page.
-// The definition must be declared as an array of route-objects.
+const UserProfile1RouteNames = {
+    profileDetail: "user-profile-detail",
+};
+
 const routeDefinition = [
     {
         path: domainRootPath.userProfile,
         component: () => import("layouts/MainLayout.vue"),
         children: [
             {
-                path: "user",
+                name: UserProfile1RouteNames.profileDetail,
+                path: ":userId",
                 component: () =>
                     import("pages/userProfile/UserProfile1Page.vue"),
-            },
-            {
-                path: "/author/:authorId",
-                component: () => import("pages/artwork/Artwork1Page.vue"),
             },
         ],
     },
 ];
 
+export { UserProfile1RouteNames };
 export default routeDefinition;

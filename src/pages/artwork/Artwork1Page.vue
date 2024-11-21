@@ -9,18 +9,14 @@
 <script>
 import TopRecommendedArtworkSlider from "src/components/common/artwork/slider/TopRecommendedArtworkSlider.vue";
 import RecentlyUpdatedSection from "src/components/common/artwork/recently_updated/RecentlyUpdatedSection.vue";
-import RecentlyUpdated from "src/components/common/artwork/comic/RecentlyUpdated.vue";
 import RecommendedByCategorySection from "src/components/common/artwork/recommended/RecommendedByCategorySection.vue";
 
 export default {
     name: "Artwork1Page",
     components: {
         TopRecommendedArtworkSlider,
-        // RecentlyUpdated,
         RecentlyUpdatedSection,
         RecommendedByCategorySection,
-        // AnimeByCategory,
-        // ComicByCategory,
     },
 };
 </script>

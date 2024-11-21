@@ -4,7 +4,7 @@
         class="q-pa-md bg-light border-radius-md flex items-center justify-between"
     >
         <router-link
-            :to="`/profile/creator/d/${creatorId}`"
+            :to="`/creator/${creatorId}`"
             class="text-decoration-none bg-light"
         >
             <q-btn dense flat padding="none" no-caps class="flex items-center">

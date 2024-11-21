@@ -121,6 +121,7 @@
 <script>
 import { TopRecommendedArtworkResponse } from "src/api.models/artwork/artwork1Page/TopRecommendedArtworkResponse";
 import { Art5RouteNames } from "src/router/artwork/Artwork5PageRoute";
+import { CreatorProfile1RouteNames } from "src/router/creatorProfile/CreatorProfile1PageRoute";
 
 export default {
     name: "ArtworkSliderCard",
@@ -219,7 +220,12 @@ export default {
             return this.artworkDetail.creatorAvatarUrl;
         },
         creatorProfileLink() {
-            return `/profile/creator/d/${this.creatorId}`;
+            return {
+                name: CreatorProfile1RouteNames.profileDetail,
+                params: {
+                    creatorId: this.artworkDetail.creatorId,
+                },
+            };
         },
     },
 };

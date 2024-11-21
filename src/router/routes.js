@@ -28,7 +28,7 @@ import creatorStudio22PageRoute from "./creatorStudio/CreatorStudio22PageRoute";
 import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
 
 // User profile page routes section.
-import userProfile from "./userProfile/UserProfile1PageRoute";
+import userProfile1PageRoute from "./userProfile/UserProfile1PageRoute";
 
 // Creator profile page routes section.
 import creatorProfile1PageRoute from "./creatorProfile/CreatorProfile1PageRoute";
@@ -37,6 +37,10 @@ import creatorProfile1PageRoute from "./creatorProfile/CreatorProfile1PageRoute"
 import socialMedia1PageRoute from "./socialMedia/SocialMedia1PageRoute";
 import socialMedia2PageRoute from "./socialMedia/SocialMedia2PageRoute";
 import socialMedia3PageRoute from "./socialMedia/SocialMedia3PageRoute";
+
+// Become creator page routes section.
+import becomeCreatorPageRoute from "./become_creator/BecomeCreatorPageRoute";
+
 // Always leave this as last one, but you can also remove it
 const errorNotFoundPageRoute = {
     path: "/:catchAll(.*)*",
@@ -71,13 +75,15 @@ const routes = [
     ...creatorStudio22PageRoute,
     ...creatorStudio25PageRoute,
     // User profile routes.
-    ...userProfile,
+    ...userProfile1PageRoute,
     // Creator profile routes.
     ...creatorProfile1PageRoute,
     // Social media routes.
     ...socialMedia1PageRoute,
     ...socialMedia2PageRoute,
     ...socialMedia3PageRoute,
+    // Become creator route.
+    ...becomeCreatorPageRoute,
     // Other routes.
     errorNotFoundPageRoute,
 ];

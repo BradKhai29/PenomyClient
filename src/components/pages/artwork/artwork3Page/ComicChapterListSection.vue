@@ -24,7 +24,10 @@
                         :disable="isLoading"
                         >Mới nhất</q-btn
                     >
-                    <span class="border-sm-dark q-py-sm q-mx-xs"></span>
+                    <span
+                        id="separator"
+                        class="border-sm-dark q-py-sm q-mx-xs"
+                    ></span>
                     <q-btn
                         @click="isDisplayDescending = false"
                         dense
