@@ -128,9 +128,9 @@
 }
 
 .underline-primary {
-    text-decoration-line: underline;
+    text-decoration-line: underline !important;
     text-decoration-thickness: 3.2px;
-    text-decoration-color: var(--primary);
+    text-decoration-color: var(--primary) !important;
 }
 
 .underline-none {

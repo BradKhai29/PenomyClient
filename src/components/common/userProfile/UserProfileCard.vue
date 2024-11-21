@@ -169,12 +169,13 @@
                     <!-- Become a creator button -->
                     <q-btn
                         v-if="!isCreator"
+                        to="/become-creator"
                         id="become-creator-button"
                         dense
                         no-caps
                         class="q-ml-sm bg-dark text-light border-radius-sm shadow-1 q-px-sm"
                     >
-                        <q-icon name="palette" />
+                        <q-icon name="assignment" />
                         <span class="q-ml-xs text-subtitle1">
                             Đăng ký sáng tác
                         </span>
