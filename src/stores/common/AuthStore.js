@@ -78,7 +78,7 @@ const useAuthStore = defineStore("authStore", {
             authStoreManager.signIn(accessToken, refreshToken);
             // When sign in success, authenticate for current user.
             this.userHasAuthenticated = true;
-            this.userId = JwtTokenHelper.decodeJwt(this.accessToken).sub;
+            this.userId = JwtTokenHelper.decodeJwt(this.accessToken()).sub;
 
             // When sign in success, setup the silent refresh token.
             authStoreManager.setUpSilentRefreshToken();

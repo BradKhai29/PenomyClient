@@ -165,6 +165,12 @@ const useUserProfileStore = defineStore("userProfileStore", {
          * @returns {Promise<String>} Promise contains the access token value.
          */
         waitToLoadOwnerProfile() {
+            if (!this.isProcessing) {
+                return new Promise((resolve) => {
+                    resolve("COMPLETED");
+                });
+            }
+
             // Check the isProcessing flag every 50 ms
             const CHECKING_INTERVAL_TIMEOUT = 50;
 

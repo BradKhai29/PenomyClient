@@ -6,17 +6,7 @@
             Hello
         </section>
 
-        <section v-else>
-            <div class="border-sm-bottom-light-500 q-mt-sm q-mb-xl"></div>
-            <div class="flex justify-center text-dark-500">
-                <div class="column items-center">
-                    <q-icon name="outbox" size="120px"></q-icon>
-                    <span class="text-subtitle1">
-                        Người dùng này không có nội dùng nào
-                    </span>
-                </div>
-            </div>
-        </section>
+        <EmptyStatePlaceholder v-else />
     </q-page>
 </template>
 
@@ -28,7 +18,8 @@ import { NumberHelper } from "src/helpers/NumberHelper";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Import components section.
-import UserProfileCard from "src/components/pages/userProfile/userProfile1Page/UserProfileCard.vue";
+import UserProfileCard from "src/components/common/userProfile/UserProfileCard.vue";
+import EmptyStatePlaceholder from "src/components/common/userProfile/EmptyStatePlaceholder.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -38,6 +29,7 @@ export default {
     name: "UserProfile1Page",
     components: {
         UserProfileCard,
+        EmptyStatePlaceholder,
     },
     data() {
         return {

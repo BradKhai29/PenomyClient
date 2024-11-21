@@ -101,11 +101,20 @@
                     </span>
                 </q-btn>
             </div>
-            <div id="about-me-section" class="text-dark text-subtitle1 q-mt-sm">
-                {{
-                    aboutMe ??
-                    "I dont know what im doing, but that's okay. You probably don't either. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,"
-                }}
+            <div
+                id="about-me-section"
+                class="flex text-dark text-subtitle1 q-mt-sm"
+            >
+                <span>
+                    {{ aboutMeTrim }}
+                    <span
+                        class="about-me-btn text-dark text-weight-bold"
+                        v-if="displayViewMoreButton"
+                        @click="showExtraInfo = true"
+                    >
+                        ...Xem thêm
+                    </span>
+                </span>
             </div>
             <section id="interaction-button-group" class="q-mt-md">
                 <!-- Guest view display section -->
@@ -324,6 +333,24 @@
                             </div>
                             <!-- Become creator date section -->
 
+                            <!-- Total followers section -->
+                            <div
+                                id="total-created-artworks-section"
+                                class="flex items-center q-mt-sm"
+                                style="width: fit-content"
+                            >
+                                <q-icon name="group_add" size="sm" />
+                                <div class="q-ml-sm">
+                                    <span class="text-subtitle1">
+                                        Số người theo dõi:
+                                    </span>
+                                    <span class="text-weight-bold">
+                                        {{ totalFollowers }}
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- Total followers section -->
+
                             <!-- Total created artworks section -->
                             <div
                                 id="total-created-artworks-section"
@@ -365,6 +392,7 @@ import { NotificationHelper } from "src/helpers/NotificationHelper";
 // Init store for later operation.
 const authStore = useAuthStore();
 const userProfileStore = useUserProfileStore();
+const LIMIT_ABOUT_ME_SECTION_LENGTH = 250;
 
 export default {
     name: "UserProfileCard",
@@ -440,7 +468,19 @@ export default {
                 return userProfileStore.userProfile.aboutMe ?? "Không có mô tả";
             }
 
-            return this.loadedUserProfile.aboutMe;
+            // return this.loadedUserProfile.aboutMe;
+
+            return "I dont know what im doing, but that's okay. You probably don't either. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.";
+        },
+        aboutMeTrim() {
+            if (this.aboutMe.length > LIMIT_ABOUT_ME_SECTION_LENGTH) {
+                return this.aboutMe.slice(0, LIMIT_ABOUT_ME_SECTION_LENGTH);
+            }
+
+            return this.aboutMe;
+        },
+        displayViewMoreButton() {
+            return this.aboutMe.length > LIMIT_ABOUT_ME_SECTION_LENGTH;
         },
         registeredAt() {
             if (this.isProfileOwner) {
@@ -486,7 +526,7 @@ export default {
             return this.loadedUserProfile.totalArtworks;
         },
     },
-    async mounted() {
+    mounted() {
         // If the current user is the profile owner, then wait to load.
         if (this.isProfileOwner) {
             this.waitToLoadOwnerProfile();
@@ -517,7 +557,7 @@ export default {
          */
         async waitToLoadUserProfile() {
             const result = await UserProfile1ApiHandler.getUserProfileAsync(
-                authStore.accessToken,
+                authStore.accessToken(),
                 this.userId
             );
 
@@ -545,6 +585,11 @@ export default {
 
     width: var(--width) !important;
     height: var(--height) !important;
+}
+
+.about-me-btn:hover {
+    opacity: 0.8;
+    cursor: pointer;
 }
 
 .extra-info-dialog {

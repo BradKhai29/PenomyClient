@@ -92,6 +92,7 @@
 // Import dependencies section.
 import { RecommendedArtworkResponseItem } from "src/api.models/artwork/artwork1Page/RecommendArtworkResponseItem";
 import { Art5RouteNames } from "src/router/artwork/Artwork5PageRoute";
+import { CreatorProfile1RouteNames } from "src/router/creatorProfile/CreatorProfile1PageRoute";
 
 // Import components section.
 import ArtworkCardOtherActionButton from "../buttons/ArtworkCardOtherActionButton.vue";
@@ -143,7 +144,12 @@ export default {
             return this.artworkDetail.originImageUrl;
         },
         creatorProfileLink() {
-            return `/profile/creator/d/${this.artworkDetail.creatorId}`;
+            return {
+                name: CreatorProfile1RouteNames.profileDetail,
+                params: {
+                    creatorId: this.artworkDetail.creatorId,
+                },
+            };
         },
         creatorName() {
             return this.artworkDetail.creatorName;

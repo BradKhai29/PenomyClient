@@ -21,8 +21,6 @@ async function getAsync() {
         const result =
             RecentlyUpdatedArtworkResponseItem.mapFromArray(responseItems);
 
-        console.log(result);
-
         return result;
     } catch (error) {
         console.log(error);

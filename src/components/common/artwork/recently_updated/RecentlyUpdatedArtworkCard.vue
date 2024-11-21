@@ -106,6 +106,7 @@
 // Import dependencies section.
 import { RecentlyUpdatedArtworkResponseItem } from "src/api.models/artwork/artwork1Page/RecentlyUpdatedArtworkResponseItem";
 import { Art5RouteNames } from "src/router/artwork/Artwork5PageRoute";
+import { CreatorProfile1RouteNames } from "src/router/creatorProfile/CreatorProfile1PageRoute";
 
 // Import components section.
 import ArtworkCardOtherActionButton from "../buttons/ArtworkCardOtherActionButton.vue";
@@ -139,6 +140,9 @@ export default {
 
             return `/artwork/anime/${this.artworkId}`;
         },
+        isCompleted() {
+            return false;
+        },
         title() {
             return this.artworkDetail.title;
         },
@@ -152,7 +156,12 @@ export default {
             return this.artworkDetail.originImageUrl;
         },
         creatorProfileLink() {
-            return `/profile/creator/d/${this.artworkDetail.creatorId}`;
+            return {
+                name: CreatorProfile1RouteNames.profileDetail,
+                params: {
+                    creatorId: this.artworkDetail.creatorId,
+                },
+            };
         },
         creatorName() {
             return this.artworkDetail.creatorName;
