@@ -7,9 +7,12 @@ class ArtworkDetailResponse {
      * @param {String} title Title of the artwork.
      * @param {String} thumbnailUrl ThumbnailURL of the artwork.
      * @param {String} introduction Introduction of this artwork.
-     * @param {String} authorId The id of the author of this artwork.
-     * @param {String} authorName The name of the author of this artwork.
-     * @param {String} countryName The country name this artwork is published.
+     * @param {String} creatorId The id of the creator of this artwork.
+     * @param {String} creatorName The name of the creator of this artwork.
+     * @param {String} creatorAvatarUrl The avatarURL of the creator of this artwork.
+     * @param {Number} creatorTotalFollowers The total followers of the creator of this artwork.
+     * @param {String} countryId The id of the country as an origin of this artwork.
+     * @param {String} countryName The name of the country as an origin of this artwork.
      * @param {Boolean} hasSeries Check if the current artwork has belonged to any series or not.
      * @param {Number} artworkStatus The status of the artwork.
      * @param {Number} starRates The average star rates of this artwork.
@@ -28,8 +31,11 @@ class ArtworkDetailResponse {
         title,
         thumbnailUrl,
         introduction,
-        authorId,
-        authorName,
+        creatorId,
+        creatorName,
+        creatorAvatarUrl,
+        creatorTotalFollowers,
+        countryId,
         countryName,
         hasSeries,
         seriesId,
@@ -49,10 +55,13 @@ class ArtworkDetailResponse {
         this.id = id;
         this.title = title;
         this.introduction = introduction;
+        this.countryId = countryId;
         this.countryName = countryName;
         // Author section.
-        this.authorId = authorId;
-        this.authorName = authorName;
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
+        this.creatorAvatarUrl = creatorAvatarUrl;
+        this.creatorTotalFollowers = creatorTotalFollowers;
         // Series section.
         this.hasSeries = hasSeries;
         this.seriesId = seriesId;
@@ -84,8 +93,12 @@ class ArtworkDetailResponse {
             apiResponse.title,
             apiResponse.thumbnailUrl,
             apiResponse.introduction,
-            apiResponse.authorId,
-            apiResponse.authorName,
+            // Creator detail section.
+            apiResponse.creatorId,
+            apiResponse.creatorName,
+            apiResponse.creatorAvatarUrl,
+            apiResponse.creatorTotalFollowers,
+            apiResponse.countryId,
             apiResponse.countryName,
             // Series section.
             apiResponse.hasSeries,

@@ -9,6 +9,10 @@ import { ComicDetailToCreateChapterResponseDto } from "src/api.models/creatorStu
 import { CreateComicChapterResult } from "src/api.models/creatorStudio/creatorStudio9Page/CreateComicChapterResult";
 import { CreateChapterErrorCodeParser } from "src/api.models/creatorStudio/creatorStudio9Page/CreateComicChapterError";
 
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+const authStore = useAuthStore();
+
 /**
  * Get the detail of the specified comic with input id
  * to create a new chapter for the comic.
@@ -21,6 +25,9 @@ async function getComicDetailToCreateChapter(comicId) {
         const response = await axios({
             url: `${BaseWebApiUrl}/art10/comic/${comicId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         const body = response.data.body;
@@ -75,6 +82,7 @@ async function createComicChapter(chapterDetail, isDrafted) {
             method: HttpMethod.POST,
             headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: authStore.bearerAccessToken(),
             },
             data: requestBody,
         });

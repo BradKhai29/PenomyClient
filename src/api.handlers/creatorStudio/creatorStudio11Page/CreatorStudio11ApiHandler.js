@@ -13,6 +13,10 @@ import { UpdateComicChapterResult } from "src/api.models/creatorStudio/creatorSt
 import { FileHelper } from "src/helpers/FileHelper";
 import { ReloadChapterImageResult } from "src/api.models/creatorStudio/creatorStudio11Page/ReloadChapterImageResult";
 
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+const authStore = useAuthStore();
+
 const ChapterUpdateModes = {
     DRAFTED: {
         name: "DRAFTED",
@@ -44,6 +48,9 @@ async function getChapterDetailByIdAsync(chapterId) {
         const response = await axios({
             url: `${BaseWebApiUrl}/art12/chapter/${chapterId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         const chapterDetail = GetComicChapterDetailResponseDto.mapFrom(
@@ -126,13 +133,14 @@ async function updateComicChapter(chapterDetail, updateMode) {
             method: HttpMethod.POST,
             headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: authStore.bearerAccessToken(),
             },
             data: requestBody,
         });
 
         result.isSuccess = true;
     } catch (error) {
-        const axiosError = AxiosHelper.toAxiosError(error);
+        console.log(error);
 
         result.message = null;
     }
@@ -152,6 +160,9 @@ async function reloadChapterImagesAsync(comicId, chapterId) {
         const response = await axios({
             url: `${BaseWebApiUrl}/art12/chapter/reload?comicId=${comicId}&chapterId=${chapterId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         return ReloadChapterImageResult.mapFrom(response.data.body);

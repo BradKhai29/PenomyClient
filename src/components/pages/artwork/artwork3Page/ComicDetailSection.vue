@@ -123,8 +123,11 @@
 
             <CreatorDetailSection
                 class="artwork-detail-section q-mt-md"
-                :creatorId="comicDetail.authorId"
                 :artworkId="comicId"
+                :creatorId="comicDetail.creatorId"
+                :creatorName="comicDetail.creatorName"
+                :creatorAvatarUrl="comicDetail.creatorAvatarUrl"
+                :creatorTotalFollowers="comicDetail.creatorTotalFollowers"
             />
         </section>
     </section>

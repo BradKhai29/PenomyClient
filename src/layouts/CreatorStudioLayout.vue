@@ -1,5 +1,5 @@
 <template>
-    <q-layout view="hHh Lpr lFf">
+    <q-layout v-if="isCreator" view="hHh Lpr lFf">
         <q-header class="bg-light" bordered>
             <q-toolbar class="text-dark">
                 <q-btn
@@ -63,9 +63,11 @@
     </q-layout>
 </template>
 
-<script setup>
+<script>
 // Import dependencies section.
-import { ref } from "vue";
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Import components section.
 import OverviewLink from "components/layouts/CreatorStudioLayout/drawers/OverviewLink.vue";
@@ -76,15 +78,59 @@ import ArtworkCreationExpansion from "components/layouts/CreatorStudioLayout/dra
 import OthersExpansion from "components/layouts/OthersExpansion.vue";
 import TheLogoButton from "components/layouts/CreatorStudioLayout/headers/TheLogoButton.vue";
 import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvatar.vue";
-defineOptions({
+
+// Init store for later operation.
+const authStore = useAuthStore();
+const userProfileStore = useUserProfileStore();
+
+export default {
     name: "CreatorStudioLayout",
-});
+    components: {
+        OverviewLink,
+        DetailStatisticLink,
+        EarnMoneyLink,
+        ReportedLink,
+        ArtworkCreationExpansion,
+        OthersExpansion,
+        TheLogoButton,
+        TheUserAvatar,
+    },
+    data() {
+        return {
+            showDrawer: false,
+        };
+    },
+    computed: {
+        isCreator() {
+            return authStore.isAuth && userProfileStore.isCreator;
+        },
+    },
+    async mounted() {
+        // Call to setup the store to load the related
+        // states when visit creator studio pages.
+        await authStore.setUp();
+        await userProfileStore.setUp(
+            authStore.isAuth,
+            authStore.accessToken(),
+            authStore.userId
+        );
 
-const showDrawer = ref(false);
+        if (!this.isCreator) {
+            this.$router.push("/");
 
-function toggleLeftDrawer() {
-    showDrawer.value = !showDrawer.value;
-}
+            NotificationHelper.notifyError(
+                "Vui lòng đăng ký trở thành nhà sáng tạo để truy cập vào mục này"
+            );
+
+            return;
+        }
+    },
+    methods: {
+        toggleLeftDrawer() {
+            this.showDrawer = !this.showDrawer;
+        },
+    },
+};
 </script>
 
 <style scoped>

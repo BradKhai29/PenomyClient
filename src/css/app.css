@@ -103,6 +103,10 @@
     color: var(--dark-500) !important;
 }
 
+.text-dark-900 {
+    color: var(--dark-900) !important;
+}
+
 .text-primary,
 .primary {
     color: var(--primary) !important;
@@ -142,8 +146,8 @@
 }
 
 .text-decoration-none {
-    text-decoration: none;
-    text-transform: none;
+    text-decoration: none !important;
+    text-transform: none !important;
 }
 
 .text-decoration-none:hover {

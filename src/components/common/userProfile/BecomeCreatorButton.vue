@@ -1,25 +1,21 @@
 <template>
-    <DrawerLink
-        v-if="isCreator"
-        title="Đăng tải tác phẩm"
-        icon="upload"
-        :link="uploadArtworkLink"
-        :isSelected="false"
-    />
-    <DrawerLink
-        v-else
-        title="Đăng tải tác phẩm"
-        icon="upload"
-        :isSelected="false"
+    <q-btn
         @click="showDialog = true"
-    />
+        id="become-creator-button"
+        dense
+        no-caps
+        class="q-ml-sm bg-dark text-light border-radius-sm shadow-1 q-px-sm"
+    >
+        <q-icon name="assignment" />
+        <span class="q-ml-xs text-subtitle1"> Đăng ký sáng tác </span>
+    </q-btn>
 
     <!-- Become creator information section -->
-    <q-dialog v-if="!isCreator" v-model="showDialog">
-        <q-card class="border-radius-md alert-dialog">
+    <q-dialog v-model="showDialog">
+        <q-card class="border-radius-md become-creator-dialog">
             <q-card-section class="flex items-center justify-between">
                 <HeaderHighlight
-                    label="Thông báo"
+                    label="Đăng ký sáng tác"
                     class="text-h6 text-weight-bold"
                 />
                 <q-btn
@@ -38,13 +34,10 @@
                 style="max-height: 64vh"
                 class="q-pt-none text-subtitle1 scroll penomy-scrollbar"
             >
-                <p v-if="isAuth" class="note-text">
-                    Bạn chưa đăng ký trở thành <strong>nhà sáng tạo</strong> ,
-                    vui lòng hoàn tất quá trình đăng ký để truy cập vào mục này.
-                </p>
-                <p v-else class="note-text">
-                    Vui lòng đăng nhập vào hệ thống và hoàn tất phần đăng ký trở
-                    thành <strong>nhà sáng tạo</strong> để truy cập vào mục này.
+                <p class="note-text">
+                    Trước khi tiếp tục thực hiện đăng ký sáng tác, bạn có thể
+                    xem trước phần thông tin hỗ trợ bên dưới để hiểu rõ hơn về
+                    nền tảng khi tham gia đăng ký trở thành nhà sáng tạo.
                 </p>
 
                 <div class="text-h6 text-weight-bold q-mb-sm">
@@ -122,7 +115,6 @@
                     class="q-mt-md flex items-center justify-end"
                 >
                     <q-btn
-                        v-if="isAuth"
                         to="/become-creator"
                         class="bg-dark text-primary border-radius-sm q-pa-sm"
                         no-caps
@@ -133,18 +125,6 @@
                             >Đến trang đăng ký sáng tác</span
                         >
                     </q-btn>
-                    <q-btn
-                        v-else
-                        to="/auth/login"
-                        class="bg-dark text-primary border-radius-sm q-pa-sm"
-                        no-caps
-                        dense
-                    >
-                        <q-icon name="login" class="q-mr-sm" />
-                        <span class="text-weight-bold text-subtitle2"
-                            >Đến trang đăng nhập</span
-                        >
-                    </q-btn>
                 </section>
             </q-card-section>
         </q-card>
@@ -153,47 +133,28 @@
 </template>
 
 <script>
-// Import dependencies section.
-import { useAuthStore } from "src/stores/common/AuthStore";
-import { useUserProfileStore } from "src/stores/common/UserProfileStore";
-
 // Import components section.
-import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
-import DrawerLink from "components/layouts/DrawerLink.vue";
-
-// Init store for later operation.
-const authStore = useAuthStore();
-const userProfileStore = useUserProfileStore();
+import HeaderHighlight from "../creatorStudio/HeaderHighlight.vue";
 
 export default {
-    name: "UploadArtworkLink",
+    name: "BecomeCreatorButton",
+    components: {
+        HeaderHighlight,
+    },
     data() {
         return {
             showDialog: false,
         };
     },
-    components: {
-        HeaderHighlight,
-        DrawerLink,
-    },
-    computed: {
-        isAuth() {
-            return authStore.isAuth;
-        },
-        isCreator() {
-            return authStore.isAuth && userProfileStore.isCreator;
-        },
-        uploadArtworkLink() {
-            return "/studio/artworks";
-        },
-    },
+    mounted() {},
 };
 </script>
 
 <style scoped>
-.alert-dialog {
-    --max-width: 400px;
+.become-creator-dialog {
+    --max-width: 480px;
 
+    width: 100% !important;
     max-width: var(--max-width) !important;
 }
 </style>

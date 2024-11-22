@@ -21,15 +21,15 @@
         class="flex justify-between items-center page-header shadow-2"
     >
         <div class="text-subtitle1 flex items-center">
-            <q-btn
+            <router-link
                 :to="comicDetailRoute"
                 dense
                 flat
                 no-caps
-                class="text-weight-bold text-dark text-subtitle1 artwork-title"
+                class="text-weight-bold text-dark text-subtitle1 artwork-title underline-none"
             >
                 {{ props.headerTitle }}
-            </q-btn>
+            </router-link>
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm"
             /></span>

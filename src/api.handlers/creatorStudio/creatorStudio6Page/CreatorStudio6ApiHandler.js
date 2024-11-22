@@ -9,6 +9,10 @@ import { PublicLevelItem } from "src/api.models/creatorStudio/common/PublicLevel
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { CreateArtworkResult } from "src/api.models/creatorStudio/creatorStudio6Page/CreateArtworkResult";
 
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+const authStore = useAuthStore();
+
 /**
  *  Parse the input data into category item array.
  * @param {Array} data The array of response object.
@@ -136,6 +140,7 @@ async function createArtwork(artworkDetail) {
             method: HttpMethod.POST,
             headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: authStore.bearerAccessToken(),
             },
             data: requestBody,
         });
