@@ -10,9 +10,11 @@ import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { GetArtworkDetail } from "src/api.models/creatorStudio/creatorStudio8Page/GetArtworkDetail";
 import { UpdateArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/UpdateArtworkResult";
 import { TemporarilyRemoveArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/TemporarilyRemoveArtworkResult";
-import { useAuthStore } from "src/stores/common/AuthStore";
 
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
 const authStore = useAuthStore();
+
 /**
  *  Parse the input data into category item array.
  * @param {Array} data The array of response object.
@@ -144,10 +146,11 @@ async function updateArtworkDetail(artworkDetail, isCategoriesUpdated) {
 
     try {
         await axios({
-            url: `${BaseWebApiUrl}/art7/edit`,
+            url: `${BaseWebApiUrl}/art7/comic/edit`,
             method: HttpMethod.PATCH,
             headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: authStore.bearerAccessToken(),
             },
             data: requestBody,
         });
@@ -198,8 +201,11 @@ function parseToCategoryItemArrayFromArtworkDetail(data) {
 async function getArtworkDetailById(artworkId) {
     try {
         const response = await axios({
-            url: `${BaseWebApiUrl}/art7/detail/${artworkId}`,
+            url: `${BaseWebApiUrl}/art7/comic/detail/${artworkId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         const responseBody = response.data.body;

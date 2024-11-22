@@ -1,14 +1,4 @@
 <template>
-    <q-page v-if="isLoading"></q-page>
-    <q-page v-if="isNotFound">
-        <CreatorStudio8PageHeader
-            :isNotFound="true"
-            :comicId="artworkDetail.id"
-        />
-        <section class="row justify-center items-center" style="height: 100vh">
-            <div class="col-8 shadow-1">Không tìm thấy</div>
-        </section>
-    </q-page>
     <q-page v-if="!isLoading && !isNotFound">
         <CreatorStudio8PageHeader
             :headerTitle="artworkDetail.titleRef"
@@ -216,6 +206,10 @@ export default {
         if (_artworkDetail.isNotFound) {
             this.isNotFound = true;
             this.isLoading = false;
+
+            this.$router.push("/studio/artworks");
+
+            NotificationHelper.notifyError("Không tìm thấy nội dung");
 
             return;
         }

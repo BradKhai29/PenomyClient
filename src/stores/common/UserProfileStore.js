@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
-import { useAuthStore } from "./AuthStore";
 import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
 
 // Support constants.
@@ -33,6 +32,7 @@ const useUserProfileStore = defineStore("userProfileStore", {
     state: () => ({
         userProfile: new UserProfileResponseDto(null, null, null, false),
         isProcessing: true,
+        hasSetUp: false,
     }),
 
     getters: {
@@ -62,6 +62,10 @@ const useUserProfileStore = defineStore("userProfileStore", {
          * Asynchronously set up the user profile store before the application run.
          */
         async setUp(isAuth, accessToken, userId) {
+            if (this.hasSetUp) {
+                return;
+            }
+
             const cachedUserProfile = internalLoadUserProfile();
 
             this.userProfile.nickname = cachedUserProfile.nickname;
@@ -88,6 +92,9 @@ const useUserProfileStore = defineStore("userProfileStore", {
                 );
 
             this.signIn(loadedUserProfile);
+
+            // Set the related flags, prevent to set up again multiple times.
+            this.hasSetUp = true;
             this.isProcessing = false;
         },
         /**

@@ -7,16 +7,11 @@
         <div id="user_avatar" class="q-mr-lg col-auto q-my-sm">
             <q-avatar class="user_avatar shadow-2 relative-position">
                 <img :src="avatarUrl" />
-                <q-btn
+                <CreatorBadge
                     v-if="isCreator"
-                    :to="creatorProfileLink"
-                    round
-                    dense
-                    padding="sm"
-                    class="absolute-bottom-right bg-primary text-dark"
-                >
-                    <q-icon name="palette" />
-                </q-btn>
+                    :isProfileOwner="isProfileOwner"
+                    :creatorProfileLink="creatorProfileLink"
+                />
             </q-avatar>
         </div>
         <div id="user_detail_section" class="column justify-start col">
@@ -167,19 +162,7 @@
                     <!-- Edit profile button -->
 
                     <!-- Become a creator button -->
-                    <q-btn
-                        v-if="!isCreator"
-                        to="/become-creator"
-                        id="become-creator-button"
-                        dense
-                        no-caps
-                        class="q-ml-sm bg-dark text-light border-radius-sm shadow-1 q-px-sm"
-                    >
-                        <q-icon name="assignment" />
-                        <span class="q-ml-xs text-subtitle1">
-                            Đăng ký sáng tác
-                        </span>
-                    </q-btn>
+                    <BecomeCreatorButton v-if="!isCreator" />
                     <!-- Become a creator button -->
 
                     <!-- Go to studio button -->
@@ -383,12 +366,14 @@
 import { UrlHelper } from "src/helpers/UrlHelper";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
+import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
 
 // Import components section.
 import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
-import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
-import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
-import { NotificationHelper } from "src/helpers/NotificationHelper";
+import BecomeCreatorButton from "./BecomeCreatorButton.vue";
+import CreatorBadge from "./CreatorBadge.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -399,6 +384,8 @@ export default {
     name: "UserProfileCard",
     components: {
         HeaderHighlight,
+        CreatorBadge,
+        BecomeCreatorButton,
     },
     props: {
         userId: {

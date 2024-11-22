@@ -50,14 +50,7 @@
                 </q-btn>
             </h5>
             <div class="flex items-center text-dark-500 text-subtitle1 q-mt-sm">
-                <q-btn
-                    id="total-follower"
-                    dense
-                    no-caps
-                    flat
-                    padding="none"
-                    :class="isProfileOwner ? 'q-ml-lg' : ''"
-                >
+                <q-btn id="total-follower" dense no-caps flat padding="none">
                     <q-icon name="group_add" size="sm" />
                     <span class="q-ml-sm text-subtitle1">
                         <strong>{{ totalFollowers }}</strong>

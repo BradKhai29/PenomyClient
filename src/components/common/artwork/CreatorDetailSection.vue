@@ -9,14 +9,17 @@
         >
             <q-btn dense flat padding="none" no-caps class="flex items-center">
                 <q-avatar class="q-mr-sm" size="48px">
-                    <img src="https://cdn.quasar.dev/img/avatar.png" />
+                    <img :src="creatorAvatarUrl" />
                 </q-avatar>
                 <div class="text-left">
                     <div class="text-subtitle1 text-weight-bold text-dark">
-                        Penomy Official
+                        {{ creatorName }}
                     </div>
-                    <div class="text-subtitle2 text-weight-bold text-dark-500">
-                        1N người theo dõi
+                    <div
+                        class="text-subtitle2 text-weight-bold text-dark-500"
+                        :aria-placeholder="`${creatorTotalFollowers} người theo dõi`"
+                    >
+                        {{ totalFollowersShort }} người theo dõi
                     </div>
                 </div>
             </q-btn>
@@ -44,6 +47,7 @@
 // Import dependencies section.
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 import CreatorFollowButton from "./buttons/CreatorDetailSection.FollowButton.vue";
+import { NumberHelper } from "src/helpers/NumberHelper";
 
 // Init store for later operation.
 const userProfileStore = useUserProfileStore();
@@ -55,6 +59,19 @@ export default {
     },
     props: {
         creatorId: {
+            type: String,
+            required: true,
+        },
+        creatorName: {
+            type: String,
+            required: true,
+        },
+        creatorAvatarUrl: {
+            type: String,
+            required: true,
+        },
+        creatorTotalFollowers: {
+            type: Number,
             required: true,
         },
         artworkId: {
@@ -69,6 +86,9 @@ export default {
     computed: {
         isAuthor() {
             return this.creatorId == userProfileStore.currentUserId;
+        },
+        totalFollowersShort() {
+            return NumberHelper.formatNumberShort(this.creatorTotalFollowers);
         },
     },
 };

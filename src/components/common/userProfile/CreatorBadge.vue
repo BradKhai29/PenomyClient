@@ -1,25 +1,31 @@
 <template>
-    <DrawerLink
-        v-if="isCreator"
-        title="Đăng tải tác phẩm"
-        icon="upload"
-        :link="uploadArtworkLink"
-        :isSelected="false"
-    />
-    <DrawerLink
-        v-else
-        title="Đăng tải tác phẩm"
-        icon="upload"
-        :isSelected="false"
+    <q-btn
+        v-if="!isProfileOwner"
+        :to="creatorProfileLink"
+        round
+        dense
+        padding="sm"
+        class="absolute-bottom-right bg-primary text-dark"
+    >
+        <q-icon name="palette" />
+    </q-btn>
+    <q-btn
+        v-else-if="isProfileOwner"
+        round
+        dense
+        padding="sm"
+        class="absolute-bottom-right bg-primary text-dark"
         @click="showDialog = true"
-    />
+    >
+        <q-icon name="palette" />
+    </q-btn>
 
     <!-- Become creator information section -->
-    <q-dialog v-if="!isCreator" v-model="showDialog">
-        <q-card class="border-radius-md alert-dialog">
+    <q-dialog v-model="showDialog">
+        <q-card class="border-radius-md extra-info-dialog">
             <q-card-section class="flex items-center justify-between">
                 <HeaderHighlight
-                    label="Thông báo"
+                    label="Thông tin hỗ trợ"
                     class="text-h6 text-weight-bold"
                 />
                 <q-btn
@@ -38,19 +44,6 @@
                 style="max-height: 64vh"
                 class="q-pt-none text-subtitle1 scroll penomy-scrollbar"
             >
-                <p v-if="isAuth" class="note-text">
-                    Bạn chưa đăng ký trở thành <strong>nhà sáng tạo</strong> ,
-                    vui lòng hoàn tất quá trình đăng ký để truy cập vào mục này.
-                </p>
-                <p v-else class="note-text">
-                    Vui lòng đăng nhập vào hệ thống và hoàn tất phần đăng ký trở
-                    thành <strong>nhà sáng tạo</strong> để truy cập vào mục này.
-                </p>
-
-                <div class="text-h6 text-weight-bold q-mb-sm">
-                    Thông tin hỗ trợ
-                </div>
-
                 <section class="other-info-detail q-mb-md">
                     <!-- Community Policy section -->
                     <a
@@ -122,7 +115,6 @@
                     class="q-mt-md flex items-center justify-end"
                 >
                     <q-btn
-                        v-if="isAuth"
                         to="/become-creator"
                         class="bg-dark text-primary border-radius-sm q-pa-sm"
                         no-caps
@@ -130,19 +122,7 @@
                     >
                         <q-icon name="assignment" class="q-mr-sm" />
                         <span class="text-weight-bold text-subtitle2"
-                            >Đến trang đăng ký sáng tác</span
-                        >
-                    </q-btn>
-                    <q-btn
-                        v-else
-                        to="/auth/login"
-                        class="bg-dark text-primary border-radius-sm q-pa-sm"
-                        no-caps
-                        dense
-                    >
-                        <q-icon name="login" class="q-mr-sm" />
-                        <span class="text-weight-bold text-subtitle2"
-                            >Đến trang đăng nhập</span
+                            >Bản đăng ký của bạn</span
                         >
                     </q-btn>
                 </section>
@@ -153,47 +133,35 @@
 </template>
 
 <script>
-// Import dependencies section.
-import { useAuthStore } from "src/stores/common/AuthStore";
-import { useUserProfileStore } from "src/stores/common/UserProfileStore";
-
-// Import components section.
-import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
-import DrawerLink from "components/layouts/DrawerLink.vue";
-
-// Init store for later operation.
-const authStore = useAuthStore();
-const userProfileStore = useUserProfileStore();
+import HeaderHighlight from "../creatorStudio/HeaderHighlight.vue";
 
 export default {
-    name: "UploadArtworkLink",
+    name: "CreatorBadge",
+    components: {
+        HeaderHighlight,
+    },
+    props: {
+        isProfileOwner: {
+            type: Boolean,
+            default: false,
+        },
+        creatorProfileLink: {
+            type: String,
+            required: true,
+        },
+    },
     data() {
         return {
             showDialog: false,
         };
     },
-    components: {
-        HeaderHighlight,
-        DrawerLink,
-    },
-    computed: {
-        isAuth() {
-            return authStore.isAuth;
-        },
-        isCreator() {
-            return authStore.isAuth && userProfileStore.isCreator;
-        },
-        uploadArtworkLink() {
-            return "/studio/artworks";
-        },
-    },
 };
 </script>
 
 <style scoped>
-.alert-dialog {
-    --max-width: 400px;
+.extra-info-dialog {
+    --min-width: 480px;
 
-    max-width: var(--max-width) !important;
+    min-width: var(--min-width) !important;
 }
 </style>
