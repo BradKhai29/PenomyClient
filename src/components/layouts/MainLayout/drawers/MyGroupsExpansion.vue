@@ -56,8 +56,4 @@ export default {
     font-weight: bold !important;
 }
 
-.my-groups-expansion div {
-    max-height: 33vh;
-    overflow-y: auto;
-}
 </style>

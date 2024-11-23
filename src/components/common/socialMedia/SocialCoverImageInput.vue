@@ -1,11 +1,13 @@
 <template>
+
     <section class="coverImage-Input relative-position">
         <div class="invalid-file-extension-chip text-center" v-show="isInvalid">
             <q-chip icon="info" class="q-mt-sm" clickable @click="isInvalid = false">
                 {{ invalidMessage }}
             </q-chip>
         </div>
-        <section class="display-area flex items-center justify-center" :class="{ error: hasError }">
+        <section class="display-area flex items-center justify-center" :class="{ error: hasError }"
+            style="height: 29rem;">
             <img src="../../../assets/placeholder/1000x350.png"
                 style="position: absolute;width: 100%; height: 100%; z-index: 0;">
             <div v-if="!hasImage" class="flex column items-center text-weight-bold" style="z-index: 1;">
@@ -22,7 +24,7 @@
                 <q-img v-if="hasImage" :src="imageSrc" loading="lazy" spinner-color="white" ratio="0.778" width="100%"
                     height="100%" />
             </label>
-            <span v-if="hasImage" class="remove-image-button" @click="clearImage">
+            <span v-if="hasImage && !isEditGroupImage" class="remove-image-button" @click="clearImage">
                 <q-icon name="close" size="sm" />
             </span>
         </section>
@@ -43,6 +45,10 @@ export default {
         presetImageSrc: {
             type: String,
         },
+        isEditGroupImage: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
@@ -66,6 +72,8 @@ export default {
 
         // Emit the verifyInput event contains this instance for later validation callback.
         this.$emit("verifyInput", this);
+        if (this.isEditGroupImage)
+            this.$refs.coverImageInput.click()
     },
     emits: ["update:modelValue", "verifyInput", "hasChange"],
     methods: {
@@ -75,7 +83,7 @@ export default {
         onInputImage(event) {
             const uploadImageFile = event.target.files[0];
 
-            if (!uploadImageFile) {
+            if (!uploadImageFile || event.target.value === '') {
                 return;
             }
 
@@ -131,6 +139,13 @@ export default {
         imageFile() {
             this.emitImageUpdateEvent();
         },
+        isEditGroupImage() {
+            if (this.isEditGroupImage === 0) {
+                uploadImageFile = null;
+                return;
+            }
+
+        }
     },
 };
 </script>

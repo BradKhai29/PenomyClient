@@ -1,11 +1,16 @@
 <template>
+    <section v-if="isEditCoverImage" class="action-buttons">
+        <q-btn class="q-pa-sm" color="negative" @click="onCanelImage" no-caps>Hủy</q-btn>
+        <q-btn class="q-pa-sm" :loading="isLoadingBtn" color="primary" @click="onSubmit" no-caps>Lưu thay đổi</q-btn>
+    </section>
     <div class="group-header">
         <div>
-            <q-img :src="groupInfo.coverPhotoUrl" width="100%" height="29rem" style="border-radius: 0 0 5px 5px">
+            <q-img v-if="!isEditCoverImage" :src="groupInfo.coverPhotoUrl" width="100%" height="29rem"
+                style="border-radius: 0 0 5px 5px">
                 <div v-if="groupInfo.isManager" class="absolute-bottom-right text-subtitle2 q-mb-lg q-mr-md"
                     style="padding: 0;">
-                    <q-btn-dropdown @click="console.log(123123)" color="grey" icon="edit" label="Chỉnh sửa">
-                        <q-item clickable v-close-popup @click="onItemClick">
+                    <q-btn-dropdown color="grey" icon="edit" label="Chỉnh sửa">
+                        <q-item clickable v-close-popup @click="LoadUpdateCoverImageSection">
                             <q-item-section>
                                 <q-item-label>
                                     <q-icon class="q-mr-sm" size="1.5rem" name="upload" />Tải ảnh lên
@@ -15,6 +20,10 @@
                     </q-btn-dropdown>
                 </div>
             </q-img>
+            <!-- <div :class="newCoverPhotoUrl == '' ? 'hidden' : ''"> -->
+            <social-cover-image-input v-if="isEditCoverImage" :isEditGroupImage="isEditCoverImage"
+                v-model="newCoverPhotoUrl" ref="coverImageInput" />
+            <!-- </div> -->
         </div>
         <div class="q-pa-md">
             <p v-if="groupInfo.groupName != ''" class="text-bold text-h4">{{
@@ -34,6 +43,10 @@
                 <!-- Group Button -->
                 <div class="row q-gutter-md">
                     <q-btn v-if="!groupInfo.hasJoin && !groupInfo.isManager" color="primary">Tham gia</q-btn>
+
+                    <q-btn v-if="groupInfo.isManager" :to="editUrl" color="primary" icon="settings"
+                        label="Quản lý nhóm" />
+
                     <q-btn v-if="!groupInfo.isManager && groupInfo.hasJoin" icon="how_to_reg"
                         icon-right="keyboard_arrow_down" color="primary" label="Đã tham gia" />
                     <q-btn color="grey-4" text-color="black" icon="keyboard_arrow_down" />
@@ -104,62 +117,87 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, defineProps, watch } from 'vue';
-import GetGroupDescriptionApiHandler from 'src/api.handlers/social/social3Page/GetGroupDescriptionApiHandler';
-import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { ref, defineProps } from 'vue';
 import { useUserProfileStore } from 'src/stores/common/UserProfileStore';
 import { useRoute } from "vue-router";
+import SocialCoverImageInput from 'src/components/common/socialMedia/SocialCoverImageInput.vue';
+import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
+import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { defineEmits } from 'vue';
 
-const getGroupApi = GetGroupDescriptionApiHandler.GetGroupDescription;
+const isLoadingBtn = ref(false);
 const route = useRoute();
 const userProfileStore = useUserProfileStore();
+const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
+const emit = defineEmits(['updateCoverImage']);
 
 const props = defineProps({
-    groupId: {
-        type: String,
-        required: true
+    groupInfo: {
+        type: Object,
+        required: true,
+        default: () => ({
+            id: "",
+            name: "",
+            description: "",
+            isPublic: false,
+            hasJoin: false,
+            totalMembers: 0,
+            coverPhotoUrl: ""
+        })
     }
-})
-
-const postContent = ref('');
-const groupInfo = ref({
-    groupName: '',
-    groupDescription: '',
-    isPublic: '',
-    postMode: {
-        label: "Tự do",
-        value: false
-    },
-    coverImage: null
 });
+const newCoverPhotoUrl = ref('');
+const editUrl = ref(`${route.path}/edit`);
+const postContent = ref('');
+const coverImageInput = ref(null)
+
+const editBtnClickedCount = ref(0);
+let isValidInput = ref(null)
+const isEditCoverImage = ref(false)
 
 const tabButtons = ref([
     "Giới thiệu", "Bài viết", "Thành viên", "Sự kiện"
 ])
 
-onMounted(() => {
-    getGroupDescription();
-})
+function LoadUpdateCoverImageSection() {
+    isEditCoverImage.value = true
+    editBtnClickedCount.value += 1;
+}
 
-watch(
-    () => route.path,
-    () => {
-        getGroupDescription();
-    }
-);
-async function getGroupDescription() {
-    // Get group description.
-    const result = await getGroupApi(
-        props.groupId
-    );
-
-    if (result.isSuccess) {
-        groupInfo.value = result.responseBody;
-    } else {
-        NotificationHelper.notifyError(
-            result.message ?? "Có lỗi xảy ra khi tạo"
+async function onSubmit() {
+    verifyInput();
+    if (isValidInput.value == 1) {
+        isLoadingBtn.value = true
+        // Get the result after creating group.
+        const result = await updateImageApi(
+            props.groupInfo.id,
+            newCoverPhotoUrl.value
         );
+
+        if (result.isSuccess) {
+            NotificationHelper.notifySuccess("Thay đổi thành công");
+
+            // Change cover image after updating successfully.
+            // emit('updateCoverImage', { ...props.groupInfo, coverPhotoUrl: result.responseBody });
+            window.location.reload();
+            // newCoverPhotoUrl.value = '';
+        } else {
+            NotificationHelper.notifyError(
+                result.message ?? "Có lỗi xảy ra"
+            );
+        }
+        isLoadingBtn.value = false
     }
+}
+
+function verifyInput() {
+    isValidInput.value = coverImageInput.value.verifyInput();
+}
+
+function onCanelImage() {
+    newCoverPhotoUrl.value = '';
+    editBtnClickedCount.value = 0
+    isEditCoverImage.value = false
 }
 </script>
 
@@ -190,5 +228,20 @@ async function getGroupDescription() {
 
 .group-body-padding {
     padding: 0 12rem;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+    position: absolute;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.593);
+    width: 100%;
+    gap: 1rem;
 }
 </style>
