@@ -6,8 +6,8 @@
         </q-tooltip>
 
         <q-img :src="props.image" width="3rem" height="3rem" style="border-radius: 5px;" />
-        <div class="q-pl-md">
-            <div>
+        <div class="q-pl-sm">
+            <div style="text-overflow: ellipsis; width: 9rem; white-space: nowrap; overflow-x: hidden;">
                 {{ props.title }}
             </div>
             <span class="text-caption">Ngày tạo: {{ props.createdAt }}</span>
@@ -25,8 +25,7 @@
     </q-item>
 
     <!-- View all groups -->
-    <q-item v-if="!props.createdAt && props.title" clickable tag="a" 
-        :to="props.link" style="background-color: #e5f3ef;"
+    <q-item v-if="!props.createdAt && props.title" clickable tag="a" :to="props.link" style="background-color: #e5f3ef;"
         class="flex flex-row items-center app-drawer-link justify-center">
         {{ props.title }}
     </q-item>

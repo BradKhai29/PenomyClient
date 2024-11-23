@@ -52,9 +52,7 @@
                     </q-select>
 
                     <q-select ref="myPublicLevelDiv" outlined v-model="groupInfo.postMode" :options="postOptions"
-                        label="Chế độ đăng bài">
-
-                    </q-select>
+                        label="Chế độ đăng bài"/>
                 </div>
 
                 <div class="row q-pt-sm q-gutter-sm group-buttons">
@@ -203,7 +201,9 @@ async function onSubmit() {
     // Trim the group name.
     groupInfo.value.groupName = groupInfo.value.groupName.trim();
     groupInfo.value.groupName = groupInfo.value.groupName.replace(/\s+/g, " ");
+    groupInfo.value.groupDescription = groupInfo.value.groupDescription.trim();
     verifyInput();
+    
     if (isValidInput.value == 1) {
         isLoadingBtn.value = true
         // Get the result after creating group.

@@ -19,7 +19,7 @@ const toLink = props.group == null ? `/social/group/create` : `/social/group/${p
 onMounted(() => {
     if (props.group != null) {
 
-        if (route.path == `/social/group/${props.group.id}`) {
+        if (route.path.indexOf(`/social/group/${props.group.id}`) != -1) {
             isSelected.value = true;
         }
     }
@@ -28,7 +28,7 @@ watch(
     () => route.path,
     (newPath, _) => {
         if (props.group != null) {
-            if (newPath && newPath == `/social/group/${props.group.id}`) {
+            if (newPath && newPath.indexOf(`/social/group/${props.group.id}`) != -1) {
                 isSelected.value = true;
             } else {
                 isSelected.value = false;
