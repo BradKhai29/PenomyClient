@@ -1,80 +1,72 @@
 <template>
     <q-btn
         v-if="isAuth"
-        @click="toggleFollowArtwork"
-        class="text-subtitle1 text-weight-bold"
+        @click="toggleFollowCreator"
+        class="border-radius-sm shadow-1 q-px-sm text-subtitle1 text-weight-bold"
         :class="isFollowed ? 'bg-dark text-light' : 'bg-light-300 text-dark'"
-        no-caps
-        rounded
         dense
+        no-caps
+        unelevated
+        :loading="isLoading"
+        :disable="isLoading"
     >
         <span v-if="isFollowed" class="q-ml-xs flex items-center">
-            <q-icon name="add_box" size="sm" class="text-primary" />
-            <span class="q-ml-sm"> Đã theo dõi </span>
+            <q-avatar size="sm" class="bg-primary text-dark">
+                <q-icon name="check" size="xs" />
+            </q-avatar>
+            <span class="q-ml-xs"> Theo dõi </span>
         </span>
-        <span v-else class="q-ml-xs flex items-center">
-            <q-icon name="add_box" size="sm" />
-            <span class="q-ml-sm"> Theo dõi </span>
-        </span>
-
+        <span v-else> Theo dõi </span>
         <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
             <strong v-if="isFollowed" class="text-subtitle2">
-                Đã theo dõi tác phẩm
+                Đã theo dõi tác giả
             </strong>
-            <strong v-else class="text-subtitle2"> Theo dõi tác phẩm </strong>
+            <strong v-else class="text-subtitle2"> Theo dõi tác giả </strong>
         </q-tooltip>
     </q-btn>
     <q-btn
         v-else
-        class="text-subtitle1 text-weight-bold bg-light-300 text-dark"
+        class="border-radius-sm shadow-1 q-px-sm text-subtitle1 text-weight-bold bg-light-300 text-dark"
+        @click="showDialog = true"
         no-caps
         rounded
-        dense
-        @click="showDialog = true"
     >
-        <span class="q-ml-xs flex items-center">
-            <q-icon name="add_box" size="sm" />
-            <span class="q-ml-sm"> Theo dõi </span>
-        </span>
+        Theo dõi
         <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
-            <strong class="text-subtitle2"> Theo dõi tác phẩm </strong>
+            <strong class="text-subtitle2"> Theo dõi tác giả </strong>
         </q-tooltip>
-
-        <RequireLoginDialog v-model="showDialog" />
     </q-btn>
+    <RequireLoginDialog v-if="!isAuth" v-model="showDialog" />
 </template>
 
 <script>
 // Import dependencies section.
-import { FollowArtworkApiHandler } from "src/api.handlers/artwork/artwork3Page/FollowArtworkApiHandler";
-// Import dependencies section.
+import { FollowCreatorApiHandler } from "src/api.handlers/artwork/artwork3Page/FollowCreatorApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 // Import components section.
-import RequireLoginDialog from "../../others/RequireLoginDialog.vue";
+import RequireLoginDialog from "../others/RequireLoginDialog.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
 
 export default {
-    name: "ArtworkFollowButton",
+    name: "CreatorFollowButton",
     components: {
         RequireLoginDialog,
     },
     props: {
-        artworkId: {
+        creatorId: {
+            type: String,
             required: true,
-        },
-        hasUserFollowed: {
-            type: Boolean,
-            default: false,
         },
     },
     data() {
         return {
-            showDialog: false,
             isFollowed: false,
+            showDialog: false,
+            isLoading: true,
         };
     },
     computed: {
@@ -82,11 +74,17 @@ export default {
             return authStore.isAuth;
         },
     },
-    beforeMount() {
-        this.isFollowed = this.hasUserFollowed;
+    async mounted() {
+        this.isFollowed =
+            await FollowCreatorApiHandler.checkHasFollowCreatorAsync(
+                this.creatorId,
+                authStore.bearerAccessToken()
+            );
+
+        this.isLoading = false;
     },
     methods: {
-        toggleFollowArtwork() {
+        toggleFollowCreator() {
             this.isProcessing = true;
 
             // Call api that corresponding to isFollowed's value when toggle.
@@ -97,8 +95,8 @@ export default {
             }
         },
         async addToFollowList() {
-            const isSuccess = await FollowArtworkApiHandler.addToFollowAsync(
-                this.artworkId,
+            const isSuccess = await FollowCreatorApiHandler.addToFollowAsync(
+                this.creatorId,
                 authStore.bearerAccessToken()
             );
 
@@ -113,8 +111,8 @@ export default {
             this.isProcessing = false;
         },
         async removeFromFollowList() {
-            const isSuccess = await FollowArtworkApiHandler.removeFollowAsync(
-                this.artworkId,
+            const isSuccess = await FollowCreatorApiHandler.removeFollowAsync(
+                this.creatorId,
                 authStore.bearerAccessToken()
             );
 

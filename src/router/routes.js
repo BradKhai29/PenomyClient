@@ -9,6 +9,7 @@ import auth6PageRoute from "./auth/Auth6PageRoute";
 // Artwork page routes section.
 import artwork1PageRoute from "./artwork/Artwork1PageRoute";
 import artwork3PageRoute from "./artwork/Artwork3PageRoute";
+import artwork4PageRoute from "./artwork/Artwork4PageRoute";
 import artwork5PageRoute from "./artwork/Artwork5PageRoute";
 
 // Creator studio page routes section.
@@ -58,6 +59,7 @@ const routes = [
     // Artwork routes.
     ...artwork1PageRoute,
     ...artwork3PageRoute,
+    ...artwork4PageRoute,
     ...artwork5PageRoute,
     // Creator studio routes.
     ...creatorStudio1PageRoute,
