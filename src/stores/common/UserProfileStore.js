@@ -62,7 +62,7 @@ const useUserProfileStore = defineStore("userProfileStore", {
          * Asynchronously set up the user profile store before the application run.
          */
         async setUp(isAuth, accessToken, userId) {
-            if (this.hasSetUp) {
+            if (this.hasSetUp || !isAuth) {
                 return;
             }
 

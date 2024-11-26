@@ -4,6 +4,7 @@
             <q-avatar class="user_avatar shadow-2 relative-position">
                 <img :src="avatarUrl" />
                 <q-btn
+                    v-if="!isProfileOwner"
                     round
                     dense
                     padding="sm"
@@ -11,6 +12,11 @@
                 >
                     <q-icon name="palette" />
                 </q-btn>
+                <CreatorBadge
+                    v-if="isProfileOwner"
+                    :isProfileOwner="isProfileOwner"
+                    :creatorProfileLink="creatorProfileLink"
+                />
             </q-avatar>
         </div>
         <div id="user_detail_section" class="column justify-start col">
@@ -311,6 +317,7 @@ import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1P
 import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
 import CreatorFollowButton from "./CreatorProfile.FollowButton.vue";
 import ReportProfileButton from "../profile.common/ReportProfileButton.vue";
+import CreatorBadge from "../userProfile/CreatorBadge.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -320,6 +327,7 @@ export default {
     name: "CreatorProfileCard",
     components: {
         HeaderHighlight,
+        CreatorBadge,
         CreatorFollowButton,
         ReportProfileButton,
     },

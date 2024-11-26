@@ -2,27 +2,39 @@
     <DrawerLink
         title="Lịch sử xem"
         icon="history"
-        link="/profile/user/history"
+        :link="viewHistoryLink"
         :isSelected="isSelected"
     />
 </template>
 
-<script setup>
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
+<script>
+// Import dependencies section.
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+
+// Import component section.
 import DrawerLink from "components/layouts/DrawerLink.vue";
 
-const route = useRoute();
-const isSelected = ref(false);
+// Init store for later operation.
+const authStore = useAuthStore();
+const userProfileStore = useUserProfileStore();
 
-watch(
-    () => route.path,
-    (newPath, _) => {
-        if (newPath && newPath == `/profile/user/history`) {
-            isSelected.value = true;
-        } else {
-            isSelected.value = false;
-        }
-    }
-);
+export default {
+    name: "ViewHistoryLink",
+    components: {
+        DrawerLink,
+    },
+    computed: {
+        viewHistoryLink() {
+            if (authStore.isAuth) {
+                return `/user/${userProfileStore.currentUserId}?tab=history`;
+            }
+
+            return "guest/history";
+        },
+        isSelected() {
+            return String(this.$route.path).includes("history");
+        },
+    },
+};
 </script>

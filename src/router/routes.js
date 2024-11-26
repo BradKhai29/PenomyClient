@@ -28,6 +28,9 @@ import creatorStudio12PageRoute from "./creatorStudio/CreatorStudio12PageRoute";
 import creatorStudio22PageRoute from "./creatorStudio/CreatorStudio22PageRoute";
 import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
 
+// Guest page routes section.
+import guestPageRoute from "./guest/GuestViewHistoryPageRoute";
+
 // User profile page routes section.
 import userProfile1PageRoute from "./userProfile/UserProfile1PageRoute";
 
@@ -76,6 +79,8 @@ const routes = [
     ...creatorStudio12PageRoute,
     ...creatorStudio22PageRoute,
     ...creatorStudio25PageRoute,
+    // Guest routes.
+    ...guestPageRoute,
     // User profile routes.
     ...userProfile1PageRoute,
     // Creator profile routes.

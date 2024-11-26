@@ -11,11 +11,12 @@
 <script>
 import TheUserAvatarMenu from "components/layouts/MainLayout/headers/TheUserAvatarMenu.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { useGuestStore } from "src/stores/common/GuestStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
-import { useProfileStore } from "src/stores/pages/userProfile/ProfileStore";
 
 // Init store for later operation.
 const authStore = useAuthStore();
+const guestStore = useGuestStore();
 const userProfileStore = useUserProfileStore();
 
 export default {
@@ -44,6 +45,13 @@ export default {
     },
     async mounted() {
         await authStore.setUp();
+
+        // If the current user is not authenticated,
+        // then setup for them the guest store.
+        if (!authStore.isAuth) {
+            await guestStore.setUp();
+        }
+
         await userProfileStore.setUp(
             authStore.isAuth,
             authStore.accessToken(),
@@ -51,7 +59,6 @@ export default {
         );
 
         this.isLoading = false;
-        // profileStore.setupProfileStore();
     },
 };
 </script>
