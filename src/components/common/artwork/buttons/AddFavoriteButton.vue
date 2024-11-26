@@ -14,7 +14,7 @@
             anchor="top middle"
             self="bottom middle"
             :offset="[8, 8]"
-            class="bg-dark text-light"
+            :class="isComicType ? 'bg-dark text-light' : ''"
         >
             <strong class="text-subtitle2">{{
                 isFavorite ? "Đã yêu thích" : "Yêu thích tác phẩm"

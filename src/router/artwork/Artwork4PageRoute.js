@@ -7,7 +7,7 @@ const routeDefinition = [
         children: [
             {
                 path: "anime/:artworkId",
-                component: () => import("src/pages/artwork/Artwork3PageV2.vue"),
+                component: () => import("src/pages/artwork/Artwork4Page.vue"),
             },
         ],
     },

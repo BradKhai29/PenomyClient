@@ -2,68 +2,55 @@
     <section
         v-if="!isLoading"
         id="artwork-detail-section-wrapper"
-        :style="comicDetailCardStyle"
+        :style="animeDetailCardStyle"
         class="shadow-1"
     >
         <section
             id="artwork-detail-section"
-            class="q-py-lg row justify-center bg-dark-blur"
+            class="q-py-lg row justify-center bg-dark-blur-deep"
         >
-            <section
-                id="artwork-detail-card"
-                class="row q-mt-md q-pa-md shadow-1 bg-light border-radius-md"
-            >
-                <q-img
-                    class="q-mr-md border-radius-md shadow-1"
-                    :src="comicDetail.thumbnailUrl"
-                    width="225px"
-                    height="280px"
-                />
-                <div class="col-grow column q-py-xs">
-                    <h5
+            <section id="artwork-detail-card" class="row">
+                <div class="text-light col-md-9 col-12 column q-py-xs">
+                    <h4
                         class="q-my-none text-weight-bold q-mb-md flex items-center"
                     >
                         <span class="q-mr-sm">
-                            {{ comicDetail.title }}
+                            {{ animeDetail.title }}
                         </span>
-                        <GetLinkButton :darkMode="true" />
-                    </h5>
+                        <GetLinkButton :darkMode="true" class="bg-light" />
+                    </h4>
                     <div id="artwork-metadata" class="row">
-                        <div id="country-and-author" class="column col-grow">
-                            <div class="q-mb-xs text-subtitle1">
-                                <span class="text-weight-bold">
-                                    Quốc gia:
-                                </span>
-                                <span>{{ comicDetail.countryName }}</span>
-                            </div>
-                            <div class="q-mb-xs text-subtitle1">
-                                <span class="text-weight-bold"> Tác giả: </span>
-                                <span>{{ comicDetail.creatorName }}</span>
-                            </div>
-                        </div>
-                        <div id="status-and-series" class="column col-grow">
-                            <div
-                                class="q-mb-xs text-subtitle1 row items-center"
-                            >
+                        <div
+                            id="status-and-series"
+                            class="row items-center col-grow text-subtitle1"
+                        >
+                            <div>
                                 <span class="text-weight-bold">
                                     Trạng thái:
                                 </span>
-                                <span class="q-ml-xs"> Còn cập nhật </span>
+                                <span> Còn cập nhật </span>
                             </div>
-                            <div class="q-mb-xs text-subtitle1">
-                                <span class="text-weight-bold"> Series: </span>
-                                <span>{{
-                                    comicDetail.series ?? "Không có"
+
+                            <span
+                                id="separator"
+                                class="border-sm-light q-mx-sm"
+                                style="padding: 6.4px 0px"
+                            />
+
+                            <div>
+                                <span class="text-weight-bold"> Tác giả: </span>
+                                <span class="">{{
+                                    animeDetail.creatorName
                                 }}</span>
                             </div>
                         </div>
                     </div>
-                    <div id="artwork-categories" class="q-gutter-sm q-my-sm">
+                    <div id="artwork-categories" class="q-gutter-sm q-mt-xs">
                         <q-btn
                             dense
                             flat
                             no-caps
-                            class="shadow-1 text-dark bg-light-100"
+                            class="shadow-1 text-light q-px-sm border-radius-sm border-md-light"
                         >
                             <q-icon name="info_outline" />
                             <span
@@ -82,53 +69,67 @@
                         </q-btn>
                         <q-btn
                             :to="`${$route.path}?categoryId=${category.categoryId}`"
-                            v-for="category in comicDetail.categories"
+                            v-for="category in animeDetail.categories"
                             :key="category"
                             :id="category.categoryId"
                             dense
                             no-caps
                             unelevated
-                            class="bg-dark text-light text-subtitle2 text-weight-bold border-radius-sm q-px-sm"
+                            class="bg-light text-dark text-subtitle2 text-weight-bold border-radius-sm q-px-sm border-md-light"
                         >
                             {{ category.categoryName }}
                         </q-btn>
                     </div>
+                    <p
+                        id="artwork-description"
+                        class="row q-mt-md text-subtitle1"
+                    >
+                        <span class="col-md-11 col-12 introduction-text">
+                            {{ animeDetail.introduction }} Lorem ipsum dolor sit
+                            amet consectetur adipisicing elit. Qui assumenda
+                            asperiores, exercitationem autem explicabo aliquid
+                            saepe architecto illo maxime quisquam temporibus
+                            quae sit debitis, consectetur similique animi
+                            perferendis. Ipsum, minus. Lorem ipsum, dolor sit
+                            amet consectetur adipisicing elit. Corrupti aliquam
+                            inventore ullam et cumque autem obcaecati, velit, id
+                            deserunt ipsa, tenetur harum vitae sed! Officiis qui
+                            consectetur est eius rerum!
+                        </span>
+                    </p>
                     <div id="action-button-group" class="q-gutter-sm q-mt-auto">
                         <q-btn
-                            class="bg-dark text-light text-subtitle1 text-weight-bold"
+                            class="bg-primary text-dark text-subtitle1 text-weight-bold"
                             no-caps
-                            rounded
                         >
                             <q-icon name="play_arrow" size="sm" />
                             <span class="q-ml-xs">Xem tiếp</span>
                         </q-btn>
                         <q-btn
-                            class="bg-dark text-light text-subtitle1 text-weight-bold"
+                            class="bg-primary text-dark text-subtitle1 text-weight-bold"
                             no-caps
-                            rounded
                         >
                             <span class="q-ml-xs">Xem từ đầu</span>
                         </q-btn>
                         <AddFavoriteButton
-                            :artworkId="comicId"
-                            :isUserFavorite="comicDetail.isUserFavorite"
+                            :artworkId="artworkId"
+                            :isUserFavorite="animeDetail.isUserFavorite"
+                            :isComicType="false"
                         />
                         <ArtworkReportButton
                             v-if="isAuth"
-                            :artworkId="comicId"
+                            :isComicType="false"
+                            :artworkId="artworkId"
                         />
                     </div>
                 </div>
+                <q-img
+                    class="q-ml-auto border-radius-md shadow-1 bg-light-300"
+                    :src="animeDetail.thumbnailUrl"
+                    width="225px"
+                    height="280px"
+                />
             </section>
-
-            <CreatorDetailSection
-                class="artwork-detail-section q-mt-md border-radius-md"
-                :artworkId="comicId"
-                :creatorId="comicDetail.creatorId"
-                :creatorName="comicDetail.creatorName"
-                :creatorAvatarUrl="comicDetail.creatorAvatarUrl"
-                :creatorTotalFollowers="comicDetail.creatorTotalFollowers"
-            />
         </section>
     </section>
 </template>
@@ -139,7 +140,6 @@ import { ArtworkDetailResponse } from "src/api.models/artwork/artwork14Page/Artw
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 // Import components section.
-import CreatorDetailSection from "src/components/common/artwork/CreatorDetailSection.vue";
 import AddFavoriteButton from "src/components/common/artwork/buttons/AddFavoriteButton.vue";
 import GetLinkButton from "src/components/common/artwork/buttons/GetLinkButton.vue";
 import ArtworkReportButton from "src/components/common/artwork/buttons/ArtworkReportButton.vue";
@@ -148,29 +148,28 @@ import ArtworkReportButton from "src/components/common/artwork/buttons/ArtworkRe
 const authStore = useAuthStore();
 
 export default {
-    name: "ComicDetailSection",
+    name: "AnimeDetailSection",
     components: {
-        CreatorDetailSection,
         AddFavoriteButton,
         ArtworkReportButton,
         GetLinkButton,
     },
     props: {
-        comicId: {
+        artworkId: {
             required: true,
         },
         isLoading: {
             type: Boolean,
             required: true,
         },
-        comicDetail: {
+        animeDetail: {
             type: ArtworkDetailResponse,
             required: true,
         },
     },
     data() {
         return {
-            comicDetailCardStyle: {
+            animeDetailCardStyle: {
                 background: null,
                 backgroundSize: "cover",
             },
@@ -182,7 +181,19 @@ export default {
         },
     },
     mounted() {
-        this.comicDetailCardStyle.background = `url(${this.comicDetail.thumbnailUrl}) no-repeat`;
+        this.animeDetailCardStyle.background = `url(${this.animeDetail.thumbnailUrl}) no-repeat`;
     },
 };
 </script>
+
+<style scoped>
+.introduction-text {
+    --line-show: 3;
+
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: var(--line-show); /* number of lines to show */
+    line-clamp: var(--line-show);
+    -webkit-box-orient: vertical;
+}
+</style>
