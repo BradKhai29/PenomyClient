@@ -56,6 +56,7 @@ var props = defineProps({
 });
 onMounted(() => {
     getComments();
+    // console.log(props.isAllowComment.value);
 });
 
 async function getComments() {

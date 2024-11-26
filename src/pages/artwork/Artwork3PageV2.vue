@@ -19,7 +19,7 @@
         />
 
         <CommentLoader
-            :isAllowComment="comicDetail.allowComment"
+            :isAllowComment="comicDetail.isAllowComment"
             :artworkId="comicId"
         />
     </q-page>
