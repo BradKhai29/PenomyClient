@@ -1,7 +1,8 @@
 <template>
     <section v-if="isEditCoverImage" class="action-buttons">
         <q-btn class="q-pa-sm" color="negative" @click="onCanelImage" no-caps>Hủy</q-btn>
-        <q-btn class="q-pa-sm" :loading="isLoadingBtn" color="primary" @click="onSubmit" no-caps>Lưu thay đổi</q-btn>
+        <q-btn class="q-pa-sm" :loading="isLoadingImageBtn" color="primary" @click="onSubmit" no-caps>Lưu thay
+            đổi</q-btn>
     </section>
     <div class="group-header">
         <div>
@@ -42,13 +43,21 @@
 
                 <!-- Group Button -->
                 <div class="row q-gutter-md">
-                    <q-btn v-if="!groupInfo.hasJoin && !groupInfo.isManager" color="primary">Tham gia</q-btn>
+                    <div v-if="!groupInfo.isManager">
+                        <q-btn :loading="isLoadingJoinBtn" @click="JoinGroupAsync"
+                            v-if="(!groupInfo.hasJoin && !groupInfo.hasRequestJoin)" color="primary">Tham
+                            gia</q-btn>
+
+                        <q-btn :loading="isLoadingJoinBtn" v-if="groupInfo.hasRequestJoin" color="grey">Hủy
+                            yêu cầu</q-btn>
+
+                        <q-btn v-if="groupInfo.hasJoin" icon="how_to_reg" icon-right="keyboard_arrow_down"
+                            color="primary" label="Đã tham gia" />
+                    </div>
 
                     <q-btn v-if="groupInfo.isManager" :to="editUrl" color="primary" icon="settings"
                         label="Quản lý nhóm" />
 
-                    <q-btn v-if="!groupInfo.isManager && groupInfo.hasJoin" icon="how_to_reg"
-                        icon-right="keyboard_arrow_down" color="primary" label="Đã tham gia" />
                     <q-btn color="grey-4" text-color="black" icon="keyboard_arrow_down" />
                 </div>
             </div>
@@ -123,12 +132,17 @@ import { useRoute } from "vue-router";
 import SocialCoverImageInput from 'src/components/common/socialMedia/SocialCoverImageInput.vue';
 import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
 import { NotificationHelper } from "src/helpers/NotificationHelper";
+import JoinRequestApiHandler from 'src/api.handlers/social/social3Page/JoinRequestApiHandler';
 import { defineEmits } from 'vue';
 
-const isLoadingBtn = ref(false);
+const isLoadingImageBtn = ref(false);
+const isLoadingJoinBtn = ref(false);
+const hasSendRequest = ref(false);
+
 const route = useRoute();
 const userProfileStore = useUserProfileStore();
 const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
+const joinGroupApi = JoinRequestApiHandler.JoinGroupAsync;
 const emit = defineEmits(['updateCoverImage']);
 
 const props = defineProps({
@@ -142,7 +156,8 @@ const props = defineProps({
             isPublic: false,
             hasJoin: false,
             totalMembers: 0,
-            coverPhotoUrl: ""
+            coverPhotoUrl: "",
+            hasRequestJoin: false
         })
     }
 });
@@ -167,7 +182,7 @@ function LoadUpdateCoverImageSection() {
 async function onSubmit() {
     verifyInput();
     if (isValidInput.value == 1) {
-        isLoadingBtn.value = true
+        isLoadingImageBtn.value = true
         // Get the result after creating group.
         const result = await updateImageApi(
             props.groupInfo.id,
@@ -186,7 +201,7 @@ async function onSubmit() {
                 result.message ?? "Có lỗi xảy ra"
             );
         }
-        isLoadingBtn.value = false
+        isLoadingImageBtn.value = false
     }
 }
 
@@ -198,6 +213,26 @@ function onCanelImage() {
     newCoverPhotoUrl.value = '';
     editBtnClickedCount.value = 0
     isEditCoverImage.value = false
+}
+
+async function JoinGroupAsync() {
+    if (!props.groupInfo.isPublic) {
+
+        isLoadingJoinBtn.value = true;
+        const result = await joinGroupApi(props.groupInfo.id);
+
+        if (result.isSuccess) {
+            NotificationHelper.notifySuccess("Đã gửi yêu cầu");
+            hasSendRequest.value = true
+        } else {
+            NotificationHelper.notifyError(
+                result.message ?? "Có lỗi xảy ra"
+            );
+        }
+        isLoadingJoinBtn.value = false
+    } else {
+        console.log("Already joined");
+    }
 }
 </script>
 
