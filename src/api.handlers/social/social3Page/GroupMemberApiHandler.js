@@ -5,16 +5,37 @@ import { ApiResponse } from "src/api.models/common/ApiResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 const authStore = useAuthStore();
-const apiUrl = `${BaseWebApiUrl}/sm5/group-description/get`;
+const getMemberApiUrl = `${BaseWebApiUrl}/sm39/group-member/get`;
 
-async function GetGroupDescriptionAsync(groupId) {
+async function RemoveGroupMemberAsync(groupId, memberId) {
+    const removeMemberApiUrl = `${BaseWebApiUrl}/sm41/group-member/remove/${groupId}/${memberId}`;
     try {
         const response = await axios({
-            url: apiUrl,
+            url: removeMemberApiUrl,
+            method: HttpMethod.DELETE,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+            // params: {
+            //     groupId: groupId,
+            //     memberId: memberId,
+            // },
+        });
+        return ApiResponse.success(response.data.body);
+    } catch (error) {
+        console.log(error);
+
+        return ApiResponse.failed();
+    }
+}
+
+async function GetGroupMemberAsync(groupId, memberId) {
+    try {
+        const response = await axios({
+            url: getMemberApiUrl,
             method: HttpMethod.GET,
             params: {
                 groupId: groupId,
-                accessToken: authStore.bearerAccessToken(),
             },
         });
         return ApiResponse.success(response.data.body);
@@ -25,8 +46,9 @@ async function GetGroupDescriptionAsync(groupId) {
     }
 }
 
-const GetGroupDescriptionApiHandler = {
-    GetGroupDescription: GetGroupDescriptionAsync,
+const GroupMemberApiHandler = {
+    RemoveGroupMemberAsync: RemoveGroupMemberAsync,
+    GetGroupMemberAsync: GetGroupMemberAsync,
 };
 
-export default GetGroupDescriptionApiHandler;
+export default GroupMemberApiHandler;

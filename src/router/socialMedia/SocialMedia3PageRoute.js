@@ -12,7 +12,7 @@ const routeDefinition = [
                     import("pages/socialMedia/SocialMedia3Page.vue"),
             },
             {
-                path: "group/:id/edit",
+                path: "group/:id/manage",
                 component: () =>
                     import("pages/socialMedia/SocialMedia3Page.vue"),
             },

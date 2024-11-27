@@ -2,15 +2,17 @@
     <q-page style="background-color: rgb(249, 249, 249);">
 
         <!-- Description section -->
-        <div v-if="route.path.indexOf('edit') == -1">
+        <div v-if="route.path.indexOf('manage') == -1">
             <SocialGroupDescription :groupInfo="groupInfo" @updateCoverImage="updateGroupCoverImage" />
         </div>
 
         <!-- Edit section -->
-        <div v-if="route.path.indexOf('edit') != -1" class="q-pt-md">
+        <div v-if="route.path.indexOf('manage') != -1" class="q-pt-md">
             <EditGroup :groupInfo="groupInfo" />
             <join-request :groupInfo="groupInfo" />
+            <GroupMemberSection :is-group-manager="groupInfo.isManager"/>
         </div>
+
     </q-page>
 </template>
 
@@ -21,6 +23,7 @@ import GetGroupDescriptionApiHandler from 'src/api.handlers/social/social3Page/G
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import EditGroup from 'src/components/common/socialMedia/EditGroup.vue';
 import JoinRequest from 'src/components/common/socialMedia/JoinRequest.vue';
+import GroupMemberSection from 'src/components/common/socialMedia/GroupMemberSection.vue';
 import { useRoute } from "vue-router";
 
 const getGroupApi = GetGroupDescriptionApiHandler.GetGroupDescription;

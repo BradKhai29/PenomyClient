@@ -66,16 +66,10 @@
                     </q-card-section>
                     <q-card-section v-if="!groupInfo.isPublic">
                         Để bảo vệ quyền riêng tư của thành viên nhóm, bạn không thể chuyển nhóm riêng tư thành
-                        công khai. 
-                        <!-- Bạn sẽ quản lý
-                        được ai có thể tìm và tham gia nhóm này thông qua các tùy chọn cài đặt Ẩn nhóm và Ai có
-                        thể tham gia nhóm. -->
+                        công khai.
                     </q-card-section>
                     <q-card-section v-if="groupInfo.isPublic">
-                        Để bảo vệ quyền riêng tư của thành viên nhóm, bạn có thể chuyển nhóm công khai thành riêng tư. 
-                        <!-- Bạn sẽ quản lý
-                        được ai có thể tìm và tham gia nhóm này thông qua các tùy chọn cài đặt Ẩn nhóm và Ai có
-                        thể tham gia nhóm. -->
+                        Để bảo vệ quyền riêng tư của thành viên nhóm, bạn có thể chuyển nhóm công khai thành riêng tư.
                     </q-card-section>
                 </q-card>
             </q-expansion-item>
@@ -86,7 +80,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted } from 'vue';
+import { ref, defineProps } from 'vue';
 import { useRoute } from "vue-router";
 import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -163,11 +157,11 @@ function resetValue() {
     isEditGroupSettings.value = false
     newGroupInfo.value = {
         id: route.params.id,
-        name: groupInfo.value.name,
-        description: groupInfo.value.description,
+        name: props.groupInfo.name,
+        description: props.groupInfo.description,
         postMode: {
-            label: groupInfo.value.requireApprovedWhenPost ? "Yêu cầu phê duyệt" : "Tự do",
-            value: groupInfo.value.requireApprovedWhenPost
+            label: props.groupInfo.requireApprovedWhenPost ? "Yêu cầu phê duyệt" : "Tự do",
+            value: props.groupInfo.requireApprovedWhenPost
         }
     }
 }

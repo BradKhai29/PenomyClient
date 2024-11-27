@@ -45,14 +45,14 @@
                 <div class="row q-gutter-md">
                     <div v-if="!groupInfo.isManager">
                         <q-btn :loading="isLoadingJoinBtn" @click="JoinGroupAsync"
-                            v-if="(!groupInfo.hasJoin && !groupInfo.hasRequestJoin)" color="primary">Tham
+                            v-if="(!hasJoinGroup && !groupInfo.hasRequestJoin)" color="primary">Tham
                             gia</q-btn>
 
                         <q-btn :loading="isLoadingJoinBtn" v-if="groupInfo.hasRequestJoin" color="grey">Hủy
                             yêu cầu</q-btn>
 
-                        <q-btn v-if="groupInfo.hasJoin" icon="how_to_reg" icon-right="keyboard_arrow_down"
-                            color="primary" label="Đã tham gia" />
+                        <q-btn v-if="hasJoinGroup" icon="how_to_reg" icon-right="keyboard_arrow_down" color="primary"
+                            label="Đã tham gia" />
                     </div>
 
                     <q-btn v-if="groupInfo.isManager" :to="editUrl" color="primary" icon="settings"
@@ -126,7 +126,7 @@
     </div>
 </template>
 <script setup>
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, watch } from 'vue';
 import { useUserProfileStore } from 'src/stores/common/UserProfileStore';
 import { useRoute } from "vue-router";
 import SocialCoverImageInput from 'src/components/common/socialMedia/SocialCoverImageInput.vue';
@@ -140,9 +140,11 @@ const isLoadingJoinBtn = ref(false);
 const hasSendRequest = ref(false);
 
 const route = useRoute();
+const profileStore = useUserProfileStore();
 const userProfileStore = useUserProfileStore();
 const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
-const joinGroupApi = JoinRequestApiHandler.JoinGroupAsync;
+const requestJoinGroupApi = JoinRequestApiHandler.JoinGroupAsync;
+const JoinGroupApi = JoinRequestApiHandler.AcceptJoinRequestAsync;
 const emit = defineEmits(['updateCoverImage']);
 
 const props = defineProps({
@@ -161,18 +163,29 @@ const props = defineProps({
         })
     }
 });
+
+
 const newCoverPhotoUrl = ref('');
-const editUrl = ref(`${route.path}/edit`);
+const editUrl = ref(`${route.path}/manage`.replace('//', '/'));
 const postContent = ref('');
 const coverImageInput = ref(null)
 
 const editBtnClickedCount = ref(0);
 let isValidInput = ref(null)
 const isEditCoverImage = ref(false)
+const hasJoinGroup = ref(false);
 
 const tabButtons = ref([
     "Giới thiệu", "Bài viết", "Thành viên", "Sự kiện"
 ])
+
+watch(
+    () => props.groupInfo,
+    () => {
+        hasJoinGroup.value = props.groupInfo.hasJoin;
+        hasSendRequest.value = props.groupInfo.hasRequestJoin
+        isEditCoverImage.value = false
+    })
 
 function LoadUpdateCoverImageSection() {
     isEditCoverImage.value = true
@@ -219,7 +232,7 @@ async function JoinGroupAsync() {
     if (!props.groupInfo.isPublic) {
 
         isLoadingJoinBtn.value = true;
-        const result = await joinGroupApi(props.groupInfo.id);
+        const result = await requestJoinGroupApi(props.groupInfo.id);
 
         if (result.isSuccess) {
             NotificationHelper.notifySuccess("Đã gửi yêu cầu");
@@ -231,7 +244,19 @@ async function JoinGroupAsync() {
         }
         isLoadingJoinBtn.value = false
     } else {
-        console.log("Already joined");
+        isLoadingJoinBtn.value = true;
+
+        const result = await JoinGroupApi(props.groupInfo.id, profileStore.currentUserId);
+
+        if (result.isSuccess) {
+            // NotificationHelper.notifySuccess("");
+            hasJoinGroup.value = true
+        } else {
+            NotificationHelper.notifyError(
+                result.message ?? "Có lỗi xảy ra"
+            );
+        }
+        isLoadingJoinBtn.value = false
     }
 }
 </script>
