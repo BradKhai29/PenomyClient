@@ -1,17 +1,32 @@
 <template>
     <q-page v-if="!isLoading" class="position-relative bg-dark-900">
-        <TheChapterHeaderBar :comicId="comicId" :comicTitle="chapterDetail.comicTitle" :chapterId="chapterId"
-            :chapterTitle="chapterDetail.title" :chapterOrder="chapterDetail.uploadOrder" />
+        <TheChapterHeaderBar
+            :comicId="comicId"
+            :comicTitle="chapterDetail.comicTitle"
+            :chapterId="chapterId"
+            :chapterTitle="chapterDetail.title"
+            :chapterOrder="chapterDetail.uploadOrder"
+        />
 
         <section id="chapter-images" class="flex column items-center">
-            <img :id="`anh_${imageItem.uploadOrder + 1}`" v-for="imageItem in chapterDetail.images" :key="imageItem"
-                :src="imageItem.storageUrl" class="preview-image-item" :alt="`anh_${imageItem.uploadOrder + 1}`" />
+            <img
+                :id="`anh_${imageItem.uploadOrder + 1}`"
+                v-for="imageItem in chapterDetail.images"
+                :key="imageItem"
+                :src="imageItem.storageUrl"
+                class="preview-image-item"
+                :alt="`anh_${imageItem.uploadOrder + 1}`"
+            />
         </section>
 
         <ChapterButtonGroup :totalFavorites="1000" />
 
-        <ComicChapterNavigation :comicId="comicId" :comicTitle="chapterDetail.comicTitle" :chapterId="chapterId"
-            :chapterTitle="chapterDetail.title" />
+        <ComicChapterNavigation
+            :comicId="comicId"
+            :comicTitle="chapterDetail.comicTitle"
+            :chapterId="chapterId"
+            :chapterTitle="chapterDetail.title"
+        />
     </q-page>
 </template>
 
@@ -21,11 +36,18 @@ import { NumberHelper } from "src/helpers/NumberHelper";
 import { Artwork5ApiHandler } from "src/api.handlers/artwork/artwork5Page/Artwork5ApiHandler";
 import { ComicChapterDetailResponseDto } from "src/api.models/artwork/artwork5Page/ComicChapterDetailResponseDto";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { ViewHistoryApiHandler } from "src/api.handlers/artwork/common/ViewHistoryApiHandler";
+import { useGuestStore } from "src/stores/common/GuestStore";
+import { useAuthStore } from "src/stores/common/AuthStore";
 
 // Import component section.
 import TheChapterHeaderBar from "src/components/pages/artwork/artwork5Page/TheChapterHeaderBar.vue";
 import ChapterButtonGroup from "src/components/pages/artwork/artwork5Page/ChapterButtonGroup.vue";
 import ComicChapterNavigation from "src/components/pages/artwork/artwork5Page/ComicChapterNavigation.vue";
+
+// Init store for later operation.
+const guestStore = useGuestStore();
+const authStore = useAuthStore();
 
 export default {
     name: "Artwork5Page",
@@ -79,6 +101,9 @@ export default {
             return;
         }
 
+        // Asynchronously save the view history.
+        this.saveViewHistory();
+
         const result = await Artwork5ApiHandler.getChapterDetailByIdAsync(
             this.comicId,
             this.chapterId
@@ -93,8 +118,28 @@ export default {
             this.$router.push("/");
         } else {
             this.chapterDetail = result;
-            console.log(result);
         }
+    },
+    methods: {
+        async saveViewHistory() {
+            const isAuth = await authStore.isAuthAsync();
+
+            if (isAuth) {
+                ViewHistoryApiHandler.addViewHistoryAsync(
+                    this.comicId,
+                    this.chapterId,
+                    guestStore.currentGuestId
+                );
+            } else {
+                guestStore.waitForSetUp().then(() => {
+                    ViewHistoryApiHandler.addViewHistoryAsync(
+                        this.comicId,
+                        this.chapterId,
+                        guestStore.currentGuestId
+                    );
+                });
+            }
+        },
     },
 };
 </script>

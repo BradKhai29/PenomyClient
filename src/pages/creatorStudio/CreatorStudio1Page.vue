@@ -1,91 +1,72 @@
 <template>
-    <q-page>
-        <section class="column q-pa-md q-gutter-md">
-            <div class="text-subtitle1">
-                <div style="width: 500px; word-wrap: break-word">
-                    <span> Access Token: {{ accessToken ?? "null" }} </span>
-                </div>
-                <div class="col-grow q-pa-sm border-radius-sm shadow-1 column">
-                    <div class="bg-dark text-light shadow-1 q-pa-sm">
-                        <div>IAT</div>
-                        <div class="q-pl-md">
-                            From time:
-                            <span>{{
-                                tokenPayload?.iat - getDateTimeNow()
-                            }}</span>
-                        </div>
-                        <div class="q-pl-md">
-                            Value: <span>{{ tokenPayload?.iat }}</span>
-                        </div>
-                    </div>
-                    <div class="bg-dark text-light shadow-1 q-pa-sm">
-                        <div>EXP</div>
-                        <div class="q-pl-md">
-                            From time:
-                            <span>{{ leftTime }}</span>
-                        </div>
-                        <div class="q-pl-md">
-                            Value: <span>{{ tokenPayload?.exp }}</span>
-                        </div>
-                    </div>
-                    <div>
-                        Purpose: <span>{{ tokenPayload?.purpose }}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="text-subtitle1">
-                Refresh Token: {{ refreshToken ?? "null" }}
-            </div>
-            <div class="text-subtitle1">
-                Refresh Token Result: {{ refreshTokenResult ?? "null" }}
-            </div>
-        </section>
-        <div class="q-mx-md">
-            <q-btn @click="getAccessToken" class="bg-dark text-light">
-                Get the token
-            </q-btn>
-        </div>
+    <q-page v-if="!invalidId && !isLoading">
+        <ProfileCard
+            :creatorId="creatorId"
+            :creatorProfile="loadedCreatorProfile"
+            :isProfileOwner="isProfileOwner"
+        />
     </q-page>
 </template>
 
 <script>
+// Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { DecodeJwtPayload, JwtTokenHelper } from "src/helpers/JwtTokenHelper";
-import { NotificationHelper } from "src/helpers/NotificationHelper";
-import { authStoreManager } from "src/stores/common/AuthStore.InternalManager";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
+
+// Import components section.
+import ProfileCard from "src/components/pages/creatorStudio/creatorStudio1Page/ProfileCard.vue";
+
+// Init store for later operation.
 const authStore = useAuthStore();
+const userProfileStore = useUserProfileStore();
 
 export default {
-    name: "CreatorStudio1Page",
-    components: {},
+    name: "CreatorProfile1Page",
+    components: {
+        ProfileCard,
+    },
     data() {
         return {
-            pageNumber: 1,
-            refreshTokenResult: null,
-            tokenPayloadRef: null,
-            leftTime: 0,
-            refreshToken: null,
+            isLoading: true,
+            creatorId: null,
+            /**
+             * @type {UserProfileResponseDto} The type of this data property.
+             */
+            loadedCreatorProfile: null,
         };
-    },
-    async mounted() {
-        this.refreshToken = authStore.refreshToken;
-    },
-    methods: {
-        getDateTimeNow() {
-            return Math.ceil(Date.now() / 1000);
-        },
     },
     computed: {
         /**
-         * @type {DecodeJwtPayload} Payload type.
+         * Check if the current user that visit this page is
+         * the owner of this profile or not.
          */
-        tokenPayload() {
-            const tokenPayload = JwtTokenHelper.decodeJwt(this.accessToken);
-
-            return tokenPayload;
+        isProfileOwner() {
+            return (
+                // Check if the current user is already signed-in
+                // and the userId is similar to the route param.
+                authStore.isAuth &&
+                this.creatorId == userProfileStore.currentUserId
+            );
         },
-        accessToken() {
-            return authStoreManager.tokenBag.accessToken;
+    },
+    beforeMount() {
+        // Get the id from the route params to fetch data.
+        this.creatorId = userProfileStore.currentUserId;
+    },
+    mounted() {
+        this.waitToLoadOwnerProfile();
+    },
+    methods: {
+        /**
+         * Wait for the api to load the current user profile
+         * (also the owner of this profile).
+         */
+        async waitToLoadOwnerProfile() {
+            await userProfileStore.waitToLoadOwnerProfile();
+
+            this.loadedCreatorProfile = userProfileStore.userProfile;
+            this.isLoading = false;
         },
     },
 };

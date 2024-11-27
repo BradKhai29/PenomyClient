@@ -10,6 +10,7 @@
             class="q-my-lg"
             :comicId="comicId"
             :comicDetail="comicDetail"
+            :creatorId="creatorId"
         />
 
         <ArtworkDetailRecommendedSection
@@ -93,6 +94,9 @@ export default {
     computed: {
         hasSeries() {
             return this.comicDetail.hasSeries;
+        },
+        creatorId() {
+            return this.comicDetail.creatorId;
         },
     },
 };
