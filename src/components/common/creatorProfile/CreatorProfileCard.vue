@@ -4,6 +4,7 @@
             <q-avatar class="user_avatar shadow-2 relative-position">
                 <img :src="avatarUrl" />
                 <q-btn
+                    v-if="!isProfileOwner"
                     round
                     dense
                     padding="sm"
@@ -11,6 +12,11 @@
                 >
                     <q-icon name="palette" />
                 </q-btn>
+                <CreatorBadge
+                    v-if="isProfileOwner"
+                    :isProfileOwner="isProfileOwner"
+                    :creatorProfileLink="creatorProfileLink"
+                />
             </q-avatar>
         </div>
         <div id="user_detail_section" class="column justify-start col">
@@ -83,33 +89,12 @@
             <section id="interaction-button-group" class="q-mt-md">
                 <!-- Guest view display section -->
                 <div v-if="!isProfileOwner" class="flex items-center">
-                    <!-- Go to social media profile button -->
-                    <q-btn
-                        id="edit-profile-button"
-                        dense
-                        no-caps
-                        class="bg-light-300 text-dark border-radius-sm shadow-1 q-px-sm"
-                    >
-                        <q-icon name="group" />
-                        <span class="q-ml-xs text-subtitle1">
-                            Trang cá nhân
-                        </span>
-                    </q-btn>
-                    <!-- Go to social media profile button -->
+                    <!-- Creator follow button -->
+                    <CreatorFollowButton :creatorId="creatorId" />
+                    <!-- Creator follow button -->
 
                     <!-- Report profile button -->
-                    <q-btn
-                        v-if="isAuth"
-                        id="report-profile-button"
-                        dense
-                        no-caps
-                        class="q-ml-sm bg-dark text-light border-radius-sm shadow-1 q-px-sm"
-                    >
-                        <q-icon name="report" />
-                        <span class="q-ml-xs text-subtitle1">
-                            Báo cáo tài khoản
-                        </span>
-                    </q-btn>
+                    <ReportProfileButton v-if="isAuth" :userId="creatorId" />
                     <!-- Report profile button -->
                 </div>
                 <!-- Guest view display section-->
@@ -326,10 +311,13 @@
 // Import dependencies section.
 import { UrlHelper } from "src/helpers/UrlHelper";
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
 
 // Import components section.
 import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
-import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1Page/UserProfileResponseDto";
+import CreatorFollowButton from "./CreatorProfile.FollowButton.vue";
+import ReportProfileButton from "../profile.common/ReportProfileButton.vue";
+import CreatorBadge from "../userProfile/CreatorBadge.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -339,6 +327,9 @@ export default {
     name: "CreatorProfileCard",
     components: {
         HeaderHighlight,
+        CreatorBadge,
+        CreatorFollowButton,
+        ReportProfileButton,
     },
     props: {
         creatorId: {

@@ -129,18 +129,7 @@
                     <!-- Go to social media profile button -->
 
                     <!-- Report profile button -->
-                    <q-btn
-                        v-if="isAuth"
-                        id="report-profile-button"
-                        dense
-                        no-caps
-                        class="q-ml-sm bg-dark text-light border-radius-sm shadow-1 q-px-sm"
-                    >
-                        <q-icon name="report" />
-                        <span class="q-ml-xs text-subtitle1">
-                            Báo cáo tài khoản
-                        </span>
-                    </q-btn>
+                    <ReportProfileButton v-if="isAuth" :userId="userId" />
                     <!-- Report profile button -->
                 </div>
                 <!-- Guest view display section-->
@@ -374,6 +363,7 @@ import { UserProfileResponseDto } from "src/api.models/userProfile/userProfile1P
 import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
 import BecomeCreatorButton from "./BecomeCreatorButton.vue";
 import CreatorBadge from "./CreatorBadge.vue";
+import ReportProfileButton from "../profile.common/ReportProfileButton.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -386,6 +376,7 @@ export default {
         HeaderHighlight,
         CreatorBadge,
         BecomeCreatorButton,
+        ReportProfileButton,
     },
     props: {
         userId: {

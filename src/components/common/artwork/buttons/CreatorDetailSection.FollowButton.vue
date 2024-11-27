@@ -15,7 +15,7 @@
             </q-avatar>
             <span class="q-ml-xs"> Theo dõi </span>
         </span>
-        <span v-else class="q-ml-xs"> Theo dõi </span>
+        <span v-else> Theo dõi </span>
         <q-tooltip anchor="top middle" self="bottom middle" :offset="[8, 8]">
             <strong v-if="isFollowed" class="text-subtitle2">
                 Đã theo dõi tác giả
@@ -41,7 +41,6 @@
 <script>
 // Import dependencies section.
 import { FollowCreatorApiHandler } from "src/api.handlers/artwork/artwork3Page/FollowCreatorApiHandler";
-// Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 

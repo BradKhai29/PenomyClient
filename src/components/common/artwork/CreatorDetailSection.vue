@@ -1,7 +1,7 @@
 <template>
     <section
         id="creator-detail-bar"
-        class="q-pa-md bg-light border-radius-md flex items-center justify-between"
+        class="q-pa-md bg-light flex items-center justify-between"
     >
         <router-link
             :to="`/creator/${creatorId}`"
@@ -25,17 +25,14 @@
             </q-btn>
         </router-link>
         <div>
-            <router-link
-                v-if="isAuthor"
-                :to="`/studio/comic/detail/${artworkId}`"
-            >
+            <router-link v-if="isAuthor" :to="studioArtworkLink">
                 <q-btn
                     class="bg-dark text-primary text-subtitle1 text-weight-bold"
                     no-caps
                     rounded
                 >
                     <q-icon name="edit" size="xs" />
-                    <span class="q-ml-xs">Sửa thông tin truyện</span>
+                    <span class="q-ml-xs">Sửa truyện</span>
                 </q-btn>
             </router-link>
             <CreatorFollowButton v-else :creatorId="creatorId" />
@@ -58,6 +55,10 @@ export default {
         CreatorFollowButton,
     },
     props: {
+        isComic: {
+            type: Boolean,
+            default: true,
+        },
         creatorId: {
             type: String,
             required: true,
@@ -89,6 +90,13 @@ export default {
         },
         totalFollowersShort() {
             return NumberHelper.formatNumberShort(this.creatorTotalFollowers);
+        },
+        studioArtworkLink() {
+            if (this.isComic) {
+                return `/studio/comic/detail/${this.artworkId}`;
+            }
+
+            return `/studio/anime/detail/${this.artworkId}`;
         },
     },
 };

@@ -11,7 +11,10 @@
                 :comicDetail="comicDetail"
             />
 
-            <ComicChapterListSection :comicId="comicId" :creatorId="1" />
+            <ComicChapterListSection
+                :comicId="comicId"
+                :creatorId="creatorId"
+            />
         </section>
     </section>
 </template>

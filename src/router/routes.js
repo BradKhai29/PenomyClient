@@ -9,6 +9,7 @@ import auth6PageRoute from "./auth/Auth6PageRoute";
 // Artwork page routes section.
 import artwork1PageRoute from "./artwork/Artwork1PageRoute";
 import artwork3PageRoute from "./artwork/Artwork3PageRoute";
+import artwork4PageRoute from "./artwork/Artwork4PageRoute";
 import artwork5PageRoute from "./artwork/Artwork5PageRoute";
 
 // Creator studio page routes section.
@@ -26,6 +27,9 @@ import creatorStudio11PageRoute from "./creatorStudio/CreatorStudio11PageRoute";
 import creatorStudio12PageRoute from "./creatorStudio/CreatorStudio12PageRoute";
 import creatorStudio22PageRoute from "./creatorStudio/CreatorStudio22PageRoute";
 import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
+
+// Guest page routes section.
+import guestPageRoute from "./guest/GuestViewHistoryPageRoute";
 
 // User profile page routes section.
 import userProfile1PageRoute from "./userProfile/UserProfile1PageRoute";
@@ -58,6 +62,7 @@ const routes = [
     // Artwork routes.
     ...artwork1PageRoute,
     ...artwork3PageRoute,
+    ...artwork4PageRoute,
     ...artwork5PageRoute,
     // Creator studio routes.
     ...creatorStudio1PageRoute,
@@ -74,6 +79,8 @@ const routes = [
     ...creatorStudio12PageRoute,
     ...creatorStudio22PageRoute,
     ...creatorStudio25PageRoute,
+    // Guest routes.
+    ...guestPageRoute,
     // User profile routes.
     ...userProfile1PageRoute,
     // Creator profile routes.
