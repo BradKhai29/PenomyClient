@@ -9,8 +9,9 @@
         <!-- Edit section -->
         <div v-if="route.path.indexOf('manage') != -1" class="q-pt-md">
             <EditGroup :groupInfo="groupInfo" />
-            <join-request :groupInfo="groupInfo" />
-            <GroupMemberSection :is-group-manager="groupInfo.isManager"/>
+            <join-request :groupInfo="groupInfo" @approve-request="getGroupDescription" />
+            <GroupMemberSection :is-group-manager="groupInfo.isManager" :group-member-count="groupInfo.totalMembers"
+                @remove-member="getGroupDescription" />
         </div>
 
     </q-page>

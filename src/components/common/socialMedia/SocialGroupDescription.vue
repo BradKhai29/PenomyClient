@@ -45,10 +45,10 @@
                 <div class="row q-gutter-md">
                     <div v-if="!groupInfo.isManager">
                         <q-btn :loading="isLoadingJoinBtn" @click="JoinGroupAsync"
-                            v-if="(!hasJoinGroup && !groupInfo.hasRequestJoin)" color="primary">Tham
+                            v-if="(!hasJoinGroup && !hasSendJoinRequest)" color="primary">Tham
                             gia</q-btn>
 
-                        <q-btn :loading="isLoadingJoinBtn" v-if="groupInfo.hasRequestJoin" color="grey">Hủy
+                        <q-btn :loading="isLoadingJoinBtn" v-if="hasSendJoinRequest" color="grey">Hủy
                             yêu cầu</q-btn>
 
                         <q-btn v-if="hasJoinGroup" icon="how_to_reg" icon-right="keyboard_arrow_down" color="primary"
@@ -137,7 +137,7 @@ import { defineEmits } from 'vue';
 
 const isLoadingImageBtn = ref(false);
 const isLoadingJoinBtn = ref(false);
-const hasSendRequest = ref(false);
+const hasSendJoinRequest = ref(false);
 
 const route = useRoute();
 const profileStore = useUserProfileStore();
@@ -183,7 +183,7 @@ watch(
     () => props.groupInfo,
     () => {
         hasJoinGroup.value = props.groupInfo.hasJoin;
-        hasSendRequest.value = props.groupInfo.hasRequestJoin
+        hasSendJoinRequest.value = props.groupInfo.hasRequestJoin
         isEditCoverImage.value = false
     })
 
@@ -236,7 +236,7 @@ async function JoinGroupAsync() {
 
         if (result.isSuccess) {
             NotificationHelper.notifySuccess("Đã gửi yêu cầu");
-            hasSendRequest.value = true
+            hasSendJoinRequest.value = true
         } else {
             NotificationHelper.notifyError(
                 result.message ?? "Có lỗi xảy ra"

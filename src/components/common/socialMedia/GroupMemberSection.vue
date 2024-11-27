@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount, defineProps } from 'vue'
+import { ref, onBeforeMount, defineProps, watch, defineEmits } from 'vue'
 import GroupMemberApiHandler from 'src/api.handlers/social/social3Page/GroupMemberApiHandler';
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { useRoute } from 'vue-router';
@@ -31,16 +31,28 @@ const getMemberApi = GroupMemberApiHandler.GetGroupMemberAsync;
 const members = ref([]);
 const route = useRoute();
 
-onBeforeMount(() => {
-    getMemberAsync();
-})
-
+const emit = defineEmits(['removeMember'])
 const props = defineProps({
     isGroupManager: {
         type: Boolean,
         default: false
+    },
+    groupMemberCount: {
+        type: Number,
+        default: 0
     }
 })
+
+onBeforeMount(() => {
+    getMemberAsync();
+})
+
+watch(
+    () => props.groupMemberCount,
+    () => {
+        getMemberAsync();
+    }
+);
 
 async function getMemberAsync() {
     const result = await getMemberApi(
@@ -57,5 +69,6 @@ async function getMemberAsync() {
 
 function onRemoveMember(memberId) {
     members.value = members.value.filter(member => member.userId != memberId)
+    emit('removeMember')
 }
 </script>

@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineEmits } from 'vue';
 import { useRoute } from "vue-router";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import JoinRequestApiHandler from 'src/api.handlers/social/social3Page/JoinRequestApiHandler';
@@ -63,6 +63,7 @@ const getJoinRequestApi = JoinRequestApiHandler.GetJoinRequestAsync;
 const acceptRequestApi = JoinRequestApiHandler.AcceptJoinRequestAsync;
 const requests = ref([]);
 
+const emit = defineEmits(['approveRequest'])
 // Boolean variables
 
 
@@ -101,7 +102,7 @@ async function acceptJoinRequestAsync(memberId) {
             result.message ?? "Chào mừng thành viên mới"
         );
         requests.value = requests.value.filter(request => request.userId != memberId)
-        console.log(result);
+        emit('approveRequest')
     } else {
         NotificationHelper.notifyError(
             result.message ?? "Có lỗi xảy ra"
