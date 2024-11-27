@@ -46,7 +46,7 @@
                 <q-list class="drawer-gutter">
                     <OverviewLink />
                     <DetailStatisticLink />
-                    <EarnMoneyLink />
+                    <!-- <EarnMoneyLink /> -->
                     <ReportedLink />
                 </q-list>
 
@@ -88,7 +88,7 @@ export default {
     components: {
         OverviewLink,
         DetailStatisticLink,
-        EarnMoneyLink,
+        // EarnMoneyLink,
         ReportedLink,
         ArtworkCreationExpansion,
         OthersExpansion,

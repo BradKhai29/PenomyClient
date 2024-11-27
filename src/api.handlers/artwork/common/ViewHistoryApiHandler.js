@@ -1,12 +1,15 @@
 import axios from "axios";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
+
+// Models for mapping api response section.
 import { GuestTrackingResponseItem } from "src/api.models/artwork/common/GuestTrackingResponseItem";
+import { ViewHistoryArtworkResponseItem } from "src/api.models/artwork/common/ViewHistoryArtworkResponseItem";
 
-// Init authStore for later operation.
+// Init store for later operation.
 import { useAuthStore } from "src/stores/common/AuthStore";
-const authStore = useAuthStore();
 
+const authStore = useAuthStore();
 /**
  * Init a new guest view history record to track the current guest activity.
  *
@@ -63,7 +66,26 @@ async function getGuestTrackingAsync(guestId) {
  * @returns {Promise<Boolean>} The promise contains the result of operation. True if the operation is success.
  */
 async function addUserViewHistoryAsync(artworkId, chapterId) {
-    const apiUrl = `${BaseWebApiUrl}/g25/guest/add-history`;
+    const apiUrl = `${BaseWebApiUrl}/g25/user/add-history`;
+
+    try {
+        await axios({
+            url: apiUrl,
+            method: HttpMethod.POST,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+            data: {
+                artworkId: artworkId,
+                chapterId: chapterId,
+            },
+        });
+
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
 }
 
 /**
@@ -72,18 +94,29 @@ async function addUserViewHistoryAsync(artworkId, chapterId) {
  *
  * @param {String} artworkId Id of the artwork that contains the current chapter.
  * @param {String} chapterId Id of the current chapter.
+ * @param {String} guestId Id of the guest (if no auth).
  * @returns {Promise<Boolean>} The promise contains the result of operation. True if the operation is success.
  */
-async function addGuestViewHistoryAsync(artworkId, chapterId) {
-    const apiUrl = `${BaseWebApiUrl}/g25/user/add-history`;
+async function addGuestViewHistoryAsync(artworkId, chapterId, guestId) {
+    const apiUrl = `${BaseWebApiUrl}/g25/guest/add-history`;
 
     try {
-        axios({
+        await axios({
             url: apiUrl,
             method: HttpMethod.POST,
-            data: {},
+            data: {
+                guestId: guestId,
+                artworkId: artworkId,
+                chapterId: chapterId,
+            },
         });
-    } catch (error) {}
+
+        return true;
+    } catch (error) {
+        console.log(error);
+
+        return false;
+    }
 }
 
 /**
@@ -92,14 +125,17 @@ async function addGuestViewHistoryAsync(artworkId, chapterId) {
  *
  * @param {String} artworkId Id of the artwork that contains the current chapter.
  * @param {String} chapterId Id of the current chapter.
+ * @param {String} guestId Id of the guest (if no auth).
  * @returns {Promise<Boolean>} The promise contains the result of operation. True if the operation is success.
  */
-function addViewHistoryAsync(artworkId, chapterId) {
+function addViewHistoryAsync(artworkId, chapterId, guestId) {
     if (authStore.isAuth) {
+        console.log("Run here man");
+
         return addUserViewHistoryAsync(artworkId, chapterId);
     }
 
-    return addGuestViewHistoryAsync(artworkId, chapterId);
+    return addGuestViewHistoryAsync(artworkId, chapterId, guestId);
 }
 
 const ArtworkTypes = {
@@ -130,7 +166,7 @@ async function getGuestViewHistoryAsync(
             },
         });
 
-        return response.data.body;
+        return ViewHistoryArtworkResponseItem.mapFromArray(response.data.body);
     } catch (error) {
         console.log(error);
 
@@ -164,7 +200,7 @@ async function getUserViewHistoryAsync(
             },
         });
 
-        return response.data.body;
+        return ViewHistoryArtworkResponseItem.mapFromArray(response.data.body);
     } catch (error) {
         console.log(error);
 

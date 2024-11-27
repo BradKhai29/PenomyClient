@@ -153,6 +153,12 @@ const useUserProfileStore = defineStore("userProfileStore", {
         setTotalFollowedCreators(totalFollowedCreators) {
             this.userProfile.totalFollowedCreators = totalFollowedCreators;
         },
+        increaseTotalArtworks() {
+            this.userProfile.totalArtworks++;
+        },
+        decreaseTotalArtworks() {
+            this.userProfile.totalArtworks--;
+        },
         clearProfile() {
             this.userProfile.clear();
 
@@ -166,10 +172,9 @@ const useUserProfileStore = defineStore("userProfileStore", {
             localStorage.removeItem("series");
         },
         /**
-         * Internal wait to get the access token if the refresh-token operation is not complete.
+         * Internal wait to load the profile if the operation is not complete.
          *
-         * @param {boolean} withBearerPrefix True if want to get the access token with bearer prefix.
-         * @returns {Promise<String>} Promise contains the access token value.
+         * @returns {Promise<void>} The Promise of the operation.
          */
         waitToLoadOwnerProfile() {
             if (!this.isProcessing) {

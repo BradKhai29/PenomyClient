@@ -136,6 +136,27 @@ const useAuthStore = defineStore("authStore", {
         getBearerAccessTokenAsync() {
             return authStoreManager.getBearerAccessTokenAsync();
         },
+        isAuthAsync() {
+            if (this.hasSetUp) {
+                return new Promise((resolve) => {
+                    resolve(this.isAuth);
+                });
+            }
+
+            // Check the isProcessing flag every 50 ms
+            const CHECKING_INTERVAL_TIMEOUT = 50;
+
+            return new Promise((resolve) => {
+                const intervalId = setInterval(() => {
+                    if (this.hasSetUp) {
+                        // Stop checking once it's false
+                        clearInterval(intervalId);
+
+                        resolve(this.isAuth);
+                    }
+                }, CHECKING_INTERVAL_TIMEOUT);
+            });
+        },
     },
 });
 

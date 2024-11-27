@@ -30,7 +30,7 @@ export default {
                 return `/user/${userProfileStore.currentUserId}?tab=history`;
             }
 
-            return "guest/history";
+            return "/guest/history";
         },
         isSelected() {
             return String(this.$route.path).includes("history");
