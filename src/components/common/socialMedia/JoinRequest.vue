@@ -1,6 +1,5 @@
 <template>
     <div class="edit-section q-pa-sm">
-
         <q-expansion-item>
             <template v-slot:header>
                 <q-item-section style="margin-left: -13px !important;">
@@ -43,7 +42,7 @@
             <q-card v-else>
                 <q-item>
                     <q-item-section>
-                        <div class="text-bold text-center">Không có yêu cầu tham gia</div>
+                        <div class="text-center">Không có yêu cầu tham gia</div>
                     </q-item-section>
                 </q-item>
             </q-card>
@@ -90,7 +89,7 @@ async function getJoinRequestAsync() {
 }
 
 async function acceptJoinRequestAsync(memberId) {
-    requests.value.find(request => request.userId == memberId)[0].isRunApi = true
+    requests.value.find(request => request.userId == memberId).isRunApi = true
     const result = await acceptRequestApi(
         route.params.id,
         memberId
