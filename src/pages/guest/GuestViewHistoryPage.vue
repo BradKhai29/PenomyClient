@@ -28,7 +28,7 @@
                 </q-btn>
             </div>
 
-            <GuestHistorySection />
+            <GuestHistorySection v-if="!isLoading" :guestId="guestId" />
         </section>
     </q-page>
 </template>
@@ -37,6 +37,7 @@
 // Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { useGuestStore } from "src/stores/common/GuestStore";
 
 // Import components section.
 import GuestProfileCard from "src/components/pages/guest/GuestProfileCard.vue";
@@ -45,6 +46,7 @@ import GuestHistorySection from "src/components/pages/guest/GuestHistorySection.
 // Init store for later operation.
 const authStore = useAuthStore();
 const userProfileStore = useUserProfileStore();
+const guestStore = useGuestStore();
 
 export default {
     name: "GuestViewHistoryPage",
@@ -58,6 +60,11 @@ export default {
             isLoading: true,
         };
     },
+    computed: {
+        guestId() {
+            return guestStore.currentGuestId;
+        },
+    },
     beforeMount() {
         if (authStore.isAuth) {
             // Redirect user to user profile page instead of guest page.
@@ -65,6 +72,8 @@ export default {
         }
     },
     async mounted() {
+        await guestStore.waitForSetUp();
+
         this.isLoading = false;
     },
 };

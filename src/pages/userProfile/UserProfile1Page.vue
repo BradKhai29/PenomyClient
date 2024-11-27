@@ -2,9 +2,7 @@
     <q-page v-if="!invalidId">
         <UserProfileCard :userId="userId" />
 
-        <section v-if="isProfileOwner" id="user-preference-section">
-            Hello
-        </section>
+        <UserPreferenceSection v-if="isProfileOwner" :userId="userId" />
 
         <EmptyStatePlaceholder v-else />
     </q-page>
@@ -20,6 +18,7 @@ import { NotificationHelper } from "src/helpers/NotificationHelper";
 // Import components section.
 import UserProfileCard from "src/components/common/userProfile/UserProfileCard.vue";
 import EmptyStatePlaceholder from "src/components/common/userProfile/EmptyStatePlaceholder.vue";
+import UserPreferenceSection from "src/components/pages/userProfile/userProfile1Page/UserPreferenceSection.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -30,6 +29,7 @@ export default {
     components: {
         UserProfileCard,
         EmptyStatePlaceholder,
+        UserPreferenceSection,
     },
     data() {
         return {

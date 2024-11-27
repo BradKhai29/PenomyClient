@@ -41,6 +41,9 @@ export default {
             type: ArtworkDetailResponse,
             required: true,
         },
+        creatorId: {
+            required: true,
+        },
     },
 };
 </script>

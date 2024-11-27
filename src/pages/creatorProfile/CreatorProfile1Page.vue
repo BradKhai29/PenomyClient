@@ -104,8 +104,6 @@ export default {
          * Wait for the api to load the profile of specified creator.
          */
         async waitToLoadCreatorProfile() {
-            console.log("Hello");
-
             const result = await CreatorProfileApiHandler.getProfileAsync(
                 this.creatorId
             );

@@ -71,7 +71,7 @@ export default {
     name: "GuestProfileCard",
     computed: {
         lastActiveAt() {
-            return guestStore.normalizedLastActiveAt;
+            return guestStore.normalizedLastActiveAt();
         },
     },
 };
