@@ -11,7 +11,7 @@
             <q-card>
                 <div v-for="(member, index) in members" :key="index">
                     <MemberCard :memberInfo="member" :groupId="route.params.id" :isGroupManager="isGroupManager"
-                        @removeMember="onRemoveMember" />
+                        @removeMember="onRemoveMember" @changeRole="onChangeRole" />
                 </div>
             </q-card>
         </q-expansion-item>
@@ -70,5 +70,9 @@ async function getMemberAsync() {
 function onRemoveMember(memberId) {
     members.value = members.value.filter(member => member.userId != memberId)
     emit('removeMember')
+}
+
+function onChangeRole(memberId, newRole) {
+    members.value.find(member => member.userId == memberId).isManager = newRole
 }
 </script>

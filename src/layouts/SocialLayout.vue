@@ -1,6 +1,7 @@
 <template>
     <q-layout view="hHR Lpr lFf">
         <q-header class="bg-light" bordered>
+            <!-- <linear-progress @is-done="showProgress= false" v-if="showProgress"/> -->
             <q-toolbar class="text-dark">
                 <q-btn flat round icon="menu" aria-label="Menu" @click="toggleDrawer" size="md" />
 
@@ -72,6 +73,8 @@ import JoinGroupsExpansion from "src/components/layouts/MainLayout/drawers/JoinG
 import OthersExpansion from "components/layouts/OthersExpansion.vue";
 import DrawerGroupLink from "src/components/layouts/DrawerGroupLink.vue";
 
+// Import components from progress section.
+import LinearProgress from "src/components/common/progressBar/LinearProgress.vue";
 // Import auth store
 import { useAuthStore } from "src/stores/common/AuthStore";
 
@@ -90,6 +93,7 @@ onMounted(() => {
 });
 
 const showDrawer = ref(false);
+const showProgress = ref(true);
 
 function toggleDrawer() {
     showDrawer.value = !showDrawer.value;

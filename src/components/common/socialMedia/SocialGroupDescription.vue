@@ -166,7 +166,7 @@ const props = defineProps({
 
 
 const newCoverPhotoUrl = ref('');
-const editUrl = ref(`${route.path}/manage`.replace('//', '/'));
+const editUrl = ref('');
 const postContent = ref('');
 const coverImageInput = ref(null)
 
@@ -185,6 +185,7 @@ watch(
         hasJoinGroup.value = props.groupInfo.hasJoin;
         hasSendJoinRequest.value = props.groupInfo.hasRequestJoin
         isEditCoverImage.value = false
+        editUrl.value = `${route.path}/manage`.replace('//', '/')
     })
 
 function LoadUpdateCoverImageSection() {
