@@ -12,7 +12,7 @@
         <q-space></q-space>
 
         <q-icon name="more_vert" class="cursor-pointer">
-            <q-menu label="123" icon="more_vert" dropdown-icon="null"><q-list>
+            <q-menu icon="more_vert" dropdown-icon="null"><q-list>
                     <q-item clickable v-close-popup @click="onItemClick">
                         <q-item-section>
                             <q-item-label>Edit</q-item-label>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed} from 'vue';
 
 var props = defineProps({
     comment: {

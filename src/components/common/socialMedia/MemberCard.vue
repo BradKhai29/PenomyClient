@@ -7,7 +7,7 @@
             <div class="text-bold group-name">
                 {{ memberInfo.nickName }}
             </div>
-            <span v-if="memberInfo.isManager" class="admin-tag">Quản trị viên</span>
+            <span v-if="isManager" class="admin-tag">Quản trị viên</span>
             <div>Ngày tham gia: {{ memberInfo.joinedAt }}
                 - Hoạt động lần cuối: {{ memberInfo.lastActiveAt }}
             </div>
@@ -20,21 +20,26 @@
             <q-btn-dropdown v-if="isGroupManager" color="grey-5" unelevated no-caps no-icon-animation
                 dropdown-icon="more_horiz">
                 <q-list>
-                    <q-item clickable v-close-popup>
+                    <q-item clickable v-close-popup v-if="!isManager" @click="ChangeMemberRole">
                         <q-item-section>
-                            <q-item-label>Chinh sua</q-item-label>
+                            <q-item-label>Mời làm quản trị viên</q-item-label>
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup v-if="isManager" @click="ChangeMemberRole">
+                        <q-item-section>
+                            <q-item-label>Gỡ vai trò quản trị viên</q-item-label>
                         </q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="removeMemberDialog = true">
                         <q-item-section>
-                            <q-item-label>Xoa thanh vien</q-item-label>
+                            <q-item-label>Xóa thành viên</q-item-label>
                         </q-item-section>
                     </q-item>
                 </q-list>
             </q-btn-dropdown>
         </div>
     </q-item>
-    
+
     <q-dialog v-model="removeMemberDialog" persistent>
         <q-card>
             <q-card-section class="row items-center">
@@ -51,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits, watch } from 'vue';
 import GroupMemberApiHandler from 'src/api.handlers/social/social3Page/GroupMemberApiHandler';
 import { NotificationHelper } from 'src/helpers/NotificationHelper';
 
@@ -70,14 +75,25 @@ const props = defineProps({
     }
 })
 
+// Local props variables
+const isManager = ref(null);
 // const toLink = `/social/group/${props.groupId}`
 
 const emit = defineEmits(['removeMember']);
 const isLoading = ref(false);
 const isExecuting = ref(false);
+const isChangeRole = ref(false);
 const removeMemberDialog = ref(false);
 
 const RemoveMemberApi = GroupMemberApiHandler.RemoveGroupMemberAsync;
+const ChangeMemberRoleApi = GroupMemberApiHandler.ChangeMemberRoleAsync;
+
+watch(
+    () => props.memberInfo,
+    () => {
+        isManager.value = props.memberInfo.isManager;
+    }
+);
 
 async function removeMember() {
     isExecuting.value = true;
@@ -93,6 +109,23 @@ async function removeMember() {
         NotificationHelper.notifyError("Đã có lỗi xảy ra!");
     }
     isExecuting.value = false;
+}
+
+async function ChangeMemberRole() {
+    isChangeRole.value = true
+
+    var result = await ChangeMemberRoleApi(
+        props.groupId,
+        props.memberInfo.userId
+    )
+    if (result.responseBody.isSuccess) {
+        NotificationHelper.notifySuccess("Thay đổi thành công");
+        isManager.value = !isManager.value
+    }
+    else {
+        NotificationHelper.notifyError("Đã có lỗi xảy ra!");
+    }
+    isChangeRole.value = false
 }
 </script>
 

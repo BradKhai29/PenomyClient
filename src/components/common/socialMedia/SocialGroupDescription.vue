@@ -51,7 +51,7 @@
                         <q-btn :loading="isLoadingJoinBtn" v-if="hasSendJoinRequest" color="grey">Hủy
                             yêu cầu</q-btn>
 
-                        <q-btn v-if="hasJoinGroup" icon="how_to_reg" icon-right="keyboard_arrow_down" color="primary"
+                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary"
                             label="Đã tham gia" />
                     </div>
 
