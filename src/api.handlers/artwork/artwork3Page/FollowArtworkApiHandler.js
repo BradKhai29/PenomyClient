@@ -1,6 +1,8 @@
 import axios from "axios";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
+import { ArtworkTypes } from "../artwork1Page/TopRecommendedArtworkApiHandler";
+import { FollowedArtworkResponseItem } from "src/api.models/artwork/common/FollowedArtworkResponseItem";
 
 /**
  * Add the artwork with specified id to the user follow list.
@@ -54,11 +56,45 @@ async function removeFollowAsync(artworkId, bearerAccessToken) {
     }
 }
 
+/**
+ * Get the user followed artwork list by the specified artworkType and page number.
+ *
+ * @param {Number} [artworkType=ArtworkTypes.COMIC] The type of artwork to get. (Default is set to comic is not specified)
+ * @param {Number} [pageNum=1] The page number to get when pagination available. (Default pageNumber is set to 1 if not specified)
+ * @returns {Promise<Array> | null} The list of followed artworks of the current guest. Return null if the api call is failed.
+ */
+async function getAllFollowedArtworkAsync(
+    bearerAccessToken,
+    artworkType = ArtworkTypes.COMIC,
+    pageNum = 1
+) {
+    const apiUrl = `${BaseWebApiUrl}/g45/followed-artworks`;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+            headers: {
+                Authorization: bearerAccessToken,
+            },
+            params: {
+                artworkType: artworkType,
+                pageNum: pageNum,
+            },
+        });
+
+        return FollowedArtworkResponseItem.mapFromArray(response.data.body);
+    } catch (error) {
+        console.log(error);
+
+        return null;
+    }
+}
+
 const FollowArtworkApiHandler = {
     addToFollowAsync: addToFollowAsync,
     removeFollowAsync: removeFollowAsync,
+    getAllFollowedArtworkAsync,
 };
 
-export {
-    FollowArtworkApiHandler
-};
+export { FollowArtworkApiHandler };

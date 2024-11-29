@@ -22,7 +22,6 @@
                         anchor="top middle"
                         self="bottom middle"
                         :offset="[8, 8]"
-                        :class="isComicType ? 'bg-dark text-light' : ''"
                     >
                         <strong class="text-subtitle2"
                             >Lịch sử xem của bạn</strong
@@ -46,7 +45,6 @@
                         anchor="top middle"
                         self="bottom middle"
                         :offset="[8, 8]"
-                        :class="isComicType ? 'bg-dark text-light' : ''"
                     >
                         <strong class="text-subtitle2"
                             >Tác phẩm đã yêu thích</strong
@@ -70,7 +68,6 @@
                         anchor="top middle"
                         self="bottom middle"
                         :offset="[8, 8]"
-                        :class="isComicType ? 'bg-dark text-light' : ''"
                     >
                         <strong class="text-subtitle2"
                             >Tác phẩm đang theo dõi</strong
@@ -95,7 +92,6 @@
                         anchor="top middle"
                         self="bottom middle"
                         :offset="[8, 8]"
-                        :class="isComicType ? 'bg-dark text-light' : ''"
                     >
                         <strong class="text-subtitle2"
                             >Tác giả bạn theo dõi</strong
@@ -113,21 +109,21 @@
                 </q-tab-panel>
 
                 <q-tab-panel :name="favoriteTab" class="q-pa-none q-py-xs">
-                    Favorite
+                    <UserFavoriteArtworksSection />
                 </q-tab-panel>
 
                 <q-tab-panel
                     :name="followedArtworksTab"
                     class="q-pa-none q-py-xs"
                 >
-                    Followed artworks
+                    <UserFollowedArtworksSection />
                 </q-tab-panel>
 
                 <q-tab-panel
                     :name="followedCreatorsTab"
                     class="q-pa-none q-py-xs"
                 >
-                    Followed creators
+                    <UserFollowedCreatorsSection />
                 </q-tab-panel>
             </q-tab-panels>
         </section>
@@ -138,11 +134,17 @@
 <script>
 // Import components section.
 import UserViewHistorySection from "./UserViewHistorySection.vue";
+import UserFavoriteArtworksSection from "./UserFavoriteArtworksSection.vue";
+import UserFollowedArtworksSection from "./UserFollowedArtworksSection.vue";
+import UserFollowedCreatorsSection from "./UserFollowedCreatorsSection.vue";
 
 export default {
     name: "UserPreferenceSection",
     components: {
         UserViewHistorySection,
+        UserFavoriteArtworksSection,
+        UserFollowedArtworksSection,
+        UserFollowedCreatorsSection,
     },
     props: {
         userId: {

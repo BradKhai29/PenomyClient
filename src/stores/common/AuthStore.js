@@ -10,6 +10,10 @@ const userProfileStore = useUserProfileStore();
 
 const useAuthStore = defineStore("authStore", {
     state: () => ({
+        /**
+         * The userId that extracted from the access-token
+         * and managed by this authStore.
+         */
         userId: null,
         hasSetUp: false,
         userHasAuthenticated: false,
@@ -23,6 +27,9 @@ const useAuthStore = defineStore("authStore", {
          */
         isAuth() {
             return this.userHasAuthenticated;
+        },
+        currentUserId() {
+            return this.userId;
         },
     },
 
@@ -45,7 +52,7 @@ const useAuthStore = defineStore("authStore", {
             if (verifyResult) {
                 // If verify the tokens success, then authenticated for current user.
                 this.userHasAuthenticated = true;
-                this.userId = JwtTokenHelper.decodeJwt(this.accessToken()).sub;
+                this.loadUserIdFromToken();
 
                 authStoreManager.setUpSilentRefreshToken();
             } else {
@@ -57,6 +64,7 @@ const useAuthStore = defineStore("authStore", {
                 if (refreshResult.isSuccess) {
                     // If refresh the tokens success, then authenticated for current user.
                     this.userHasAuthenticated = true;
+                    this.loadUserIdFromToken();
 
                     authStoreManager.setUpSilentRefreshToken();
                 }
@@ -68,6 +76,9 @@ const useAuthStore = defineStore("authStore", {
 
             this.hasSetUp = true;
         },
+        loadUserIdFromToken() {
+            this.userId = JwtTokenHelper.decodeJwt(this.accessToken()).sub;
+        },
         /**
          * Sign in for the user and save the required credentials.
          *
@@ -76,6 +87,7 @@ const useAuthStore = defineStore("authStore", {
          */
         signIn(accessToken, refreshToken) {
             authStoreManager.signIn(accessToken, refreshToken);
+
             // When sign in success, authenticate for current user.
             this.userHasAuthenticated = true;
             this.userId = JwtTokenHelper.decodeJwt(this.accessToken()).sub;

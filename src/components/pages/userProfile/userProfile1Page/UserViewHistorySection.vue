@@ -1,5 +1,5 @@
 <template>
-    <section id="guest-history-section" class="">
+    <section id="user-history-section" class="">
         <!-- View history section -->
         <div class="flex items-center q-mb-sm" id="button-group">
             <q-btn
@@ -40,13 +40,24 @@
                             <ViewHistoryArtworkCard
                                 :artworkDetail="comic"
                                 class="q-mr-md q-mb-md"
+                                @removeItem="handleRemoveHistoryItem"
                             />
                         </div>
                     </div>
                 </q-tab-panel>
 
-                <q-tab-panel :name="animeTab" class="q-pa-none row">
-                    Hello
+                <q-tab-panel :name="animeTab" class="q-pa-none q-py-xs row">
+                    <div
+                        v-if="totalAnimes == 0"
+                        class="col-grow q-mx-xs q-pa-md bg-light-100 shadow-1 border-radius-sm flex justify-center text-dark-500"
+                    >
+                        <div class="column items-center">
+                            <q-icon name="outbox" size="120px"></q-icon>
+                            <span class="text-subtitle1">
+                                Không có nội dung
+                            </span>
+                        </div>
+                    </div>
                 </q-tab-panel>
             </q-tab-panels>
         </div>
@@ -58,6 +69,7 @@
 // Import dependencies section.
 import { ViewHistoryApiHandler } from "src/api.handlers/artwork/common/ViewHistoryApiHandler";
 import { ArtworkTypes } from "src/api.handlers/artwork/artwork1Page/TopRecommendedArtworkApiHandler";
+import { ViewHistoryArtworkResponseItem } from "src/api.models/artwork/common/ViewHistoryArtworkResponseItem";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 
 // Import components section.
@@ -79,6 +91,9 @@ export default {
         return {
             isLoading: true,
             selectedTab: COMIC_TAB,
+            /**
+             * @type {ViewHistoryArtworkResponseItem[]} Type of this array
+             */
             viewedComics: [],
             viewedAnimes: [],
         };
@@ -111,9 +126,16 @@ export default {
                         ArtworkTypes.COMIC
                     );
 
-                console.log(this.viewedComics);
                 this.isLoading = false;
             });
+        },
+        handleRemoveHistoryItem(artworkId) {
+            const itemIndex = this.viewedComics.findIndex(
+                (item) => item.id == artworkId
+            );
+
+            // Remove the item from the display list.
+            this.viewedComics.splice(itemIndex, 1);
         },
     },
 };

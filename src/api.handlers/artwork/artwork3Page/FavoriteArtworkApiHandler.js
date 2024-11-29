@@ -1,6 +1,8 @@
 import axios from "axios";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
+import { ArtworkTypes } from "../artwork1Page/TopRecommendedArtworkApiHandler";
+import { FavoriteArtworkResponseItem } from "src/api.models/artwork/common/FavoriteArtworkResponseItem";
 
 const ADD_FAVORITE_FAILED_RESULT = -1;
 const REMOVE_FAVORITE_FAILED_RESULT = -1;
@@ -57,9 +59,45 @@ async function removeFavoriteAsync(artworkId, bearerAccessToken) {
     }
 }
 
+/**
+ * Get the user followed artwork list by the specified artworkType and page number.
+ *
+ * @param {Number} [artworkType=ArtworkTypes.COMIC] The type of artwork to get. (Default is set to comic is not specified)
+ * @param {Number} [pageNum=1] The page number to get when pagination available. (Default pageNumber is set to 1 if not specified)
+ * @returns {Promise<FavoriteArtworkResponseItem[]> | null} The list of favorite artworks of the current guest. Return null if the api call is failed.
+ */
+async function getAllFavoriteArtworksAsync(
+    bearerAccessToken,
+    artworkType = ArtworkTypes.COMIC,
+    pageNum = 1
+) {
+    const apiUrl = `${BaseWebApiUrl}/G48/favorite-artworks`;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+            headers: {
+                Authorization: bearerAccessToken,
+            },
+            params: {
+                artworkType: artworkType,
+                pageNum: pageNum,
+            },
+        });
+
+        return FavoriteArtworkResponseItem.mapFromArray(response.data.body);
+    } catch (error) {
+        console.log(error);
+
+        return null;
+    }
+}
+
 const FavoriteArtworkApiHandler = {
     addToFavoriteAsync: addToFavoriteAsync,
     removeFavoriteAsync: removeFavoriteAsync,
+    getAllFavoriteArtworksAsync,
 };
 
 export {

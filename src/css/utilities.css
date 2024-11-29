@@ -139,3 +139,23 @@
 .penomy-scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
 }
+
+/* Scrollbar-square */
+.penomy-scrollbar-square::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.penomy-scrollbar-square::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+.penomy-scrollbar-square::-webkit-scrollbar-thumb {
+    background: var(--primary);
+}
+
+/* Handle on hover */
+.penomy-scrollbar-square::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
