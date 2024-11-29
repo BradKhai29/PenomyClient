@@ -2,7 +2,14 @@
     <q-layout view="hHR Lpr lFf">
         <q-header class="bg-light" bordered>
             <q-toolbar class="text-dark">
-                <q-btn flat round icon="menu" aria-label="Menu" @click="toggleDrawer" size="md" />
+                <q-btn
+                    flat
+                    round
+                    icon="menu"
+                    aria-label="Menu"
+                    @click="toggleDrawer"
+                    size="md"
+                />
 
                 <TheLogoButton class="toolbar-sm-hide" />
 
@@ -13,8 +20,13 @@
                 <q-space />
 
                 <div class="q-gutter-sm row items-center no-wrap">
-
-                    <q-btn round dense color="dark" class="bg-dark" icon="message">
+                    <q-btn
+                        round
+                        dense
+                        color="dark"
+                        class="bg-dark"
+                        icon="message"
+                    >
                         <q-badge color="red" text-color="white" floating>
                             <span class="text-weight-bold">1</span>
                         </q-badge>
@@ -26,9 +38,23 @@
             </q-toolbar>
         </q-header>
 
-        <q-drawer v-model="showDrawer" :breakpoint="400" :width="280" show-if-above bordered>
+        <q-drawer
+            v-model="showDrawer"
+            :breakpoint="400"
+            :width="280"
+            show-if-above
+            bordered
+            class="penomy-scrollbar-square"
+        >
             <q-toolbar class="text-dark toolbar-sm-show q-py-md">
-                <q-btn flat round icon="menu" aria-label="Menu" @click="toggleDrawer" size="md" />
+                <q-btn
+                    flat
+                    round
+                    icon="menu"
+                    aria-label="Menu"
+                    @click="toggleDrawer"
+                    size="md"
+                />
 
                 <TheLogoButton />
             </q-toolbar>
@@ -36,11 +62,16 @@
                 <q-list class="drawer-gutter">
                     <HomeLink />
                     <SocialMediaLink />
-                    <DrawerGroupLink v-if="authStore.isAuth" :title="''" link="/social/group/create" :isSelected="false"
-                        :createdAt="''" />
+                    <DrawerGroupLink
+                        v-if="authStore.isAuth"
+                        :title="''"
+                        link="/social/group/create"
+                        :isSelected="false"
+                        :createdAt="''"
+                    />
                 </q-list>
 
-                <MyGroupsExpansion v-if="authStore.isAuth"/>
+                <MyGroupsExpansion v-if="authStore.isAuth" />
                 <div v-if="authStore.isAuth" class="drawer-gutter"></div>
 
                 <JoinGroupsExpansion v-if="authStore.isAuth" />

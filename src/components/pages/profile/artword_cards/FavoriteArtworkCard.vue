@@ -71,14 +71,15 @@
 
             <div class="recommended-chapters-section q-my-xs">
                 <router-link
-                    :to="chapterLink(lastViewedChapter.id)"
+                    v-if="latestChapter.id != null"
+                    :to="chapterLink(latestChapter.id)"
                     class="underline-none text-light flex items-center text-subtitle2"
                 >
                     <span class="text-weight-bold text-dark">
-                        Tập {{ lastViewedChapter.uploadOrder }}
+                        Tập {{ latestChapter.uploadOrder }}
                     </span>
                     <span class="text-dark-500 q-ml-auto">
-                        {{ lastViewedAt }}
+                        {{ publishedAt }}
                     </span>
                 </router-link>
             </div>
@@ -100,7 +101,7 @@
             </div>
         </div>
 
-        <!-- Remove history item popup -->
+        <!-- Remove popup -->
         <q-dialog v-model="showDialog">
             <q-card>
                 <q-card-section>
@@ -108,13 +109,13 @@
                 </q-card-section>
                 <q-card-section class="row items-center q-py-none">
                     <q-avatar
-                        icon="delete"
+                        icon="favorite"
                         color="primary"
                         text-color="dark"
                         size="lg"
                     />
                     <span class="q-ml-sm text-subtitle1">
-                        Xóa khỏi lịch sử xem ?
+                        Xóa khỏi danh sách yêu thích ?
                     </span>
                 </q-card-section>
 
@@ -122,7 +123,7 @@
                     <q-btn
                         flat
                         no-caps
-                        label="Hủy"
+                        label="Đóng"
                         color="dark"
                         v-close-popup
                         class="text-subtitle1"
@@ -134,13 +135,13 @@
                         label="Xác nhận xóa"
                         color="primary"
                         class="text-subtitle1 text-weight-bold"
-                        @click="removeHistoryItem"
+                        @click="unfavoriteArtwork"
                         :disable="isProcessing"
                     />
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <!-- Remove history item dialog -->
+        <!-- Remove popup -->
     </div>
 </template>
 
@@ -148,18 +149,19 @@
 // Import dependencies section.
 import { Art5RouteNames } from "src/router/artwork/Artwork5PageRoute";
 import { CreatorProfile1RouteNames } from "src/router/creatorProfile/CreatorProfile1PageRoute";
-import { ViewHistoryArtworkResponseItem } from "src/api.models/artwork/common/ViewHistoryArtworkResponseItem";
-import { ViewHistoryApiHandler } from "src/api.handlers/artwork/common/ViewHistoryApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { useGuestStore } from "src/stores/common/GuestStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { FavoriteArtworkResponseItem } from "src/api.models/artwork/common/FavoriteArtworkResponseItem";
+import {
+    FavoriteArtworkApiHandler,
+    REMOVE_FAVORITE_FAILED_RESULT,
+} from "src/api.handlers/artwork/artwork3Page/FavoriteArtworkApiHandler";
 
-// Init store for later operation.
+// Init the store for later operation.
 const authStore = useAuthStore();
-const guestStore = useGuestStore();
 
 export default {
-    name: "ViewHistoryArtworkCard",
+    name: "FavoriteArtworkCard",
     emits: ["removeItem"],
     props: {
         isComic: {
@@ -167,7 +169,7 @@ export default {
             default: true,
         },
         artworkDetail: {
-            type: ViewHistoryArtworkResponseItem,
+            type: FavoriteArtworkResponseItem,
             required: true,
         },
     },
@@ -217,11 +219,11 @@ export default {
         creatorAvatarUrl() {
             return this.artworkDetail.creatorAvatarUrl;
         },
-        lastViewedChapter() {
+        latestChapter() {
             return this.artworkDetail.chapter;
         },
-        lastViewedAt() {
-            return this.artworkDetail.chapter.getShortViewedAt();
+        publishedAt() {
+            return this.artworkDetail.chapter.getShortPublishedAt();
         },
     },
     methods: {
@@ -247,33 +249,23 @@ export default {
                 },
             };
         },
-        async removeHistoryItem() {
+        async unfavoriteArtwork() {
             this.isProcessing = true;
-            let removeResult = true;
 
-            if (authStore.isAuth) {
-                removeResult =
-                    await ViewHistoryApiHandler.removeUserHistoryItemAsync(
-                        this.artworkId
-                    );
-            }
-            // If current user is not authenticated, then resolve as a guest user.
-            else {
-                removeResult =
-                    await ViewHistoryApiHandler.removeGuestHistoryItemAsync(
-                        guestStore.guestId,
-                        this.artworkId
-                    );
-            }
+            const removeResult =
+                await FavoriteArtworkApiHandler.removeFavoriteAsync(
+                    this.artworkId,
+                    authStore.bearerAccessToken()
+                );
 
             // Notify the message for the user.
-            if (removeResult) {
-                NotificationHelper.notifySuccess("Đã xóa thành công");
-
+            if (removeResult == REMOVE_FAVORITE_FAILED_RESULT) {
+                NotificationHelper.notifyError("Đã có lỗi xảy ra");
+            } else {
                 // Emit removeItem event.
                 this.$emit("removeItem", this.artworkId);
-            } else {
-                NotificationHelper.notifyError("Đã có lỗi xảy ra");
+
+                NotificationHelper.notifySuccess("Xóa thành công");
             }
 
             this.isProcessing = true;

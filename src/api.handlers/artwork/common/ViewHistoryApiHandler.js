@@ -208,12 +208,71 @@ async function getUserViewHistoryAsync(
     }
 }
 
+/**
+ * Remove the guest history item by the specified artworkId.
+ *
+ * @param {String} guestId Id of the guest to remove the history item.
+ * @param {String} artworkId Id of the artwork item to remove.
+ * @returns {Promise<Boolean>} The promise contains the operation result.
+ */
+async function removeGuestHistoryItemAsync(guestId, artworkId) {
+    const apiUrl = `${BaseWebApiUrl}/g25/guest/remove-history`;
+
+    try {
+        await axios({
+            url: apiUrl,
+            method: HttpMethod.POST,
+            data: {
+                guestId: guestId,
+                artworkId: artworkId,
+            },
+        });
+
+        return true;
+    } catch (error) {
+        console.log(error);
+
+        return false;
+    }
+}
+
+/**
+ * Remove the user history item by the specified artworkId.
+ *
+ * @param {String} artworkId Id of the artwork item to remove.
+ * @returns {Promise<Boolean>} The promise contains the operation result.
+ */
+async function removeUserHistoryItemAsync(artworkId) {
+    const apiUrl = `${BaseWebApiUrl}/g25/user/remove-history`;
+
+    try {
+        await axios({
+            url: apiUrl,
+            method: HttpMethod.POST,
+            data: {
+                artworkId: artworkId,
+            },
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+        });
+
+        return true;
+    } catch (error) {
+        console.log(error);
+
+        return false;
+    }
+}
+
 const ViewHistoryApiHandler = {
     initGuestViewHistoryAsync,
     addViewHistoryAsync,
     getGuestTrackingAsync,
     getGuestViewHistoryAsync,
     getUserViewHistoryAsync,
+    removeGuestHistoryItemAsync,
+    removeUserHistoryItemAsync,
 };
 
 export { ViewHistoryApiHandler };

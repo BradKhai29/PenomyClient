@@ -55,7 +55,7 @@ export default {
         await userProfileStore.setUp(
             authStore.isAuth,
             authStore.accessToken(),
-            authStore.userId
+            authStore.currentUserId
         );
 
         this.isLoading = false;
