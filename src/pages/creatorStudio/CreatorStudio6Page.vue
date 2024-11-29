@@ -93,6 +93,7 @@
 import { computed } from "vue";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { CreatorStudio6ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio6Page/CreatorStudio6ApiHandler";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 
 import CreatorStudio6PageHeader from "components/pages/creatorStudio/CreatorStudio6Page/CreatorStudio6PageHeader.vue";
 import HeaderHighlight from "components/common/creatorStudio/HeaderHighlight.vue";
@@ -104,6 +105,9 @@ import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevel
 import ThumbnailInput from "components/common/creatorStudio/ArtworkThumbnailInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
 import CategoriesInput from "components/common/creatorStudio/ArtworkCategoriesInput.vue";
+
+// Init store for later operation.
+const userProfileStore = useUserProfileStore();
 
 export default {
     components: {
@@ -210,21 +214,20 @@ export default {
                 this.artworkDetail
             );
 
-            if (result.isSuccess) {
-                NotificationHelper;
-                NotificationHelper.notifySuccess("Đã tạo thành công");
-            } else {
-                NotificationHelper.notifyError(
-                    result.message ?? "Có lỗi xảy ra khi tạo"
-                );
-            }
-
             // Turn off the isCreating flag after processing the data.
             this.isCreating = false;
 
             if (result.isSuccess) {
                 this.hasInputData = false;
-                this.$router.push("/studio/artworks");
+                NotificationHelper.notifySuccess("Đã tạo thành công");
+                userProfileStore.increaseTotalArtworks();
+
+                // Redirect to the comic detail page after creating success.
+                this.$router.push(`/studio/comic/detail/${result.comicId}`);
+            } else {
+                NotificationHelper.notifyError(
+                    result.message ?? "Có lỗi xảy ra khi tạo"
+                );
             }
         },
         verifyAllInputs() {

@@ -1,6 +1,13 @@
 @import url(app.css);
 
 :root {
+    /* Primary section */
+    --primary: #53bf94;
+
+    /* Light section */
+    --light-100: #f9fafc;
+    --light-500: #dddddd;
+
     --dark-500: #78847e;
     --border-sm-width: 1px;
     --border-md-width: 1.4px;
@@ -11,8 +18,36 @@
 }
 
 /* Border section */
+.border-sm-top-light-500 {
+    border-top: 1px solid var(--light-500);
+}
+
+.border-sm-bottom-light-500 {
+    border-bottom: 1px solid var(--light-500);
+}
+
+.border-md-bottom-light-500 {
+    border-bottom: 2px solid var(--light-500);
+}
+
+.border-sm-light {
+    border: 1px solid var(--light-100);
+}
+
+.border-md-light {
+    border: 2px solid var(--light-100) !important;
+}
+
+.border-sm-light-500 {
+    border: 1px solid var(--light-500);
+}
+
 .border-sm-dark {
     border: 1px solid var(--dark);
+}
+
+.border-sm-dark-500 {
+    border: 1px solid var(--dark-500);
 }
 
 .border-md-dark-500 {
@@ -23,10 +58,28 @@
     border: var(--border-md-width) solid transparent;
 }
 
+.border-sm-primary {
+    border: 1px solid var(--primary);
+}
+
+.border-md-primary {
+    border: 2px solid var(--primary);
+}
+
 /* Border radius section */
 .border-radius-sm {
     overflow: hidden !important;
     border-radius: var(--border-radius-sm) !important;
+}
+
+.border-radius-top-left-sm {
+    overflow: hidden !important;
+    border-top-left-radius: var(--border-radius-sm) !important;
+}
+
+.border-radius-bottom-right-sm {
+    overflow: hidden !important;
+    border-bottom-right-radius: var(--border-radius-sm) !important;
 }
 
 .border-radius-md {
@@ -42,6 +95,12 @@
     border-radius: 100% !important;
 }
 
+.border-left-sm-primary {
+    border-left: 4px solid var(--primary);
+    padding-left: 4px;
+}
+
+/* Other section */
 .penomy-tab {
     --primary: #53bf94;
     --border-width: 4px;
@@ -51,4 +110,32 @@
 
 .penomy-tab.selected {
     border-bottom: var(--border-width) solid var(--primary) !important;
+}
+
+.metadata-badge {
+    width: 32px !important;
+    height: 24px !important;
+    text-align: center !important;
+}
+
+/* Custom scrollbar */
+/* width */
+.penomy-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.penomy-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+.penomy-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 16px;
+}
+
+/* Handle on hover */
+.penomy-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }

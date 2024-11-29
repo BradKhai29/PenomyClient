@@ -7,24 +7,22 @@ class ComicChapterDetail {
      * @param {String} title
      * @param {Number} uploadOrder
      * @param {String} createdAt
+     * @param {String} publishedAt
      * @param {Number} publishStatus
+     * @param {Number} publicLevel
      * @param {String} thumbnailUrl
      * @param {Boolean} allowComment
-     * @param {Number} totalComments
-     * @param {Number} totalViews
-     * @param {Number} totalFavorites
      */
     constructor(
         id,
         title,
         uploadOrder,
         createdAt,
+        publishedAt,
         publishStatus,
+        publicLevel,
         thumbnailUrl,
-        allowComment,
-        totalComments,
-        totalViews,
-        totalFavorites
+        allowComment
     ) {
         this.id = id;
         this.title = title;
@@ -33,12 +31,14 @@ class ComicChapterDetail {
             createdAt,
             DateTimeHelper.DD_MM_YYYY_FORMAT
         );
+        this.publishedAt = DateTimeHelper.formatISODate(
+            publishedAt,
+            DateTimeHelper.DD_MM_YYYY_FORMAT
+        );
         this.publishStatus = publishStatus;
+        this.publicLevel = publicLevel;
         this.thumbnailUrl = thumbnailUrl;
         this.allowComment = allowComment;
-        this.totalComments = totalComments;
-        this.totalViews = totalViews;
-        this.totalFavorites = totalFavorites;
     }
 
     /**
@@ -52,12 +52,11 @@ class ComicChapterDetail {
             responseItem.title,
             responseItem.uploadOrder,
             responseItem.createdAt,
+            responseItem.publishedAt,
             responseItem.publishStatus,
+            responseItem.publicLevel,
             responseItem.thumbnailUrl,
-            responseItem.allowComment,
-            responseItem.totalComments,
-            responseItem.totalViews,
-            responseItem.totalFavorites
+            responseItem.allowComment
         );
     }
 

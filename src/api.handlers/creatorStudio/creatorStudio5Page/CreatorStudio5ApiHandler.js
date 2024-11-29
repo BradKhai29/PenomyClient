@@ -7,7 +7,9 @@ import { OverviewStatisticResponseItem } from "src/api.models/creatorStudio/crea
 import { PaginationOptionResponseItem } from "src/api.models/creatorStudio/creatorStudio5Page/PaginationOptionResponseItem";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
+// Init store for later operation.
 const authStore = useAuthStore();
+
 /**
  * Map the response body from api to list of Artwork item.
  * @param {ArtworkDetailResponseItem[]} responseBody The response body to parse.
@@ -29,7 +31,7 @@ async function getArtworksByTypeWithPagination(artworkType, pageNumber) {
             url: `${BaseWebApiUrl}/art1/artworks?artworkType=${artworkType}&pageNumber=${pageNumber}`,
             method: HttpMethod.GET,
             headers: {
-                Authorization: authStore.bearerAccessToken,
+                Authorization: authStore.bearerAccessToken(),
             },
         });
 
@@ -54,6 +56,9 @@ async function getPaginationOptionsAsync(artworkType = ArtworkTypes.COMIC) {
         const response = await axios({
             url: `${BaseWebApiUrl}/art1/pagination?artworkType=${artworkType}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         return response.data.body;
@@ -75,6 +80,9 @@ async function getOverviewStatisticAsync() {
         const response = await axios({
             url: `${BaseWebApiUrl}/art1/overview-statistic`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         return response.data.body;

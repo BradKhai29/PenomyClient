@@ -18,6 +18,9 @@
         "art1",
         "g34",
         "auth-store",
-        "pagination"
+        "pagination",
+        "art12",
+        "refresh-token",
+        "g2"
     ]
 }

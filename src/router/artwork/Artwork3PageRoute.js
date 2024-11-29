@@ -1,4 +1,5 @@
 import { domainRootPath } from "../common/DomainRootPath";
+
 const routeDefinition = [
     {
         path: domainRootPath.artwork,
@@ -6,7 +7,7 @@ const routeDefinition = [
         children: [
             {
                 path: "comic/:artworkId",
-                component: () => import("pages/artwork/Artwork3Page.vue"),
+                component: () => import("src/pages/artwork/Artwork3PageV2.vue"),
             },
         ],
     },

@@ -4,17 +4,16 @@
         class="flex justify-between items-center page-header shadow-2"
     >
         <div class="text-subtitle1 flex items-center">
-            <router-link :to="defaultRedirectRoute">
-                <q-btn
-                    dense
-                    flat
-                    no-caps
-                    class="text-weight-bold bg-dark text-light text-subtitle1"
-                >
-                    <q-icon name="arrow_back" size="sm"></q-icon>
-                    <span class="q-ml-xs"> Trở về trang quản lý </span>
-                </q-btn>
-            </router-link>
+            <q-btn
+                :to="artworkManagementRoute"
+                dense
+                flat
+                no-caps
+                class="text-weight-bold bg-dark text-light text-subtitle1"
+            >
+                <q-icon name="arrow_back" size="sm"></q-icon>
+                <span class="q-ml-xs"> Trở về trang quản lý </span>
+            </q-btn>
         </div>
     </section>
     <section
@@ -22,15 +21,14 @@
         class="flex justify-between items-center page-header shadow-2"
     >
         <div class="text-subtitle1 flex items-center">
-            <router-link :to="`/studio/comic/detail/${comicId}`">
-                <q-btn
-                    dense
-                    flat
-                    no-caps
-                    class="text-weight-bold text-dark text-subtitle1 artwork-title"
-                >
-                    {{ props.headerTitle }}
-                </q-btn>
+            <router-link
+                :to="comicDetailRoute"
+                dense
+                flat
+                no-caps
+                class="text-weight-bold text-dark text-subtitle1 artwork-title underline-none"
+            >
+                {{ props.headerTitle }}
             </router-link>
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm"
@@ -47,8 +45,8 @@
                 align="center"
             />
             <q-btn
+                :to="comicDetailRoute"
                 v-if="!hasChangesInData"
-                @click="confirmToCancelOrRedirect"
                 class="font-arial text-weight-bold"
                 label="Trở về"
                 color="dark"
@@ -151,9 +149,11 @@ import { NotificationHelper } from "src/helpers/NotificationHelper";
 // Support for route.
 const route = useRoute();
 const router = useRouter();
-const defaultRedirectRoute = "/studio/artworks";
+const defaultRedirectRoute = ref(null);
+const artworkManagementRoute = "/studio/artworks";
 
 // Component refs.
+const comicDetailRoute = ref(null);
 const showWarning = ref(false);
 const showDeleteModal = ref(false);
 const isRedirectedToOtherRoute = ref(false);
@@ -189,7 +189,7 @@ function confirmToCancelOrRedirect() {
     }
 
     // If redirect route is not specified, then redirect back to default route.
-    router.push(defaultRedirectRoute);
+    router.push(defaultRedirectRoute.value);
 }
 
 /**
@@ -226,7 +226,7 @@ async function temporarilyRemoveComicAsync() {
         NotificationHelper.notifySuccess("Tác phẩm đã bị tạm xóa");
 
         // Redirect to artwork manager page after removing success.
-        router.push(defaultRedirectRoute);
+        router.push(artworkManagementRoute);
         return;
     }
 
@@ -236,6 +236,9 @@ async function temporarilyRemoveComicAsync() {
 
 // Component life-cycle events.
 onBeforeMount(() => {
+    defaultRedirectRoute.value = `/studio/comic/detail/${props.comicId}`;
+    comicDetailRoute.value = `/studio/comic/detail/${props.comicId}`;
+
     window.addEventListener("beforeunload", preventRedirect);
 });
 

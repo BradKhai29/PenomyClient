@@ -1,31 +1,32 @@
 <template>
     <div :id="`artwork_${id}`" class="q-pa-md artwork-detail-card row">
         <div class="col-auto q-mr-md relative-position">
-            <q-img
-                class="artwork-detail-img shadow-1 border-radius-sm"
-                :src="thumbnailUrl"
-            />
+            <router-link :to="`/studio/comic/detail/${id}`">
+                <q-img
+                    class="artwork-detail-img shadow-1 border-radius-sm"
+                    :src="thumbnailUrl"
+                />
+            </router-link>
             <div
                 class="absolute q-pa-sm"
                 style="bottom: 0; right: 0; z-index: 100"
             >
                 <q-icon
-                    class="bg-dark text-light shadow-1 border-radius-sm q-mr-sm artwork-badge"
+                    class="bg-dark text-light shadow-1 border-radius-sm q-mr-sm metadata-badge"
                     :name="isComic ? 'palette' : 'videocam'"
                     size="xs"
                 />
                 <q-img
-                    class="border-radius-sm shadow-1 artwork-badge"
-                    :src="
-                        originImageUrl ??
-                        'https://res.cloudinary.com/dsjsmbdpw/image/upload/v1727708598/penomy_assets/japan.png'
-                    "
+                    class="border-radius-sm shadow-1 metadata-badge"
+                    :src="originImageUrl"
                 />
             </div>
         </div>
-        <section class="col-grow artwork-detail-section q-my-xs">
+        <section class="col-grow artwork-detail-section q-my-xs text-dark">
             <section class="flex justify-between">
-                <div class="artwork-metadata flex q-gutter-sm text-subtitle1">
+                <div
+                    class="artwork-metadata flex q-gutter-sm text-subtitle1 text-dark"
+                >
                     <q-btn
                         dense
                         no-caps
@@ -65,7 +66,7 @@
                         dense
                         no-caps
                         class="add-chapter-btn bg-dark text-light"
-                        @click="goToAddChapter"
+                        :to="addChapterLink"
                     >
                         <q-icon name="add" size="xs" />
                         <span class="q-ml-xs">Thêm tập</span>
@@ -84,7 +85,7 @@
                                 style="min-width: 120px"
                             >
                                 <q-item
-                                    @click="goToEdit"
+                                    :to="artworkEditLink"
                                     clickable
                                     v-close-popup
                                 >
@@ -105,13 +106,7 @@
             </section>
             <div class="artwork-title q-mt-md">
                 <router-link :to="`/studio/comic/detail/${id}`">
-                    <q-btn
-                        dense
-                        flat
-                        no-caps
-                        class="text-h6 text-dark"
-                        padding="none"
-                    >
+                    <q-btn dense flat no-caps class="text-h6 text-dark">
                         <q-badge class="q-mr-sm q-py-xs bg-dark text-light">
                             {{ itemOrder }}
                         </q-badge>
@@ -200,8 +195,6 @@ export default {
         thumbnailUrl: {
             type: String,
             required: true,
-            default:
-                "https://fastly.picsum.photos/id/274/500/300.jpg?hmac=JQai5ZulqodPNmhQpK3-PAyGb2jFHjvmtFgIgBKOhBI",
         },
         originImageUrl: {
             type: String,
@@ -253,6 +246,19 @@ export default {
             isProcessing: false,
         };
     },
+    computed: {
+        artworkEditLink() {
+            return `/studio/comic/edit/${this.id}`;
+        },
+        addChapterLink() {
+            const routeDefinition = {
+                name: "create-chapter",
+                query: { id: this.id },
+            };
+
+            return routeDefinition;
+        },
+    },
     mounted() {
         // Format the ISO datetime string received from API and display.
         this.formatCreatedAt = DateTimeHelper.formatISODate(this.createdAt);
@@ -265,15 +271,6 @@ export default {
         this.publicLevelRef.title = publicLevelItem.title;
     },
     methods: {
-        goToEdit() {
-            this.$router.push(`/studio/comic/edit/${this.id}`);
-        },
-        goToAddChapter() {
-            this.$router.push({
-                name: "create-chapter",
-                query: { id: this.id },
-            });
-        },
         async removeArtworkAsync() {
             const result =
                 await CreatorStudio8ApiHandler.temporarilyRemoveComicByIdAsync(
@@ -318,11 +315,5 @@ export default {
     align-items: center !important;
     padding: 4px 8px !important;
     border-radius: 4px !important;
-}
-
-.artwork-badge {
-    width: 32px !important;
-    height: 24px !important;
-    text-align: center !important;
 }
 </style>

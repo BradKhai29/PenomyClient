@@ -13,17 +13,26 @@
                 >
                     Đã tạo: {{ paginationOption.totalArtworks }}
                 </q-btn>
-                <router-link to="/studio/comic/create">
-                    <q-btn
-                        no-caps
-                        dense
-                        color="grey-3"
-                        class="text-dark border-radius-sm shadow-1 q-ml-sm q-px-sm text-subtitle1"
+                <q-btn
+                    to="/studio/comic/create"
+                    no-caps
+                    dense
+                    color="grey-3"
+                    class="text-dark border-radius-sm shadow-1 q-ml-sm q-px-sm text-subtitle1"
+                >
+                    <span class="q-mr-xs">Tạo mới</span>
+                    <q-icon name="add_circle" size="xs" />
+
+                    <q-tooltip
+                        anchor="center right"
+                        self="center left"
+                        :offset="[4, 10]"
                     >
-                        <span class="q-mr-xs">Tạo mới</span>
-                        <q-icon name="add_circle" size="xs" />
-                    </q-btn>
-                </router-link>
+                        <strong class="text-subtitle2">
+                            Tạo mới truyện tranh
+                        </strong>
+                    </q-tooltip>
+                </q-btn>
             </div>
         </div>
         <div

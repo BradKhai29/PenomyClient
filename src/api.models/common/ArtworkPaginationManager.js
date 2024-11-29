@@ -25,7 +25,14 @@ class ArtworkPaginationManager {
      */
     constructor(artworkListEntries = [], totalArtworks) {
         this.artworkListEntries = artworkListEntries;
-        this.totalArtworks = 0;
+        this.totalArtworks = totalArtworks ?? 0;
+    }
+
+    /**
+     * @returns {ArtworkPaginationManager} Return a new instance of ArtworkPaginationManager.
+     */
+    static New() {
+        return new ArtworkPaginationManager();
     }
 
     /**

@@ -84,6 +84,9 @@
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { LoginApiHandler } from "src/api.handlers/auth/auth1Page/LoginApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { JwtTokenHelper } from "src/helpers/JwtTokenHelper";
+import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
 
 // Import components section.
 import EmailInput from "src/components/common/auth/EmailInput.vue";
@@ -156,12 +159,19 @@ export default {
 
             // Store the related information to authStore.
             const authStore = useAuthStore();
+            const userProfileStore = useUserProfileStore();
 
-            authStore.signIn(
-                result.accessToken,
-                result.refreshToken,
-                result.user
-            );
+            // Get the user profile from the provided access-token.
+            const userId = JwtTokenHelper.decodeJwt(result.accessToken).sub;
+
+            const userProfile =
+                await UserProfile1ApiHandler.getUserProfileAsync(
+                    result.accessToken,
+                    userId
+                );
+
+            authStore.signIn(result.accessToken, result.refreshToken);
+            userProfileStore.signIn(userProfile);
 
             // Redirect back to homepage.
             this.$router.push("/");

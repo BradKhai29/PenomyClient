@@ -5,6 +5,10 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { ComicChapterDetail } from "src/api.models/creatorStudio/creatorStudio7Page/ComicChapterDetail";
 import { ComicDetail } from "src/api.models/creatorStudio/creatorStudio7Page/ComicDetail";
 
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+const authStore = useAuthStore();
+
 /**
  * Get the detail of the comic with specified input id.
  *
@@ -16,6 +20,9 @@ async function getComicDetailByIdAsync(comicId) {
         const response = await axios({
             url: `${BaseWebApiUrl}/art5/comic/detail/${comicId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         const responseBody = response.data.body;
@@ -48,6 +55,9 @@ async function getComicChaptersByIdAndPublishStatusAsync(
         const response = await axios({
             url: `${BaseWebApiUrl}/art6/comic/chapters/${comicId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
             params: {
                 publishStatus: publishStatus,
             },
