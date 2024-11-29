@@ -51,7 +51,7 @@
                         <q-btn :loading="isLoadingJoinBtn" v-if="hasSendJoinRequest" color="grey">Hủy
                             yêu cầu</q-btn>
 
-                        <q-btn v-if="hasJoinGroup" icon="how_to_reg" icon-right="keyboard_arrow_down" color="primary"
+                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary"
                             label="Đã tham gia" />
                     </div>
 
@@ -166,7 +166,7 @@ const props = defineProps({
 
 
 const newCoverPhotoUrl = ref('');
-const editUrl = ref(`${route.path}/manage`.replace('//', '/'));
+const editUrl = ref('');
 const postContent = ref('');
 const coverImageInput = ref(null)
 
@@ -185,6 +185,7 @@ watch(
         hasJoinGroup.value = props.groupInfo.hasJoin;
         hasSendJoinRequest.value = props.groupInfo.hasRequestJoin
         isEditCoverImage.value = false
+        editUrl.value = `${route.path}/manage`.replace('//', '/')
     })
 
 function LoadUpdateCoverImageSection() {
