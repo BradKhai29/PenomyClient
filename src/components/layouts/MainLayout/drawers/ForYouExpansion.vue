@@ -5,8 +5,8 @@
         class="for-you-expansion"
     >
         <PersonalProfileLink v-if="isAuth" />
-        <UploadArtworkLink />
         <ViewHistoryLink />
+        <UploadArtworkLink />
         <ReportedLink v-if="isAuth" />
     </q-expansion-item>
 </template>

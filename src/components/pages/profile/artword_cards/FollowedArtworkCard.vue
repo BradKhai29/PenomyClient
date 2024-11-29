@@ -71,14 +71,15 @@
 
             <div class="recommended-chapters-section q-my-xs">
                 <router-link
-                    :to="chapterLink(lastViewedChapter.id)"
+                    v-if="latestChapter.id != null"
+                    :to="chapterLink(latestChapter.id)"
                     class="underline-none text-light flex items-center text-subtitle2"
                 >
                     <span class="text-weight-bold text-dark">
-                        Tập {{ lastViewedChapter.uploadOrder }}
+                        Tập {{ latestChapter.uploadOrder }}
                     </span>
                     <span class="text-dark-500 q-ml-auto">
-                        {{ lastViewedAt }}
+                        {{ publishedAt }}
                     </span>
                 </router-link>
             </div>
@@ -100,7 +101,7 @@
             </div>
         </div>
 
-        <!-- Remove history item popup -->
+        <!-- Remove popup -->
         <q-dialog v-model="showDialog">
             <q-card>
                 <q-card-section>
@@ -113,16 +114,14 @@
                         text-color="dark"
                         size="lg"
                     />
-                    <span class="q-ml-sm text-subtitle1">
-                        Xóa khỏi lịch sử xem ?
-                    </span>
+                    <span class="q-ml-sm text-subtitle1"> Hủy theo dõi ? </span>
                 </q-card-section>
 
                 <q-card-actions align="right">
                     <q-btn
                         flat
                         no-caps
-                        label="Hủy"
+                        label="Đóng"
                         color="dark"
                         v-close-popup
                         class="text-subtitle1"
@@ -131,16 +130,16 @@
                     <q-btn
                         flat
                         no-caps
-                        label="Xác nhận xóa"
+                        label="Xác nhận"
                         color="primary"
                         class="text-subtitle1 text-weight-bold"
-                        @click="removeHistoryItem"
+                        @click="unfollowArtwork"
                         :disable="isProcessing"
                     />
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <!-- Remove history item dialog -->
+        <!-- Remove popup -->
     </div>
 </template>
 
@@ -148,18 +147,16 @@
 // Import dependencies section.
 import { Art5RouteNames } from "src/router/artwork/Artwork5PageRoute";
 import { CreatorProfile1RouteNames } from "src/router/creatorProfile/CreatorProfile1PageRoute";
-import { ViewHistoryArtworkResponseItem } from "src/api.models/artwork/common/ViewHistoryArtworkResponseItem";
-import { ViewHistoryApiHandler } from "src/api.handlers/artwork/common/ViewHistoryApiHandler";
+import { FollowedArtworkResponseItem } from "src/api.models/artwork/common/FollowedArtworkResponseItem";
+import { FollowArtworkApiHandler } from "src/api.handlers/artwork/artwork3Page/FollowArtworkApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { useGuestStore } from "src/stores/common/GuestStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
-// Init store for later operation.
+// Init the store for later operation.
 const authStore = useAuthStore();
-const guestStore = useGuestStore();
 
 export default {
-    name: "ViewHistoryArtworkCard",
+    name: "FollowedArtworkCard",
     emits: ["removeItem"],
     props: {
         isComic: {
@@ -167,7 +164,7 @@ export default {
             default: true,
         },
         artworkDetail: {
-            type: ViewHistoryArtworkResponseItem,
+            type: FollowedArtworkResponseItem,
             required: true,
         },
     },
@@ -217,11 +214,11 @@ export default {
         creatorAvatarUrl() {
             return this.artworkDetail.creatorAvatarUrl;
         },
-        lastViewedChapter() {
+        latestChapter() {
             return this.artworkDetail.chapter;
         },
-        lastViewedAt() {
-            return this.artworkDetail.chapter.getShortViewedAt();
+        publishedAt() {
+            return this.artworkDetail.chapter.getShortPublishedAt();
         },
     },
     methods: {
@@ -247,28 +244,18 @@ export default {
                 },
             };
         },
-        async removeHistoryItem() {
+        async unfollowArtwork() {
             this.isProcessing = true;
-            let removeResult = true;
 
-            if (authStore.isAuth) {
-                removeResult =
-                    await ViewHistoryApiHandler.removeUserHistoryItemAsync(
-                        this.artworkId
-                    );
-            }
-            // If current user is not authenticated, then resolve as a guest user.
-            else {
-                removeResult =
-                    await ViewHistoryApiHandler.removeGuestHistoryItemAsync(
-                        guestStore.guestId,
-                        this.artworkId
-                    );
-            }
+            const removeResult =
+                await FollowArtworkApiHandler.removeFollowAsync(
+                    this.artworkId,
+                    authStore.bearerAccessToken()
+                );
 
             // Notify the message for the user.
             if (removeResult) {
-                NotificationHelper.notifySuccess("Đã xóa thành công");
+                NotificationHelper.notifySuccess("Hủy theo dõi thành công");
 
                 // Emit removeItem event.
                 this.$emit("removeItem", this.artworkId);

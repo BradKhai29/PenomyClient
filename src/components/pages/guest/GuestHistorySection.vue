@@ -60,6 +60,7 @@
                                 <ViewHistoryArtworkCard
                                     :artworkDetail="comic"
                                     class="q-mr-md q-mb-md"
+                                    @removeItem="handleRemoveHistoryItem"
                                 />
                             </div>
                         </div>
@@ -79,6 +80,7 @@
 // Import dependencies section.
 import { ViewHistoryApiHandler } from "src/api.handlers/artwork/common/ViewHistoryApiHandler";
 import { ArtworkTypes } from "src/api.handlers/artwork/artwork1Page/TopRecommendedArtworkApiHandler";
+import { ViewHistoryArtworkResponseItem } from "src/api.models/artwork/common/ViewHistoryArtworkResponseItem";
 
 // Import components section.
 import ViewHistoryArtworkCard from "../profile/artword_cards/ViewHistoryArtworkCard.vue";
@@ -101,6 +103,9 @@ export default {
         return {
             isLoading: true,
             selectedTab: COMIC_TAB,
+            /**
+             * @type {ViewHistoryArtworkResponseItem[]} Type of this array
+             */
             viewedComics: [],
             viewedAnimes: [],
         };
@@ -131,6 +136,16 @@ export default {
 
         console.log(this.viewedComics);
         this.isLoading = false;
+    },
+    methods: {
+        handleRemoveHistoryItem(artworkId) {
+            const itemIndex = this.viewedComics.findIndex(
+                (item) => item.id == artworkId
+            );
+
+            // Remove the item from the display list.
+            this.viewedComics.splice(itemIndex, 1);
+        },
     },
 };
 </script>
