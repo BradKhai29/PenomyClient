@@ -59,7 +59,6 @@
             v-if="!isLoading"
             v-model="selectedSlide"
             animated
-            swipeable
             @before-transition="handleTransition"
             class="col-grow"
         >
@@ -173,8 +172,8 @@ export default {
             this.selectedSlide = `${SLIDER_PREFIX}_${this.currentSlideIndex}`;
         },
         handleTransition(newSlide, oldSlide) {
-            console.log("Old", oldSlide);
-            console.log("New", newSlide);
+            // console.log("Old", oldSlide);
+            // console.log("New", newSlide);
         },
         toNext() {
             // Increase the slide index by 1 and update related state.

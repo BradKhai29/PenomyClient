@@ -164,7 +164,6 @@ export default {
             required: true,
         },
         comicDetail: {
-            type: ArtworkDetailResponse,
             required: true,
         },
     },
@@ -180,9 +179,15 @@ export default {
         isAuth() {
             return authStore.isAuth;
         },
+        /**
+         * @returns {ArtworkDetailResponse} Type of this computed property.
+         */
+        comicDetailRef() {
+            return this.comicDetail;
+        },
     },
     mounted() {
-        this.comicDetailCardStyle.background = `url(${this.comicDetail.thumbnailUrl}) no-repeat`;
+        this.comicDetailCardStyle.background = `url(${this.comicDetailRef.thumbnailUrl}) no-repeat`;
     },
 };
 </script>

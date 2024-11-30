@@ -108,7 +108,7 @@
                 </q-card-section>
                 <q-card-section class="row items-center q-py-none">
                     <q-avatar
-                        icon="delete"
+                        icon="history"
                         color="primary"
                         text-color="dark"
                         size="lg"
@@ -276,7 +276,9 @@ export default {
                 NotificationHelper.notifyError("Đã có lỗi xảy ra");
             }
 
-            this.isProcessing = true;
+            // Turn off the related flags.
+            this.showDialog = false;
+            this.isProcessing = false;
         },
     },
 };
