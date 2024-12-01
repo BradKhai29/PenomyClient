@@ -26,6 +26,12 @@ import EditGroup from 'src/components/common/socialMedia/EditGroup.vue';
 import JoinRequest from 'src/components/common/socialMedia/JoinRequest.vue';
 import GroupMemberSection from 'src/components/common/socialMedia/GroupMemberSection.vue';
 import { useRoute } from "vue-router";
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+
+// Init store for later operation.
+const authStore = useAuthStore();
+const userProfileStore = useUserProfileStore();
 
 const getGroupApi = GetGroupDescriptionApiHandler.GetGroupDescription;
 const route = useRoute();
@@ -44,7 +50,13 @@ const newGroupInfo = ref({
     },
 })
 
-onMounted(() => {
+onMounted(async () => {
+    await authStore.setUp();
+    await userProfileStore.setUp(
+        authStore.isAuth,
+        authStore.accessToken(),
+        authStore.userId
+    );
     getGroupDescription();
 })
 

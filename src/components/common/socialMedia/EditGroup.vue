@@ -80,7 +80,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, watch } from 'vue';
 import { useRoute } from "vue-router";
 import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -118,6 +118,19 @@ const newGroupInfo = ref({
     isPublic: props.groupInfo.isPublic
 });
 
+watch(
+    () => props.groupInfo,
+    () => {
+        newGroupInfo.value = {
+            id: route.params.id,
+            name: props.groupInfo.name,
+            description: props.groupInfo.description,
+            postMode:
+                props.groupInfo.requireApprovedWhenPost ? "Yêu cầu phê duyệt" : "Tự do",
+            isPublic: props.groupInfo.isPublic
+        };
+    }
+)
 // // Boolean variables
 const isEditGroupSettings = ref(false);
 const isLoadingBtn = ref(false);

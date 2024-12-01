@@ -27,7 +27,7 @@
                             @click="isEdit = !isEdit"
                         >
                             <q-item-section>
-                                <q-item-label>Edit</q-item-label>
+                                <q-item-label>Chỉnh sửa</q-item-label>
                             </q-item-section>
                         </q-item>
 
@@ -37,7 +37,7 @@
                             @click="isDelete = !isDelete"
                         >
                             <q-item-section>
-                                <q-item-label>Remove</q-item-label>
+                                <q-item-label>Xóa</q-item-label>
                             </q-item-section>
                         </q-item>
                     </q-list>
@@ -114,7 +114,7 @@
     <popup-login-required :open="openLoginPopup" />
     <confirm-popup
         v-if="isDelete"
-        message="You want to delete this comment?"
+        message="Bạn muốn xóa bình luận này?"
         @popupClick="popupClickHandler"
     />
 </template>

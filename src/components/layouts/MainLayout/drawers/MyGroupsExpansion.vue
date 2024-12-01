@@ -42,7 +42,7 @@ export default {
     },
     methods: {
         async getCreatedGroups() {
-            var res = await myCreatedGroupsApiHandler();
+            var res = await myCreatedGroupsApiHandler(4);
             this.createdGroups = res.responseBody;
         }
     }

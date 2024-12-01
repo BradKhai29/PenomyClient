@@ -15,13 +15,13 @@
             <q-menu icon="more_vert" dropdown-icon="null"><q-list>
                     <q-item clickable v-close-popup @click="onItemClick">
                         <q-item-section>
-                            <q-item-label>Edit</q-item-label>
+                            <q-item-label>Chỉnh sửa</q-item-label>
                         </q-item-section>
                     </q-item>
 
                     <q-item clickable v-close-popup @click="onItemClick">
                         <q-item-section>
-                            <q-item-label>Remove</q-item-label>
+                            <q-item-label>Xóa</q-item-label>
                         </q-item-section>
                     </q-item>
                 </q-list>

@@ -6,8 +6,8 @@
             </q-card-section>
 
             <q-card-actions align="right">
-                <q-btn label="Cancel" color="cyan-10" v-close-popup @click="onclickHandler(false)" />
-                <q-btn label="Remove" color="red" v-close-popup @click="onclickHandler(true)" />
+                <q-btn label="Hủy bỏ" color="cyan-10" v-close-popup @click="onclickHandler(false)" />
+                <q-btn label="Xóa" color="red" v-close-popup @click="onclickHandler(true)" />
             </q-card-actions>
         </q-card>
     </q-dialog>
