@@ -7,7 +7,7 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 const authStore = useAuthStore();
 const apiUrl = `${BaseWebApiUrl}/sm9/created-groups/get`;
 
-async function GetCreatedGroupsAsync() {
+async function GetCreatedGroupsAsync(maxRecord) {
     try {
         const response = await axios({
             url: apiUrl,
@@ -16,7 +16,7 @@ async function GetCreatedGroupsAsync() {
                 Authorization: authStore.bearerAccessToken(),
             },
             params: {
-                empty: true,
+                maxRecord: maxRecord
             },
         });
         return ApiResponse.success(response.data.body.groupList);
