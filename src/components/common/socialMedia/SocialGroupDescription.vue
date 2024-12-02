@@ -48,11 +48,11 @@
                             v-if="(!hasJoinGroup && !hasSendJoinRequest)" color="primary">Tham
                             gia</q-btn>
 
-                        <q-btn :loading="isLoadingJoinBtn" v-if="hasSendJoinRequest" color="grey">Hủy
+                        <q-btn :loading="isLoadingCancelBtn" v-if="hasSendJoinRequest" color="grey"
+                            @click="CancelJoinRequestAsync">Hủy
                             yêu cầu</q-btn>
 
-                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary"
-                            label="Đã tham gia" />
+                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary" label="Đã tham gia" />
                     </div>
 
                     <q-btn v-if="groupInfo.isManager" :to="editUrl" color="primary" icon="settings"
@@ -137,13 +137,17 @@ import { defineEmits } from 'vue';
 
 const isLoadingImageBtn = ref(false);
 const isLoadingJoinBtn = ref(false);
+const isLoadingCancelBtn = ref(false);
 const hasSendJoinRequest = ref(false);
 
 const route = useRoute();
 const profileStore = useUserProfileStore();
 const userProfileStore = useUserProfileStore();
+
+// Define apis
 const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
 const requestJoinGroupApi = JoinRequestApiHandler.JoinGroupAsync;
+const cancelRequestJoinGroupApi = JoinRequestApiHandler.CancelJoinRequestAsync;
 const JoinGroupApi = JoinRequestApiHandler.AcceptJoinRequestAsync;
 const emit = defineEmits(['updateCoverImage']);
 
@@ -259,6 +263,22 @@ async function JoinGroupAsync() {
         }
         isLoadingJoinBtn.value = false
     }
+}
+
+
+async function CancelJoinRequestAsync() {
+
+    isLoadingCancelBtn.value = true;
+    const result = await cancelRequestJoinGroupApi(props.groupInfo.id);
+    if (result.responseBody.isSuccess) {
+        NotificationHelper.notifySuccess("Đã hủy yêu cầu");
+        hasSendJoinRequest.value = false
+    } else {
+        NotificationHelper.notifyError(
+            result.message ?? "Có lỗi xảy ra"
+        );
+    }
+    isLoadingCancelBtn.value = false
 }
 </script>
 

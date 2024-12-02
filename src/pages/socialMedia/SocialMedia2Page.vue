@@ -215,7 +215,6 @@ async function onSubmit() {
             NotificationHelper.notifySuccess("Đã tạo thành công");
 
             // Redirect to the group detail page after creating success.
-            console.log(result.responseBody);
             router.push(`/social/group/${result.responseBody}`);
         } else {
             NotificationHelper.notifyError(
