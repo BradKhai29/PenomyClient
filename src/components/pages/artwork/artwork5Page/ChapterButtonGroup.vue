@@ -1,19 +1,10 @@
 <template>
-    <section id="chapter-images-button-group" class="bg-dark-500">
+    <section id="chapter-images-button-group" class="bg-dark-700">
         <div
             class="text-center q-py-md text-subtitle2 text-light text-weight-bold"
         >
             Yêu thích và theo dõi tác phẩm này <br />
             để tiếp thêm động lực cho tác giả
-        </div>
-        <div class="flex items-center justify-center q-pb-md q-gutter-sm">
-            <FavoriteButton
-                :chapterId="1"
-                :totalFavorites="12"
-                :isFavorite="true"
-            />
-            <FollowComicButton :chapterId="1" :isFollowed="true" />
-            <ReportButton :chapterId="1" :hasReported="true" />
         </div>
     </section>
 </template>
@@ -30,9 +21,9 @@ import ReportButton from "./ReportButton.vue";
 export default {
     name: "ChapterButtonGroup",
     components: {
-        FavoriteButton,
-        FollowComicButton,
-        ReportButton,
+        // FavoriteButton,
+        // FollowComicButton,
+        // ReportButton,
     },
     props: {
         totalFavorites: {

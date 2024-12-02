@@ -3,6 +3,7 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { ComicChapterDetailResponseDto } from "src/api.models/artwork/artwork5Page/ComicChapterDetailResponseDto";
+import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
 
 // Init authStore to get the access-token.
 const authStore = useAuthStore();
@@ -38,8 +39,40 @@ async function getChapterDetailByIdAsync(comicId, chapterId) {
     }
 }
 
+/**
+ * Get the list of chapters of the current
+ * comic support for chapter navigation.
+ *
+ * @param {String} comicId Id of the comic to get.
+ * @returns {Promise<ArtworkChapterResponse[]>} The list of chapter of current comic.
+ */
+async function getChapterListByComicIdAsync(comicId) {
+    const apiUrl = `${BaseWebApiUrl}/g9/chapter-list`;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+            params: {
+                comicId: comicId,
+            },
+        });
+
+        const chapterList = ArtworkChapterResponse.mapFromArray(
+            response.data.body
+        );
+
+        return chapterList;
+    } catch (error) {
+        console.log(error);
+
+        return null;
+    }
+}
+
 const Artwork5ApiHandler = {
     getChapterDetailByIdAsync: getChapterDetailByIdAsync,
+    getChapterListByComicIdAsync,
 };
 
 export { Artwork5ApiHandler };
