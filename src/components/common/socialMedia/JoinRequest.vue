@@ -26,7 +26,8 @@
                     </q-item-section>
                     <q-item-section side>
                         <div v-if="!request.isRunApi">
-                            <q-btn title="Từ chối" class="text-bold q-mr-sm" size="sm" color="red" no-caps icon="close">
+                            <q-btn title="Từ chối" class="text-bold q-mr-sm" size="sm" color="red" no-caps icon="close"
+                                @click="rejectJoinRequestAsync(request.userId)">
                                 <q-tooltip>Từ chối</q-tooltip>
                             </q-btn>
                             <q-btn title="Phê duyệt" class="text-bold" size="sm" color="primary" no-caps icon="done"
@@ -59,8 +60,12 @@ import JoinRequestApiHandler from 'src/api.handlers/social/social3Page/JoinReque
 
 // import
 const route = useRoute();
+
+// define apis
 const getJoinRequestApi = JoinRequestApiHandler.GetJoinRequestAsync;
 const acceptRequestApi = JoinRequestApiHandler.AcceptJoinRequestAsync;
+const rejectRequestApi = JoinRequestApiHandler.RejectJoinRequestAsync;
+
 const requests = ref([]);
 
 const emit = defineEmits(['approveRequest'])
@@ -79,7 +84,7 @@ async function getJoinRequestAsync() {
 
     if (result.isSuccess) {
         requests.value = result.responseBody.requestList
-        for(let i = 0; i < requests.value.length; i++) {
+        for (let i = 0; i < requests.value.length; i++) {
             requests.value[i].isRunApi = false
         }
     } else {
@@ -103,6 +108,26 @@ async function acceptJoinRequestAsync(memberId) {
         );
         requests.value = requests.value.filter(request => request.userId != memberId)
         emit('approveRequest')
+    } else {
+        NotificationHelper.notifyError(
+            result.message ?? "Có lỗi xảy ra"
+        );
+    }
+}
+
+async function rejectJoinRequestAsync(memberId) {
+    requests.value.find(request => request.userId == memberId).isRunApi = true
+    const result = await rejectRequestApi(
+        route.params.id,
+        memberId
+    );
+
+    if (result.responseBody.isSuccess) {
+        // requests.value = result.responseBody.isSuccess
+        NotificationHelper.notifySuccess(
+            result.message ?? "Thao tác thành công"
+        );
+        requests.value = requests.value.filter(request => request.userId != memberId)
     } else {
         NotificationHelper.notifyError(
             result.message ?? "Có lỗi xảy ra"
