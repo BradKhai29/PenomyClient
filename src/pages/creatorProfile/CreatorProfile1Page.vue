@@ -6,7 +6,10 @@
             :isProfileOwner="isProfileOwner"
         />
 
-        <EmptyStatePlaceholder />
+        <CreatorArtworkSection
+            :isProfileOwner="isProfileOwner"
+            :creatorId="creatorId"
+        />
     </q-page>
 </template>
 
@@ -21,7 +24,7 @@ import { CreatorProfileApiHandler } from "src/api.handlers/creatorProfile/Creato
 
 // Import components section.
 import CreatorProfileCard from "src/components/common/creatorProfile/CreatorProfileCard.vue";
-import EmptyStatePlaceholder from "src/components/common/userProfile/EmptyStatePlaceholder.vue";
+import CreatorArtworkSection from "src/components/pages/creatorProfile/CreatorArtworkSection.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -31,7 +34,7 @@ export default {
     name: "CreatorProfile1Page",
     components: {
         CreatorProfileCard,
-        EmptyStatePlaceholder,
+        CreatorArtworkSection,
     },
     data() {
         return {
@@ -76,8 +79,6 @@ export default {
         if (this.invalidId) {
             return;
         }
-
-        console.log("Mounted", this.creatorId);
 
         // If the current user is also the profile owner, then wait to load.
         if (this.isProfileOwner) {

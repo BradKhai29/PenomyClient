@@ -94,7 +94,7 @@
                     <!-- Chapter view count metadata -->
 
                     <!-- Chapter favorite count metadata -->
-                    <div class="flex items-center q-ml-md">
+                    <!-- <div class="flex items-center q-ml-md">
                         <q-icon name="favorite" size="xs" />
                         <span class="q-ml-xs">{{ favoriteCountShort }}</span>
                         <q-tooltip
@@ -106,7 +106,7 @@
                                 Lượt yêu thích: {{ favoriteCount }}
                             </strong>
                         </q-tooltip>
-                    </div>
+                    </div> -->
                     <!-- Chapter favorite count metadata -->
 
                     <!-- Chapter comment metadata -->

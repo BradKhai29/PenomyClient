@@ -31,9 +31,7 @@ async function refreshTokensAsync(bearerAccessToken, refreshToken) {
         const axiosError = AxiosHelper.toAxiosError(error);
         console.log("Error", axiosError);
 
-        return RefreshTokenResult.failedWithErrorCode(
-            axiosError.response.data.appCode
-        );
+        return RefreshTokenResult.failedWithErrorCode();
     }
 }
 

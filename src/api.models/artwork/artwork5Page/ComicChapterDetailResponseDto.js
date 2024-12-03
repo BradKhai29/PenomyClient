@@ -43,6 +43,19 @@ class ComicChapterDetailResponseDto {
         this.errorMessage = null;
     }
 
+    clone() {
+        return new ComicChapterDetailResponseDto(
+            this.title,
+            this.comicTitle,
+            this.description,
+            this.uploadOrder,
+            this.allowComment,
+            this.createdBy,
+            this.totalFavorites,
+            this.images
+        );
+    }
+
     /**
      * Map the input responseBody into a new ComicChapterDetailResponseDto instance.
      *
