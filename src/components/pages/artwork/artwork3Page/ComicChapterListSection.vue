@@ -45,29 +45,32 @@
                 id="chapter-list-display-section"
                 class="q-mt-md"
             >
-                <ComicChapterSkeletonCard v-for="i in 6" :key="i" />
-
-                <section
-                    v-if="isPagination"
-                    class="flex justify-center q-mt-md"
-                >
-                    <AppPagination
-                        :maxDisplayPages="5"
-                        :max="5"
-                        :disable="isLoading"
-                        v-model="currentPage"
-                    />
-                </section>
-            </div>
-            <div v-else id="chapter-list-display-section" class="q-mt-md">
-                <ComicChapterCard
-                    v-for="chapter in displayChapterList"
-                    :key="chapter.id"
-                    :comicId="comicId"
-                    :isAuthor="isAuthor"
-                    :chapterDetail="chapter"
-                    :isLoading="isLoading"
+                <ComicChapterSkeletonCard
+                    v-for="i in totalItemsPerPage"
+                    :key="i"
                 />
+            </div>
+            <section
+                v-show="!isLoading"
+                id="chapter-list-display-section"
+                class="q-mt-md"
+            >
+                <div id="chapter-list-display-wrapper" v-if="!isLoading">
+                    <ComicChapterCard
+                        v-for="chapter in displayChapterList"
+                        :key="chapter.id"
+                        :comicId="comicId"
+                        :isAuthor="isAuthor"
+                        :chapterDetail="chapter"
+                        :isLoading="isLoading"
+                    />
+                    <ComicChapterSkeletonCard
+                        v-for="i in totalItemsPerPage -
+                        displayChapterList.length"
+                        :key="i"
+                        :invisible="true"
+                    />
+                </div>
 
                 <section
                     v-if="isPagination"
@@ -76,10 +79,12 @@
                     <AppPagination
                         :maxDisplayPages="maxDisplayPages"
                         :max="totalPages"
+                        :disable="isLoading"
                         v-model="currentPage"
+                        @hasChange="handleChange"
                     />
                 </section>
-            </div>
+            </section>
         </div>
     </section>
 </template>
@@ -89,6 +94,7 @@
 import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
+import { ItemDictionary } from "src/api.models/common/ItemDictionary";
 
 // Import components section.
 import ComicChapterCard from "./ComicChapterCard.UserSection.vue";
@@ -115,6 +121,7 @@ export default {
     },
     data() {
         return {
+            chapterListDictionary: ItemDictionary.New(),
             isLoading: true,
             loadedPaginationOption: false,
             /**
@@ -144,6 +151,9 @@ export default {
         isAuthor() {
             return userProfileStore.currentUserId == this.creatorId;
         },
+        totalItemsPerPage() {
+            return 10;
+        },
     },
     mounted() {
         this.getComicChapterPaginationOptions();
@@ -166,19 +176,47 @@ export default {
             this.loadedPaginationOption = true;
         },
         async getComicChapterListWithPaginationAsync() {
-            const apiResponse =
-                await artworkDetailApiHandler.getArtworkChaptersByIdAsync(
-                    this.comicId,
-                    this.currentPage
+            // Turn on loading flag when load the chapter from api.
+            this.isLoading = true;
+
+            const entry = this.chapterListDictionary.getEntry(this.currentPage);
+
+            if (entry) {
+                const length = this.displayChapterList.length;
+
+                this.displayChapterList.splice(0, length);
+
+                const chapterList = entry.value;
+                this.displayChapterList.push(...chapterList);
+            } else {
+                const apiResponse =
+                    await artworkDetailApiHandler.getArtworkChaptersByIdAsync(
+                        this.comicId,
+                        this.currentPage
+                    );
+
+                // Populate the data that fetched from API.
+                const pageNumber = this.currentPage;
+
+                this.chapterListDictionary.addEntry(
+                    pageNumber,
+                    apiResponse.chapters
                 );
 
-            // Populate the data that fetched from API.
-            this.isPagination = apiResponse.isPagination;
-            this.totalChapters = apiResponse.chapterCount;
-            this.displayChapterList.push(...apiResponse.chapters);
+                // Clear the display chapter list before populate again.
+                const length = this.displayChapterList.length;
+
+                this.displayChapterList.splice(0, length);
+                this.displayChapterList.push(...apiResponse.chapters);
+            }
 
             // Turn off isLoading flag to display the content.
             this.isLoading = false;
+        },
+        handleChange() {
+            console.log(this.currentPage);
+
+            this.getComicChapterListWithPaginationAsync();
         },
     },
 };

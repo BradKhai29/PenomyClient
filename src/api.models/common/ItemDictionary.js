@@ -73,7 +73,7 @@ class ItemDictionary {
     /**
      * Get the entry item with specified key from this Dictionary.
      *
-     * @returns {Entry} The found entry.
+     * @returns {Entry | null} The found entry or NULL if entry is not found.
      */
     getEntry(key) {
         return this.entries.find((entry) => entry.key == key);

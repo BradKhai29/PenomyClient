@@ -29,9 +29,24 @@ function insertAt(array, index, element) {
     array.splice(index, 0, element);
 }
 
+/**
+ * Clear the array.
+ *
+ * @param {Array} array The array to be cleared.
+ */
+function clear(array) {
+    if (!array) {
+        throw Error(`Provided array is null or undefined`);
+    }
+
+    const arrayLength = array.length;
+    array.splice(0, arrayLength);
+}
+
 const ArrayHelper = {
     removeAt: removeAt,
     insertAt: insertAt,
+    clear,
 };
 
 export { ArrayHelper };
