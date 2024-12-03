@@ -129,6 +129,7 @@
 import { ref, defineProps, watch } from 'vue';
 import { useUserProfileStore } from 'src/stores/common/UserProfileStore';
 import { useRoute } from "vue-router";
+import { useAuthStore } from 'src/stores/common/AuthStore';
 import SocialCoverImageInput from 'src/components/common/socialMedia/SocialCoverImageInput.vue';
 import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -143,6 +144,7 @@ const hasSendJoinRequest = ref(false);
 const route = useRoute();
 const profileStore = useUserProfileStore();
 const userProfileStore = useUserProfileStore();
+const authStore = useAuthStore();
 
 // Define apis
 const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
@@ -234,6 +236,10 @@ function onCanelImage() {
 }
 
 async function JoinGroupAsync() {
+    console.log(await authStore.isAuthAsync());
+    if (!await authStore.isAuthAsync()) {
+        route.push("auth/login");
+    }
     if (!props.groupInfo.isPublic) {
 
         isLoadingJoinBtn.value = true;
