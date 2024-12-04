@@ -1,4 +1,5 @@
 import { Notify } from "quasar";
+import { StringHelper } from "./StringHelper";
 
 class NotificationOptions {
     /**
@@ -29,19 +30,34 @@ const topPosition = "top";
  * @param {String} [position=topPosition] The position of the popup (top, bottom, left, right). Default value is top.
  */
 function notify(message, options, position = topPosition) {
-    Notify.create({
+    const notificationRandomId = StringHelper.generateSecureRandomString(6);
+    const notificationClasses = `penomy-notification notification_${notificationRandomId}`;
+
+    const dismiss = Notify.create({
         color: options.color,
         textColor: options.textColor,
         icon: options.icon,
         position: position,
         message: message,
-        actions: [
-            {
-                label: "Đóng",
-                color: "light",
-            },
-        ],
+        classes: [notificationClasses],
     });
+
+    // Wait about 100ms to let the notification element to display
+    // to set the onclick event to that element.
+    const WAIT_FOR_NOTIFICATION_ELEMENT_TO_DISPLAY_TIMEOUT = 150;
+    const notificationElementSelector = `.penomy-notification.notification_${notificationRandomId}`;
+
+    setTimeout(() => {
+        try {
+            const notificationElement = document.querySelector(
+                notificationElementSelector
+            );
+
+            notificationElement.addEventListener("click", () => dismiss());
+        } catch (error) {
+            // console.log(error);
+        }
+    }, WAIT_FOR_NOTIFICATION_ELEMENT_TO_DISPLAY_TIMEOUT);
 }
 
 /**

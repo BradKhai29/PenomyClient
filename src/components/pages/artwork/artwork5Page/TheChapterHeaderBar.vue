@@ -3,7 +3,11 @@
         id="chapter-header-bar"
         class="bg-dark-900 text-light q-py-xs relative-position"
     >
-        <section id="header-bar-inner-wrapper" class="row q-px-md">
+        <section
+            v-show="showHeaderBar"
+            id="header-bar-inner-wrapper"
+            class="row q-px-md"
+        >
             <div class="col flex items-center text-light text-subtitle1">
                 <q-btn
                     no-caps
@@ -84,7 +88,6 @@
                         anchor="bottom middle"
                         self="top middle"
                         :offset="[8, 8]"
-                        :class="isComicType ? 'bg-dark text-light' : ''"
                     >
                         <strong class="text-subtitle2">Mục bình luận</strong>
                     </q-tooltip>
@@ -108,12 +111,17 @@
             </div>
         </section>
 
+        <section id="chapter-header-toggle" @click="toggleHeaderBar" />
+
         <ChapterListMenu
             v-show="showChapterMenu"
             :chapterList="chapterList"
             :showMenu="showChapterMenu"
+            :comicId="comicId"
             @goToChapter="goToChapter"
             @closeMenu="showChapterMenu = false"
+            class="absolute"
+            style="right: 0; left: 0"
         />
     </section>
 </template>
@@ -163,6 +171,7 @@ export default {
     data() {
         return {
             isCopyLink: false,
+            showHeaderBar: true,
             showChapterMenu: false,
         };
     },
@@ -200,6 +209,9 @@ export default {
             if (commentSection) {
                 commentSection.scrollIntoView({ behavior: "smooth" });
             }
+        },
+        toggleHeaderBar() {
+            this.showHeaderBar = !this.showHeaderBar;
         },
         getChapterLink(inputChapterId) {
             return {
@@ -307,6 +319,22 @@ export default {
 * {
     --chapter-list-btn-width: 200px;
     --comic-title-width: 280px;
+}
+
+#chapter-header-bar {
+    position: fixed !important;
+    top: 50px;
+    width: 100% !important;
+}
+
+#chapter-header-toggle {
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: transparent;
 }
 
 #chapter_list_btn {

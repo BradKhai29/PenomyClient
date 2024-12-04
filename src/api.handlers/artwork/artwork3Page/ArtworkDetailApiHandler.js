@@ -7,13 +7,15 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
 import { ComicChapterPaginationOptionResponse } from "src/api.models/artwork/artwork3Page/ComicChapterPaginationOptionResponse";
+import { Art3RecommendedArtworkResponseItem } from "src/api.models/artwork/artwork3Page/Art3RecommendedArtworkResponseItem";
 
 /**
  * Fetches the artwork detail by the given artwork ID.
  * @param {number} artworkId The artwork ID.
+ * @param {number} guestId Id of the guest that visit this page. (Default is -1 if not specified)
  * @returns {Promise<ArtworkDetailResponse>} The artwork detail response.
  */
-async function getArtworkDetailByIdAsync(artworkId, accessToken) {
+async function getArtworkDetailByIdAsync(artworkId, guestId = -1, accessToken) {
     try {
         const MINIMUM_TOKEN_LENGTH = 10;
 
@@ -26,6 +28,7 @@ async function getArtworkDetailByIdAsync(artworkId, accessToken) {
             method: HttpMethod.GET,
             params: {
                 artworkId: artworkId,
+                guestId: guestId,
                 accessToken: accessToken,
             },
         });
@@ -107,9 +110,45 @@ async function getComicChapterPaginationOptionByIdAsync(comicId) {
     }
 }
 
+/**
+ * Get the list of recommended artworks based on the the input artworkId.
+ *
+ * @param {String} artworkId Id of the artwork to recommended related content.
+ * @returns {Promise<Art3RecommendedArtworkResponseItem[]> | null} The list of recommended artworks.
+ * Return null if the api is called failed.
+ */
+async function getRecommendedArtworksAsync(artworkId) {
+    const apiUrl = `${BaseWebApiUrl}/g6/artworks/recommend`;
+    const TOTAL_RECOMMENDED_ARTWORKS = 3;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+            params: {
+                artworkId: artworkId,
+                totalRecommendedArtworks: TOTAL_RECOMMENDED_ARTWORKS,
+            },
+        });
+
+        const result = Art3RecommendedArtworkResponseItem.mapFromArray(
+            response.data.body
+        );
+
+        console.log(result);
+
+        return result;
+    } catch (error) {
+        console.log(error);
+
+        return null;
+    }
+}
+
 const artworkDetailApiHandler = {
     getArtworkDetailByIdAsync,
     getArtworkChaptersByIdAsync,
     getComicChapterPaginationOptionByIdAsync,
+    getRecommendedArtworksAsync,
 };
 export default artworkDetailApiHandler;

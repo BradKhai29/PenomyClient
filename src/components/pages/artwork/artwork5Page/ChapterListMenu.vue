@@ -21,7 +21,7 @@
                 </q-btn>
 
                 <q-btn
-                    @click="toPrevious"
+                    @click="toNext"
                     unelevated
                     flat
                     class="menu-button"
@@ -47,7 +47,12 @@
                             />
                         </div>
                         <div
-                            class="text-center text-subtitle2 text-weight-bold text-dark q-py-xs bg-light-500"
+                            class="text-center text-subtitle2 text-weight-bold q-py-xs"
+                            :class="
+                                currentChapterId == chapter.id
+                                    ? 'bg-primary text-dark'
+                                    : 'bg-light-500 text-dark'
+                            "
                         >
                             Tập {{ chapter.uploadOrder }}
                         </div>
@@ -77,6 +82,14 @@ export default {
             type: Boolean,
             default: false,
         },
+        comicId: {
+            required: true,
+        },
+    },
+    computed: {
+        currentChapterId() {
+            return this.$route.params.chapterId;
+        },
     },
     methods: {
         getChapterLink(inputChapterId) {
@@ -96,6 +109,12 @@ export default {
         },
         closeMenu() {
             this.$emit("closeMenu");
+        },
+        toPrevious() {
+            console.log("Previous");
+        },
+        toNext() {
+            console.log("Next");
         },
     },
 };

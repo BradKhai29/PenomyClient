@@ -49,6 +49,7 @@
 
             <ChapterListMenu
                 class="col-12"
+                :comicId="comicId"
                 :chapterList="loadedChapterList"
                 @goToChapter="handleChangeChapter"
             />

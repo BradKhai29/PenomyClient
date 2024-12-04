@@ -6,7 +6,7 @@
         <div class="flex">
             <div class="artwork-recommend-image">
                 <q-img
-                    src="https://res.cloudinary.com/dsjsmbdpw/image/upload/v1729903327/comics/8857013803077632/8857013803077632.png"
+                    :src="thumbnailUrl"
                     :ratio="1"
                     width="100%"
                     height="100%"
@@ -24,15 +24,15 @@
                 </div>
                 <div class="q-py-md column">
                     <span class="text-dark-500 artwork-card-text">
-                        Hành động, Giả tưởng
+                        {{ categories }}
                     </span>
                     <span
                         class="text-dark text-subtitle1 text-weight-bold artwork-card-text"
                     >
-                        Day la mot bo phim nay
+                        {{ title }}
                     </span>
                     <span class="text-dark text-subtitle2 artwork-card-text">
-                        Tên tác giả
+                        {{ authorName }}
                     </span>
                 </div>
             </div>
@@ -41,20 +41,42 @@
 </template>
 
 <script>
+import { Art3RecommendedArtworkResponseItem } from "src/api.models/artwork/artwork3Page/Art3RecommendedArtworkResponseItem";
 export default {
     name: "RecommendedArtworkItemCard",
     props: {
-        artworkId: {
-            required: true,
-        },
         itemIndex: {
             type: Number,
             default: 1,
         },
+        artworkDetail: {
+            type: Art3RecommendedArtworkResponseItem,
+            required: true,
+        },
+        isComic: {
+            type: Boolean,
+            default: true,
+        },
     },
     computed: {
         artworkLink() {
-            return this.$router.path;
+            if (this.isComic) {
+                return `/artwork/comic/${this.artworkDetail.id}`;
+            }
+
+            return `/artwork/anime/${this.artworkDetail.id}`;
+        },
+        thumbnailUrl() {
+            return this.artworkDetail.thumbnailUrl;
+        },
+        title() {
+            return this.artworkDetail.title;
+        },
+        categories() {
+            return this.artworkDetail.getCategoryListString();
+        },
+        authorName() {
+            return this.artworkDetail.authorName;
         },
     },
 };
