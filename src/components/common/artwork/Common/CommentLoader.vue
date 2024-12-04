@@ -24,14 +24,14 @@
         <h6>Phần bình luận đã bị tắt !</h6>
     </div>
     <div v-if="isAllowComment">
-        <h5 class="no-comment" v-if="comments.length === 0">No comments</h5>
+        <h5 class="no-comment" v-if="comments.length === 0">Chưa có bình luận nào</h5>
         <UserComment v-for="comment in comments" :key="comment.id" :comment="comment" @deleteComment="onCommentDelete"
             @replyComment="onReplyCommentCreate" @replyCommentDelete="onReplyCommentDelete" />
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import axios from "axios";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";

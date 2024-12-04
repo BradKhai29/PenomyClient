@@ -31,7 +31,7 @@
                     </div>
                 </q-card-section>
 
-
+                <q-separator />
 
                 <!-- Post Footer -->
                 <q-card-actions align="around">
@@ -42,16 +42,23 @@
                         <span class="q-ml-sm">Comment</span>
                     </q-btn>
                 </q-card-actions>
+                <!-- Post comment -->
+                <q-card-section>
+                </q-card-section>
             </q-card>
+            <CommentInputField />
         </div>
     </q-page>
 </template>
 <script>
 import { onMounted, ref } from 'vue';
 import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHandler';
+import CommentInputField from 'src/components/common/artwork/Common/CommentInputField.vue';
 
 export default {
     setup() {
+
+
         const posts = ref([]);
 
         const fetchPosts = async () => {
@@ -70,6 +77,9 @@ export default {
             posts,
         };
     },
+    components: {
+        CommentInputField
+    }
 };
 </script>
 

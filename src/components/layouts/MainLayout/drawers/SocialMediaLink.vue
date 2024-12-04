@@ -1,19 +1,13 @@
 <template>
-    <DrawerLink
-        title="Mạng xã hội"
-        icon="group"
-        link="/social"
-        :isSelected="isSelected"
-    />
+    <DrawerLink title="Mạng xã hội" icon="group" link="/social" :isSelected="isSelected" />
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { watch, computed } from "vue";
 import { useRoute } from "vue-router";
 import DrawerLink from "components/layouts/DrawerLink.vue";
 
 const route = useRoute();
-const isSelected = ref(false);
 
 watch(
     () => route.path,
@@ -25,4 +19,12 @@ watch(
         }
     }
 );
+
+const isSelected = computed(() => {
+    const currentPath = String(route.path);
+
+    return (
+        currentPath.includes("/social")
+    );
+})
 </script>
