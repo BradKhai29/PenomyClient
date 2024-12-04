@@ -1,4 +1,4 @@
 // Load the web api url from env file.
-const BaseWebApiUrl = import.meta.env.VITE_BASE_WEBAPI_URL;
+const BaseWebApiUrl = "https://localhost:7056";
 
 export { BaseWebApiUrl };
