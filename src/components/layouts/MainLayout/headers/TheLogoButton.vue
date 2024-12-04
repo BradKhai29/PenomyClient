@@ -10,11 +10,23 @@
 </template>
 
 <script>
+// Support constants for component.
+const ROOT_PATH = "/";
+const ANIME_ROOT_AREA_PATH = "/artwork/anime";
+
+// Init store.
+import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
+const watchingAreaStore = useWatchingAreaStore();
+
 export default {
     name: "TheLogoButton",
     computed: {
         homeLink() {
-            return "/";
+            if (watchingAreaStore.isComicArea) {
+                return ROOT_PATH;
+            }
+
+            return ANIME_ROOT_AREA_PATH;
         },
     },
 };

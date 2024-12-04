@@ -68,13 +68,21 @@
                 :name="`${sliderPrefix}_${index}`"
                 class="q-pa-none q-py-xs row"
             >
-                <div class="row col-grow q-gutter-md">
+                <div class="row col-grow q-px-xs">
                     <div
-                        v-for="artwork in currentArtworkList"
+                        v-for="(artwork, index) in currentArtworkList"
                         :key="artwork"
-                        class="recently-updated-card-wrapper col-md"
+                        class="recently-updated-card-wrapper col-md-3"
                     >
-                        <RecentlyUpdatedArtworkCard :artworkDetail="artwork" />
+                        <RecentlyUpdatedArtworkCard
+                            :artworkDetail="artwork"
+                            class="q-mb-md"
+                            :class="
+                                index != currentArtworkList.length - 1
+                                    ? 'q-mr-md'
+                                    : ''
+                            "
+                        />
                     </div>
                 </div>
             </q-tab-panel>

@@ -33,7 +33,7 @@
             <!-- Artwork image section -->
             <q-img
                 :src="thumbnailUrl"
-                class="recently-updated-artwork-image shadow-1 border-radius-sm"
+                class="artwork-card-image shadow-1 border-radius-sm"
             />
             <!-- Artwork image section -->
         </router-link>
@@ -50,36 +50,16 @@
                 <q-icon name="palette" size="xs" />
             </router-link>
 
-            <router-link
-                :to="creatorProfileLink"
-                class="underline-none text-light flex items-center q-my-xs"
-            >
-                <q-avatar size="sm">
-                    <img
-                        :src="
-                            creatorAvatarUrl ??
-                            'https://cdn.quasar.dev/img/avatar.png'
-                        "
-                    />
-                </q-avatar>
-                <span
-                    class="creator-name-text q-ml-sm text-subtitle1 creator-nickname text-dark-500"
-                >
-                    {{ creatorName ?? "Default" }}
-                </span>
-            </router-link>
-
-            <div class="recommended-chapters-section q-my-xs">
+            <div class="recommended-chapters-section q-mt-md q-mb-xs">
                 <router-link
-                    v-if="latestChapter.id != null"
-                    :to="chapterLink(latestChapter.id)"
+                    :to="chapterLink(lastViewedChapter.id)"
                     class="underline-none text-light flex items-center text-subtitle2"
                 >
                     <span class="text-weight-bold text-dark">
-                        Tập {{ latestChapter.uploadOrder }}
+                        Tập {{ lastViewedChapter.uploadOrder }}
                     </span>
                     <span class="text-dark-500 q-ml-auto">
-                        {{ publishedAt }}
+                        {{ lastViewedAt }}
                     </span>
                 </router-link>
             </div>
@@ -95,84 +75,41 @@
                     Xem ngay
                 </q-btn>
 
-                <q-btn dense flat unelevated @click="showDialog = true">
-                    <q-icon name="delete" />
-                </q-btn>
+                <ArtworkCardOtherActionButton
+                    :artworkId="artworkId"
+                    :isAuthor="isAuthor"
+                />
             </div>
         </div>
-
-        <!-- Remove popup -->
-        <q-dialog v-model="showDialog">
-            <q-card>
-                <q-card-section>
-                    <div class="text-subtitle1">{{ title }}</div>
-                </q-card-section>
-                <q-card-section class="row items-center q-py-none">
-                    <q-avatar
-                        icon="delete"
-                        color="primary"
-                        text-color="dark"
-                        size="lg"
-                    />
-                    <span class="q-ml-sm text-subtitle1"> Hủy theo dõi ? </span>
-                </q-card-section>
-
-                <q-card-actions align="right">
-                    <q-btn
-                        flat
-                        no-caps
-                        label="Đóng"
-                        color="dark"
-                        v-close-popup
-                        class="text-subtitle1"
-                        :disable="isProcessing"
-                    />
-                    <q-btn
-                        flat
-                        no-caps
-                        label="Xác nhận"
-                        color="primary"
-                        class="text-subtitle1 text-weight-bold"
-                        @click="unfollowArtwork"
-                        :disable="isProcessing"
-                    />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-        <!-- Remove popup -->
     </div>
 </template>
 
 <script>
 // Import dependencies section.
 import { Art5RouteNames } from "src/router/artwork/Artwork5PageRoute";
-import { CreatorProfile1RouteNames } from "src/router/creatorProfile/CreatorProfile1PageRoute";
-import { FollowedArtworkResponseItem } from "src/api.models/artwork/common/FollowedArtworkResponseItem";
-import { FollowArtworkApiHandler } from "src/api.handlers/artwork/artwork3Page/FollowArtworkApiHandler";
-import { useAuthStore } from "src/stores/common/AuthStore";
-import { NotificationHelper } from "src/helpers/NotificationHelper";
 
-// Init the store for later operation.
-const authStore = useAuthStore();
+// Import components section.
+import ArtworkCardOtherActionButton from "src/components/common/artwork/buttons/ArtworkCardOtherActionButton.vue";
+import { ArtworkDetailResponseItem } from "src/api.models/creatorProfile/ArtworkDetailResponseItem";
 
 export default {
-    name: "FollowedArtworkCard",
-    emits: ["removeItem"],
+    name: "ViewHistoryArtworkCard",
+    components: {
+        ArtworkCardOtherActionButton,
+    },
     props: {
+        isAuthor: {
+            type: Boolean,
+            default: false,
+        },
         isComic: {
             type: Boolean,
             default: true,
         },
         artworkDetail: {
-            type: FollowedArtworkResponseItem,
+            type: ArtworkDetailResponseItem,
             required: true,
         },
-    },
-    data() {
-        return {
-            isProcessing: false,
-            showDialog: false,
-        };
     },
     computed: {
         artworkId() {
@@ -200,24 +137,10 @@ export default {
         originImageUrl() {
             return this.artworkDetail.originImageUrl;
         },
-        creatorProfileLink() {
-            return {
-                name: CreatorProfile1RouteNames.profileDetail,
-                params: {
-                    creatorId: this.artworkDetail.creatorId,
-                },
-            };
-        },
-        creatorName() {
-            return this.artworkDetail.creatorName;
-        },
-        creatorAvatarUrl() {
-            return this.artworkDetail.creatorAvatarUrl;
-        },
-        latestChapter() {
+        lastViewedChapter() {
             return this.artworkDetail.chapter;
         },
-        publishedAt() {
+        lastViewedAt() {
             return this.artworkDetail.chapter.getShortPublishedAt();
         },
     },
@@ -244,33 +167,12 @@ export default {
                 },
             };
         },
-        async unfollowArtwork() {
-            this.isProcessing = true;
-
-            const removeResult =
-                await FollowArtworkApiHandler.removeFollowAsync(
-                    this.artworkId,
-                    authStore.bearerAccessToken()
-                );
-
-            // Notify the message for the user.
-            if (removeResult) {
-                NotificationHelper.notifySuccess("Hủy theo dõi thành công");
-
-                // Emit removeItem event.
-                this.$emit("removeItem", this.artworkId);
-            } else {
-                NotificationHelper.notifyError("Đã có lỗi xảy ra");
-            }
-
-            this.isProcessing = true;
-        },
     },
 };
 </script>
 
 <style scoped>
-.recently-updated-artwork-image {
+.artwork-card-image {
     --min-width: 140px;
     --ratio: 0.788;
     --height: calc(var(--min-width) / var(--ratio));
@@ -302,13 +204,6 @@ export default {
 
 .artwork-title {
     max-width: 136px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.creator-name-text {
-    max-width: 120px !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

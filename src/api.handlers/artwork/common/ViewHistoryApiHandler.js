@@ -130,8 +130,6 @@ async function addGuestViewHistoryAsync(artworkId, chapterId, guestId) {
  */
 function addViewHistoryAsync(artworkId, chapterId, guestId) {
     if (authStore.isAuth) {
-        console.log("Run here man");
-
         return addUserViewHistoryAsync(artworkId, chapterId);
     }
 

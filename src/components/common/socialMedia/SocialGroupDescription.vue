@@ -48,11 +48,11 @@
                             v-if="(!hasJoinGroup && !hasSendJoinRequest)" color="primary">Tham
                             gia</q-btn>
 
-                        <q-btn :loading="isLoadingJoinBtn" v-if="hasSendJoinRequest" color="grey">Hủy
+                        <q-btn :loading="isLoadingCancelBtn" v-if="hasSendJoinRequest" color="grey"
+                            @click="CancelJoinRequestAsync">Hủy
                             yêu cầu</q-btn>
 
-                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary"
-                            label="Đã tham gia" />
+                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary" label="Đã tham gia" />
                     </div>
 
                     <q-btn v-if="groupInfo.isManager" :to="editUrl" color="primary" icon="settings"
@@ -129,6 +129,7 @@
 import { ref, defineProps, watch } from 'vue';
 import { useUserProfileStore } from 'src/stores/common/UserProfileStore';
 import { useRoute } from "vue-router";
+import { useAuthStore } from 'src/stores/common/AuthStore';
 import SocialCoverImageInput from 'src/components/common/socialMedia/SocialCoverImageInput.vue';
 import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -137,13 +138,18 @@ import { defineEmits } from 'vue';
 
 const isLoadingImageBtn = ref(false);
 const isLoadingJoinBtn = ref(false);
+const isLoadingCancelBtn = ref(false);
 const hasSendJoinRequest = ref(false);
 
 const route = useRoute();
 const profileStore = useUserProfileStore();
 const userProfileStore = useUserProfileStore();
+const authStore = useAuthStore();
+
+// Define apis
 const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
 const requestJoinGroupApi = JoinRequestApiHandler.JoinGroupAsync;
+const cancelRequestJoinGroupApi = JoinRequestApiHandler.CancelJoinRequestAsync;
 const JoinGroupApi = JoinRequestApiHandler.AcceptJoinRequestAsync;
 const emit = defineEmits(['updateCoverImage']);
 
@@ -230,6 +236,10 @@ function onCanelImage() {
 }
 
 async function JoinGroupAsync() {
+    console.log(await authStore.isAuthAsync());
+    if (!await authStore.isAuthAsync()) {
+        route.push("auth/login");
+    }
     if (!props.groupInfo.isPublic) {
 
         isLoadingJoinBtn.value = true;
@@ -259,6 +269,22 @@ async function JoinGroupAsync() {
         }
         isLoadingJoinBtn.value = false
     }
+}
+
+
+async function CancelJoinRequestAsync() {
+
+    isLoadingCancelBtn.value = true;
+    const result = await cancelRequestJoinGroupApi(props.groupInfo.id);
+    if (result.responseBody.isSuccess) {
+        NotificationHelper.notifySuccess("Đã hủy yêu cầu");
+        hasSendJoinRequest.value = false
+    } else {
+        NotificationHelper.notifyError(
+            result.message ?? "Có lỗi xảy ra"
+        );
+    }
+    isLoadingCancelBtn.value = false
 }
 </script>
 

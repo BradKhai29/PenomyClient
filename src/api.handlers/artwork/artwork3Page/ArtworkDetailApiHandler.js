@@ -32,7 +32,9 @@ async function getArtworkDetailByIdAsync(artworkId, accessToken) {
 
         const data = response.data.body;
 
-        return ArtworkDetailResponse.mapFrom(data);
+        const mapResult = ArtworkDetailResponse.mapFrom(data);
+
+        return mapResult;
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
         console.log(axiosError);

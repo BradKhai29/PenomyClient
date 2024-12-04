@@ -1,29 +1,37 @@
 <template>
     <section
-        id="chapter-navigation"
-        class="q-py-md bg-light-500 column items-center"
+        id="chapter-navigation-wrapper"
+        class="q-py-md row justify-center items-center relative-position"
     >
-        <div class="chapter-navigation text-dark">
-            <div
-                class="col flex items-center text-dark text-subtitle1 text-weight-bold"
+        <div
+            class="chapter-navigation bg-dark-500 flex items-center text-light text-subtitle1 text-weight-bold"
+        >
+            <q-btn
+                no-caps
+                dense
+                padding="none"
+                :to="`/artwork/comic/${comicId}`"
+                class="q-ml-sm text-decoration-none comic-title text-subtitle1 text-weight-bold"
             >
-                <router-link
-                    :to="`/artwork/comic/${comicId}`"
-                    class="text-decoration-none text-dark comic-title"
-                >
-                    {{ comicTitle }}
-                </router-link>
-                <span class="text-weight-bold">
-                    <q-icon name="chevron_right" size="sm" />
-                </span>
-                <span>{{ chapterTitle }}</span>
-            </div>
+                {{ comicTitle }}
+            </q-btn>
+            <span class="text-weight-bold">
+                <q-icon name="chevron_right" size="sm" />
+            </span>
+            <span>{{ chapterTitle }}</span>
         </div>
+
+        <ChapterListMenu class="col-12" :chapterList="chapterList" />
     </section>
 </template>
 
 <script>
+import ChapterListMenu from "./ChapterListMenu.vue";
+
 export default {
+    components: {
+        ChapterListMenu,
+    },
     props: {
         comicId: {
             required: true,
@@ -37,6 +45,10 @@ export default {
         },
         chapterTitle: {
             type: String,
+            required: true,
+        },
+        chapterList: {
+            type: Array,
             required: true,
         },
     },

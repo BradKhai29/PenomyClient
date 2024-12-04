@@ -128,7 +128,9 @@ export default {
         },
     },
     mounted() {
-        this.getCurrentUserStarRateAsync();
+        if (this.isAuth) {
+            this.getCurrentUserStarRateAsync();
+        }
     },
     methods: {
         async getCurrentUserStarRateAsync() {

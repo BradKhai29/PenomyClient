@@ -4,14 +4,16 @@
             :comicId="comicId"
             :comicTitle="chapterDetail.comicTitle"
             :chapterId="chapterId"
-            :chapterTitle="chapterDetail.title"
-            :chapterOrder="chapterDetail.uploadOrder"
+            :chapterDetail="chapterDetail"
+            :chapterList="loadedChapterList"
+            :isProcessing="isProcessing"
+            @changeChapter="handleChangeChapter"
         />
 
         <section id="chapter-images" class="flex column items-center">
             <img
-                :id="`anh_${imageItem.uploadOrder + 1}`"
                 v-for="imageItem in chapterDetail.images"
+                :id="`anh_${imageItem.uploadOrder + 1}`"
                 :key="imageItem"
                 :src="imageItem.storageUrl"
                 class="preview-image-item"
@@ -21,12 +23,40 @@
 
         <ChapterButtonGroup :totalFavorites="1000" />
 
-        <ComicChapterNavigation
-            :comicId="comicId"
-            :comicTitle="chapterDetail.comicTitle"
-            :chapterId="chapterId"
-            :chapterTitle="chapterDetail.title"
-        />
+        <section
+            id="chapter-navigation-wrapper"
+            class="q-py-md row justify-center items-center relative-position"
+        >
+            <div
+                class="chapter-navigation flex items-center text-light text-subtitle1"
+            >
+                <q-btn
+                    no-caps
+                    dense
+                    padding="none"
+                    unelevated
+                    flat
+                    :to="`/artwork/comic/${comicId}`"
+                    class="q-ml-sm comic-title text-subtitle1"
+                >
+                    {{ chapterDetail.comicTitle }}
+                </q-btn>
+                <span>
+                    <q-icon name="chevron_right" size="sm" />
+                </span>
+                <span>{{ chapterDetail.title }}</span>
+            </div>
+
+            <ChapterListMenu
+                class="col-12"
+                :chapterList="loadedChapterList"
+                @goToChapter="handleChangeChapter"
+            />
+
+            <div id="comment-section" class="text-light" ref="comment-section">
+                Comment section
+            </div>
+        </section>
     </q-page>
 </template>
 
@@ -37,24 +67,28 @@ import { Artwork5ApiHandler } from "src/api.handlers/artwork/artwork5Page/Artwor
 import { ComicChapterDetailResponseDto } from "src/api.models/artwork/artwork5Page/ComicChapterDetailResponseDto";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { ViewHistoryApiHandler } from "src/api.handlers/artwork/common/ViewHistoryApiHandler";
-import { useGuestStore } from "src/stores/common/GuestStore";
-import { useAuthStore } from "src/stores/common/AuthStore";
+import { ItemDictionary } from "src/api.models/common/ItemDictionary";
+import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
 
 // Import component section.
 import TheChapterHeaderBar from "src/components/pages/artwork/artwork5Page/TheChapterHeaderBar.vue";
 import ChapterButtonGroup from "src/components/pages/artwork/artwork5Page/ChapterButtonGroup.vue";
-import ComicChapterNavigation from "src/components/pages/artwork/artwork5Page/ComicChapterNavigation.vue";
+import ChapterListMenu from "src/components/pages/artwork/artwork5Page/ChapterListMenu.vue";
 
 // Init store for later operation.
-const guestStore = useGuestStore();
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useGuestStore } from "src/stores/common/GuestStore";
+
 const authStore = useAuthStore();
+const guestStore = useGuestStore();
+const chapterDictionary = ItemDictionary.New();
 
 export default {
     name: "Artwork5Page",
     components: {
         TheChapterHeaderBar,
         ChapterButtonGroup,
-        ComicChapterNavigation,
+        ChapterListMenu,
     },
     data() {
         return {
@@ -78,12 +112,16 @@ export default {
              * @type {ComicChapterDetailResponseDto} The type of this property.
              */
             chapterDetail: null,
+            // Loading chapter list section
+            /**
+             * @type {ArtworkChapterResponse[]} Type of this data:property.
+             */
+            loadedChapterList: [],
+            isProcessing: true,
         };
     },
     beforeMount() {
-        // Get the comicId and chapterId from route.
-        this.comicId = this.$route.params.comicId;
-        this.chapterId = this.$route.params.chapterId;
+        this.loadComicAndChapterIdFromRoute();
 
         this.isValidId =
             NumberHelper.isNumber(this.comicId) &&
@@ -101,27 +139,25 @@ export default {
             return;
         }
 
+        // Asynchronously load the chapter list.
+        this.loadChapterListAsync();
+
         // Asynchronously save the view history.
-        this.saveViewHistory();
+        this.saveViewHistoryAsync();
 
-        const result = await Artwork5ApiHandler.getChapterDetailByIdAsync(
-            this.comicId,
-            this.chapterId
-        );
+        // Load the detail of current chapter.
+        await this.loadChapterDetailAsync();
 
+        // Turn off the flag when loading success.
         this.isLoading = false;
-
-        if (!result.isFound) {
-            NotificationHelper.notifyError(result.errorMessage);
-
-            // Redirect back to homepage when not found.
-            this.$router.push("/");
-        } else {
-            this.chapterDetail = result;
-        }
     },
     methods: {
-        async saveViewHistory() {
+        loadComicAndChapterIdFromRoute() {
+            // Get the comicId and chapterId from route.
+            this.comicId = this.$route.params.comicId;
+            this.chapterId = this.$route.params.chapterId;
+        },
+        async saveViewHistoryAsync() {
             const isAuth = await authStore.isAuthAsync();
 
             if (isAuth) {
@@ -131,14 +167,71 @@ export default {
                     guestStore.currentGuestId
                 );
             } else {
-                guestStore.waitForSetUp().then(() => {
-                    ViewHistoryApiHandler.addViewHistoryAsync(
-                        this.comicId,
-                        this.chapterId,
-                        guestStore.currentGuestId
-                    );
-                });
+                await guestStore.waitForSetUp();
+
+                ViewHistoryApiHandler.addViewHistoryAsync(
+                    this.comicId,
+                    this.chapterId,
+                    guestStore.currentGuestId
+                );
             }
+        },
+        async loadChapterDetailAsync() {
+            const result = await Artwork5ApiHandler.getChapterDetailByIdAsync(
+                this.comicId,
+                this.chapterId
+            );
+
+            if (!result.isFound) {
+                NotificationHelper.notifyError(result.errorMessage);
+
+                // Redirect back to homepage when not found.
+                this.$router.push("/");
+            } else {
+                this.chapterDetail = result;
+            }
+        },
+        async loadChapterListAsync() {
+            const chapterList =
+                await Artwork5ApiHandler.getChapterListByComicIdAsync(
+                    this.comicId
+                );
+
+            // If the return chapter list is null, then comicId is invalid.
+            if (!chapterList) {
+                return;
+            }
+
+            // Set the list of loaded chapter list to display.
+            this.loadedChapterList.push(...chapterList);
+
+            this.isProcessing = false;
+        },
+        async handleChangeChapter(chapterLink) {
+            await this.$router.push(chapterLink);
+
+            this.loadComicAndChapterIdFromRoute();
+
+            // Asynchronously save the view history.
+            this.saveViewHistoryAsync();
+
+            // Turn on the isProcessing flag to prevent
+            // user interacting while calling api.
+            this.isProcessing = true;
+
+            const chapterItem = chapterDictionary.getEntry(this.chapterId);
+
+            if (chapterItem) {
+                this.chapterDetail = chapterItem.value;
+            } else {
+                await this.loadChapterDetailAsync();
+                chapterDictionary.addEntry(
+                    this.chapterId,
+                    this.chapterDetail.clone()
+                );
+            }
+
+            this.isProcessing = false;
         },
     },
 };

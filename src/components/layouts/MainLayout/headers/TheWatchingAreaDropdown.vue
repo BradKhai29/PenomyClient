@@ -2,7 +2,7 @@
     <div>
         <q-btn color="dark" no-caps dense class="bg-dark area-button">
             <div class="row items-center no-wrap">
-                <q-icon left :name="selectedArea.icon" />
+                <q-icon :name="selectedArea.icon" />
                 <div class="text-center" style="width: 80px">
                     {{ selectedArea.name }}
                 </div>
@@ -16,17 +16,27 @@
             >
                 <q-list>
                     <q-item
-                        v-for="watchingArea in watchingAreasRef"
-                        :key="watchingArea.name"
-                        :active="watchingArea.isSelected"
+                        :active="isComicArea"
                         active-class="bg-dark text-light"
                         v-close-popup
                         clickable
-                        @click="goToArea(watchingArea.routePath)"
+                        @click="setComicArea"
                     >
                         <div class="flex items-center">
-                            <q-icon :name="watchingArea.icon" size="sm" />
-                            <span class="q-ml-md">{{ watchingArea.name }}</span>
+                            <q-icon :name="comicArea.icon" size="sm" />
+                            <span class="q-ml-sm">{{ comicArea.name }}</span>
+                        </div>
+                    </q-item>
+                    <q-item
+                        :active="isAnimeArea"
+                        active-class="bg-dark text-light"
+                        v-close-popup
+                        clickable
+                        @click="setAnimeArea"
+                    >
+                        <div class="flex items-center">
+                            <q-icon :name="animeArea.icon" size="sm" />
+                            <span class="q-ml-sm">{{ animeArea.name }}</span>
                         </div>
                     </q-item>
                 </q-list>
@@ -35,52 +45,104 @@
     </div>
 </template>
 
-<script setup>
-import { onMounted, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+<script>
+// Support constants for component.
+const ROOT_PATH = "/";
+const COMIC_ROOT_AREA_PATH = "/artwork/comic";
+const ANIME_ROOT_AREA_PATH = "/artwork/anime";
 
-const comicArea = {
-    name: "Truyện tranh",
-    icon: "palette",
-    isSelected: true,
-    routePath: ["/artwork/comic"],
-};
+// Init store for later operation.
+import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
+const watchingAreaStore = useWatchingAreaStore();
 
-const animeArea = {
-    name: "Hoạt hình",
-    icon: "videocam",
-    isSelected: false,
-    routePath: ["/artwork/anime"],
-};
+export default {
+    name: "TheWatchingAreaDropdown",
+    data() {
+        return {
+            showMenu: false,
+        };
+    },
+    computed: {
+        comicArea() {
+            return {
+                name: "Truyện tranh",
+                icon: "palette",
+                isSelected: true,
+                routePath: "/artwork/comic",
+            };
+        },
+        animeArea() {
+            return {
+                name: "Hoạt hình",
+                icon: "videocam",
+                isSelected: false,
+                routePath: "/artwork/anime",
+            };
+        },
+        selectedArea() {
+            if (this.isComicArea) {
+                return this.comicArea;
+            }
 
-const showMenu = ref(false);
-const watchingAreas = [comicArea, animeArea];
-const watchingAreasRef = ref(watchingAreas);
-const selectedArea = ref(comicArea);
+            return this.animeArea;
+        },
+        isComicArea() {
+            return watchingAreaStore.isComicArea;
+        },
+        /**
+         * @returns {String} The value of the current path that visited by the user.
+         */
+        currentPath() {
+            return this.$route.path;
+        },
+        isAnimeArea() {
+            return watchingAreaStore.isAnimeArea;
+        },
+    },
+    methods: {
+        setComicArea() {
+            watchingAreaStore.setComicArea();
+            this.showMenu = false;
 
-const route = useRoute();
-const router = useRouter();
+            // Redirect user to homepage of the comic area.
+            this.$router.push(this.comicArea.routePath);
+        },
+        setAnimeArea() {
+            watchingAreaStore.setAnimeArea();
+            this.showMenu = false;
 
-watch(
-    () => route.path,
-    () => {
-        if (route.path == comicArea.routePath) {
-            comicArea.isSelected = true;
-            animeArea.isSelected = false;
-
-            selectedArea.value = comicArea;
-        } else {
-            comicArea.isSelected = false;
-            animeArea.isSelected = true;
-
-            selectedArea.value = animeArea;
+            // Redirect user to homepage of the anime area.
+            this.$router.push(this.animeArea.routePath);
+        },
+    },
+    beforeMount() {
+        // Check the current path to specify the watching area.
+        if (this.currentPath.includes(COMIC_ROOT_AREA_PATH)) {
+            watchingAreaStore.setComicArea();
+            return;
         }
-    }
-);
 
-function goToArea(areaRoutePath) {
-    router.push(areaRoutePath[0]);
-}
+        if (this.currentPath.includes(ANIME_ROOT_AREA_PATH)) {
+            watchingAreaStore.setAnimeArea();
+        }
+    },
+    watch: {
+        /**
+         * Tracking the change in the path to specify the watching area.
+         */
+        currentPath(newValue, _) {
+            if (newValue.includes(COMIC_ROOT_AREA_PATH)) {
+                watchingAreaStore.setComicArea();
+
+                return;
+            }
+
+            if (newValue.includes(ANIME_ROOT_AREA_PATH)) {
+                watchingAreaStore.setAnimeArea();
+            }
+        },
+    },
+};
 </script>
 
 <style scoped>

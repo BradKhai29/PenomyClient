@@ -15,8 +15,8 @@
 
         <!-- actions -->
         <div class="q-ml-auto">
-            <q-btn v-if="userProfileStore.currentUserId !== memberInfo.userId" color="primary" class="q-mr-sm" unelevated no-caps no-icon-animation
-                label="Thêm bạn bè" />
+            <q-btn v-if="userProfileStore.currentUserId !== memberInfo.userId" color="primary" class="q-mr-sm"
+                unelevated no-caps no-icon-animation label="Thêm bạn bè" />
             <q-btn-dropdown v-if="isGroupManager" color="grey-5" unelevated no-caps no-icon-animation
                 dropdown-icon="more_horiz">
                 <q-list>
@@ -96,6 +96,10 @@ async function removeMember() {
         props.memberInfo.userId
     )
     if (result.isSuccess) {
+        if (result.responseBody.statusCode == 4) {
+            NotificationHelper.notifyError("Group must have at least one admin!");
+            return;
+        }
         NotificationHelper.notifySuccess("Xóa thành viên thành công");
         emit('removeMember', props.memberInfo.userId, props.memberInfo.isManager);
     }
