@@ -10,7 +10,11 @@
                     </q-avatar>
                     <div class="q-ml-md">
                         <div class="post-username">{{ post.createdBy }}</div>
-                        <div class="post-date">{{ post.createdAt }}</div>
+                        <div class="post-meta row items-center">
+                            <div class="post-date">{{ post.createdAt }}</div>
+                            <q-icon :name="getPublicLevelIcon(post.publicLevel)" color="#120E36" size="sm"
+                                class="q-ml-xs" title="Visibility Level" />
+                        </div>
                     </div>
                 </q-card-section>
 
@@ -20,13 +24,10 @@
                 </q-card-section>
 
                 <!-- Attached Media -->
-                <!-- Attached Media -->
-                <!-- Attached Media -->
                 <q-card-section v-if="post.attachedMedias.length > 0">
                     <div class="media-grid">
                         <div v-for="media in post.attachedMedias" :key="media.fileName" class="media-item">
                             <img :src="media.storageUrl" class="media-image" :alt="media.fileName" />
-
                         </div>
                     </div>
                 </q-card-section>
@@ -50,6 +51,7 @@
         </div>
     </q-page>
 </template>
+
 <script>
 import { onMounted, ref } from 'vue';
 import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHandler';
@@ -64,10 +66,23 @@ export default {
         const fetchPosts = async () => {
             try {
                 const response = await GetUserPostHandler.GetCreatedPosts();
-                posts.value = response.userPosts; // Updated response handling
-                console.log(posts.value); // Log fetched posts
+                posts.value = response.userPosts;
+                console.log(posts.value);
             } catch (error) {
                 console.error('Error fetching posts:', error);
+            }
+        };
+
+        const getPublicLevelIcon = (level) => {
+            switch (level) {
+                case 1:
+                    return 'public'; // Public
+                case 2:
+                    return 'group'; // Restricted
+                case 3:
+                    return 'lock'; // Private
+                default:
+                    return 'help'; // Unknown
             }
         };
 
@@ -75,6 +90,7 @@ export default {
 
         return {
             posts,
+            getPublicLevelIcon,
         };
     },
     components: {
@@ -84,19 +100,17 @@ export default {
 </script>
 
 <style scoped>
+/* General Container Styles */
 .post-container {
     max-width: 800px;
     margin: 0 auto;
 }
 
+/* Card Styles */
 .post-card {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.post-header {
-    border-bottom: 1px solid #eee;
 }
 
 .post-username {
@@ -104,57 +118,58 @@ export default {
     font-weight: bold;
 }
 
-.post-date {
+.post-meta {
     font-size: 12px;
     color: gray;
+    display: flex;
+    align-items: center;
+    /* Align date and icon */
+}
+
+.post-date {
+    margin-right: 4px;
+    color: #666;
+    /* Optional: Subtle color for the date */
 }
 
 .post-content {
-    padding: 16px;
     font-size: 14px;
     color: #333;
 }
 
-.media-preview {
-    margin: 5px;
-    width: 100px;
-    height: 100px;
-    overflow: hidden;
-    border-radius: 8px;
-}
-
-
-.q-btn span {
-    margin-left: 8px;
-    font-size: 14px;
-    color: gray;
-}
-
+/* Media Grid Styles */
 .media-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    /* Flexible grid with up to 2 items per row */
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 items per row */
     gap: 16px;
     justify-content: center;
     align-items: stretch;
-    /* Ensures all grid items stretch to the same height */
+    /* Ensures items have consistent height */
 }
 
 .media-item {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    position: relative;
     height: 350px;
-    /* Set a uniform height for all items */
+    /* Uniform height */
 }
 
 .media-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Maintains aspect ratio and fills the area */
+    /* Maintain aspect ratio */
     border-radius: 8px;
+}
+
+/* Button Styles */
+.q-btn span {
+    margin-left: 8px;
+    font-size: 14px;
+    color: gray;
 }
 </style>
