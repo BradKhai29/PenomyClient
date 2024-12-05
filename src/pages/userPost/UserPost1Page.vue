@@ -29,24 +29,22 @@
                 </q-input>
             </q-card-section>
 
-            <!-- Image Upload Section -->
-            <!-- Image Upload Section -->
             <q-card-section>
-                <div class="image-upload-container row wrap justify-center items-center">
+                <label for="chapterImages" class="image-upload-container row wrap justify-center items-center">
                     <!-- Display uploaded images in a grid -->
                     <q-col v-for="imageItem in displayImageItemList" :key="imageItem.id" cols="6"
                         class="uploaded-image-item">
                         <img :src="imageItem.src" class="preview-image-item" :alt="imageItem.imageName" />
                     </q-col>
 
-                    <!-- Upload button -->
-                    <label v-if="displayImageItemList.length < 4" for="chapterImages" class="cursor-pointer">
-                        <q-icon name="add_photo_alternate" size="48px" color="grey-5" class="q-mb-sm" />
-                    </label>
-                    <input type="file" id="chapterImages" name="chapterImages" accept="image/png, image/jpeg, image/jpg"
-                        multiple hidden @change="onInputImage" ref="chapterImageInput" />
-                </div>
+                    <!-- Upload Icon (displayed when fewer than 4 images are uploaded) -->
+                    <q-icon v-if="displayImageItemList.length < 4" name="add_photo_alternate" size="48px" color="grey-5"
+                        class="q-mb-sm" />
+                </label>
+                <input type="file" id="chapterImages" name="chapterImages" accept="image/png, image/jpeg, image/jpg"
+                    multiple hidden @change="onInputImage" ref="chapterImageInput" />
             </q-card-section>
+
 
 
             <!-- Submit Button -->
