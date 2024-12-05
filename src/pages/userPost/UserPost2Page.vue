@@ -4,18 +4,37 @@
             <!-- Loop through posts -->
             <q-card v-for="post in posts" :key="post.id" class="q-mb-md post-card">
                 <!-- Post Header -->
-                <q-card-section class="row items-center">
-                    <q-avatar>
-                        <img src="https://cdn.quasar.dev/img/avatar.png" alt="User Avatar" />
-                    </q-avatar>
-                    <div class="q-ml-md">
-                        <div class="post-username">{{ post.createdBy }}</div>
-                        <div class="post-meta row items-center">
-                            <div class="post-date">{{ post.createdAt }}</div>
-                            <q-icon :name="getPublicLevelIcon(post.publicLevel)" color="#120E36" size="sm"
-                                class="q-ml-xs" title="Visibility Level" />
+                <q-card-section class="row items-center justify-between">
+                    <!-- Left: Avatar and User Info -->
+                    <div class="row items-center">
+                        <q-avatar>
+                            <img src="https://cdn.quasar.dev/img/avatar.png" alt="User Avatar" />
+                        </q-avatar>
+                        <div class="q-ml-md">
+                            <div class="post-username">{{ post.createdBy }}</div>
+                            <div class="post-meta row items-center">
+                                <div class="post-date">{{ post.createdAt }}</div>
+                                <q-icon :name="getPublicLevelIcon(post.publicLevel)" color="#120E36" size="sm"
+                                    class="q-ml-xs" title="Visibility Level" />
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Right: 3-Dot Menu -->
+                    <q-btn flat dense icon="more_vert" color="grey-8" class="q-ml-auto">
+                        <q-menu>
+                            <q-list>
+                                <q-item clickable @click="confirmRemovePost(post)">
+                                    <q-item-section avatar>
+                                        <q-icon name="delete" color="#120E36" />
+                                    </q-item-section>
+                                    <q-item-section>
+                                        <span>Remove Post</span>
+                                    </q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
                 </q-card-section>
 
                 <!-- Post Content -->
@@ -46,9 +65,12 @@
     </q-page>
 </template>
 
+
 <script>
+import { Notify, Dialog } from 'quasar';
 import { onMounted, ref } from 'vue';
 import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHandler';
+import RemoveUserPostHandler from 'src/api.handlers/UserPostHandler/RemoveUserPostHandler';
 
 export default {
     setup() {
@@ -76,12 +98,49 @@ export default {
                     return 'help'; // Unknown
             }
         };
+        const confirmRemovePost = (post) => {
+            Dialog.create({
+                title: 'Confirm',
+                message: `Are you sure you want to delete this post?`,
+                ok: {
+                    label: 'Yes',
+                    color: 'negative',
+                },
+                cancel: {
+                    label: 'No',
+                },
+            }).onOk(async () => {
+                await removePost(post.id);
+            });
+        };
+
+        const removePost = async (postId) => {
+            try {
+                const response = await RemoveUserPostHandler.RemoveUserPostAsync(postId);
+                if (response) {
+                    posts.value = posts.value.filter((post) => post.id !== postId);
+                    Notify.create({
+                        type: 'positive',
+                        message: 'Post removed successfully.',
+                    });
+                } else {
+                    throw new Error('Failed to remove post');
+                }
+            } catch (error) {
+                console.error("Error deleting post:", error);
+                Notify.create({
+                    type: 'negative',
+                    message: 'Failed to remove post. Please try again later.',
+                });
+            }
+        };
 
         onMounted(fetchPosts);
 
         return {
             posts,
             getPublicLevelIcon,
+            confirmRemovePost,
         };
     },
 };
