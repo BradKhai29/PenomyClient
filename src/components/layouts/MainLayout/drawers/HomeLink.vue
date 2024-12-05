@@ -37,9 +37,9 @@ export default {
             const currentPath = String(this.$route.path);
 
             return (
-                currentPath.includes(ROOT_PATH) ||
-                currentPath.includes(COMIC_ROOT_AREA_PATH) ||
-                currentPath.includes(ANIME_ROOT_AREA_PATH)
+                currentPath == ROOT_PATH ||
+                currentPath == COMIC_ROOT_AREA_PATH ||
+                currentPath == ANIME_ROOT_AREA_PATH
             );
         },
     },

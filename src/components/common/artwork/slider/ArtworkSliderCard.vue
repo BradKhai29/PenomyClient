@@ -66,7 +66,7 @@
                         {{ category }}
                     </span>
                 </div>
-                <p class="text-subtitle2 text-light q-mb-none">
+                <p class="text-subtitle2 text-light q-mb-none paragraph-line-4">
                     {{ introduction }}
                 </p>
                 <div class="flex items-center q-mt-auto">

@@ -131,8 +131,6 @@ export default {
          * Tracking the change in the path to specify the watching area.
          */
         currentPath(newValue, _) {
-            console.log(newValue);
-
             if (newValue.includes(COMIC_ROOT_AREA_PATH)) {
                 watchingAreaStore.setComicArea();
 

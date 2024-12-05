@@ -13,7 +13,8 @@
                     <span class="q-ml-xs text-subtitle1">Đề xuất</span>
                 </div>
                 <div id="tab-navigation-items" class="flex items-center">
-                    <q-btn
+                    <!-- Temporarily disable this series tab button -->
+                    <!-- <q-btn
                         square
                         dense
                         flat
@@ -23,7 +24,7 @@
                         @click="selectedTab = seriesTab"
                     >
                         Cùng Series
-                    </q-btn>
+                    </q-btn> -->
                     <q-btn
                         square
                         dense
@@ -57,12 +58,16 @@
                         </div>
                     </q-tab-panel>
 
-                    <q-tab-panel :name="recommendedTab" class="q-pa-none row">
+                    <q-tab-panel
+                        v-if="!isLoading"
+                        :name="recommendedTab"
+                        class="q-pa-none row"
+                    >
                         <RecommendedArtworkItemCard
-                            v-for="i in 3"
-                            :key="i"
-                            :artworkId="1"
-                            :itemIndex="i"
+                            v-for="(artwork, index) in recommendedArtworks"
+                            :key="artwork.id"
+                            :artworkDetail="artwork"
+                            :itemIndex="index + 1"
                         />
                     </q-tab-panel>
                 </q-tab-panels>
@@ -72,6 +77,10 @@
 </template>
 
 <script>
+// Import dependencies section.
+import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
+import { Art3RecommendedArtworkResponseItem } from "src/api.models/artwork/artwork3Page/Art3RecommendedArtworkResponseItem";
+
 // Import components section.
 import RecommendedArtworkItemCard from "./RecommendedArtworkItemCard.vue";
 
@@ -95,10 +104,39 @@ export default {
     },
     data() {
         return {
-            seriesTab: "series",
-            recommendedTab: "recommended",
-            selectedTab: "series",
+            selectedTab: null,
+            isLoading: true,
+            /**
+             * @type {Art3RecommendedArtworkResponseItem[]} The type of this list.
+             */
+            recommendedArtworks: [],
         };
+    },
+    computed: {
+        seriesTab() {
+            return "series";
+        },
+        recommendedTab() {
+            return "recommended";
+        },
+    },
+    beforeMount() {
+        this.selectedTab = this.recommendedTab;
+    },
+    async mounted() {
+        const recommendArtworkList =
+            await artworkDetailApiHandler.getRecommendedArtworksAsync(
+                this.artworkId
+            );
+
+        if (recommendArtworkList) {
+            console.log("Success");
+            this.recommendedArtworks.push(...recommendArtworkList);
+        } else {
+            console.log("Something wrong.");
+        }
+
+        this.isLoading = false;
     },
 };
 </script>

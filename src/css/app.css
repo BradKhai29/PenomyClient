@@ -78,6 +78,10 @@
     background-color: var(--dark) !important;
 }
 
+.bg-dark-500 {
+    background-color: var(--dark-500) !important;
+}
+
 .bg-dark-900 {
     background-color: var(--dark-900) !important;
 }

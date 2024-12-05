@@ -63,7 +63,7 @@
                     />
                 </q-avatar>
                 <span
-                    class="q-ml-sm text-subtitle1 creator-nickname text-dark-500"
+                    class="creator-name-text q-ml-sm text-subtitle1 creator-nickname text-dark-500"
                 >
                     {{ creatorName ?? "Default" }}
                 </span>
@@ -317,6 +317,13 @@ export default {
 
 .artwork-title {
     max-width: 136px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.creator-name-text {
+    max-width: 120px !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

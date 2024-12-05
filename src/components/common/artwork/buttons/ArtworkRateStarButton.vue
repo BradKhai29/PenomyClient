@@ -127,8 +127,10 @@ export default {
             return !this.hasChangedInRateValue;
         },
     },
-    mounted() {
-        this.getCurrentUserStarRateAsync();
+    async mounted() {
+        if (this.isAuth) {
+            this.getCurrentUserStarRateAsync();
+        }
     },
     methods: {
         async getCurrentUserStarRateAsync() {

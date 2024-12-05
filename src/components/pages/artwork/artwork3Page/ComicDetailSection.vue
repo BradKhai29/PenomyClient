@@ -95,6 +95,8 @@
                     </div>
                     <div id="action-button-group" class="q-gutter-sm q-mt-auto">
                         <q-btn
+                            :to="lastReadChapterLink"
+                            id="view-last-read-button"
                             class="bg-dark text-light text-subtitle1 text-weight-bold"
                             no-caps
                             rounded
@@ -103,6 +105,8 @@
                             <span class="q-ml-xs">Xem tiếp</span>
                         </q-btn>
                         <q-btn
+                            :to="firstChapterLink"
+                            id="view-first-chapter-button"
                             class="bg-dark text-light text-subtitle1 text-weight-bold"
                             no-caps
                             rounded
@@ -135,8 +139,8 @@
 
 <script>
 // Import dependencies section.
-import { ArtworkDetailResponse } from "src/api.models/artwork/artwork14Page/ArtworkResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 
 // Import components section.
 import CreatorDetailSection from "src/components/common/artwork/CreatorDetailSection.vue";
@@ -164,6 +168,7 @@ export default {
             required: true,
         },
         comicDetail: {
+            type: ArtworkDetailResponse,
             required: true,
         },
     },
@@ -179,15 +184,15 @@ export default {
         isAuth() {
             return authStore.isAuth;
         },
-        /**
-         * @returns {ArtworkDetailResponse} Type of this computed property.
-         */
-        comicDetailRef() {
-            return this.comicDetail;
+        firstChapterLink() {
+            return `/artwork/comic/${this.comicId}/chapter/${this.comicDetail.firstChapterId}`;
+        },
+        lastReadChapterLink() {
+            return `/artwork/comic/${this.comicId}/chapter/${this.comicDetail.lastReadChapterId}`;
         },
     },
     mounted() {
-        this.comicDetailCardStyle.background = `url(${this.comicDetailRef.thumbnailUrl}) no-repeat`;
+        this.comicDetailCardStyle.background = `url(${this.comicDetail.thumbnailUrl}) no-repeat`;
     },
 };
 </script>

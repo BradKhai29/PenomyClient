@@ -13,6 +13,7 @@
         "build": "quasar build"
     },
     "dependencies": {
+        "@microsoft/signalr": "^8.0.7",
         "@quasar/extras": "^1.16.4",
         "axios": "^1.7.7",
         "emoji-mart-vue-fast": "^15.0.3",

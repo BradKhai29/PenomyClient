@@ -108,7 +108,7 @@ const INPUT_BUTTON = -2;
 
 export default {
     name: "AppPagination",
-    emits: ["update:modelValue"],
+    emits: ["update:modelValue", "hasChange"],
     props: {
         modelValue: {
             type: Number,
@@ -220,6 +220,8 @@ export default {
     methods: {
         setPageNumber(pageNumber) {
             this.currentPageNumber = pageNumber;
+
+            this.emitUpdateEvent();
         },
         /**
          * @param {InputEvent} event The event listen to when key up.
@@ -232,47 +234,52 @@ export default {
         setPageNumberByInput() {
             this.showInputMenu = false;
 
+            // If the input number is exceed the max, then set it as max.
             if (this.inputPageNumber > this.max) {
                 this.currentPageNumber = this.max;
-
-                return;
             }
-
-            if (this.inputPageNumber < 1) {
+            // If the input number is lower than the min, then set it as min.
+            else if (this.inputPageNumber < 1) {
                 this.currentPageNumber = 1;
-
-                return;
+            }
+            // Otherwise, set the value as the input.
+            else {
+                this.currentPageNumber = this.inputPageNumber;
             }
 
-            this.currentPageNumber = this.inputPageNumber;
+            this.emitUpdateEvent();
         },
         /**
          * Navigate to the first page of the pagination bar.
          */
         firstPage() {
             this.currentPageNumber = 1;
+
+            this.emitUpdateEvent();
         },
         /**
          * Navigate to the last page of the pagination bar.
          */
         lastPage() {
             this.currentPageNumber = this.max;
+
+            this.emitUpdateEvent();
         },
         prevPage() {
             // Check if current page number reach minimum page or not.
-            if (this.currentPageNumber == 1) {
-                return;
-            }
+            if (this.currentPageNumber > 1) {
+                this.currentPageNumber--;
 
-            this.currentPageNumber--;
+                this.emitUpdateEvent();
+            }
         },
         nextPage() {
             // Check if current page number reach maximum page or not.
-            if (this.currentPageNumber == this.max) {
-                return;
-            }
+            if (this.currentPageNumber < this.max) {
+                this.currentPageNumber++;
 
-            this.currentPageNumber++;
+                this.emitUpdateEvent();
+            }
         },
         /**
          * Get the display range of pagination page numbers.
@@ -430,14 +437,13 @@ export default {
                 this.displayButtons.push(button);
             }
         },
-    },
-    watch: {
-        currentPageNumber() {
+        emitUpdateEvent() {
             this.reachMin = this.currentPageNumber == 1;
             this.reachMax = this.currentPageNumber == this.max;
 
             this.getDisplayButtons();
             this.$emit("update:modelValue", this.currentPageNumber);
+            this.$emit("hasChange");
         },
     },
 };
