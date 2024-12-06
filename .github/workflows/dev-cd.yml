@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-22.04
 
         steps:
-            - name: Execute cd script test
+            - name: Execute cd script_stop
               uses: appleboy/ssh-action@v1.2.0
               with:
                   host: ${{ secrets.SSH_HOST }}
