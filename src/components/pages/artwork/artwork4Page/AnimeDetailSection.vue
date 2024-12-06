@@ -136,7 +136,7 @@
 
 <script>
 // Import dependencies section.
-import { ArtworkDetailResponse } from "src/api.models/artwork/artwork14Page/ArtworkResponse";
+import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 // Import components section.

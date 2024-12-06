@@ -25,6 +25,8 @@ class ArtworkDetailResponse {
      * @param {Boolean} isUserFavorite Check if the current user has added this artwork to favorite list or not.
      * @param {Boolean} hasFollowed Check if the current user has followed this artwork or not.
      * @param {CategoryResponseItem[]} categories The list of category of this artwork
+     * @param {String} firstChapterId Id of the first chapter of current comic.
+     * @param {String} lastReadChapterId Id of the last read chapter of current comic that viewed by user.
      */
     constructor(
         id,
@@ -50,7 +52,9 @@ class ArtworkDetailResponse {
         isAllowComment,
         isUserFavorite,
         hasFollowed,
-        categories
+        categories,
+        firstChapterId,
+        lastReadChapterId
     ) {
         this.id = id;
         this.title = title;
@@ -79,6 +83,10 @@ class ArtworkDetailResponse {
         this.hasFollowed = hasFollowed;
         this.isAllowComment = isAllowComment;
         this.totalUsersRated = totalUsersRated;
+
+        // Chapter view history section.
+        this.firstChapterId = firstChapterId;
+        this.lastReadChapterId = lastReadChapterId;
     }
 
     /**
@@ -114,7 +122,9 @@ class ArtworkDetailResponse {
             apiResponse.isAllowComment,
             apiResponse.isUserFavorite,
             apiResponse.hasFollowed,
-            CategoryResponseItem.mapFromArray(apiResponse.categories)
+            CategoryResponseItem.mapFromArray(apiResponse.categories),
+            apiResponse.firstChapterId,
+            apiResponse.lastReadChapterId
         );
     }
 }

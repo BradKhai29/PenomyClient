@@ -34,6 +34,7 @@ import guestPageRoute from "./guest/GuestViewHistoryPageRoute";
 // User profile page routes section.
 import userProfile1PageRoute from "./userProfile/UserProfile1PageRoute";
 import userPost1PageRoute from "./userpost/UserPost1PageRoute";
+import userPost2PageRoute from "./userpost/UserPost2PageRoute";
 
 // Creator profile page routes section.
 import creatorProfile1PageRoute from "./creatorProfile/CreatorProfile1PageRoute";
@@ -93,6 +94,7 @@ const routes = [
     // Become creator route.
     ...becomeCreatorPageRoute,
     ...userPost1PageRoute,
+    ...userPost2PageRoute,
     // Other routes.
     errorNotFoundPageRoute,
 ];

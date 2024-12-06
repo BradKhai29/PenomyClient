@@ -6,8 +6,8 @@ const routeDefinition = [
         component: () => import("src/layouts/SocialLayout.vue"),
         children: [
             {
-                path: "posts/createform",
-                component: () => import("src/pages/userPost/UserPost1Page.vue"),
+                path: "posts/view",
+                component: () => import("src/pages/userPost/UserPost2Page.vue"),
             },
         ],
     },

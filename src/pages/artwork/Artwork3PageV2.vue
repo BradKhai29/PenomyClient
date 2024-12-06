@@ -30,7 +30,6 @@
 // Import dependencies section.
 import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
-import { useAuthStore } from "src/stores/common/AuthStore";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
@@ -40,8 +39,12 @@ import DescriptionAndChapterSection from "src/components/pages/artwork/artwork3P
 import ArtworkDetailRecommendedSection from "src/components/common/artwork/ArtworkDetailRecommendedSection.vue";
 import CommentLoader from "src/components/common/artwork/Common/CommentLoader.vue";
 
-// Init authStore for later operation.
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useGuestStore } from "src/stores/common/GuestStore";
+
 const authStore = useAuthStore();
+const guestStore = useGuestStore();
 
 export default {
     components: {
@@ -61,8 +64,7 @@ export default {
         };
     },
     beforeMount() {
-        // Get the id from the route params to fetch data.
-        this.comicId = this.$route.params.artworkId;
+        this.loadComicIdFromRoute();
 
         const isValidId = NumberHelper.isNumber(this.comicId);
 
@@ -73,23 +75,56 @@ export default {
         }
     },
     async mounted() {
-        const result = await artworkDetailApiHandler.getArtworkDetailByIdAsync(
-            this.comicId,
-            authStore.accessToken()
-        );
+        await authStore.setUp();
 
-        if (!result) {
-            NotificationHelper.notifyError("Không tìm thấy nội dung");
-
-            // this.$router.push("/");
-            return;
+        // Wait for guest store to setup success when current user is not authenticated.
+        if (!authStore.isAuth) {
+            await guestStore.waitForSetUp();
         }
 
-        // If result is success, then get the information and bind to the comic detail.
-        this.comicDetail = result;
+        // Load the current comic detail.
+        this.loadComicDetailAsync();
+    },
+    methods: {
+        loadComicIdFromRoute() {
+            // Get the id from the route params to fetch data.
+            this.comicId = this.$route.params.artworkId;
+        },
+        async loadComicDetailAsync() {
+            // Turn on the loading flag to wait for the content being loaded.
+            this.isLoading = true;
+            let guestId = -1;
+            let accessToken = "null_token";
 
-        // Turn off is loading flag.
-        this.isLoading = false;
+            // If current user is not authenticated, then get the guestId.
+            if (!authStore.isAuth) {
+                guestId = guestStore.currentGuestId;
+            }
+            // Otherwise, get the current user's access token.
+            else {
+                accessToken = authStore.accessToken();
+            }
+
+            const artworkDetail =
+                await artworkDetailApiHandler.getArtworkDetailByIdAsync(
+                    this.comicId,
+                    guestId,
+                    accessToken
+                );
+
+            if (!artworkDetail) {
+                NotificationHelper.notifyError("Không tìm thấy nội dung");
+
+                this.$router.push("/");
+                return;
+            }
+
+            // If result is success, then get the information and bind to the comic detail.
+            this.comicDetail = artworkDetail;
+
+            // Turn off isLoading flag after loading content successfully.
+            this.isLoading = false;
+        },
     },
     computed: {
         hasSeries() {
@@ -97,6 +132,17 @@ export default {
         },
         creatorId() {
             return this.comicDetail.creatorId;
+        },
+        currentPath() {
+            return this.$route.path;
+        },
+    },
+    watch: {
+        currentPath(newPath, _) {
+            console.log("New Path", newPath);
+            this.loadComicIdFromRoute();
+
+            this.loadComicDetailAsync();
         },
     },
 };

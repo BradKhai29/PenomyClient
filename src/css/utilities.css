@@ -101,6 +101,10 @@
 }
 
 /* Other section */
+.penomy-notification {
+    cursor: pointer !important;
+}
+
 .penomy-tab {
     --primary: #53bf94;
     --border-width: 4px;
@@ -158,4 +162,17 @@
 /* Handle on hover */
 .penomy-scrollbar-square::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
+}
+
+/* Limit paragraph lines */
+.paragraph-line-4 {
+    --limit-line: 4;
+
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: var(
+        --limit-line
+    ) !important; /* number of lines to show */
+    line-clamp: var(--limit-line) !important;
+    -webkit-box-orient: vertical !important;
 }
