@@ -65,13 +65,13 @@
 
             <div id="user-profile-actions" class="bg-light-100 text-subtitle1">
                 <q-item
-                    v-if="atCreatorStudio"
+                    :to="homeLink"
                     id="btn-back-home"
+                    v-if="atCreatorStudio"
                     clickable
                     v-close-popup
                     class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
                     dense
-                    @click="goToHome"
                 >
                     <q-icon name="home" size="sm" />
                     <span class="q-ml-sm">Về lại trang chủ</span>
@@ -169,8 +169,14 @@
 // Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
+
+// Support constants for component.
+const ROOT_PATH = "/";
+const ANIME_ROOT_AREA_PATH = "/artwork/anime";
 
 // Init store for later operation.
+const watchingAreaStore = useWatchingAreaStore();
 const authStore = useAuthStore();
 const userProfileStore = useUserProfileStore();
 
@@ -188,6 +194,13 @@ export default {
         };
     },
     computed: {
+        homeLink() {
+            if (watchingAreaStore.isComicArea) {
+                return ROOT_PATH;
+            }
+
+            return ANIME_ROOT_AREA_PATH;
+        },
         isAuth() {
             return authStore.isAuth;
         },
@@ -206,15 +219,13 @@ export default {
         },
     },
     methods: {
-        goToHome() {
-            // Redirect to homepage.
-            this.$router.push("/");
-        },
         async signOut() {
             this.showMenu = false;
+
             await authStore.signOut();
-            userProfileStore.router // Redirect to login page when logout success.
-                .push("/auth/login");
+            userProfileStore.signOut();
+            // Redirect to login page when logout success.
+            this.$router.push("/auth/login");
         },
     },
 };

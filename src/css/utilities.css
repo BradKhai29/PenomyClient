@@ -165,6 +165,18 @@
 }
 
 /* Limit paragraph lines */
+.paragraph-line-1 {
+    --limit-line: 1;
+
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: var(
+        --limit-line
+    ) !important; /* number of lines to show */
+    line-clamp: var(--limit-line) !important;
+    -webkit-box-orient: vertical !important;
+}
+
 .paragraph-line-4 {
     --limit-line: 4;
 

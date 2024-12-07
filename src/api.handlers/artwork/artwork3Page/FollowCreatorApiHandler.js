@@ -1,6 +1,7 @@
 import axios from "axios";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
+import { FollowedCreatorProfileResponseItem } from "src/api.models/userProfile/userProfile1Page/FollowedCreatorProfileResponseItem";
 
 const ADD_FOLLOW_FAILED_RESULT = -1;
 const REMOVE_FOLLOW_FAILED_RESULT = -1;
@@ -73,10 +74,43 @@ async function checkHasFollowCreatorAsync(creatorId, bearerAccessToken) {
     }
 }
 
+/**
+ * Get all the followed creators of the current user.
+ *
+ * @param {String} bearerAccessToken Bearer access token of the user to get their followed creators.
+ * @param {Number} pageNumber The page number to get the followed creator list when pagination.
+ * @returns {Promise<FollowedCreatorProfileResponseItem[]>} The list of creators that followed by current user.
+ */
+async function getAllFollowedCreatorsAsync(bearerAccessToken, pageNumber) {
+    const apiUrl = `${BaseWebApiUrl}/G63/follow-creator/get`;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+            headers: {
+                Authorization: bearerAccessToken,
+            },
+            params: {
+                pageNum: pageNumber,
+            },
+        });
+
+        return FollowedCreatorProfileResponseItem.mapFromArray(
+            response.data.body
+        );
+    } catch (error) {
+        console.log(error);
+
+        return null;
+    }
+}
+
 const FollowCreatorApiHandler = {
     addToFollowAsync: addToFollowAsync,
     removeFollowAsync: removeFollowAsync,
     checkHasFollowCreatorAsync,
+    getAllFollowedCreatorsAsync,
 };
 
 export { FollowCreatorApiHandler };

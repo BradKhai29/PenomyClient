@@ -3,7 +3,7 @@
         <section id="general-section" class="q-ma-lg">
             <div class="shadow-1 border-radius-sm bg-light-100 q-pa-md">
                 <HeaderHighlight
-                    label="Nội dung đã đăng tải"
+                    label="Nội dung bị tạm xóa"
                     class="q-mb-md text-weight-bold"
                 />
 
@@ -33,7 +33,7 @@
             </div>
             <q-tab-panels v-model="selectedTab" animated>
                 <q-tab-panel name="comic">
-                    <ArtworkSection
+                    <DeletedArtworkSection
                         :loadComic="true"
                         @updateSection="reloadPageState"
                     />
@@ -46,15 +46,8 @@
                         culpa in quia veritatis eius, omnis non iste, doloremque
                         neque ratione? Corrupti quas vitae maiores numquam!
                     </div>
-                    <ArtworkSection v-if="false" :loadComic="false" />
+                    <DeletedArtworkSection v-if="false" :loadComic="false" />
                 </q-tab-panel>
-
-                <!--
-                <q-tab-panel name="series">
-                    <div class="text-h6">Movies</div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                </q-tab-panel>
-                -->
             </q-tab-panels>
         </section>
     </q-page>
@@ -63,8 +56,8 @@
 <script>
 // Import components section.
 import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
-import ArtworkSection from "src/components/pages/creatorStudio/creatorStudio5Page/ArtworkSection.vue";
-import OverviewStatisticCard from "src/components/pages/creatorStudio/creatorStudio5Page/OverviewStatisticCard.vue";
+import DeletedArtworkSection from "src/components/pages/creatorStudio/creatorStudio25Page/DeletedArtworkSection.vue";
+import OverviewStatisticCard from "src/components/pages/creatorStudio/creatorStudio25Page/DeletedOverviewStatisticCard.vue";
 
 const tabItemsDefinition = [
     {
@@ -79,19 +72,13 @@ const tabItemsDefinition = [
         value: "animation",
         icon: "videocam",
     },
-    // {
-    //     name: "series",
-    //     label: "Series",
-    //     value: "series",
-    //     icon: "view_list",
-    // },
 ];
 
 export default {
     components: {
         HeaderHighlight,
         OverviewStatisticCard,
-        ArtworkSection,
+        DeletedArtworkSection,
     },
     data() {
         return {

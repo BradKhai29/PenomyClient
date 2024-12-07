@@ -68,6 +68,10 @@
     background-color: var(--secondary-500) !important;
 }
 
+.bg-secondary-900 {
+    background-color: var(--secondary-900) !important;
+}
+
 /* Tertiary section */
 .bg-tertiary-500 {
     background-color: var(--tertiary-500) !important;

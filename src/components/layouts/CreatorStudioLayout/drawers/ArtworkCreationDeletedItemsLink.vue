@@ -4,25 +4,32 @@
         icon="delete"
         link="/studio/bin"
         :isSelected="isSelected"
+        :hasBadge="hasDeletedItems"
     />
 </template>
 
-<script setup>
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
+<script>
+// Import components section.
 import DrawerLink from "components/layouts/DrawerLink.vue";
 
-const route = useRoute();
-const isSelected = ref(false);
+// Init store for later operation.
+import { useCreatorStore } from "src/stores/common/CreatorStore";
+const creatorStore = useCreatorStore();
 
-watch(
-    () => route.path,
-    (newPath, _) => {
-        if (newPath && newPath == `/studio/bin`) {
-            isSelected.value = true;
-        } else {
-            isSelected.value = false;
-        }
-    }
-);
+export default {
+    name: "ArtworkCreationDeletedItemsLink",
+    components: {
+        DrawerLink,
+    },
+    computed: {
+        isSelected() {
+            const currentPath = this.$route.path;
+
+            return String(currentPath).includes("/studio/bin");
+        },
+        hasDeletedItems() {
+            return creatorStore.hasDeletedItems;
+        },
+    },
+};
 </script>

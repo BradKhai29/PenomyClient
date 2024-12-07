@@ -66,6 +66,7 @@
 <script>
 // Import dependencies section.
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { useCreatorStore } from "src/stores/common/CreatorStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
@@ -82,6 +83,7 @@ import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvat
 // Init store for later operation.
 const authStore = useAuthStore();
 const userProfileStore = useUserProfileStore();
+const creatorStore = useCreatorStore();
 
 export default {
     name: "CreatorStudioLayout",
@@ -124,6 +126,8 @@ export default {
 
             return;
         }
+
+        await creatorStore.setUp(authStore.bearerAccessToken());
     },
     methods: {
         toggleLeftDrawer() {

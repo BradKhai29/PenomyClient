@@ -35,29 +35,32 @@
                 </q-btn>
             </div>
         </div>
-        <div
-            v-for="(artwork, index) in displayArtworks"
-            :key="artwork.id"
-            class="artwork-card-wrapper q-mb-md"
-        >
-            <ArtworkDetailCard
-                v-bind="artwork"
-                :isComic="loadComic"
-                :itemOrder="index + 1"
-                @removeItem="handleRemoveItem"
-            />
-        </div>
-        <div :id="`${componentId}_footer`" class="row">
-            <q-btn
-                v-if="!reachMaxPage"
-                no-caps
-                :loading="isProcessing || isLoading"
-                @click="loadNextPage"
-                class="col-grow text-light bg-dark text-subtitle1 text-weight-bold"
+
+        <section id="display-artwork-section" class="q-mt-md">
+            <div
+                v-for="(artwork, index) in displayArtworks"
+                :key="artwork.id"
+                class="artwork-card-wrapper q-mb-md"
             >
-                Tải thêm
-            </q-btn>
-        </div>
+                <ArtworkDetailCard
+                    v-bind="artwork"
+                    :isComic="loadComic"
+                    :itemOrder="index + 1"
+                    @removeItem="handleRemoveItem"
+                />
+            </div>
+            <div :id="`${componentId}_footer`" class="row">
+                <q-btn
+                    v-if="!reachMaxPage"
+                    no-caps
+                    :loading="isProcessing || isLoading"
+                    @click="loadNextPage"
+                    class="col-grow text-light bg-dark text-subtitle1 text-weight-bold"
+                >
+                    Tải thêm
+                </q-btn>
+            </div>
+        </section>
     </section>
 </template>
 
