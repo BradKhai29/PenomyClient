@@ -213,7 +213,6 @@
 <script>
 import { DateTimeHelper } from "src/helpers/DateTimeHelper";
 import { ArtworkPublicLevelHelper } from "src/helpers/ArtworkPublicLevelHelper";
-import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { DeletedArtworkItemResponseDto } from "src/api.models/creatorStudio/creatorStudio25Page/DeletedArtworkItemResponseDto";
 import { CreatorStudioDeletedManagerApiHandler } from "src/api.handlers/creatorStudio/common/CreatorStudioDeletedManagerApiHandler";
@@ -336,7 +335,7 @@ export default {
                 );
 
             if (restoreResult) {
-                this.$emit("restoreItem", this.id);
+                this.$emit("restoreItem", this.id, true);
 
                 NotificationHelper.notifySuccess(
                     "Khôi phục tác phẩm thành công"
@@ -354,7 +353,7 @@ export default {
                 );
 
             if (removeResult) {
-                this.$emit("removeItem", this.id);
+                this.$emit("removeItem", this.id, true);
 
                 NotificationHelper.notifySuccess(
                     "Xóa vĩnh viễn tác phẩm thành công"

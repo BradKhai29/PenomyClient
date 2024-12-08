@@ -77,11 +77,12 @@
                     <span class="q-ml-sm">Về lại trang chủ</span>
                 </q-item>
                 <q-item
+                    :to="editProfileLink"
                     v-if="isAuth"
-                    id="btn-login"
+                    id="btn-edit"
                     clickable
                     v-close-popup
-                    class="avatar-menu-item flex items-center q-py-sm q-mb-sm"
+                    class="avatar-menu-item flex text-dark items-center q-py-sm q-mb-sm"
                     dense
                 >
                     <q-icon name="edit" size="sm" />
@@ -170,6 +171,7 @@
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
+import { EditProfileRouteName } from "src/router/userProfile/UserProfile2PageRoute";
 
 // Support constants for component.
 const ROOT_PATH = "/";
@@ -200,6 +202,14 @@ export default {
             }
 
             return ANIME_ROOT_AREA_PATH;
+        },
+        editProfileLink() {
+            return {
+                name: EditProfileRouteName,
+                params: {
+                    userId: userProfileStore.currentUserId,
+                },
+            };
         },
         isAuth() {
             return authStore.isAuth;

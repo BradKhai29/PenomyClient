@@ -40,13 +40,10 @@
                 </q-tab-panel>
 
                 <q-tab-panel name="animation">
-                    <div>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Dolorem eveniet asperiores perferendis ad expedita
-                        culpa in quia veritatis eius, omnis non iste, doloremque
-                        neque ratione? Corrupti quas vitae maiores numquam!
-                    </div>
-                    <ArtworkSection v-if="false" :loadComic="false" />
+                    <ArtworkSection
+                        :loadComic="false"
+                        @updateSection="reloadPageState"
+                    />
                 </q-tab-panel>
 
                 <!--

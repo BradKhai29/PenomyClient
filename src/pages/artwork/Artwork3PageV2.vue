@@ -139,7 +139,6 @@ export default {
     },
     watch: {
         currentPath(newPath, _) {
-            console.log("New Path", newPath);
             this.loadComicIdFromRoute();
 
             this.loadComicDetailAsync();

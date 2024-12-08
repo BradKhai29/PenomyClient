@@ -16,7 +16,7 @@ const useCreatorStore = defineStore("creatorStore", {
          * @returns {Boolean} Return true if the current creator has any deleted artwork items.
          */
         hasDeletedItems() {
-            return this.studioBinStatus.hasDeletedItems;
+            return this.totalDeletedComics > 0 || this.totalDeletedAnimes > 0;
         },
         /**
          * Get the total deleted comics has been deleted by current creator.
@@ -52,8 +52,6 @@ const useCreatorStore = defineStore("creatorStore", {
                 await CreatorStudioDeletedManagerApiHandler.checkCreatorStudioBinStatusAsync();
 
             if (currentBinStatus != null) {
-                this.studioBinStatus.hasDeletedItems =
-                    currentBinStatus.hasDeletedItems;
                 this.studioBinStatus.totalDeletedAnimes =
                     currentBinStatus.totalDeletedAnimes;
                 this.studioBinStatus.totalDeletedComics =

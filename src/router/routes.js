@@ -33,6 +33,7 @@ import guestPageRoute from "./guest/GuestViewHistoryPageRoute";
 
 // User profile page routes section.
 import userProfile1PageRoute from "./userProfile/UserProfile1PageRoute";
+import userProfile2PageRoute from "./userProfile/UserProfile2PageRoute";
 import userPost1PageRoute from "./userpost/UserPost1PageRoute";
 import userPost2PageRoute from "./userpost/UserPost2PageRoute";
 
@@ -85,6 +86,7 @@ const routes = [
     ...guestPageRoute,
     // User profile routes.
     ...userProfile1PageRoute,
+    ...userProfile2PageRoute,
     // Creator profile routes.
     ...creatorProfile1PageRoute,
     // Social media routes.

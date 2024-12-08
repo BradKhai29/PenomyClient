@@ -33,20 +33,11 @@
             </div>
             <q-tab-panels v-model="selectedTab" animated>
                 <q-tab-panel name="comic">
-                    <DeletedArtworkSection
-                        :loadComic="true"
-                        @updateSection="reloadPageState"
-                    />
+                    <DeletedArtworkSection :loadComic="true" />
                 </q-tab-panel>
 
                 <q-tab-panel name="animation">
-                    <div>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Dolorem eveniet asperiores perferendis ad expedita
-                        culpa in quia veritatis eius, omnis non iste, doloremque
-                        neque ratione? Corrupti quas vitae maiores numquam!
-                    </div>
-                    <DeletedArtworkSection v-if="false" :loadComic="false" />
+                    <DeletedArtworkSection :loadComic="false" />
                 </q-tab-panel>
             </q-tab-panels>
         </section>

@@ -69,10 +69,7 @@
                     >
                     <div class="q-my-md text-center">Hoặc đăng nhập với</div>
 
-                    <GoogleButton
-                        :isLoading="isProcessing"
-                        v-model="isProcessing"
-                    />
+                    <GoogleButton />
                 </div>
             </div>
         </section>
@@ -87,6 +84,7 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
 import { JwtTokenHelper } from "src/helpers/JwtTokenHelper";
 import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
+import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
 
 // Import components section.
 import EmailInput from "src/components/common/auth/EmailInput.vue";
@@ -173,8 +171,17 @@ export default {
             authStore.signIn(result.accessToken, result.refreshToken);
             userProfileStore.signIn(userProfile);
 
-            // Redirect back to homepage.
-            this.$router.push("/");
+            // Redirect to the last visit path to view the content.
+            const watchingAreaStore = useWatchingAreaStore();
+
+            if (watchingAreaStore.hasLastVisitPath) {
+                this.$router.push(watchingAreaStore.lastVisitPath);
+            }
+            // If no path is indicate, then redirect to home path.
+            else {
+                this.$router.push("/");
+            }
+
             NotificationHelper.notifySuccess("Đăng nhập thành công");
         },
     },
