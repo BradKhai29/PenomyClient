@@ -14,7 +14,7 @@
                     Đã tạo: {{ paginationOption.totalArtworks }}
                 </q-btn>
                 <q-btn
-                    to="/studio/comic/create"
+                    :to="createArtworkLink"
                     no-caps
                     dense
                     color="grey-3"
@@ -29,35 +29,51 @@
                         :offset="[4, 10]"
                     >
                         <strong class="text-subtitle2">
-                            Tạo mới truyện tranh
+                            Tạo mới {{ artworkSection }}
                         </strong>
                     </q-tooltip>
                 </q-btn>
             </div>
         </div>
-        <div
-            v-for="(artwork, index) in displayArtworks"
-            :key="artwork.id"
-            class="artwork-card-wrapper q-mb-md"
+
+        <section
+            v-if="hasArtworkItems"
+            id="display-artwork-section"
+            class="q-mt-md"
         >
-            <ArtworkDetailCard
-                v-bind="artwork"
-                :isComic="loadComic"
-                :itemOrder="index + 1"
-                @removeItem="handleRemoveItem"
-            />
-        </div>
-        <div :id="`${componentId}_footer`" class="row">
-            <q-btn
-                v-if="!reachMaxPage"
-                no-caps
-                :loading="isProcessing || isLoading"
-                @click="loadNextPage"
-                class="col-grow text-light bg-dark text-subtitle1 text-weight-bold"
+            <div
+                v-for="(artwork, index) in displayArtworks"
+                :key="artwork.id"
+                class="artwork-card-wrapper q-mb-md"
             >
-                Tải thêm
-            </q-btn>
-        </div>
+                <ArtworkDetailCard
+                    v-bind="artwork"
+                    :isComic="loadComic"
+                    :itemOrder="index + 1"
+                    @removeItem="handleRemoveItem"
+                />
+            </div>
+            <div :id="`${componentId}_footer`" class="row">
+                <q-btn
+                    v-if="!reachMaxPage"
+                    no-caps
+                    :loading="isProcessing || isLoading"
+                    @click="loadNextPage"
+                    class="col-grow text-light bg-dark text-subtitle1 text-weight-bold"
+                >
+                    Tải thêm
+                </q-btn>
+            </div>
+        </section>
+
+        <section
+            v-else
+            id="empty-artwork-section"
+            class="q-mt-xl text-center text-dark-500"
+        >
+            <q-icon name="hide_source" size="128px" />
+            <p class="text-h6">Mục này hiện đang trống</p>
+        </section>
     </section>
 </template>
 
@@ -117,7 +133,6 @@ export default {
              * @type {Number} The type of this refs.
              */
             currentPageNumber: 1,
-            reachMaxPage: true,
             /**
              * The list of artworks that will be displayed when pagination.
              *
@@ -125,6 +140,35 @@ export default {
              */
             displayArtworks: [],
         };
+    },
+    computed: {
+        createArtworkLink() {
+            if (this.loadComic) {
+                return "/studio/comic/create";
+            }
+
+            return "/studio/anime/create";
+        },
+        artworkSection() {
+            return this.loadComic ? "truyện tranh" : "hoạt hình";
+        },
+        hasArtworkItems() {
+            return this.displayArtworks.length > 0;
+        },
+        /**
+         * Indicate the artwork type to load for
+         * this section based on the props (loadComic).
+         */
+        currentArtworkType() {
+            if (this.loadComic) {
+                return ArtworkTypes.COMIC;
+            }
+
+            return ArtworkTypes.ANIMATION;
+        },
+        reachMaxPage() {
+            return this.currentPageNumber >= this.paginationOption.totalPages;
+        },
     },
     async mounted() {
         // Set the component id based on the props (loadComic).
@@ -138,17 +182,7 @@ export default {
         this.isLoading = true;
         this.isProcessing = true;
 
-        // Fetch the pagination option first.
-        CreatorStudio5ApiHandler.getPaginationOptionsAsync().then((result) => {
-            if (result) {
-                this.paginationOption = result;
-                if (this.paginationOption.totalPages > 0) {
-                    this.reachMaxPage =
-                        this.currentPageNumber ==
-                        this.paginationOption.totalPages;
-                }
-            }
-        });
+        await this.getPaginationOptionAsync();
 
         // Load the artworks with pagination.
         await this.getArtworksByPaginationAsync();
@@ -163,19 +197,24 @@ export default {
                 this.currentPageNumber++;
             }
         },
-        async getArtworksByPaginationAsync() {
-            // Indicate the artwork type to load for
-            // this section based on the props (loadComic).
-            const artworkTypeToLoad = this.loadComic
-                ? ArtworkTypes.COMIC
-                : ArtworkTypes.ANIMATION;
+        async getPaginationOptionAsync() {
+            // Fetch the pagination option first.
+            const loadedPaginationOption =
+                await CreatorStudio5ApiHandler.getPaginationOptionsAsync(
+                    this.currentArtworkType
+                );
 
+            if (loadedPaginationOption != null) {
+                this.paginationOption = loadedPaginationOption;
+            }
+        },
+        async getArtworksByPaginationAsync() {
             // Turn on the flag when call the api.
             this.isProcessing = true;
 
             const result =
                 await CreatorStudio5ApiHandler.getArtworksByTypeWithPaginationAsync(
-                    artworkTypeToLoad,
+                    this.currentArtworkType,
                     this.currentPageNumber
                 );
 
@@ -210,9 +249,6 @@ export default {
     },
     watch: {
         currentPageNumber() {
-            this.reachMaxPage =
-                this.currentPageNumber >= this.paginationOption.totalPages;
-
             this.getArtworksByPaginationAsync();
         },
     },

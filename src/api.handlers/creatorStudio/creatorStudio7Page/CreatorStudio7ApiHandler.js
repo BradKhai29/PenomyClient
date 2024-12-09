@@ -72,10 +72,42 @@ async function getComicChaptersByIdAndPublishStatusAsync(
     }
 }
 
+/**
+ * Remove the chapter of current comic by input id.
+ *
+ * @param {String} artworkId Id of the artwork contains this chapter.
+ * @param {String} chapterId Id of the chapter to be removed.
+ * @returns {Promise<Boolean>} Return true if the operation is success.
+ */
+async function removeChapterAsync(artworkId, chapterId) {
+    const apiUrl = `${BaseWebApiUrl}/art14/remove/chapter`;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.POST,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+            data: {
+                artworkId: artworkId,
+                chapterId: chapterId,
+            },
+        });
+
+        return true;
+    } catch (error) {
+        console.log(error);
+
+        return false;
+    }
+}
+
 const CreatorStudio7ApiHandler = {
     getComicDetailByIdAsync: getComicDetailByIdAsync,
     getComicChaptersByIdAndPublishStatusAsync:
         getComicChaptersByIdAndPublishStatusAsync,
+    removeChapterAsync,
 };
 
 export { CreatorStudio7ApiHandler, PublishStatuses };

@@ -273,6 +273,8 @@
                         v-for="chapter in publishedChapters"
                         :key="chapter.id"
                         v-bind="chapter"
+                        :comicId="comicId"
+                        @removeItem="handleRemoveChapter"
                     />
                 </div>
             </div>
@@ -291,10 +293,15 @@ import {
 } from "src/api.models/creatorStudio/creatorStudio7Page/ComicDetail";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
+import { ComicChapterDetail } from "src/api.models/creatorStudio/creatorStudio7Page/ComicChapterDetail";
 
 // Import components section.
 import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight.vue";
 import ComicChapterCard from "src/components/pages/creatorStudio/creatorStudio7Page/ComicChapterCard.vue";
+
+// Init store for later operation.
+import { useCreatorStore } from "src/stores/common/CreatorStore";
+const creatorStore = useCreatorStore();
 
 export default {
     components: {
@@ -311,11 +318,22 @@ export default {
             },
             comicDetail: new ComicDetail(),
             artworkStatuses: artworkStatuses,
+            /**
+             * @type {ComicChapterDetail[]} Type of this array.
+             */
             draftedChapters: [],
             isLoadingDrafted: true,
+            /**
+             * @type {ComicChapterDetail[]} Type of this array.
+             */
             publishedChapters: [],
             isLoadingPublished: true,
         };
+    },
+    computed: {
+        comicId() {
+            return this.comicDetail.id;
+        },
     },
     beforeMount() {
         this.comicDetail.id = this.$route.params.comicId;
@@ -370,6 +388,8 @@ export default {
 
             // Check the removing result.
             if (result.isSuccess) {
+                this.updateStoreState();
+
                 NotificationHelper.notifySuccess("Tác phẩm đã bị tạm xóa");
 
                 // Redirect back to artwork manager page.
@@ -379,6 +399,44 @@ export default {
             }
 
             this.showRemoveDialog = false;
+        },
+        handleRemoveChapter(chapterId, publishStatus) {
+            const isDrafted = publishStatus == PublishStatuses.DRAFTED;
+            const notFoundIndex = -1;
+
+            if (isDrafted) {
+                const itemIndex = this.draftedChapters.findIndex(
+                    (item) => item.id == chapterId
+                );
+
+                if (itemIndex != notFoundIndex) {
+                    this.draftedChapters.splice(itemIndex, 1);
+                }
+            } else {
+                const itemIndex = this.publishedChapters.findIndex(
+                    (item) => item.id == chapterId
+                );
+
+                if (itemIndex != notFoundIndex) {
+                    const removedChapter = this.publishedChapters.splice(
+                        itemIndex,
+                        1
+                    )[0];
+
+                    // Update the upload order of all chapters
+                    //that publish after removed chapter.
+                    this.publishedChapters.forEach((chapter) => {
+                        if (chapter.uploadOrder > removedChapter.uploadOrder) {
+                            chapter.uploadOrder = chapter.uploadOrder - 1;
+                        }
+                    });
+                }
+            }
+        },
+        updateStoreState() {
+            const totalDeletedComics = creatorStore.totalDeletedComics + 1;
+
+            creatorStore.setTotalDeletedComics(totalDeletedComics);
         },
         goToAddChapter() {
             this.$router.push({

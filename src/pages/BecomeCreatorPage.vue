@@ -2,7 +2,7 @@
     <section v-if="!isLoading">
         <section id="header-section" class="flex justify-center">
             <div
-                class="q-py-md flex items-center justify-between text-dark-500 become-creator-section border-md-bottom-light-500"
+                class="q-py-md flex items-center justify-between text-dark-500 text-header become-creator-section border-md-bottom-light-500"
             >
                 <q-btn :to="userProfileLink" dense flat padding="none">
                     <q-icon
@@ -12,7 +12,7 @@
                     />
                 </q-btn>
                 <div
-                    class="col-grow text-dark-500 text-weight-bold text-h6 text-center"
+                    class="col-grow text-dark-500 text-weight-bold text-center"
                 >
                     <span v-if="!isCreator"
                         >Đăng ký trở thành nhà sáng tạo nội dung</span
@@ -24,22 +24,39 @@
                 </q-btn>
             </div>
 
-            <div class="become-creator-section flex justify-center q-my-lg">
+            <div class="become-creator-section flex justify-center q-my-md">
                 <q-btn to="#" flat no-caps no-wrap dense>
-                    <q-avatar size="64px">
+                    <q-avatar class="penomy-logo">
                         <img
                             src="https://res.cloudinary.com/dsjsmbdpw/image/upload/v1729522677/penomy_assets/penomy.png"
                         />
                     </q-avatar>
-                    <span class="q-pl-sm text-weight-bold text-h5 text-dark">
-                        <span v-if="isCreator" class="underline-primary">
-                            Xin chào nhà sáng tạo {{ userNickname }}
-                        </span>
-                        <span v-else-if="!isCreator" class="underline-primary">
-                            Xin chào {{ userNickname }}
-                        </span>
+                    <span
+                        class="q-pl-sm text-weight-bold text-welcome-button text-dark"
+                    >
+                        <span class="underline-primary">Penom</span>
+                        <span>y</span>
                     </span>
                 </q-btn>
+            </div>
+
+            <div
+                class="become-creator-section flex justify-center text-dark-500 q-mb-lg"
+            >
+                <span
+                    v-if="isCreator"
+                    class="text-header flex justify-center q-gutter-xs"
+                >
+                    <span>Xin chào nhà sáng tạo</span>
+                    <span>{{ userNickname }}</span>
+                </span>
+                <span
+                    v-if="!isCreator"
+                    class="text-header flex justify-center q-gutter-xs"
+                >
+                    <span>Xin chào</span>
+                    <span>{{ userNickname }}</span>
+                </span>
             </div>
         </section>
 
@@ -51,7 +68,7 @@
             >
                 <router-link
                     to="#requirement-1"
-                    class="text-h5 text-dark text-weight-bold underline-none"
+                    class="text-header-md text-dark text-weight-bold underline-none"
                 >
                     Chi tiết về việc đăng ký trở thành nhà sáng tạo nội dung
                 </router-link>
@@ -110,7 +127,7 @@
             >
                 <router-link
                     to="#requirement-2"
-                    class="text-h5 text-dark text-weight-bold underline-none"
+                    class="text-header-md text-dark text-weight-bold underline-none"
                 >
                     Quy tắc nội dung khi đăng tải
                 </router-link>
@@ -149,7 +166,7 @@
             >
                 <router-link
                     to="#creator-benefits"
-                    class="text-h5 text-dark text-weight-bold underline-none"
+                    class="text-header-md text-dark text-weight-bold underline-none"
                 >
                     Quyền lợi của nhà sáng tạo
                 </router-link>
@@ -356,10 +373,30 @@ export default {
 </script>
 
 <style scoped>
+.penomy-logo {
+    --width-md: 64px;
+    --width-sm: 48px;
+
+    width: var(--width-md);
+    height: var(--width-md);
+}
+
+.text-header,
+.text-welcome-button {
+    font-size: 20px;
+}
+
+.text-header-md {
+    font-size: 24px;
+}
+
 .become-creator-section {
     --max-width: 960px;
+    --margin-width: 16px;
 
     width: 100% !important;
+    margin-left: var(--margin-width);
+    margin-right: var(--margin-width);
     max-width: var(--max-width) !important;
 }
 
@@ -388,5 +425,28 @@ export default {
     border-color: transparent;
     background-color: var(--primary-700);
     color: var(--dark);
+}
+
+@media screen and (max-width: 480px) {
+    .penomy-logo {
+        width: var(--width-sm);
+        height: var(--width-sm);
+    }
+
+    .text-header,
+    .text-welcome-button {
+        font-size: 16px;
+    }
+
+    .text-header-md {
+        font-size: 18px;
+    }
+
+    .become-creator-section {
+        --max-width: 480px;
+
+        width: 100% !important;
+        max-width: var(--max-width) !important;
+    }
 }
 </style>

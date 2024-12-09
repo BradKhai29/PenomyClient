@@ -9,6 +9,28 @@ class Entry {
         this.key = key;
         this.value = value;
     }
+
+    /**
+     * Map from the input item to the Entry instance.
+     *
+     * @param {Entry} item The item to map from.
+     * @returns {Entry} The instance after mapping.
+     */
+    static mapFrom(item) {
+        return Entry(item.key, item.value);
+    }
+
+    /**
+     * Map from the input array of items to the array of Entry instance.
+     *
+     * @param {Entry[]} items The item to map from.
+     * @returns {Entry[]} The array of instance after mapping.
+     */
+    static mapFromArray(items) {
+        const result = items.map((item) => this.mapFrom(item));
+
+        return result;
+    }
 }
 
 class ItemDictionary {
@@ -22,10 +44,14 @@ class ItemDictionary {
     }
 
     /**
-     * @returns {ItemDictionary} Return a new instance of ArtworkPaginationManager.
+     * @returns {ItemDictionary} Return a new instance of ItemDictionary.
      */
     static New() {
         return new ItemDictionary();
+    }
+
+    length() {
+        return this.entries.length;
     }
 
     /**
@@ -77,6 +103,29 @@ class ItemDictionary {
      */
     getEntry(key) {
         return this.entries.find((entry) => entry.key == key);
+    }
+
+    /**
+     * Return the array of all entry items included in this item dictionary.
+     *
+     * @returns {Entry[]} The array of all entry items included in this item dictionary.
+     */
+    getAllEntries() {
+        return this.entries;
+    }
+
+    /**
+     * @param {Entry[]} items The array of entries to add.
+     */
+    addRange(items) {
+        this.entries.push(...items);
+    }
+
+    /**
+     * @param {Entry[]} items The array of entries to load from.
+     */
+    loadEntries(items) {
+        this.entries = items;
     }
 }
 

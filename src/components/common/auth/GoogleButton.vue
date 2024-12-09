@@ -3,8 +3,6 @@
         @click="loginWithGoogle"
         no-caps
         class="q-py-sm border-radius-md bg-light-100 shadow-1"
-        :loading="isLoading"
-        :disable="isLoading"
     >
         <img
             id="google-icon"
@@ -23,17 +21,6 @@ import { GoogleHelper } from "src/helpers/GoogleHelper";
 
 export default {
     name: "GoogleButton",
-    emits: ["update:modelValue"],
-    props: {
-        isLoading: {
-            type: Boolean,
-            default: false,
-        },
-        modelValue: {
-            type: Boolean,
-            required: true,
-        },
-    },
     data() {
         return {
             googleIconStyle: {

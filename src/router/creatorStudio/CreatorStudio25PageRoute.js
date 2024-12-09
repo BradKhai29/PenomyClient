@@ -6,7 +6,7 @@ const routeDefinition = [
             {
                 path: "bin",
                 component: () =>
-                    import("pages/creatorStudio/CreatorStudio6Page.vue"),
+                    import("pages/creatorStudio/CreatorStudio25Page.vue"),
             },
         ],
     },
