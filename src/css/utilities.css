@@ -15,6 +15,11 @@
     --border-radius-sm: 4px;
     --border-radius-md: 6.4px;
     --border-radius-lg: 8px;
+
+    /* Secondary section */
+    --secondary-100: #ffa086;
+    --secondary-500: #ef633d;
+    --secondary-900: #c04827;
 }
 
 /* Border section */
@@ -64,6 +69,10 @@
 
 .border-md-primary {
     border: 2px solid var(--primary);
+}
+
+.border-sm-secondary {
+    border: 1px solid var(--secondary-900);
 }
 
 /* Border radius section */
@@ -187,4 +196,11 @@
     ) !important; /* number of lines to show */
     line-clamp: var(--limit-line) !important;
     -webkit-box-orient: vertical !important;
+}
+
+/* Flexbox utilities */
+.flex-grow {
+    /* Ref: https://stackoverflow.com/questions/37745051/fill-the-remaining-height-or-width-in-a-flex-container */
+    flex-grow: 1 !important;
+    min-width: 0 !important;
 }

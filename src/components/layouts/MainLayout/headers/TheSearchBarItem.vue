@@ -5,35 +5,92 @@
     >
         <div class="flex items-center">
             <q-icon name="schedule" size="sm" />
-            <span class="q-ml-sm text-subtitle1">{{ props.label }}</span>
+            <span class="q-ml-sm text-subtitle1">{{ label }}</span>
         </div>
-        <q-btn flat dense no-caps class="remove-button">Xóa</q-btn>
+        <q-btn
+            @click="showRemoveDialog = true"
+            flat
+            dense
+            no-caps
+            class="remove-button"
+        >
+            Xóa
+        </q-btn>
+
+        <!-- Remove popup -->
+        <q-dialog v-model="showRemoveDialog">
+            <q-card>
+                <q-card-section class="row items-center">
+                    <q-avatar
+                        icon="history"
+                        color="negative"
+                        text-color="light"
+                        size="lg"
+                    />
+                    <span class="q-ml-sm text-subtitle1">
+                        Xóa khỏi lịch sử tìm kiếm ?
+                    </span>
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn
+                        flat
+                        no-caps
+                        label="Đóng"
+                        color="dark"
+                        v-close-popup
+                        class="text-subtitle1"
+                        :disable="isProcessing"
+                    />
+                    <q-btn
+                        flat
+                        no-caps
+                        label="Xác nhận xóa"
+                        color="negative"
+                        class="text-subtitle1 text-weight-bold"
+                        @click="removeSearchItem"
+                    />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+        <!-- Remove popup -->
     </li>
 </template>
 
-<script setup>
-import { useRouter } from "vue-router";
-
-const props = defineProps({
-    label: {
-        type: String,
-        required: true,
-        default: "Tìm kiếm gần đây",
+<script>
+export default {
+    name: "TheSearchBarItem",
+    emits: ["removeItem"],
+    props: {
+        index: {
+            type: Number,
+            required: true,
+        },
+        label: {
+            type: String,
+            required: true,
+            default: "Tìm kiếm gần đây",
+        },
     },
-    link: {
-        type: String,
-        required: true,
-        default: "#",
+    data() {
+        return {
+            showRemoveDialog: false,
+        };
     },
-});
+    methods: {
+        goToSearchLink() {
+            const link = `/artwork/search?searchText=${this.label}`;
 
-const router = useRouter();
+            this.$router.push(link);
+        },
+        removeSearchItem() {
+            this.$emit("removeItem", this.index);
 
-function goToSearchLink() {
-    router.push(props.link);
-}
+            this.showRemoveDialog = false;
+        },
+    },
+};
 </script>
-
 
 <style scoped>
 .remove-button,

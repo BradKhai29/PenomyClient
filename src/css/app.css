@@ -11,6 +11,7 @@
     --primary-700-opacity-12: #e5f3ef;
 
     /* Secondary section */
+    --secondary: #fcb4a0;
     --secondary-100: #ffa086;
     --secondary-500: #ef633d;
     --secondary-900: #c04827;
@@ -60,6 +61,10 @@
 }
 
 /* Secondary section */
+.bg-secondary {
+    background-color: var(--secondary) !important;
+}
+
 .bg-secondary-100 {
     background-color: var(--secondary-100) !important;
 }

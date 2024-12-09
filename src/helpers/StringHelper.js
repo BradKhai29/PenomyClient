@@ -43,6 +43,22 @@ function generateSecureRandomString(length) {
     return result;
 }
 
+/**
+ * Check if the input string value is null or empty or contains only white space.
+ * @param {string} value The string value to check.
+ */
+function isNullOrEmpty(value) {
+    if (value == emptyString) {
+        return true;
+    }
+
+    if (String(value).trim().length == 0) {
+        return true;
+    }
+
+    return false;
+}
+
 const StringHelper = {
     /**
      * Replace all the accent characters found in the input stringValue
@@ -57,6 +73,7 @@ const StringHelper = {
         return emptyString;
     },
     generateSecureRandomString: generateSecureRandomString,
+    isNullOrEmpty,
 };
 
 export { StringHelper };

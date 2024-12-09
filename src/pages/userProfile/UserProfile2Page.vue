@@ -37,9 +37,10 @@
                             {{ MAX_NICKNAME_LENGTH }} kí tự)
                         </p>
 
-                        <div class="flex" :class="{ error: nicknameError }">
+                        <div class="flex">
                             <input
                                 class="col-grow q-pa-sm border-radius-sm border-sm-light-500"
+                                :class="nicknameError ? errorClasses : ''"
                                 @input="onInputNickName"
                                 v-model="nickname"
                                 placeholder="Nhập nickname bạn muốn đổi"
@@ -52,9 +53,10 @@
                             tự)
                         </p>
 
-                        <div class="flex" :class="{ error: aboutMeError }">
+                        <div class="flex">
                             <textarea
                                 class="about-me col-grow q-pa-sm border-radius-sm border-sm-light-500"
+                                :class="aboutMeError ? errorClasses : ''"
                                 @input="onInputAboutMe"
                                 v-model="aboutMe"
                                 placeholder="Nhập mô tả về bạn"
@@ -83,7 +85,7 @@
                             class="col-grow text-subtitle1 bg-primary text-dark text-weight-bold q-pa-xs"
                             no-caps
                             :loading="isProcessing"
-                            :disable="isProcessing"
+                            :disable="isProcessing || disableUpdateButton"
                         >
                             Lưu thay đổi
                         </q-btn>
@@ -155,6 +157,12 @@ export default {
         },
         updatedAt() {
             return userProfileStore.userProfile.lastActiveAt;
+        },
+        errorClasses() {
+            return "bg-secondary border-sm-secondary";
+        },
+        disableUpdateButton() {
+            return this.nicknameError || this.aboutMeError;
         },
     },
     beforeMount() {
@@ -265,6 +273,22 @@ export default {
             }
 
             this.isProcessing = false;
+        },
+    },
+    watch: {
+        nickname() {
+            if (this.nickname == "") {
+                this.nicknameError = true;
+            } else {
+                this.nicknameError = false;
+            }
+        },
+        aboutMe() {
+            if (this.aboutMe == "") {
+                this.aboutMeError = true;
+            } else {
+                this.aboutMeError = false;
+            }
         },
     },
 };

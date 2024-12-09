@@ -11,6 +11,7 @@ import artwork1PageRoute from "./artwork/Artwork1PageRoute";
 import artwork3PageRoute from "./artwork/Artwork3PageRoute";
 import artwork4PageRoute from "./artwork/Artwork4PageRoute";
 import artwork5PageRoute from "./artwork/Artwork5PageRoute";
+import artwork8PageRoute from "./artwork/Artwork8PageRoute";
 
 // Creator studio page routes section.
 import creatorStudio1PageRoute from "./creatorStudio/CreatorStudio1PageRoute";
@@ -67,6 +68,7 @@ const routes = [
     ...artwork3PageRoute,
     ...artwork4PageRoute,
     ...artwork5PageRoute,
+    ...artwork8PageRoute,
     // Creator studio routes.
     ...creatorStudio1PageRoute,
     ...creatorStudio2PageRoute,
