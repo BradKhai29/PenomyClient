@@ -100,7 +100,7 @@
             </div>
         </div>
 
-        <!-- Remove history item popup -->
+        <!-- Remove history item dialog -->
         <q-dialog v-model="showDialog">
             <q-card>
                 <q-card-section>

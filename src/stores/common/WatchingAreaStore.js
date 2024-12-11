@@ -5,9 +5,20 @@ const WatchingAreas = {
     ANIME: 2,
 };
 
+const lastVisitPathKeyName = "user:last_visit_path";
+
+function internalSaveLastVisitPath(path) {
+    localStorage.setItem(lastVisitPathKeyName, path);
+}
+
+function loadLastVisitPath() {
+    localStorage.getItem(lastVisitPathKeyName);
+}
+
 const useWatchingAreaStore = defineStore("watchingAreaStore", {
     state: () => ({
         area: WatchingAreas.COMIC,
+        lastVisitRoutePath: null,
     }),
 
     getters: {
@@ -24,14 +35,30 @@ const useWatchingAreaStore = defineStore("watchingAreaStore", {
         isAnimeArea() {
             return this.area == WatchingAreas.ANIME;
         },
+        lastVisitPath() {
+            return this.lastVisitRoutePath;
+        },
+        hasLastVisitPath() {
+            return this.lastVisitPath != null;
+        },
     },
 
     actions: {
+        setUp() {
+            this.lastVisitRoutePath = loadLastVisitPath();
+        },
         setComicArea() {
             this.area = WatchingAreas.COMIC;
         },
         setAnimeArea() {
             this.area = WatchingAreas.ANIME;
+        },
+        setLastVisitPath(path) {
+            console.log(path);
+
+            this.lastVisitRoutePath = path;
+
+            internalSaveLastVisitPath(path);
         },
     },
 });

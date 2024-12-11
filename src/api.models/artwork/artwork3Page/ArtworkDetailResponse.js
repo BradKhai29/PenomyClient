@@ -90,7 +90,7 @@ class ArtworkDetailResponse {
     }
 
     /**
-     * Map from the input response item to the ArtworkChapterResponse instance.
+     * Map from the input response item to the ArtworkDetailResponse instance.
      *
      * @param {ArtworkDetailResponse} apiResponse The response item to map from.
      * @returns {ArtworkDetailResponse} The instance after mapping.

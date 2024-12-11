@@ -138,6 +138,7 @@
                 <div v-else-if="isProfileOwner" class="flex items-center">
                     <!-- Edit profile button -->
                     <q-btn
+                        :to="editProfileLink"
                         id="edit-profile-button"
                         dense
                         no-caps
@@ -364,6 +365,7 @@ import HeaderHighlight from "src/components/common/creatorStudio/HeaderHighlight
 import BecomeCreatorButton from "./BecomeCreatorButton.vue";
 import CreatorBadge from "./CreatorBadge.vue";
 import ReportProfileButton from "../profile.common/ReportProfileButton.vue";
+import { EditProfileRouteName } from "src/router/userProfile/UserProfile2PageRoute";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -397,6 +399,14 @@ export default {
         };
     },
     computed: {
+        editProfileLink() {
+            return {
+                name: EditProfileRouteName,
+                params: {
+                    userId: userProfileStore.currentUserId,
+                },
+            };
+        },
         isAuth() {
             return authStore.isAuth;
         },

@@ -47,7 +47,90 @@
                         >
                     </router-link>
 
-                    <q-btn dense unelevated no-caps icon="more_vert" />
+                    <q-btn dense unelevated no-caps icon="more_vert">
+                        <q-menu
+                            :offset="[0, 6.4]"
+                            anchor="bottom left"
+                            self="bottom end"
+                            fit
+                        >
+                            <q-list
+                                class="text-subtitle1"
+                                style="min-width: 120px"
+                            >
+                                <q-item clickable v-close-popup>
+                                    <q-item-section
+                                        @click="showRemoveDialog = true"
+                                    >
+                                        Xóa vĩnh viễn
+                                    </q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
+
+                    <!-- Remove chapter dialog -->
+                    <q-dialog v-model="showRemoveDialog">
+                        <q-card style="max-width: 480px">
+                            <q-card-section>
+                                <div class="text-subtitle1 flex items-center">
+                                    <q-badge
+                                        class="bg-secondary-900 text-light"
+                                    >
+                                        <q-icon
+                                            name="delete_forever"
+                                            size="sm"
+                                        />
+                                    </q-badge>
+                                    <span
+                                        class="q-ml-sm text-weight-bold text-secondary-900"
+                                    >
+                                        Xóa vĩnh viễn tập truyện?
+                                    </span>
+                                </div>
+                            </q-card-section>
+                            <q-card-section class="q-py-none">
+                                <div class="text-subtitle1 q-mb-md">
+                                    Bạn có muốn hệ thống xóa tập truyện?
+
+                                    <div
+                                        class="q-pa-sm bg-light-300 border-radius-sm text-weight-bold text-secondary-900"
+                                    >
+                                        {{ uploadOrder }}: {{ title }}
+                                    </div>
+                                </div>
+                                <div class="text-subtitle1">
+                                    <strong>Lưu ý:</strong>
+                                    Thao tác này không thể hoàn tác, nội dùng
+                                    này sẽ bị xóa vĩnh viễn và
+                                    <strong>không thể khôi phục trở lại</strong>
+                                </div>
+                            </q-card-section>
+
+                            <q-card-actions align="right">
+                                <q-btn
+                                    flat
+                                    no-caps
+                                    label="Hủy"
+                                    color="dark"
+                                    v-close-popup
+                                    class="text-subtitle1"
+                                    :disable="isProcessing"
+                                />
+                                <q-btn
+                                    flat
+                                    no-caps
+                                    label="Xác nhận xóa"
+                                    color="negative"
+                                    class="text-subtitle1 text-weight-bold"
+                                    @click="removeChapter"
+                                    :disable="isProcessing"
+                                    :loading="isProcessing"
+                                />
+                            </q-card-actions>
+                        </q-card>
+                    </q-dialog>
+                    <!-- Remove chapter dialog -->
                 </div>
             </div>
             <div>
@@ -115,14 +198,22 @@
 
 <script>
 // Import dependencies section.
-import { PublishStatuses } from "src/api.handlers/creatorStudio/creatorStudio7Page/CreatorStudio7ApiHandler";
+import {
+    PublishStatuses,
+    CreatorStudio7ApiHandler,
+} from "src/api.handlers/creatorStudio/creatorStudio7Page/CreatorStudio7ApiHandler";
 import { CreatorStudio10RouteNames } from "src/router/creatorStudio/CreatorStudio10PageRoute";
 import { CreatorStudio11RouteNames } from "src/router/creatorStudio/CreatorStudio11PageRoute";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
 
 export default {
     name: "ComicChapterCard",
+    emits: ["removeItem"],
     props: {
         id: {
+            required: true,
+        },
+        comicId: {
             required: true,
         },
         title: {
@@ -163,6 +254,8 @@ export default {
         return {
             isDrafted: false,
             isScheduled: false,
+            showRemoveDialog: false,
+            isProcessing: false,
         };
     },
     computed: {
@@ -186,6 +279,28 @@ export default {
         checkChapterPublishStatus() {
             this.isDrafted = this.publishStatus == PublishStatuses.DRAFTED;
             this.isScheduled = this.publishStatus == PublishStatuses.SCHEDULED;
+        },
+        async removeChapter() {
+            this.isProcessing = true;
+            this.showRemoveDialog = false;
+
+            const removeResult =
+                await CreatorStudio7ApiHandler.removeChapterAsync(
+                    this.comicId,
+                    this.id
+                );
+
+            if (removeResult) {
+                this.$emit("removeItem", this.id, this.publishStatus);
+
+                NotificationHelper.notifySuccess(
+                    `Xóa tập ${this.uploadOrder}: ${this.title} thành công`
+                );
+            } else {
+                NotificationHelper.notifyError(`Có lỗi xảy ra khi gọi API`);
+            }
+
+            this.isProcessing = false;
         },
     },
 };

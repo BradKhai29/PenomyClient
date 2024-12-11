@@ -16,6 +16,7 @@ import { Auth6ApiHandler } from "src/api.handlers/auth/auth6Page/Auth6ApiHandler
 import { UserProfile1ApiHandler } from "src/api.handlers/userProfile/userProfile1Page/UserProfile1ApiHandler";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
 
 // Import components section.
 import LoadingPlaceholder from "src/components/common/auth/LoadingPlaceholder.vue";
@@ -104,8 +105,16 @@ export default {
         authStore.signIn(this.accessToken, this.refreshToken);
         userProfileStore.signIn(userProfile);
 
-        // Redirect user back to homepage.
-        this.$router.push("/");
+        // Redirect to the last visit path to view the content.
+        const watchingAreaStore = useWatchingAreaStore();
+
+        if (watchingAreaStore.hasLastVisitPath) {
+            this.$router.push(watchingAreaStore.lastVisitPath);
+        }
+        // If no path is indicate, then redirect to home path.
+        else {
+            this.$router.push("/");
+        }
     },
     methods: {
         redirectToLoginPageWithErrors() {

@@ -15,10 +15,12 @@
         <section class="search-bar">
             <div class="row col-grow search-bar-input-section">
                 <input
-                    v-model="searchKeyword"
+                    v-model="searchText"
                     @focus="onInputFocus"
+                    @input="onInputSearch"
                     placeholder="Tìm kiếm"
                     class="bg-white col search-bar-input text-subtitle1 q-py-md"
+                    ref="searchBarInput"
                 />
                 <q-btn
                     dense
@@ -26,13 +28,15 @@
                     class="bg-dark q-ml-xs"
                     text-color="white"
                     icon="search"
+                    :disable="isProcessing"
+                    :loading="isProcessing"
                 />
             </div>
             <div
-                v-show="showMenu"
+                v-show="showMenu && hasSearchHistory"
                 class="search-bar-menu bg-light-100 shadow-1"
             >
-                <div class="flex q-mb-md">
+                <!-- <div class="flex q-mb-md">
                     <q-btn
                         id="btn-login"
                         no-caps
@@ -44,14 +48,101 @@
                             >Tìm kiếm nâng cao</span
                         >
                     </q-btn>
-                </div>
-                <ul id="search-bar-menu-item-list">
+                </div> -->
+                <!-- Display if user does not trigger search -->
+                <ul
+                    v-if="!hasSearchItems && hasSearchHistory"
+                    id="search-bar-menu-item-list"
+                >
                     <SearchBarItem
-                        v-for="i in 5"
-                        :key="i"
-                        link="#"
-                        :label="`Tìm kiếm [${i}]`"
+                        v-for="(keyword, index) in searchHistory"
+                        :key="index"
+                        :label="keyword"
+                        @click="showMenu = false"
+                        @removeItem="handleRemoveItem"
                     />
+                </ul>
+
+                <ul v-else-if="hasSearchItems" id="search-bar-menu-item-list">
+                    <li v-for="artwork in searchItems" :key="artwork.id">
+                        <router-link
+                            @click="showMenu = false"
+                            class="underline-none"
+                            :to="getArtworkLink(artwork.id)"
+                        >
+                            <div
+                                class="flex items-center q-pa-sm bg-light-300 q-mb-sm border-radius-sm align-stretch"
+                            >
+                                <div
+                                    class="artwork-recommend-image border-radius-sm shadow-1"
+                                >
+                                    <q-img
+                                        :src="artwork.avatar"
+                                        :ratio="1"
+                                        width="100%"
+                                        height="100%"
+                                    />
+                                </div>
+
+                                <div class="q-ml-sm text-dark flex-grow">
+                                    <p
+                                        class="artwork-item-name text-subtitle1 text-weight-bold q-mb-none"
+                                    >
+                                        {{ artwork.name }}
+                                    </p>
+
+                                    <div class="flex items-center q-mb-xs">
+                                        <span
+                                            class="star-rate flex items-center"
+                                        >
+                                            <q-icon
+                                                name="star"
+                                                size="20px"
+                                                class="text-primary"
+                                            />
+                                            <span
+                                                style="margin-left: 2px"
+                                                class="text-subtitle2 text-weight-bold"
+                                            >
+                                                {{ artwork.averageStarRates }}
+                                            </span>
+                                        </span>
+
+                                        <span
+                                            class="q-ml-md total-followers flex items-center"
+                                        >
+                                            <q-icon
+                                                name="person_add"
+                                                size="20px"
+                                                class="text-primary"
+                                            />
+                                            <span
+                                                style="margin-left: 2px"
+                                                class="text-subtitle2 text-weight-bold"
+                                            >
+                                                {{ artwork.numberOfFollowers }}
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <span
+                                            style="padding: 2px 4px"
+                                            class="bg-dark flex items-center border-radius-sm"
+                                        >
+                                            <q-icon
+                                                name="circle"
+                                                class="text-primary"
+                                            />
+                                            <span class="q-ml-xs text-light"
+                                                >Còn cập nhật</span
+                                            >
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </router-link>
+                    </li>
                 </ul>
             </div>
 
@@ -62,27 +153,142 @@
     </section>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script>
+// Import dependencies section.
+import { StringHelper } from "src/helpers/StringHelper";
+import { SearchResponseItem } from "src/api.models/artwork/search/SearchResponseItem.js";
+import { SearchApiHandler } from "src/api.handlers/artwork/common/SearchApiHandler.js";
+import { ArrayHelper } from "src/helpers/ArrayHelper";
+
+// Import components section.
 import SearchBarItem from "./TheSearchBarItem.vue";
 import TheAdvancedSearchModal from "components/common/artwork/advancedSearch/TheAdvancedSearchModal.vue";
 
-const showMenu = ref(false);
-const showDialog = ref(false);
-const searchKeyword = ref(null);
+// Support constants.
+const DELAY_TRIGGER_SEARCH_TIMEOUT = 1000;
 
-function onInputFocus(event) {
-    showMenu.value = true;
-}
+// Init store for later operation.
+import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
+import { useSearchStore } from "src/stores/common/SearchStore";
 
-function hideAdvancedSearch(event) {
-    showMenu.value = false;
-}
+const watchingAreaStore = useWatchingAreaStore();
+const searchStore = useSearchStore();
+searchStore.setUp();
 
-function displayAdvancedSearch() {
-    showMenu.value = false;
-    showDialog.value = true;
-}
+export default {
+    name: "TheSearchBar",
+    components: {
+        SearchBarItem,
+        TheAdvancedSearchModal,
+    },
+    data() {
+        return {
+            showMenu: false,
+            showDialog: false,
+            searchText: null,
+            isProcessing: false,
+            /**
+             * @type {HTMLInputElement} The input element to input search text.
+             */
+            searchInput: null,
+            timeOutId: null,
+            /**
+             * @type {SearchResponseItem[]} Type of this list.
+             */
+            searchItems: [],
+        };
+    },
+    computed: {
+        hasSearchItems() {
+            return this.searchItems.length > 0;
+        },
+        hasSearchHistory() {
+            return searchStore.hasSearchHistory;
+        },
+        searchHistory() {
+            return searchStore.searchHistory;
+        },
+    },
+    mounted() {
+        // Bind the search input for later operation.
+        this.searchInput = this.$refs.searchBarInput;
+    },
+    methods: {
+        onInputFocus() {
+            this.showMenu = true;
+        },
+        hideAdvancedSearch() {
+            this.showMenu = false;
+        },
+        displayAdvancedSearch() {
+            this.showMenu = false;
+            this.showDialog = true;
+        },
+        getArtworkLink(artworkId) {
+            if (watchingAreaStore.isComicArea) {
+                return `/artwork/comic/${artworkId}`;
+            }
+
+            return `/artwork/anime/${artworkId}`;
+        },
+        onInputSearch() {
+            const inputValue = this.searchInput.value + "";
+
+            // If user triggers rapidly the search bar, then wait until
+            // the user finishes to type their search text.
+            this.disablePreviousTimeout();
+
+            // Check if the input value is empty or white space to disable when search.
+            const isEmpty = StringHelper.isNullOrEmpty(inputValue);
+
+            if (isEmpty) {
+                this.isProcessing = false;
+                ArrayHelper.clear(this.searchItems);
+
+                return;
+            }
+
+            // Turn on isProcessing flag when searching.
+            this.isProcessing = true;
+
+            this.timeOutId = setTimeout(() => {
+                this.searchArtworkAsync();
+            }, DELAY_TRIGGER_SEARCH_TIMEOUT);
+        },
+        disablePreviousTimeout() {
+            if (this.timeOutId != null) {
+                clearTimeout(this.timeOutId);
+            }
+        },
+        handleRemoveItem(itemIndex) {
+            searchStore.removeSearchHistory(itemIndex);
+        },
+        async searchArtworkAsync() {
+            const isEmpty = StringHelper.isNullOrEmpty(this.searchText);
+
+            if (isEmpty) {
+                this.isProcessing = false;
+                return;
+            }
+
+            console.log("Trigger search");
+            const searchResult = await SearchApiHandler.searchComicAsync(
+                this.searchText
+            );
+
+            if (searchResult) {
+                searchStore.addSearchHistory(this.searchText);
+
+                ArrayHelper.clear(this.searchItems);
+
+                this.searchItems.push(...searchResult);
+            }
+
+            this.isProcessing = false;
+            this.timeOutId = null;
+        },
+    },
+};
 </script>
 
 <style scoped>
@@ -161,5 +367,25 @@ function displayAdvancedSearch() {
     padding: 0 !important;
     margin: 0;
     list-style-type: none !important;
+}
+
+/* Artwork search result item */
+.artwork-recommend-image {
+    --width: 80px;
+    --height: var(--width);
+
+    width: var(--width);
+    height: var(--height);
+}
+
+.align-stretch {
+    align-items: stretch !important;
+}
+
+.artwork-item-name {
+    max-width: 320px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

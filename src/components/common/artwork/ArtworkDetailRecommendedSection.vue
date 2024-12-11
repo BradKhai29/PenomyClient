@@ -130,7 +130,6 @@ export default {
             );
 
         if (recommendArtworkList) {
-            console.log("Success");
             this.recommendedArtworks.push(...recommendArtworkList);
         } else {
             console.log("Something wrong.");

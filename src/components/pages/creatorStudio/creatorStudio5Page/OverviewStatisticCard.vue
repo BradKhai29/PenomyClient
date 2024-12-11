@@ -28,7 +28,7 @@
                 {{ overviewStatistic.totalAnimations }}
             </div>
         </div>
-        <div
+        <!-- <div
             id="series-stat"
             class="border-radius-sm bg-light q-pa-md shadow-1 col-grow"
         >
@@ -39,7 +39,7 @@
             <div class="q-mt-md text-h6 text-weight-bold">
                 {{ overviewStatistic.totalSeries }}
             </div>
-        </div>
+        </div> -->
     </section>
 </template>
 

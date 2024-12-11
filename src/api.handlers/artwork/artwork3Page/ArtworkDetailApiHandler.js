@@ -135,8 +135,6 @@ async function getRecommendedArtworksAsync(artworkId) {
             response.data.body
         );
 
-        console.log(result);
-
         return result;
     } catch (error) {
         console.log(error);

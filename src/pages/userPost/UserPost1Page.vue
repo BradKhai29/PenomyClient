@@ -60,6 +60,7 @@
 <script>
 
 import { FileHelper } from "src/helpers/FileHelper";
+import { domainRootPath } from "../../router/common/DomainRootPath";
 import { StringHelper } from "src/helpers/StringHelper";
 import { PostImageItem } from "src/api.models/userpost/PostImageItem";
 import CreateUserPostHandler from "src/api.handlers/UserPostHandler/CreateUserPostHandler";
@@ -109,6 +110,13 @@ export default {
                         type: "positive",
                         message: "Bài viết đã được đăng thành công!",
                     });
+
+                    // Redirect to the view page (adjust the route path as needed)
+                    this.$router.push({
+                        path: `${domainRootPath.userPost}/posts/view`,
+                    });
+
+                    // Reset form fields
                     this.postContent = "";
                     this.displayImageItemList = [];
                 } else {
@@ -127,6 +135,7 @@ export default {
                 this.isSubmitting = false; // Reset loading state
             }
         },
+
         onInputImage(event) {
             const uploadImageFiles = Array.from(event.target.files);
 

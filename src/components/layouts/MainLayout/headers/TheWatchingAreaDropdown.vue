@@ -47,19 +47,24 @@
 
 <script>
 // Support constants for component.
-const ROOT_PATH = "/";
 const COMIC_ROOT_AREA_PATH = "/artwork/comic";
 const ANIME_ROOT_AREA_PATH = "/artwork/anime";
 
 // Init store for later operation.
 import { useWatchingAreaStore } from "src/stores/common/WatchingAreaStore";
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useRoute } from "vue-router";
+
 const watchingAreaStore = useWatchingAreaStore();
+watchingAreaStore.setUp();
+const authStore = useAuthStore();
 
 export default {
     name: "TheWatchingAreaDropdown",
     data() {
         return {
             showMenu: false,
+            routeObject: null,
         };
     },
     computed: {
@@ -93,7 +98,11 @@ export default {
          * @returns {String} The value of the current path that visited by the user.
          */
         currentPath() {
-            return this.$route.path;
+            if (this.routeObject) {
+                return this.routeObject.fullPath;
+            }
+
+            return "";
         },
         isAnimeArea() {
             return watchingAreaStore.isAnimeArea;
@@ -130,16 +139,25 @@ export default {
         /**
          * Tracking the change in the path to specify the watching area.
          */
-        currentPath(newValue, _) {
-            if (newValue.includes(COMIC_ROOT_AREA_PATH)) {
-                watchingAreaStore.setComicArea();
+        "$route.path": {
+            handler(newValue, _) {
+                if (newValue.includes(COMIC_ROOT_AREA_PATH)) {
+                    watchingAreaStore.setComicArea();
 
-                return;
-            }
+                    return;
+                }
 
-            if (newValue.includes(ANIME_ROOT_AREA_PATH)) {
-                watchingAreaStore.setAnimeArea();
-            }
+                if (newValue.includes(ANIME_ROOT_AREA_PATH)) {
+                    watchingAreaStore.setAnimeArea();
+                }
+
+                // Set the redirect path for user re-visit when login success.
+                if (!authStore.isAuth) {
+                    watchingAreaStore.setLastVisitPath(newValue);
+                }
+            },
+            deep: true,
+            immediate: true,
         },
     },
 };

@@ -123,6 +123,10 @@ const useUserProfileStore = defineStore("userProfileStore", {
             // Persist to local storage some information for later loading.
             persistToLocalStorage(this.userProfile);
         },
+        signOut() {
+            this.userProfile.clear();
+            persistToLocalStorage(this.userProfile);
+        },
         /**
          * Set the user's new nickname.
          *

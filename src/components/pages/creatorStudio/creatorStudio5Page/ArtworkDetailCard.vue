@@ -173,6 +173,10 @@ import { ArtworkPublicLevelHelper } from "src/helpers/ArtworkPublicLevelHelper";
 import { CreatorStudio8ApiHandler } from "src/api.handlers/creatorStudio/creatorStudio8Page/CreatorStudio8ApiHandler";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
+// Init store for later operation.
+import { useCreatorStore } from "src/stores/common/CreatorStore";
+const creatorStore = useCreatorStore();
+
 export default {
     emits: ["removeItem"],
     props: {
@@ -283,11 +287,24 @@ export default {
 
                 // Emit the event to update the parent component state.
                 this.$emit("removeItem", this.id);
+
+                this.updateStoreState();
             } else {
                 NotificationHelper.notifyError(result.message);
             }
 
             this.showDialog = false;
+        },
+        updateStoreState() {
+            if (this.isComic) {
+                const totalDeletedComics = creatorStore.totalDeletedComics + 1;
+
+                creatorStore.setTotalDeletedComics(totalDeletedComics);
+            } else {
+                const totalDeletedAnimes = creatorStore.totalDeletedAnimes + 1;
+
+                creatorStore.setTotalDeletedAnimes(totalDeletedAnimes);
+            }
         },
     },
 };
