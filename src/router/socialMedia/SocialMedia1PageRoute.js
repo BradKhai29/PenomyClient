@@ -15,10 +15,10 @@ const routeDefinition = [
 
     {
         path: domainRootPath.socialMedia,
-        component: () => import("src/layouts/OverlaySocialLayout.vue"),
+        component: () => import("src/layouts/SocialLayout.vue"),
         children: [
             {
-                path: "groups",
+                path: "/social/groups/joined",
                 component: () =>
                     import("pages/socialMedia/SocialMedia1Page.vue"),
             },

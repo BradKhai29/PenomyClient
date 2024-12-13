@@ -1,6 +1,11 @@
 <template>
-    <q-expansion-item default-opened label="Dành cho bạn" class="for-you-expansion">
+    <q-expansion-item
+        default-opened
+        label="Dành cho bạn"
+        class="for-you-expansion"
+    >
         <PersonalProfileSocialLink v-if="isAuth" />
+        <saved-post-link v-if="isAuth" />
     </q-expansion-item>
 </template>
 
@@ -10,6 +15,7 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 
 // Import components section.
 import PersonalProfileSocialLink from "./PersonalProfileSocialLink.vue";
+import SavedPostLink from "./SavedPostLink.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
@@ -18,6 +24,7 @@ export default {
     name: "ForYouExpansion",
     components: {
         PersonalProfileSocialLink,
+        SavedPostLink
     },
     computed: {
         isAuth() {

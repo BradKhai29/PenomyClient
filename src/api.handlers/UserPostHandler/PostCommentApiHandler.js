@@ -42,10 +42,11 @@ async function CreatePostCommentAsync(comment, postId) {
             },
             data: {
                 commentContent: comment,
-                postId: postId,
+                postId: `${postId}`,
             },
         });
-
+        
+        console.log(typeof(postId));
         return ApiResponse.success(response.data.body);
     } catch (error) {
         console.error("Error creating post comment:", error);

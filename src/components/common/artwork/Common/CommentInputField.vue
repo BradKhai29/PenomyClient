@@ -1,5 +1,5 @@
 <template>
-    <div class="input-container" :class="isUpdate || isReply ? '' : 'create'">
+    <div class="input-container" :class="isUpdate || isReply || isPostUrl ? '' : 'create'">
         <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense" />
         <q-item tag="div">
             <q-item-section>
@@ -36,12 +36,14 @@ const route = useRoute();
 const createPostCommentApi = PostCommentApiHandler.CreatePostCommentAsync;
 
 const authStore = useAuthStore();
+
+const isPostUrl = route.path.includes("post");
 const isDirectlyComment = ref(true);
 const isCommentEmpty = ref(false);
 const props = defineProps({
     postId:{
-        type: String,
-        default: "1232131232"
+        type: Number,
+        default: 1232131232
     },
     artworkId: {
         type: String,
@@ -132,7 +134,7 @@ async function sendComment() {
                     if (route.path.includes("/post")) {
                         const response = await createPostCommentApi(
                             comment.value,
-                            "23390001362423809"
+                            props.postId
                         )
                         if(response.responseBody.commentId != -1){
                             NotificationHelper.notifySuccess("Tạo bình luận thành công")

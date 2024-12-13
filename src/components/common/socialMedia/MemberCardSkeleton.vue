@@ -1,12 +1,14 @@
 <template>
-    <q-item tag="a" class="flex flex-row items-center">
-        <q-avatar>
-            <q-skeleton type="QAvatar" />
-        </q-avatar>
-        <div class="q-pl-md">
-            <q-skeleton type="text" width="6rem"/>
-            <q-skeleton type="text" width="6rem"/>
-            <q-skeleton type="text" width="6rem"/>
-        </div>
-    </q-item>
+    <div class="q-pa-sm">
+        <q-card>
+            <q-skeleton height="180px" square />
+            <q-card-section class="q-pa-sm">
+                <q-skeleton type="text" width="100%" />
+                <q-skeleton type="text" width="100%" />
+            </q-card-section>
+            <q-card-actions align="center">
+                <q-skeleton type="QBtn" width="97%" />
+            </q-card-actions>
+        </q-card>
+    </div>
 </template>

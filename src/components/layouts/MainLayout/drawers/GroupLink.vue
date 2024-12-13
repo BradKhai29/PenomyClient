@@ -1,7 +1,7 @@
 <template>
     <DrawerLink v-if="group != null" :title="group.name" :link="toLink" :isSelected="isSelected"
         :createdAt="group.createdAt" :image="group.coverImgUrl" />
-    <DrawerLink v-if="group == null" :title="'Xem tất cả'" link="toLink" :isSelected="false" :createdAt="''" />
+    <DrawerLink v-if="group == null" :title="'Xem tất cả'" link="/social/groups" :isSelected="false" :createdAt="''" />
 
 </template>
 

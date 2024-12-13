@@ -7,7 +7,7 @@
         </div>
 
         <!-- Edit section -->
-        <div v-if="route.path.indexOf('manage') != -1" class="q-pt-md">
+        <div v-if="route.path.indexOf('manage') != -1 && authStore.bearerAccessToken().length > 11" class="q-pt-md">
             <EditGroup :groupInfo="groupInfo" />
             <join-request :groupInfo="groupInfo" @approve-request="getGroupDescription" />
             <GroupMemberSection :is-group-manager="groupInfo.isManager" :group-member-count="groupInfo.totalMembers"
@@ -25,10 +25,12 @@ import { NotificationHelper } from "src/helpers/NotificationHelper";
 import EditGroup from 'src/components/common/socialMedia/EditGroup.vue';
 import JoinRequest from 'src/components/common/socialMedia/JoinRequest.vue';
 import GroupMemberSection from 'src/components/common/socialMedia/GroupMemberSection.vue';
+import { useAuthStore } from 'src/stores/common/AuthStore';
 import { useRoute } from "vue-router";
 
 const getGroupApi = GetGroupDescriptionApiHandler.GetGroupDescription;
 const route = useRoute();
+const authStore = useAuthStore();
 
 // object variables
 const groupInfo = ref({

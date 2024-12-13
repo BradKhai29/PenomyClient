@@ -64,9 +64,9 @@
                 </q-card-actions>
                 <!-- Post comment -->
                 <q-card-section>
+                    <CommentInputField :post-id="post.id"/>
                 </q-card-section>
             </q-card>
-            <CommentInputField />
         </div>
     </q-page>
 </template>
@@ -89,7 +89,6 @@ export default {
             try {
                 const response = await GetUserPostHandler.GetCreatedPosts();
                 posts.value = response.userPosts;
-                console.log(posts.value);
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
@@ -153,7 +152,7 @@ export default {
         };
     },
     components: {
-        CommentInputField
+        CommentInputField,
     }
 };
 </script>
