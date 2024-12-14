@@ -1,6 +1,7 @@
 <template>
     <q-page class="q-pa-md">
         <div class="post-container">
+            <PostCreateSection @createPostSuccess="fetchPosts" />
             <!-- Loop through posts -->
             <q-card v-for="post in posts" :key="post.id" class="q-mb-md post-card">
                 <!-- Post Header -->
@@ -8,7 +9,7 @@
                     <!-- Left: Avatar and User Info -->
                     <div class="row items-center">
                         <q-avatar>
-                            <img src="https://cdn.quasar.dev/img/avatar.png" alt="User Avatar" />
+                            <img :src="post.userAvatar" alt="User Avatar" />
                         </q-avatar>
                         <div class="q-ml-md">
                             <div class="post-username">{{ post.createdBy }}</div>
@@ -78,6 +79,7 @@ import { onMounted, ref } from 'vue';
 import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHandler';
 import RemoveUserPostHandler from 'src/api.handlers/UserPostHandler/RemoveUserPostHandler';
 import CommentLoader from 'src/components/common/socialMedia/GroupPost/CommentLoader.vue';
+import PostCreateSection from 'src/components/common/socialMedia/Common/PostCreateSection.vue';
 
 // import api
 import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
@@ -116,7 +118,6 @@ export default {
         const likePost = async (postId) => {
             try {
                 const response = (await LikePostHandler.LikeUnlikePostAsync(postId, false)).responseBody;
-                console.log(response);
                 if (response.isLikeRequest) {
                     posts.value.find((post) => post.id === postId).totalLikes += 1;
                     posts.value.find((post) => post.id === postId).hasLiked = true;
@@ -179,11 +180,13 @@ export default {
             getPublicLevelIcon,
             confirmRemovePost,
             openComments,
-            likePost
+            likePost,
+            fetchPosts
         };
     },
     components: {
-        CommentLoader
+        CommentLoader,
+        PostCreateSection
     }
 };
 </script>
