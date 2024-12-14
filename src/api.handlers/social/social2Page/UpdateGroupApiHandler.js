@@ -34,7 +34,6 @@ async function UpdateGroupCoverImageAsync(groupId, coverImage) {
 }
 
 async function UpdateGroupDescriptionAsync(groupDetail) {
-    console.log(groupDetail.postMode);
     try {
         const response = await axios({
             url: apiUrl1,

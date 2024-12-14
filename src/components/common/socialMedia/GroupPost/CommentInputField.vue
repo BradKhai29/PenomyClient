@@ -1,5 +1,5 @@
 <template>
-    <div class="input-container" :class="isUpdate || isReply || isPostUrl || isSocialUrl ? '' : 'create'">
+    <div class="input-container" :class="isReply ?'reply' : ''">
         <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense" />
         <q-item tag="div">
             <q-item-section>
@@ -20,11 +20,8 @@
 
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
-import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import PostCommentApiHandler from "src/api.handlers/UserPostHandler/PostCommentApiHandler";
-import { HttpMethod } from "src/api.common/HttpMethod";
-import EmojiPickerBoard from "./EmojiPickerBoard.vue";
+import EmojiPickerBoard from "../../artwork/Common/EmojiPickerBoard.vue";
 import { useAuthStore } from "src/stores/common/AuthStore.js";
 import PopupLoginRequired from "../../others/PopupLoginRequired.vue";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -34,27 +31,15 @@ const route = useRoute();
 
 // define apis
 const createPostCommentApi = PostCommentApiHandler.CreatePostCommentAsync;
+const updatePostCommentApi = PostCommentApiHandler.UpdatePostCommentAsync;
 
 const authStore = useAuthStore();
 
-const isPostUrl = route.path.includes("post");
-const isSocialUrl = route.path == "/social";
 const isDirectlyComment = ref(true);
-const isCommentEmpty = ref(false);
 const props = defineProps({
     postId: {
         type: Number,
         default: 1232131232
-    },
-    artworkId: {
-        type: String,
-        required: false,
-        default: "2336253634727936",
-    },
-    chapterId: {
-        type: String,
-        required: false,
-        default: "0",
     },
     parentCommentId: {
         type: String,
@@ -96,41 +81,18 @@ async function sendComment() {
         if (comment.value.match(/^\s*$/) == null) {
             comment.value = comment.value.trim();
             if (props.isUpdate) {
-
-                const apiUrl = `${BaseWebApiUrl}/G53/comment/edit`;
-                await axios({
-                    url: apiUrl,
-                    method: HttpMethod.PUT,
-                    data: {
-                        newComment: `${comment.value}`,
-                        commentId: props.commentId,
-                    },
-                    headers: {
-                        Authorization: authStore.bearerAccessToken(),
-                    },
-                }).then(() => {
+                const response = await updatePostCommentApi(
+                    comment.value,
+                    props.commentId
+                )
+                if (response.isSuccess) {
                     emit("editComment", comment.value);
-                });
+                }
+
             } else {
                 if (props.isReply) {
                     isDirectlyComment.value = false;
-                    const apiUrl = `${BaseWebApiUrl}/g58/replycomment/create`;
-                    await axios({
-                        url: apiUrl,
-                        method: HttpMethod.POST,
-                        data: {
-                            artworkId: `${props.artworkId}`,
-                            chapterId: `${props.chapterId}`,
-                            commentContent: `${comment.value}`,
-                            parentCommentId: `${props.parentCommentId}`,
-                        },
-                        headers: {
-                            Authorization: authStore.bearerAccessToken(),
-                        },
-                    }).then(() => {
-                        comment.value = "";
-                        emit("replyComment", props.parentCommentId);
-                    });
+                    emit("replyComment", comment.value);
                 } else {
                     if (route.path.includes("/post") || route.path.includes("/social")) {
                         const response = await createPostCommentApi(
@@ -139,27 +101,10 @@ async function sendComment() {
                         )
                         if (response.responseBody.commentId != -1) {
                             NotificationHelper.notifySuccess("Tạo bình luận thành công")
+                            comment.value = "";
                             emit("createComment");
                         } else NotificationHelper.notifyError("Đã có lỗi xảy ra!")
                     }
-                    const apiUrl = `${BaseWebApiUrl}/g52/comment/create`;
-                    await axios({
-                        url: apiUrl,
-                        method: HttpMethod.POST,
-                        data: {
-                            artworkId: `${props.artworkId}`,
-                            chapterId: `${props.chapterId}`,
-                            isDirectlyComment: isDirectlyComment.value,
-                            commentContent: `${comment.value}`,
-                        },
-                        headers: {
-                            Authorization: authStore.bearerAccessToken(),
-                        },
-                    }).then(() => {
-                        comment.value = "";
-                        isCommentEmpty.value = false;
-                        emit("createComment");
-                    });
                 }
             }
         }
@@ -177,8 +122,7 @@ async function sendComment() {
     border-radius: 7px;
 }
 
-.create {
-    margin-left: 260px;
-    margin-right: 260px;
+.reply {
+    margin: 0 0 0 30px;
 }
 </style>

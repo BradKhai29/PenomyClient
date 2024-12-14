@@ -50,6 +50,7 @@ class UserPostDto {
      */
     constructor({
         id,
+        userAvatar,
         content,
         createdBy,
         createdAt,
@@ -59,6 +60,7 @@ class UserPostDto {
         attachedMedias = [], // Default to an empty array if attachedMedias is undefined
     }) {
         this.id = id;
+        this.userAvatar = userAvatar;
         this.content = content;
         this.createdBy = createdBy;
         this.createdAt = DateTimeHelper.formatISODate(createdAt); // Format date using helper

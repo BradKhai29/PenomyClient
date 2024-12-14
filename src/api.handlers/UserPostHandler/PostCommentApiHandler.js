@@ -5,20 +5,21 @@ import { ApiResponse } from "src/api.models/common/ApiResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 const authStore = useAuthStore();
-const getCommentApiUrl = `${BaseWebApiUrl}/sm23/post-comment/get`;
+const getCommentApiUrl = `${BaseWebApiUrl}/sm23/post-comments/get`;
 const createCommentApiUrl = `${BaseWebApiUrl}/sm24/post-comment/create`;
 const editCommentApiUrl = `${BaseWebApiUrl}/sm25/post-comment/update`;
+const takeDownCommentApiUrl = `${BaseWebApiUrl}/sm27/post-comment/take-down`;
 
 async function GetPostCommentAsync(postId) {
     try {
         // Make the API call
         const response = await axios({
             url: getCommentApiUrl,
-            method: HttpMethod.POST,
+            method: HttpMethod.GET,
             headers: {
                 Authorization: authStore.bearerAccessToken(),
             },
-            data: {
+            params: {
                 postId: postId,
             },
         });
@@ -45,8 +46,8 @@ async function CreatePostCommentAsync(comment, postId) {
                 postId: `${postId}`,
             },
         });
-        
-        console.log(typeof(postId));
+
+        console.log(typeof postId);
         return ApiResponse.success(response.data.body);
     } catch (error) {
         console.error("Error creating post comment:", error);
@@ -78,9 +79,33 @@ async function UpdatePostCommentAsync(comment, commentId) {
     }
 }
 
+async function TakeDownPostCommentAsync(postId, commentId) {
+    try {
+        // Make the API call
+        const response = await axios({
+            url: takeDownCommentApiUrl,
+            method: HttpMethod.POST,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+            data: {
+                postId: String(postId),
+                commentId: commentId,
+            },
+        });
+
+        return ApiResponse.success(response.data.body);
+    } catch (error) {
+        console.error("Error editting post comment:", error);
+
+        return ApiResponse.failed();
+    }
+}
+
 const PostCommentApiHandler = {
     GetPostCommentAsync: GetPostCommentAsync,
     CreatePostCommentAsync: CreatePostCommentAsync,
     UpdatePostCommentAsync: UpdatePostCommentAsync,
+    TakeDownPostCommentAsync: TakeDownPostCommentAsync,
 };
 export default PostCommentApiHandler;

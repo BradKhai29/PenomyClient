@@ -19,12 +19,18 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import SocialGroupDescription from 'src/components/common/socialMedia/SocialGroupDescription.vue';
-import GetGroupDescriptionApiHandler from 'src/api.handlers/social/social3Page/GetGroupDescriptionApiHandler';
 import { NotificationHelper } from "src/helpers/NotificationHelper";
+
+// import Api handler
+import GetGroupDescriptionApiHandler from 'src/api.handlers/social/social3Page/GetGroupDescriptionApiHandler';
+
+// import components
+import SocialGroupDescription from 'src/components/common/socialMedia/SocialGroupDescription.vue';
 import EditGroup from 'src/components/common/socialMedia/EditGroup.vue';
 import JoinRequest from 'src/components/common/socialMedia/JoinRequest.vue';
 import GroupMemberSection from 'src/components/common/socialMedia/GroupMemberSection.vue';
+
+// import stores
 import { useAuthStore } from 'src/stores/common/AuthStore';
 import { useRoute } from "vue-router";
 
