@@ -6,6 +6,10 @@ const routeDefinition = [
         component: () => import("src/layouts/SocialLayout.vue"),
         children: [
             {
+                path: "",
+                component: () => import("src/pages/userPost/UserPost2Page.vue"),
+            },
+            {
                 path: "feeds",
                 component: () =>
                     import("pages/socialMedia/SocialMedia1Page.vue"),

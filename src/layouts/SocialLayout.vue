@@ -35,7 +35,7 @@
             </q-toolbar>
             <q-list class="app-drawer-list">
                 <q-list class="drawer-gutter">
-                    <HomeLink />
+                    <HomeLinkSocial />
                     <JoinedGroupPageLink/>
                     <FriendLink/>
                     <ChatLink/>
@@ -71,7 +71,7 @@ import TheSearchBar from "src/components/layouts/MainLayout/headers/TheSearchBar
 import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvatar.vue";
 
 // Import components from drawer section.
-import HomeLink from "src/components/layouts/MainLayout/drawers/HomeLink.vue";
+import HomeLinkSocial from "src/components/layouts/MainLayout/drawers/HomeLinkSocial.vue";
 import MyGroupsExpansion from "src/components/layouts/MainLayout/drawers/MyGroupsExpansion.vue";
 import JoinGroupsExpansion from "src/components/layouts/MainLayout/drawers/JoinGroupsExpansion.vue";
 import OthersExpansion from "components/layouts/OthersExpansion.vue";

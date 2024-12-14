@@ -14,7 +14,7 @@
                             <div class="post-username">{{ post.createdBy }}</div>
                             <div class="post-meta row items-center">
                                 <div class="post-date">{{ post.createdAt }}</div>
-                                <q-icon :name="getPublicLevelIcon(post.publicLevel)" color="#120E36" size="sm"
+                                <q-icon :name="getPublicLevelIcon(post.publicLevel)" color="#120E36" size="xs"
                                     class="q-ml-xs" title="Visibility Level" />
                             </div>
                         </div>
@@ -55,16 +55,16 @@
 
                 <!-- Post Footer -->
                 <q-card-actions align="around">
-                    <q-btn flat icon="thumb_up" @click="likePost(post.id)">
+                    <q-btn flat icon="thumb_up" @click="likePost(post.id)" :color="post.hasLiked ? 'primary' : ''">
                         <span class="q-ml-sm">{{ post.totalLikes }}</span>
                     </q-btn>
-                    <q-btn flat icon="chat_bubble" @click="openComments(post.id)">
+                    <q-btn flat icon="chat_bubble" @click="openComments(post.id, post.isOpenComment)">
                         <span class="q-ml-sm">Comment</span>
                     </q-btn>
                 </q-card-actions>
                 <!-- Post comment -->
-                <q-card-section>
-                    <CommentInputField :post-id="post.id"/>
+                <q-card-section v-show="post.isOpenComment">
+                    <CommentLoader :post-id="post.id" :is-allow-comment="true" />
                 </q-card-section>
             </q-card>
         </div>
@@ -77,7 +77,10 @@ import { Notify, Dialog } from 'quasar';
 import { onMounted, ref } from 'vue';
 import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHandler';
 import RemoveUserPostHandler from 'src/api.handlers/UserPostHandler/RemoveUserPostHandler';
-import CommentInputField from 'src/components/common/artwork/Common/CommentInputField.vue';
+import CommentLoader from 'src/components/common/socialMedia/GroupPost/CommentLoader.vue';
+
+// import api
+import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
 
 export default {
     setup() {
@@ -89,6 +92,9 @@ export default {
             try {
                 const response = await GetUserPostHandler.GetCreatedPosts();
                 posts.value = response.userPosts;
+                posts.value.forEach((post) => {
+                    post.isOpenComment = false;
+                })
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
@@ -106,6 +112,26 @@ export default {
                     return 'help'; // Unknown
             }
         };
+
+        const likePost = async (postId) => {
+            try {
+                const response = (await LikePostHandler.LikeUnlikePostAsync(postId, false)).responseBody;
+                console.log(response);
+                if (response.isLikeRequest) {
+                    posts.value.find((post) => post.id === postId).totalLikes += 1;
+                    posts.value.find((post) => post.id === postId).hasLiked = true;
+                }
+                else if (!response.isLikeRequest) {
+                    posts.value.find((post) => post.id === postId).totalLikes -= 1;
+                    posts.value.find((post) => post.id === postId).hasLiked = false;
+                }
+                // else {
+                //     throw new Error('Failed to like post');
+                // }
+            } catch (error) {
+                console.error("Error liking post:", error);
+            }
+        }
         const confirmRemovePost = (post) => {
             Dialog.create({
                 title: 'Confirm',
@@ -143,16 +169,21 @@ export default {
             }
         };
 
+        const openComments = (postId, isOpenComment) => {
+            posts.value.find((post) => post.id === postId).isOpenComment = !isOpenComment
+        }
         onMounted(fetchPosts);
 
         return {
             posts,
             getPublicLevelIcon,
             confirmRemovePost,
+            openComments,
+            likePost
         };
     },
     components: {
-        CommentInputField,
+        CommentLoader
     }
 };
 </script>

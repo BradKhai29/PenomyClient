@@ -1,5 +1,5 @@
 <template>
-    <div :class="!isReplyComment ? 'comment-container' : ''">
+    <div :class="isReplyComment ? 'comment-container' : ''">
         <q-item tag="div" class="user-infor q-pa-md">
             <q-avatar size="3em">
                 <img :src="comment.avatar" alt="" />
@@ -33,12 +33,12 @@
         <q-item v-show="!isEdit" tag="div" id="content" align="left">
             {{ editCommentProps.oldComment }}
         </q-item>
-        <div v-if="isEdit" @keydown="handleKeydown">
+        <div v-if="isEdit" @keydown="handleKeydown" class="q-mb-sm">
             <comment-input-field :commentId="props.comment.id" :isUpdate="editCommentProps.isUpdate"
                 :oldComment="editCommentProps.oldComment" @editComment="editCommentHandler" />
         </div>
 
-        <q-item tag="div">
+        <!-- <q-item tag="div" v-show="!isEdit">
             <q-item-label class="reply-container" v-if="!isReplyComment">
                 <a class="cursor-pointer" @click="isReply = !isReply"><q-icon name="chat_bubble" /> Phản hồi</a>
                 <a class="cursor-pointer" @click="isShowReplyComment = !isShowReplyComment">
@@ -46,6 +46,7 @@
                 </a>
             </q-item-label>
             <q-space></q-space>
+
             <q-item-label>
                 <q-btn v-if="!isLike" color="grey-10" size=".7rem" dense icon="thumb_up" @click="likeComment()">
                     {{ likeCount }}
@@ -54,15 +55,18 @@
                     {{ likeCount }}
                 </q-btn>
             </q-item-label>
-        </q-item>
+        </q-item> -->
         <q-separator />
         <div class="q-pr-xl q-pl-xl q-pt-md" v-if="isReply">
             <comment-input-field :isReply="editCommentProps.isReply" :parent-comment-id="props.comment.id"
                 @replyComment="onReplyCommentCreate" />
         </div>
         <div class="q-pr-xl q-pl-xl q-pt-md" v-show="isShowReplyComment">
-            <child-comment-loader :key="reloadKey" :parentCommentId="props.comment.id"
-                @removeReplyComment="onReplyCommentDelete" />
+            <!-- <child-comment-loader
+                :key="reloadKey"
+                :parentCommentId="props.comment.id"
+                @removeReplyComment="onReplyCommentDelete"
+            /> -->
         </div>
     </div>
     <popup-login-required :open="openLoginPopup" />
@@ -72,13 +76,12 @@
 <script setup>
 import { ref } from "vue";
 import CommentInputField from "./CommentInputField.vue";
-import ChildCommentLoader from "./ChildCommentLoader.vue";
+// import ChildCommentLoader from "./ChildCommentLoader.vue";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
-import ConfirmPopup from "./ConfirmPopup.vue";
-import axios from "axios";
-import { HttpMethod } from "src/api.common/HttpMethod";
+import ConfirmPopup from "../../artwork/Common/ConfirmPopup.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import PopupLoginRequired from "../../others/PopupLoginRequired.vue";
+import PostCommentApiHandler from "src/api.handlers/UserPostHandler/PostCommentApiHandler";
 
 var props = defineProps({
     comment: {
@@ -107,6 +110,9 @@ var props = defineProps({
     },
 });
 
+// init Api handler
+const takeDownCommentApi = PostCommentApiHandler.TakeDownPostCommentAsync;
+
 const emit = defineEmits([
     "deleteComment",
     "replyComment",
@@ -117,9 +123,7 @@ const isReply = ref(false);
 const isEdit = ref(false);
 const isDelete = ref(false);
 const isLike = ref(props.comment.isLiked);
-const deleteUrl = `${BaseWebApiUrl}/g54/ArtworkComment/delete/${props.comment.id}`;
-const likeUrl = `${BaseWebApiUrl}/g56/ArtworkComment/like/`;
-const unlikeUrl = `${BaseWebApiUrl}/g57/comment/unlike/`;
+
 const likeCount = ref(props.comment.likeCount);
 const reloadKey = ref(0);
 const openLoginPopup = ref(false);
@@ -145,51 +149,55 @@ function popupClickHandler(isDeleteClicked) {
     }
 }
 async function deleteComment() {
-    await axios({
-        url: deleteUrl,
-        method: HttpMethod.DELETE,
-    }).then(() => {
-        isDelete.value = false;
+    const response = await takeDownCommentApi(0, props.comment.id);
+    if (response.isSuccess) {
         emit("deleteComment", props.comment.id);
-    });
+    }
+    // await axios({
+    //     url: deleteUrl,
+    //     method: HttpMethod.DELETE,
+    // }).then(() => {
+    //     isDelete.value = false;
+    //     emit("deleteComment", props.comment.id);
+    // });
 }
 
 async function likeComment() {
-    if (!store.isAuth) openLoginPopup.value = true;
-    else {
-        await axios({
-            url: likeUrl,
-            method: HttpMethod.POST,
-            data: {
-                commentId: `${props.comment.id}`,
-            },
-            headers: {
-                Authorization: store.bearerAccessToken(),
-            },
-        }).then(() => {
-            likeCount.value += 1;
-            isLike.value = true;
-            console.log(store.accessToken);
-        });
-    }
+    // if (!store.isAuth) openLoginPopup.value = true;
+    // else {
+    //     await axios({
+    //         url: likeUrl,
+    //         method: HttpMethod.POST,
+    //         data: {
+    //             commentId: `${props.comment.id}`,
+    //         },
+    //         headers: {
+    //             Authorization: store.bearerAccessToken(),
+    //         },
+    //     }).then(() => {
+    //         likeCount.value += 1;
+    //         isLike.value = true;
+    //         console.log(store.accessToken);
+    //     });
+    // }
 }
 async function unlikeComment() {
-    if (!store.isAuth) openLoginPopup.value = true;
-    else {
-        await axios({
-            url: unlikeUrl,
-            method: HttpMethod.POST,
-            data: {
-                commentId: `${props.comment.id}`,
-            },
-            headers: {
-                Authorization: store.bearerAccessToken(),
-            },
-        }).then(() => {
-            likeCount.value -= 1;
-            isLike.value = false;
-        });
-    }
+    // if (!store.isAuth) openLoginPopup.value = true;
+    // else {
+    //     await axios({
+    //         url: unlikeUrl,
+    //         method: HttpMethod.POST,
+    //         data: {
+    //             commentId: `${props.comment.id}`,
+    //         },
+    //         headers: {
+    //             Authorization: store.bearerAccessToken(),
+    //         },
+    //     }).then(() => {
+    //         likeCount.value -= 1;
+    //         isLike.value = false;
+    //     });
+    // }
 }
 
 function editCommentHandler(newComment) {
@@ -197,14 +205,14 @@ function editCommentHandler(newComment) {
     editCommentProps.oldComment = newComment;
 }
 
-function onReplyCommentCreate(parentCommentId) {
-    reloadKey.value += 1;
-    emit("replyComment", parentCommentId);
-}
+// function onReplyCommentCreate(parentCommentId) {
+//     reloadKey.value += 1;
+//     emit("replyComment", parentCommentId);
+// }
 
-function onReplyCommentDelete(parentCommentId) {
-    emit("replyCommentDelete", parentCommentId);
-}
+// function onReplyCommentDelete(parentCommentId) {
+//     emit("replyCommentDelete", parentCommentId);
+// }
 </script>
 <script>
 export default {
@@ -213,7 +221,7 @@ export default {
 </script>
 <style scoped>
 .comment-container {
-    margin: 0 260px;
+    margin: 0 20px;
 }
 
 .user-infor {
