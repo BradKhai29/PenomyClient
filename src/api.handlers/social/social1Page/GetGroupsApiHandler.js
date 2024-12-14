@@ -5,9 +5,9 @@ import { ApiResponse } from "src/api.models/common/ApiResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 const authStore = useAuthStore();
-const apiUrl = `${BaseWebApiUrl}/sm9/created-groups/get`;
+const apiUrl = `${BaseWebApiUrl}/SM7/groups/get`;
 
-async function GetCreatedGroupsAsync() {
+async function GetJoinedGroupsAsync(groupNum) {
     try {
         const response = await axios({
             url: apiUrl,
@@ -16,10 +16,11 @@ async function GetCreatedGroupsAsync() {
                 Authorization: authStore.bearerAccessToken(),
             },
             params: {
-                empty: true,
+                pageNum: 1,
+                groupNum: groupNum
             },
         });
-        return ApiResponse.success(response.data.body.groupList);
+        return ApiResponse.success(response.data.body.groups);
     } catch (error) {
         console.log(error);
 
@@ -27,8 +28,8 @@ async function GetCreatedGroupsAsync() {
     }
 }
 
-const MyCreatedGroupsApiHandler = {
-    MyCreatedGroups: GetCreatedGroupsAsync,
+const GetGroupsApiHandler = {
+    GetJoinedGroupsAsync: GetJoinedGroupsAsync,
 };
 
-export default MyCreatedGroupsApiHandler;
+export default GetGroupsApiHandler;

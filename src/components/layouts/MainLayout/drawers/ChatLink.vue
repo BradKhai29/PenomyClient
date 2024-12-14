@@ -1,5 +1,5 @@
 <template>
-    <DrawerLink title="Mạng xã hội" icon="group" link="/social" :isSelected="isSelected" />
+    <DrawerLink title="Kênh chat" icon="chat" link="/chat/recommended" :isSelected="isSelected" />
 </template>
 
 <script setup>
@@ -13,7 +13,7 @@ const isSelected = computed(() => {
     const currentPath = String(route.path);
 
     return (
-        currentPath == "/social"
+        currentPath == ("/chat/recommended")
     );
 })
 </script>

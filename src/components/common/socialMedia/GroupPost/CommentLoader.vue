@@ -10,12 +10,12 @@
             </div>
         </q-tab>
         <!-- <div v-if="isAllowComment"> -->
-            <q-tab v-if="isAllowComment" name="2" @click="getComments()">
-                <span class="text-black">Top</span>
-            </q-tab>
-            <q-tab v-if="isAllowComment" name="3" @click="getComments()">
-                <span class="text-black">Mới nhất</span>
-            </q-tab>
+        <q-tab v-if="isAllowComment" name="2" @click="getComments()">
+            <span class="text-black">Top</span>
+        </q-tab>
+        <q-tab v-if="isAllowComment" name="3" @click="getComments()">
+            <span class="text-black">Mới nhất</span>
+        </q-tab>
         <!-- </div> -->
         <q-space />
     </q-tabs>
@@ -32,16 +32,12 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
-import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
-import { HttpMethod } from "src/api.common/HttpMethod";
 import UserComment from "./UserComment.vue";
 import CommentInputField from "./CommentInputField.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 var comments = ref([]);
 
-const apiUrl = `${BaseWebApiUrl}/g10/ArtworkComment/get`;
 const authStore = useAuthStore();
 const commentSection = ref("1");
 
@@ -61,32 +57,7 @@ onMounted(() => {
 });
 
 async function getComments() {
-    if (authStore.isAuth) {
-        await axios({
-            url: apiUrl,
-            method: HttpMethod.GET,
-            params: {
-                artworkId: props.artworkId,
-                commentSection: commentSection.value,
-            },
-            headers: {
-                Authorization: authStore.bearerAccessToken(),
-            },
-        }).then((response) => {
-            comments.value = response.data.body.commentList;
-        });
-    } else {
-        await axios({
-            url: apiUrl.concat(`/anonymous`),
-            method: HttpMethod.GET,
-            params: {
-                artworkId: props.artworkId,
-                commentSection: commentSection.value,
-            },
-        }).then((response) => {
-            comments.value = response.data.body.commentList;
-        });
-    }
+    
 }
 function onCommentDelete(id) {
     comments.value = comments.value.filter((comment) => comment.id !== id);

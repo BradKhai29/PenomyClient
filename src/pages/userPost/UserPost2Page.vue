@@ -51,6 +51,8 @@
                     </div>
                 </q-card-section>
 
+                <q-separator />
+
                 <!-- Post Footer -->
                 <q-card-actions align="around">
                     <q-btn flat icon="thumb_up" @click="likePost(post.id)">
@@ -60,6 +62,10 @@
                         <span class="q-ml-sm">Comment</span>
                     </q-btn>
                 </q-card-actions>
+                <!-- Post comment -->
+                <q-card-section>
+                    <CommentInputField :post-id="post.id"/>
+                </q-card-section>
             </q-card>
         </div>
     </q-page>
@@ -71,16 +77,18 @@ import { Notify, Dialog } from 'quasar';
 import { onMounted, ref } from 'vue';
 import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHandler';
 import RemoveUserPostHandler from 'src/api.handlers/UserPostHandler/RemoveUserPostHandler';
+import CommentInputField from 'src/components/common/artwork/Common/CommentInputField.vue';
 
 export default {
     setup() {
+
+
         const posts = ref([]);
 
         const fetchPosts = async () => {
             try {
                 const response = await GetUserPostHandler.GetCreatedPosts();
                 posts.value = response.userPosts;
-                console.log(posts.value);
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
@@ -143,6 +151,9 @@ export default {
             confirmRemovePost,
         };
     },
+    components: {
+        CommentInputField,
+    }
 };
 </script>
 
