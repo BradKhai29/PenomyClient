@@ -117,7 +117,7 @@
     </div>
 </template>
 <script setup>
-import { ref, defineProps, watch, onMounted } from 'vue';
+import { ref, defineProps, watch } from 'vue';
 import { defineEmits } from 'vue';
 import GroupPost from './Common/GroupPost.vue';
 
@@ -185,12 +185,10 @@ const tabButtons = ref([
     "Giới thiệu", "Bài viết", "Thành viên", "Sự kiện"
 ])
 
-const fetchPosts = async () => {
-    console.log(props.groupInfo);
+async function fetchPosts() {
     try {
-        const response = (await getGroupPostApi()).responseBody;
+        const response = (await getGroupPostApi(route.params.id)).responseBody;
         posts.value = response;
-        console.log(response);
         posts.value.forEach((post) => {
             post.isOpenComment = false;
         })
@@ -199,25 +197,16 @@ const fetchPosts = async () => {
     }
 };
 
-onMounted(() => {
-    fetchPosts
-})
-
 watch(
     () => props.groupInfo,
-    () => {
+    async () => {
         hasJoinGroup.value = props.groupInfo.hasJoin;
         hasSendJoinRequest.value = props.groupInfo.hasRequestJoin
         isEditCoverImage.value = false
         editUrl.value = `${route.path}/manage`.replace('//', '/');
+        await fetchPosts();
     },
 )
-
-watch(() => props.groupInfo, async (newValue, oldValue) => {
-    if (newValue != oldValue) {
-        await fetchPosts();
-    }
-});
 
 function LoadUpdateCoverImageSection() {
     isEditCoverImage.value = true

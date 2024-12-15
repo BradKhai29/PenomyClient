@@ -3,14 +3,10 @@ import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import { ApiResponse } from "src/api.models/common/ApiResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { UserPostResponseDto } from "src/api.models/userpost/UserPostResponseDto";
-import { useRoute } from "vue-router";
 
 const authStore = useAuthStore();
 const apiUrl = `${BaseWebApiUrl}/SM11/group-posts/get`;
-
-async function GetGroupPostsAsync() {
-    const route = useRoute();
+async function GetGroupPostsAsync(groupId) {
     try {
         const response = await axios({
             url: apiUrl,
@@ -19,14 +15,13 @@ async function GetGroupPostsAsync() {
                 Authorization: authStore.bearerAccessToken(),
             },
             params: {
-                groupId: route.params.id,
+                groupId: groupId,
             },
         });
         if (response.status === 200) {
             const groupPostsData = response.data.body.groupPosts; // Extract userPosts array
 
             // Wrap the array in an object with a userPosts key
-            console.log(groupPostsData);
             return ApiResponse.success(groupPostsData);
         } else {
             console.error("Unexpected response status:", response.status);
