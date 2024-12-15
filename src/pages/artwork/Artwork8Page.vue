@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <q-page> Search text: {{ searchInput }} </q-page>
 </template>
 
@@ -132,4 +132,4 @@ async function searchArtworkAsync() {
     this.timeOutId = null;
 }
 
-</script>
+</script> -->
