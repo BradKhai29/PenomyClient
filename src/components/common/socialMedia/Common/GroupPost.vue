@@ -95,7 +95,6 @@ watch(
         posts.value = props.groupPosts;
     }
 )
-console.log(posts.value);
 const likePost = async (postId) => {
     try {
         const response = (await LikePostHandler.LikeUnlikePostAsync(postId, true)).responseBody;

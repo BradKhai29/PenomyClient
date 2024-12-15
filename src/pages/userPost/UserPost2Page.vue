@@ -1,7 +1,7 @@
 <template>
     <q-page class="q-pa-md">
         <div class="post-container">
-            <PostCreateSection @createPostSuccess="fetchPosts"/>
+            <PostCreateSection @createPostSuccess="fetchPosts" />
             <!-- Loop through posts -->
             <q-card v-for="post in posts" :key="post.id" class="q-mb-md q-mt-lg post-card">
                 <!-- Post Header -->
@@ -56,7 +56,7 @@
 
                 <!-- Post Footer -->
                 <q-card-actions align="around">
-                    <q-btn flat icon="thumb_up" @click="likePost(post.id)" :color="post.hasLiked ? 'primary' : ''">
+                    <q-btn flat icon="thumb_up" @click="likePost(post.id)" :color="post.hasLikedPost ? 'primary' : ''">
                         <span class="q-ml-sm">{{ post.totalLikes }}</span>
                     </q-btn>
                     <q-btn flat icon="chat_bubble" @click="openComments(post.id, post.isOpenComment)">
@@ -120,11 +120,11 @@ export default {
                 const response = (await LikePostHandler.LikeUnlikePostAsync(postId, false)).responseBody;
                 if (response.isLikeRequest) {
                     posts.value.find((post) => post.id === postId).totalLikes += 1;
-                    posts.value.find((post) => post.id === postId).hasLiked = true;
+                    posts.value.find((post) => post.id === postId).hasLikedPost = true;
                 }
                 else if (!response.isLikeRequest) {
                     posts.value.find((post) => post.id === postId).totalLikes -= 1;
-                    posts.value.find((post) => post.id === postId).hasLiked = false;
+                    posts.value.find((post) => post.id === postId).hasLikedPost = false;
                 }
                 // else {
                 //     throw new Error('Failed to like post');

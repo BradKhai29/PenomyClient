@@ -75,7 +75,7 @@
             <!-- Post -->
             <div v-if="groupInfo.isPublic || groupInfo.hasJoin" class="col-7 q-pq-md">
                 <PostCreateSection :isGroupPost="true" :isPublicGroup="groupInfo.isPublic"
-                    @createPostSuccess="fetchPosts" />
+                    @createPostSuccess="fetchPosts()" />
                 <GroupPost v-if="groupInfo.isPublic || groupInfo.hasJoin" :group-posts="posts" />
             </div>
 
@@ -185,7 +185,8 @@ const tabButtons = ref([
     "Giới thiệu", "Bài viết", "Thành viên", "Sự kiện"
 ])
 
-async function fetchPosts() {
+const fetchPosts = async () => {
+    console.log(props.groupInfo);
     try {
         const response = (await getGroupPostApi()).responseBody;
         posts.value = response;
@@ -198,8 +199,8 @@ async function fetchPosts() {
     }
 };
 
-onMounted(async () => {
-    await fetchPosts();
+onMounted(() => {
+    fetchPosts
 })
 
 watch(
@@ -212,8 +213,10 @@ watch(
     },
 )
 
-watch(() => props.groupInfo, () => {
-    // fetchPosts();
+watch(() => props.groupInfo, async (newValue, oldValue) => {
+    if (newValue != oldValue) {
+        await fetchPosts();
+    }
 });
 
 function LoadUpdateCoverImageSection() {

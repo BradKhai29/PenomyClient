@@ -134,7 +134,6 @@ export default {
             try {
                 let response = null;
                 if (this.isGroupPost) {
-
                     response = await CreateGroupPostHandler.CreatePostAsync(postDetail);
                 } else
                     response = await CreateUserPostHandler.CreatePostAsync(postDetail);
