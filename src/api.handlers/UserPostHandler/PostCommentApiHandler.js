@@ -32,7 +32,7 @@ async function GetPostCommentAsync(postId) {
     }
 }
 
-async function CreatePostCommentAsync(comment, postId) {
+async function CreatePostCommentAsync(comment, postId, isGroupPost) {
     try {
         // Make the API call
         const response = await axios({
@@ -44,6 +44,7 @@ async function CreatePostCommentAsync(comment, postId) {
             data: {
                 commentContent: comment,
                 postId: `${postId}`,
+                isGroupPostComment: isGroupPost,
             },
         });
 

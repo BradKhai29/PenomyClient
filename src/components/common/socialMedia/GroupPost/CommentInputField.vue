@@ -1,5 +1,5 @@
 <template>
-    <div class="input-container" :class="isReply ?'reply' : ''">
+    <div class="input-container" :class="isReply ? 'reply' : ''">
         <q-input autogrow class="q-pa-md" v-model="comment" borderless="" dense="dense" />
         <q-item tag="div">
             <q-item-section>
@@ -65,7 +65,10 @@ const props = defineProps({
         required: false,
         default: "",
     },
-
+    isGroupPost: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const emit = defineEmits(["createComment", "editComment", "replyComment"]);
@@ -94,10 +97,23 @@ async function sendComment() {
                     isDirectlyComment.value = false;
                     emit("replyComment", comment.value);
                 } else {
-                    if (route.path.includes("/post") || route.path.includes("/social")) {
+                    if (route.path.includes("/post") || route.path == ("/social")) {
                         const response = await createPostCommentApi(
                             comment.value,
-                            props.postId
+                            props.postId,
+                            false
+                        )
+                        if (response.responseBody.commentId != -1) {
+                            NotificationHelper.notifySuccess("Tạo bình luận thành công")
+                            comment.value = "";
+                            emit("createComment");
+                        } else NotificationHelper.notifyError("Đã có lỗi xảy ra!")
+                    }
+                    else {
+                        const response = await createPostCommentApi(
+                            comment.value,
+                            props.postId,
+                            true
                         )
                         if (response.responseBody.commentId != -1) {
                             NotificationHelper.notifySuccess("Tạo bình luận thành công")
