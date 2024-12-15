@@ -54,6 +54,7 @@ class UserPostDto {
         content,
         createdBy,
         createdAt,
+        hasLikedPost,
         allowComment,
         publicLevel,
         totalLikes,
@@ -64,6 +65,7 @@ class UserPostDto {
         this.content = content;
         this.createdBy = createdBy;
         this.createdAt = DateTimeHelper.formatISODate(createdAt); // Format date using helper
+        this.hasLikedPost = hasLikedPost;
         this.allowComment = allowComment;
         this.publicLevel = publicLevel;
         this.totalLikes = totalLikes;

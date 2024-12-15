@@ -1,7 +1,6 @@
 <template>
-    <q-page class="q-pa-md">
+    <div>
         <div class="post-container">
-            <PostCreateSection @createPostSuccess="fetchPosts" />
             <!-- Loop through posts -->
             <q-card v-for="post in posts" :key="post.id" class="q-mb-md q-mt-lg post-card">
                 <!-- Post Header -->
@@ -15,8 +14,8 @@
                             <div class="post-username">{{ post.createdBy }}</div>
                             <div class="post-meta row items-center">
                                 <div class="post-date">{{ post.createdAt }}</div>
-                                <q-icon :name="getPublicLevelIcon(post.publicLevel)" color="#120E36" size="xs"
-                                    class="q-ml-xs" title="Visibility Level" />
+                                <q-icon name="groups" color="#120E36" size="xs" class="q-ml-xs"
+                                    title="Visibility Level"></q-icon>
                             </div>
                         </div>
                     </div>
@@ -65,130 +64,95 @@
                 </q-card-actions>
                 <!-- Post comment -->
                 <q-card-section v-show="post.isOpenComment">
-                    <CommentLoader :post-id="post.id" :is-allow-comment="true" />
+                    <CommentLoader :post-id="String(post.id)" :is-allow-comment="true" />
                 </q-card-section>
             </q-card>
         </div>
-    </q-page>
+    </div>
 </template>
 
 
-<script>
+<script setup>
 import { Notify, Dialog } from 'quasar';
-import { onMounted, ref } from 'vue';
-import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHandler';
+import { onMounted, ref, defineProps, watch } from 'vue';
 import RemoveUserPostHandler from 'src/api.handlers/UserPostHandler/RemoveUserPostHandler';
 import CommentLoader from 'src/components/common/socialMedia/GroupPost/CommentLoader.vue';
-import PostCreateSection from 'src/components/common/socialMedia/Common/PostCreateSection.vue';
-
 // import api
 import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
 
-export default {
-    setup() {
-
-
-        const posts = ref([]);
-
-        const fetchPosts = async () => {
-            try {
-                const response = await GetUserPostHandler.GetCreatedPosts();
-                posts.value = response.userPosts;
-                posts.value.forEach((post) => {
-                    post.isOpenComment = false;
-                })
-            } catch (error) {
-                console.error('Error fetching posts:', error);
-            }
-        };
-
-        const getPublicLevelIcon = (level) => {
-            switch (level) {
-                case 1:
-                    return 'public'; // Public
-                case 2:
-                    return 'group'; // Restricted
-                case 3:
-                    return 'lock'; // Private
-                default:
-                    return 'help'; // Unknown
-            }
-        };
-
-        const likePost = async (postId) => {
-            try {
-                const response = (await LikePostHandler.LikeUnlikePostAsync(postId, false)).responseBody;
-                if (response.isLikeRequest) {
-                    posts.value.find((post) => post.id === postId).totalLikes += 1;
-                    posts.value.find((post) => post.id === postId).hasLikedPost = true;
-                }
-                else if (!response.isLikeRequest) {
-                    posts.value.find((post) => post.id === postId).totalLikes -= 1;
-                    posts.value.find((post) => post.id === postId).hasLikedPost = false;
-                }
-                // else {
-                //     throw new Error('Failed to like post');
-                // }
-            } catch (error) {
-                console.error("Error liking post:", error);
-            }
-        }
-        const confirmRemovePost = (post) => {
-            Dialog.create({
-                title: 'Confirm',
-                message: `Are you sure you want to delete this post?`,
-                ok: {
-                    label: 'Yes',
-                    color: 'negative',
-                },
-                cancel: {
-                    label: 'No',
-                },
-            }).onOk(async () => {
-                await removePost(post.id);
-            });
-        };
-
-        const removePost = async (postId) => {
-            try {
-                const response = await RemoveUserPostHandler.RemoveUserPostAsync(postId);
-                if (response) {
-                    posts.value = posts.value.filter((post) => post.id !== postId);
-                    Notify.create({
-                        type: 'positive',
-                        message: 'Post removed successfully.',
-                    });
-                } else {
-                    throw new Error('Failed to remove post');
-                }
-            } catch (error) {
-                console.error("Error deleting post:", error);
-                Notify.create({
-                    type: 'negative',
-                    message: 'Failed to remove post. Please try again later.',
-                });
-            }
-        };
-
-        const openComments = (postId, isOpenComment) => {
-            posts.value.find((post) => post.id === postId).isOpenComment = !isOpenComment
-        }
-        onMounted(fetchPosts);
-
-        return {
-            posts,
-            getPublicLevelIcon,
-            confirmRemovePost,
-            openComments,
-            likePost,
-            fetchPosts
-        };
+const props = defineProps({
+    groupPosts: {
+        type: Array,
+        required: true,
     },
-    components: {
-        CommentLoader,
-        PostCreateSection
+});
+
+const posts = ref(props.groupPosts);
+
+watch(
+    () => props.groupPosts,
+    () => {
+        posts.value = props.groupPosts;
+    }
+)
+const likePost = async (postId) => {
+    try {
+        const response = (await LikePostHandler.LikeUnlikePostAsync(postId, true)).responseBody;
+        if (response.isLikeRequest) {
+            posts.value.find((post) => post.id === postId).totalLikes += 1;
+            posts.value.find((post) => post.id === postId).hasLikedPost = true;
+        }
+        else if (!response.isLikeRequest) {
+            posts.value.find((post) => post.id === postId).totalLikes -= 1;
+            posts.value.find((post) => post.id === postId).hasLikedPost = false;
+        }
+        // else {
+        //     throw new Error('Failed to like post');
+        // }
+    } catch (error) {
+        console.error("Error liking post:", error);
+    }
+}
+const confirmRemovePost = (post) => {
+    Dialog.create({
+        title: 'Confirm',
+        message: `Are you sure you want to delete this post?`,
+        ok: {
+            label: 'Yes',
+            color: 'negative',
+        },
+        cancel: {
+            label: 'No',
+        },
+    }).onOk(async () => {
+        await removePost(post.id);
+    });
+};
+
+const removePost = async (postId) => {
+    try {
+        const response = await RemoveUserPostHandler.RemoveUserPostAsync(postId);
+        if (response) {
+            posts.value = posts.value.filter((post) => post.id !== postId);
+            Notify.create({
+                type: 'positive',
+                message: 'Post removed successfully.',
+            });
+        } else {
+            throw new Error('Failed to remove post');
+        }
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        Notify.create({
+            type: 'negative',
+            message: 'Failed to remove post. Please try again later.',
+        });
     }
 };
+
+const openComments = (postId, isOpenComment) => {
+    posts.value.find((post) => post.id === postId).isOpenComment = !isOpenComment
+}
 </script>
 
 <style scoped>
