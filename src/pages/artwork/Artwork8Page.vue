@@ -1,8 +1,8 @@
-<!-- <template>
-    <q-page> Search text: {{ searchInput }} </q-page>
+<template>
+    <q-page> Search text:  </q-page>
 </template>
 
-<script setup>
+<!-- <script setup>
 import { ref, computed } from "vue";
 import { StringHelper } from "src/helpers/StringHelper";
 import { SearchResponseItem } from "src/api.models/artwork/search/SearchResponseItem.js";
