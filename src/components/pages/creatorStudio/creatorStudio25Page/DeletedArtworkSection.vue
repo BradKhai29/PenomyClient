@@ -552,7 +552,7 @@ export default {
 
                 NotificationHelper.notifySuccess("Khôi phục thành công");
             } else {
-                NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifyError("Có gì đó không ổn...");
             }
 
             this.isProcessing = false;
@@ -576,7 +576,7 @@ export default {
 
                 NotificationHelper.notifySuccess("Xóa vĩnh viễn thành công");
             } else {
-                NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifyError("Có gì đó không ổn...");
             }
 
             this.isProcessing = false;
@@ -601,7 +601,7 @@ export default {
                     "Dọn sạch thùng rác thành công"
                 );
             } else {
-                NotificationHelper.notifySuccess("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifySuccess("Có gì đó không ổn...");
             }
 
             this.isProcessing = false;
@@ -624,7 +624,7 @@ export default {
 
                 NotificationHelper.notifySuccess("Khôi phục tất cả thành công");
             } else {
-                NotificationHelper.notifySuccess("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifySuccess("Có gì đó không ổn...");
             }
 
             this.isProcessing = false;
