@@ -4,13 +4,16 @@ import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import { useAuthStore } from "src/stores/common/AuthStore";
 const authStore = useAuthStore();
-async function RemoveUserPostAsync(postId) {
+async function RemoveUserPostAsync(postId, isGroupPost) {
     try {
         const url = `${BaseWebApiUrl}/sm14/remove`;
         const response = await axios({
             url: url,
             method: HttpMethod.POST,
-            data: { postId: postId },
+            data: {
+                postId: postId,
+                isGroupPost: isGroupPost,
+            },
             headers: {
                 Authorization: authStore.bearerAccessToken(),
             },
