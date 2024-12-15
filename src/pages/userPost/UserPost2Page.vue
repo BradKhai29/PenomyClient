@@ -30,7 +30,7 @@
                                         <q-icon name="delete" color="#120E36" />
                                     </q-item-section>
                                     <q-item-section>
-                                        <span>Remove Post</span>
+                                        <span>Xóa bài viết</span>
                                     </q-item-section>
                                 </q-item>
                             </q-list>
@@ -60,7 +60,7 @@
                         <span class="q-ml-sm">{{ post.totalLikes }}</span>
                     </q-btn>
                     <q-btn flat icon="chat_bubble" @click="openComments(post.id, post.isOpenComment)">
-                        <span class="q-ml-sm">Comment</span>
+                        <span class="q-ml-sm">Bình luận</span>
                     </q-btn>
                 </q-card-actions>
                 <!-- Post comment -->
@@ -136,13 +136,13 @@ export default {
         const confirmRemovePost = (post) => {
             Dialog.create({
                 title: 'Confirm',
-                message: `Are you sure you want to delete this post?`,
+                message: `Bạn chắc chắn muốn xóa bài viết?`,
                 ok: {
-                    label: 'Yes',
+                    label: 'Chắc chắn',
                     color: 'negative',
                 },
                 cancel: {
-                    label: 'No',
+                    label: 'Xem đã',
                 },
             }).onOk(async () => {
                 await removePost(post.id);
@@ -151,7 +151,7 @@ export default {
 
         const removePost = async (postId) => {
             try {
-                const response = await RemoveUserPostHandler.RemoveUserPostAsync(postId);
+                const response = await RemoveUserPostHandler.RemoveUserPostAsync(postId, false);
                 if (response) {
                     posts.value = posts.value.filter((post) => post.id !== postId);
                     Notify.create({

@@ -10,7 +10,7 @@ const createCommentApiUrl = `${BaseWebApiUrl}/sm24/post-comment/create`;
 const editCommentApiUrl = `${BaseWebApiUrl}/sm25/post-comment/update`;
 const takeDownCommentApiUrl = `${BaseWebApiUrl}/sm27/post-comment/take-down`;
 
-async function GetPostCommentAsync(postId) {
+async function GetPostCommentAsync(postId, isGroupPost) {
     try {
         // Make the API call
         const response = await axios({
@@ -21,6 +21,7 @@ async function GetPostCommentAsync(postId) {
             },
             params: {
                 postId: postId,
+                isGroupPost: isGroupPost
             },
         });
 

@@ -13,12 +13,14 @@ import UserComment from "./UserComment.vue";
 import CommentInputField from "./CommentInputField.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import PostCommentApiHandler from "src/api.handlers/UserPostHandler/PostCommentApiHandler";
+import { useRoute } from "vue-router";
 
 var comments = ref([]);
 
 // Init API handler for later operation.
 const getPostCommentApiHandler = PostCommentApiHandler.GetPostCommentAsync;
 
+const route = useRoute();
 const authStore = useAuthStore();
 const commentSection = ref("1");
 
@@ -37,7 +39,7 @@ onMounted(() => {
 });
 
 async function getComments() {
-    comments.value = (await getPostCommentApiHandler(props.postId)).responseBody.comments;
+    comments.value = (await getPostCommentApiHandler(props.postId, route.path.includes("/group"))).responseBody.comments;
 }
 function onCommentDelete(id) {
     comments.value = comments.value.filter((comment) => comment.id !== id);

@@ -15,7 +15,7 @@
         <GroupCard class="col-3" style="overflow: auto;" v-for="group in joinedGroups" :key="group.id"
             :group-info="group" />
     </div>
-    <div class="row justify-start items-start content-start q-ml-xl q-mr-xl" v-if="joinedGroups.length == 0">
+    <div class="row justify-start items-start content-start q-ml-xl q-mr-xl" v-if="!isDataFetched">
         <MemberCardSkeleton class="col-3" v-for="i in 8" :key="i" />
     </div>
 </template>
@@ -41,14 +41,22 @@ const myCreatedGroupsApiHandler = MyCreatedGroupsApiHandler.MyCreatedGroups;
 
 // Init objects
 const joinedGroups = ref([]);
+const isDataFetched = ref(false);
 
 onMounted(async () => {
     if (authStore.bearerAccessToken().length == 11) {
         router.push('/auth/login');
     }
     else {
-        joinedGroups.value = ((await getGroupsApiHandler(100)).responseBody);
-        joinedGroups.value.push(...((await myCreatedGroupsApiHandler(100)).responseBody));
+        try {
+            joinedGroups.value = ((await getGroupsApiHandler(100)).responseBody);
+            joinedGroups.value.push(...((await myCreatedGroupsApiHandler(100)).responseBody));
+            isDataFetched.value = true;
+        }
+        catch (error) {
+            console.error('Error fetching groups:', error);
+        }
+
     }
 })
 </script>
