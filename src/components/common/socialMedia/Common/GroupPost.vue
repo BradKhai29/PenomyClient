@@ -65,7 +65,6 @@
                 <!-- Post comment -->
                 <q-card-section v-show="post.isOpenComment">
                     <CommentLoader :post-id="String(post.id)" :is-allow-comment="true" />
-                    {{ post.id }}
                 </q-card-section>
             </q-card>
         </div>
