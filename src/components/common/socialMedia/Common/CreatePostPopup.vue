@@ -18,8 +18,12 @@
 
                     <div class="col-md-5">
                         <div class="username text-bold row">{{ userProfileStore.userProfile.nickname }}</div>
-                        <q-select v-model="privacy" :options="privacyOptions" option-value="value" option-label="label"
-                            dense outlined class="privacy-select row col-md-2" style="min-width: 140px;" />
+                        <q-select v-if="!isGroupPost" v-model="privacy" :options="privacyOptions" option-value="value"
+                            option-label="label" dense outlined class="privacy-select row col-md-2"
+                            style="min-width: 140px;" />
+                        <q-btn v-if="isGroupPost" dense unelevated disable icon="groups"
+                            :label="isPublicGroup ? 'Nhóm công khai' : 'Nhóm riêng tư'" size="0.65rem" color="grey-4"
+                            text-color="black" no-caps class="q-pa-xs" />
 
                     </div>
                 </q-card-section>
@@ -70,7 +74,9 @@ import { domainRootPath } from "src/router/common/DomainRootPath";
 import { StringHelper } from "src/helpers/StringHelper";
 import { PostImageItem } from "src/api.models/userpost/PostImageItem";
 import CreateUserPostHandler from "src/api.handlers/UserPostHandler/CreateUserPostHandler";
+import CreateGroupPostHandler from "src/api.handlers/UserPostHandler/CreateGroupPostHandler";
 import { useUserProfileStore } from 'src/stores/common/UserProfileStore';
+import { useRoute } from "vue-router";
 import { is } from "quasar";
 export default {
 
@@ -91,10 +97,15 @@ export default {
             postContent: "",
             files: [],
             isSubmitting: false, // New property to handle loading state
+            groupId: useRoute().params.id
         };
     },
     props: {
         isGroupPost: {
+            type: Boolean,
+            default: false
+        },
+        isPublicGroup: {
             type: Boolean,
             default: false
         }
@@ -117,10 +128,16 @@ export default {
                 allowComment: true,
                 publicLevel: this.privacy.value,
                 attachedMedia: this.displayImageItemList.map((item) => item.imageFile),
+                groupId: this.isGroupPost ? this.groupId : null
             };
 
             try {
-                const response = await CreateUserPostHandler.CreatePostAsync(postDetail);
+                let response = null;
+                if (this.isGroupPost) {
+
+                    response = await CreateGroupPostHandler.CreatePostAsync(postDetail);
+                } else
+                    response = await CreateUserPostHandler.CreatePostAsync(postDetail);
 
                 if (response.isSuccess) {
                     this.$q.notify({

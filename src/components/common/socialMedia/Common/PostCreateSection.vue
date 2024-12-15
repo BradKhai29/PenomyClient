@@ -1,6 +1,5 @@
 <template>
     <div class="post-bg">
-
         <q-item tag="div">
             <div style="height: 6rem;" class="row items-center">
                 <q-avatar size="2.5rem" class="q-mr-md row items-center">
@@ -21,14 +20,11 @@
                     Tải ảnh lên
                 </q-btn>
             </q-item-section>
-            <!-- <q-item-section>
-                <q-btn class="full-width" color="primary" label="Đăng bài" />
-            </q-item-section> -->
         </q-item>
     </div>
 
     <CreatePostPopup v-if="showCreationPopup" @closePopup="showCreationPopup = false" :is-group-post="isGroupPost"
-        @createPostSuccess="showCreationPopup = false; emit('createPostSuccess')" />
+        :is-public-group="isPublicGroup" @createPostSuccess="showCreationPopup = false; emit('createPostSuccess')" />
 
 </template>
 
@@ -43,6 +39,10 @@ const showCreationPopup = ref(false);
 
 const props = defineProps({
     isGroupPost: {
+        type: Boolean,
+        default: false
+    },
+    isPublicGroup: {
         type: Boolean,
         default: false
     }

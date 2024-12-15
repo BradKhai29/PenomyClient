@@ -72,25 +72,15 @@
     <div class="group-body">
         <div class="q-pa-lg row q-gutter-md justify-center"
             :class="groupInfo.isPublic || groupInfo.hasJoin ? 'group-body-padding' : ''">
-
             <!-- Post -->
             <div v-if="groupInfo.isPublic || groupInfo.hasJoin" class="col-7 q-pq-md">
-                <!-- <q-item tag="div" class="post-bg" style="">
-                    <div style="height: 6rem;" class="row items-center">
-                        <q-avatar size="2.5rem" class="q-mr-md row items-center">
-                            <img :src="userProfileStore.userProfile.avatarUrl" />
-                        </q-avatar>
-                    </div>
-                    <q-item-section>
-                        <q-input dense rounded outlined v-model="postContent" bg-color="grey-3"
-                            label="Bạn đang nghĩ gì?" />
-                    </q-item-section>
-                </q-item> -->
-                <PostCreateSection :isGroupPost="true" @createPostSuccess="fetchPosts" />
+                <PostCreateSection :isGroupPost="true" :isPublicGroup="groupInfo.isPublic"
+                    @createPostSuccess="fetchPosts" />
+                <GroupPost v-if="groupInfo.isPublic || groupInfo.hasJoin" :group-posts="posts" />
             </div>
 
             <!-- Description -->
-            <div class="col-4" style="background-color: white; border-radius: 5px;">
+            <div class="col-4" style="background-color: white; border-radius: 5px; max-height: max-content">
                 <p style="margin: 0;" class="text-subtitle1 q-pl-md q-pt-md">Giới thiệu</p>
                 <q-item v-if="groupInfo.description != ''" tag="div">
                     {{ groupInfo.description }}
@@ -127,19 +117,21 @@
     </div>
 </template>
 <script setup>
-import { ref, defineProps, watch } from 'vue';
+import { ref, defineProps, watch, onMounted } from 'vue';
 import { defineEmits } from 'vue';
+import GroupPost from './Common/GroupPost.vue';
 
 // import apis
 import SocialCoverImageInput from 'src/components/common/socialMedia/SocialCoverImageInput.vue';
 import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
 import JoinRequestApiHandler from 'src/api.handlers/social/social3Page/JoinRequestApiHandler';
+import GetGroupPostHandler from 'src/api.handlers/UserPostHandler/GetGroupPostHandler';
 import PostCreateSection from './Common/PostCreateSection.vue';
 
 // import helpers and stores
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 import { useAuthStore } from 'src/stores/common/AuthStore';
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useUserProfileStore } from 'src/stores/common/UserProfileStore';
 
 const isLoadingImageBtn = ref(false);
@@ -147,11 +139,13 @@ const isLoadingJoinBtn = ref(false);
 const isLoadingCancelBtn = ref(false);
 const hasSendJoinRequest = ref(false);
 
+const router = useRouter();
 const route = useRoute();
 const profileStore = useUserProfileStore();
 const authStore = useAuthStore();
 
 // Define apis
+const getGroupPostApi = GetGroupPostHandler.GetGroupPostsAsync;
 const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
 const requestJoinGroupApi = JoinRequestApiHandler.JoinGroupAsync;
 const cancelRequestJoinGroupApi = JoinRequestApiHandler.CancelJoinRequestAsync;
@@ -180,6 +174,7 @@ const newCoverPhotoUrl = ref('');
 const editUrl = ref('');
 const postContent = ref('');
 const coverImageInput = ref(null)
+const posts = ref([]);
 
 const editBtnClickedCount = ref(0);
 let isValidInput = ref(null)
@@ -190,14 +185,36 @@ const tabButtons = ref([
     "Giới thiệu", "Bài viết", "Thành viên", "Sự kiện"
 ])
 
+async function fetchPosts() {
+    try {
+        const response = (await getGroupPostApi()).responseBody;
+        posts.value = response;
+        console.log(response);
+        posts.value.forEach((post) => {
+            post.isOpenComment = false;
+        })
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
+};
+
+onMounted(async () => {
+    await fetchPosts();
+})
+
 watch(
     () => props.groupInfo,
     () => {
         hasJoinGroup.value = props.groupInfo.hasJoin;
         hasSendJoinRequest.value = props.groupInfo.hasRequestJoin
         isEditCoverImage.value = false
-        editUrl.value = `${route.path}/manage`.replace('//', '/')
-    })
+        editUrl.value = `${route.path}/manage`.replace('//', '/');
+    },
+)
+
+watch(() => props.groupInfo, () => {
+    // fetchPosts();
+});
 
 function LoadUpdateCoverImageSection() {
     isEditCoverImage.value = true
@@ -241,9 +258,12 @@ function onCanelImage() {
 }
 
 async function JoinGroupAsync() {
-    console.log(await authStore.isAuthAsync());
     if (!await authStore.isAuthAsync()) {
-        route.push("auth/login");
+        NotificationHelper.notifySuccess(
+            "Vui lòng đăng nhập để thao tác!"
+        )
+        router.push("/auth/login");
+        return;
     }
     if (!props.groupInfo.isPublic) {
 

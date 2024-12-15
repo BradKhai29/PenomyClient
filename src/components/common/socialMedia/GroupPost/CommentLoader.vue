@@ -62,7 +62,8 @@ function onReplyCommentDelete(parentCommentId) {
 
 <style scoped>
 .no-comment {
-    margin-left: 260px;
+    display: flex;
+    justify-content: center;
 }
 
 .navigation {
