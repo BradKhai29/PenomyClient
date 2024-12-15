@@ -109,7 +109,7 @@ export default {
 
                 NotificationHelper.notifySuccess("Theo dõi thành công");
             } else {
-                NotificationHelper.notifySuccess("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifySuccess("Có gì đó không ổn...");
             }
 
             this.isProcessing = false;
@@ -127,7 +127,7 @@ export default {
 
                 NotificationHelper.notifySuccess("Hủy theo dõi thành công");
             } else {
-                NotificationHelper.notifySuccess("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifySuccess("Có gì đó không ổn...");
             }
 
             this.isProcessing = false;

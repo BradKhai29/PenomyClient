@@ -101,7 +101,7 @@ export default {
             );
 
             if (!isSuccess) {
-                NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifyError("Có gì đó không ổn...");
 
                 return;
             }
@@ -117,7 +117,7 @@ export default {
             );
 
             if (!isSuccess) {
-                NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifyError("Có gì đó không ổn...");
 
                 return;
             }

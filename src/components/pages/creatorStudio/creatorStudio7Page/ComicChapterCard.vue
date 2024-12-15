@@ -297,7 +297,7 @@ export default {
                     `Xóa tập ${this.uploadOrder}: ${this.title} thành công`
                 );
             } else {
-                NotificationHelper.notifyError(`Có lỗi xảy ra khi gọi API`);
+                NotificationHelper.notifyError(`Có gì đó không ổn...`);
             }
 
             this.isProcessing = false;

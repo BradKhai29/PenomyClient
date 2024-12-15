@@ -133,7 +133,7 @@ export default {
             if (result) {
                 this.viewedComics = result;
             } else {
-                NotificationHelper.notifyError("Có lỗi xảy ra khi gọi API");
+                NotificationHelper.notifyError("Có gì đó không ổn...");
             }
 
             this.isLoading = false;
