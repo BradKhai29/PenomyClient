@@ -86,7 +86,6 @@ import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
 
 export default {
     setup() {
-        const authStore = useAuthStore();
 
         const posts = ref([]);
 
@@ -181,7 +180,7 @@ export default {
             confirmRemovePost,
             openComments,
             likePost,
-            fetchPosts,
+            fetchPosts
         };
     },
     components: {
