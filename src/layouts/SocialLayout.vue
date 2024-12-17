@@ -85,7 +85,7 @@ import LinearProgress from "src/components/common/progressBar/LinearProgress.vue
 import { useAuthStore } from "src/stores/common/AuthStore";
 // Import router
 import { useRoute, useRouter } from "vue-router";
-import ForYouSocialExpansion from "src/components/layouts/MainLayout/drawers/ForYouExpansion.vue";
+import ForYouSocialExpansion from "src/components/layouts/MainLayout/drawers/ForYouSocialExpansion.vue";
 
 const authStore = useAuthStore();
 const route = useRoute();
