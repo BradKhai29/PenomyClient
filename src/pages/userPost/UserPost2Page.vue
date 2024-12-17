@@ -2,7 +2,7 @@
     <q-page class="q-pa-md">
         <div class="post-container">
             <PostCreateSection v-if="authStore.isAuth" @createPostSuccess="fetchPosts" />
-            <!-- Loop through posts  -->
+            <!-- Loop through posts -->
             <q-card v-for="post in posts" :key="post.id" class="q-mb-md q-mt-lg post-card">
                 <!-- Post Header -->
                 <q-card-section class="row items-center justify-between">
@@ -87,7 +87,6 @@ import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
 
 export default {
     setup() {
-
         const authStore = useAuthStore();
 
         const posts = ref([]);
