@@ -1,7 +1,7 @@
 <template>
     <q-page class="q-pa-md">
         <div class="post-container">
-            <PostCreateSection @createPostSuccess="fetchPosts" />
+            <PostCreateSection v-if="authStore.isAuth" @createPostSuccess="fetchPosts" />
             <!-- Loop through posts -->
             <q-card v-for="post in posts" :key="post.id" class="q-mb-md q-mt-lg post-card">
                 <!-- Post Header -->
@@ -80,13 +80,14 @@ import GetUserPostHandler from 'src/api.handlers/UserPostHandler/GetUserPostHand
 import RemoveUserPostHandler from 'src/api.handlers/UserPostHandler/RemoveUserPostHandler';
 import CommentLoader from 'src/components/common/socialMedia/GroupPost/CommentLoader.vue';
 import PostCreateSection from 'src/components/common/socialMedia/Common/PostCreateSection.vue';
+import { useAuthStore } from 'src/stores/common/AuthStore';
 
 // import api
 import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
 
 export default {
     setup() {
-
+        const authStore = useAuthStore();
 
         const posts = ref([]);
 
@@ -181,7 +182,8 @@ export default {
             confirmRemovePost,
             openComments,
             likePost,
-            fetchPosts
+            fetchPosts,
+            authStore
         };
     },
     components: {
