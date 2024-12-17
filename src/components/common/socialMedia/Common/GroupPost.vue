@@ -11,7 +11,7 @@
                             <img :src="post.userAvatar" alt="User Avatar" />
                         </q-avatar>
                         <div class="q-ml-md">
-                            <div class="post-username">{{ post.createdBy }}</div>
+                            <div class="post-username">{{ post.userNickName }}</div>
                             <div class="post-meta row items-center">
                                 <div class="post-date">{{ post.createdAt }}</div>
                                 <q-icon name="groups" color="#120E36" size="xs" class="q-ml-xs"
