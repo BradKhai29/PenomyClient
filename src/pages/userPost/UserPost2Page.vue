@@ -46,7 +46,8 @@
                 <!-- Attached Media -->
                 <q-card-section v-if="post.attachedMedias.length > 0">
                     <div class="media-grid">
-                        <div v-for="media in post.attachedMedias" :key="media.fileName" class="media-item">
+                        <div @click="openImage(post.attachedMedias)" v-for="media in post.attachedMedias"
+                            :key="media.fileName" class="media-item">
                             <img :src="media.storageUrl" class="media-image" :alt="media.fileName" />
                         </div>
                     </div>
@@ -69,6 +70,17 @@
                 </q-card-section>
             </q-card>
         </div>
+
+        <q-dialog v-model="dialog">
+            <q-card>
+                <q-carousel animated v-model="slide" arrows navigation infinite style="width: 32vw; height: 80vh;"
+                    control-color="primary">
+                    <q-carousel-slide v-for="img in postImg" :key="img" :name="img.fileName">
+                        <q-img :src="img.storageUrl" width="100%" height="100%" fit="contain" />
+                    </q-carousel-slide>
+                </q-carousel>
+            </q-card>
+        </q-dialog>
     </q-page>
 </template>
 
@@ -88,9 +100,10 @@ import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
 export default {
     setup() {
         const authStore = useAuthStore();
-
+        const dialog = ref(false);
         const posts = ref([]);
-
+        const slide = ref('1')
+        const postImg = ref([]);
         const fetchPosts = async () => {
             try {
                 const response = await GetUserPostHandler.GetCreatedPosts();
@@ -102,6 +115,13 @@ export default {
                 console.error('Error fetching posts:', error);
             }
         };
+
+        const openImage = (files) => {
+            postImg.value = files;
+            dialog.value = true
+            slide.value = postImg.value[0].fileName
+            console.log("postImg", postImg.value[0]);
+        }
 
         const getPublicLevelIcon = (level) => {
             switch (level) {
@@ -183,7 +203,11 @@ export default {
             openComments,
             likePost,
             fetchPosts,
-            authStore
+            authStore,
+            dialog,
+            slide,
+            openImage,
+            postImg
         };
     },
     components: {
