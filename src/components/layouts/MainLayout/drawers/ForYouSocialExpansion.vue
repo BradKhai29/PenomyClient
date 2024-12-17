@@ -5,7 +5,7 @@
         class="for-you-expansion"
     >
         <PersonalProfileSocialLink v-if="isAuth" />
-        <saved-post-link v-if="isAuth" />
+        <!-- <saved-post-link v-if="isAuth" /> -->
     </q-expansion-item>
 </template>
 
