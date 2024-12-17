@@ -126,7 +126,6 @@ export default {
             slide.value = fileName
             postImg.value = files;
             dialog.value = true
-            console.log("postImg", postImg.value[0]);
         }
 
         const getPublicLevelIcon = (level) => {
