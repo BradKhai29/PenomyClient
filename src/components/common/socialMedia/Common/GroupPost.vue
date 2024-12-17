@@ -115,7 +115,6 @@ const openImage = (files, startFile) => {
     postImg.value = files;
     dialog.value = true
     slide.value = startFile
-    console.log("postImg", postImg.value[0]);
 }
 watch(
     () => props.groupPosts,
