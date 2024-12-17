@@ -192,6 +192,7 @@ async function fetchPosts() {
         posts.value.forEach((post) => {
             post.isOpenComment = false;
         })
+        console.log("posts", posts.value);
     } catch (error) {
         console.error('Error fetching posts:', error);
     }
