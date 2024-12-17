@@ -45,9 +45,9 @@
                 <!-- Attached Media -->
                 <q-card-section v-if="post.attachedMedias.length > 0">
                     <div class="media-grid">
-                        <div @click="openImage(post.attachedMedias)" v-for="media in post.attachedMedias"
-                            :key="media.fileName" class="media-item">
-                            <img :src="media.storageUrl" class="media-image" :alt="media.fileName" />
+                        <div v-for="media in post.attachedMedias" :key="media.fileName" class="media-item">
+                            <img @click="openImage(post.attachedMedias, media.fileName)" :src="media.storageUrl"
+                                class="media-image" :alt="media.fileName" />
                         </div>
                     </div>
                 </q-card-section>
@@ -71,12 +71,18 @@
         </div>
     </div>
     <q-dialog v-model="dialog">
+        <q-carousel animated v-model="slide" arrows navigation infinite
+            style="width: 100%; height: 100%;" control-color="primary">
+            <q-carousel-slide v-for="img in postImg" :key="img" :name="img.fileName">
+                <q-img :src="img.storageUrl" width="100%" height="100%" fit="contain" />
+            </q-carousel-slide>
+            <template v-slot:control>
+                <q-carousel-control position="top-right">
+                    <q-btn round dense color="grey-3" text-color="primary" icon="close" @click="dialog = !dialog" />
+                </q-carousel-control>
+            </template>
+        </q-carousel>
         <q-card>
-            <q-carousel animated v-model="slide" arrows navigation infinite style="width: 32vw; height: 80vh;" control-color="primary">
-                <q-carousel-slide v-for="img in postImg" :key="img" :name="img.fileName">
-                    <q-img :src="img.storageUrl" width="100%" height="100%" fit="contain"/>
-                </q-carousel-slide>
-            </q-carousel>
         </q-card>
     </q-dialog>
 </template>
@@ -104,10 +110,11 @@ const posts = ref(props.groupPosts);
 const dialog = ref(false);
 const slide = ref('1')
 const postImg = ref([]);
-const openImage = (files) => {
+
+const openImage = (files, startFile) => {
     postImg.value = files;
     dialog.value = true
-    slide.value = postImg.value[0].fileName
+    slide.value = startFile
     console.log("postImg", postImg.value[0]);
 }
 watch(
@@ -248,5 +255,11 @@ const openComments = (postId, isOpenComment) => {
     margin-left: 8px;
     font-size: 14px;
     color: gray;
+}
+
+@media (min-width: 600px) {
+    .q-dialog__inner--minimized>div {
+        max-width: 50vw !important;
+    }
 }
 </style>
