@@ -19,9 +19,8 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Right: 3-Dot Menu -->
-                    <q-btn flat dense icon="more_vert" color="grey-8" class="q-ml-auto">
+                    <q-btn v-if="post.createdBy == authStore.userId" flat dense icon="more_vert" color="grey-8" class="q-ml-auto">
                         <q-menu>
                             <q-list>
                                 <q-item clickable @click="confirmRemovePost(post)">
@@ -74,11 +73,14 @@
 
 <script setup>
 import { Notify, Dialog } from 'quasar';
+import { useAuthStore } from 'src/stores/common/AuthStore';
 import { onMounted, ref, defineProps, watch } from 'vue';
 import RemoveUserPostHandler from 'src/api.handlers/UserPostHandler/RemoveUserPostHandler';
 import CommentLoader from 'src/components/common/socialMedia/GroupPost/CommentLoader.vue';
 // import api
 import LikePostHandler from 'src/api.handlers/UserPostHandler/LikePostHandler';
+
+const authStore = useAuthStore();
 
 const props = defineProps({
     groupPosts: {
