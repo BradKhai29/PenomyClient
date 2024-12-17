@@ -20,7 +20,7 @@ async function GetJoinedGroupsAsync(groupNum) {
                 groupNum: groupNum
             },
         });
-        return ApiResponse.success(response.data.body.groups);
+        return ApiResponse.success(response.data.body);
     } catch (error) {
         console.log(error);
 

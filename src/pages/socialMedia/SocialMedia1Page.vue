@@ -11,10 +11,21 @@
         </q-item>
 
     </div>
+
+    <!-- Other groups -->
     <div class="row justify-start items-start content-start q-ml-xl q-mr-xl">
         <GroupCard class="col-3" style="overflow: auto;" v-for="group in joinedGroups" :key="group.id"
             :group-info="group" />
     </div>
+    <div class="q-ml-xl q-mr-xl q-mt-md q-pa-md">
+        <span class="text-bold text-subtitle1">Nhóm bạn có thể thích</span>
+
+    </div>
+    <div class="row justify-start items-start content-start q-ml-xl q-mr-xl">
+        <GroupCard class="col-3" style="overflow: auto;" v-for="group in unjoinedGroups" :key="group.id"
+            :group-info="group" />
+    </div>
+
     <div class="row justify-start items-start content-start q-ml-xl q-mr-xl" v-if="!isDataFetched">
         <MemberCardSkeleton class="col-3" v-for="i in 8" :key="i" />
     </div>
@@ -41,6 +52,7 @@ const myCreatedGroupsApiHandler = MyCreatedGroupsApiHandler.MyCreatedGroups;
 
 // Init objects
 const joinedGroups = ref([]);
+const unjoinedGroups = ref([]);
 const isDataFetched = ref(false);
 
 onMounted(async () => {
@@ -49,7 +61,9 @@ onMounted(async () => {
     }
     else {
         try {
-            joinedGroups.value = ((await getGroupsApiHandler(100)).responseBody);
+            const getGroupRes = ((await getGroupsApiHandler(100)).responseBody);
+            joinedGroups.value = getGroupRes.groups;
+            unjoinedGroups.value = getGroupRes.unjoinedGroups;
             joinedGroups.value.push(...((await myCreatedGroupsApiHandler(100)).responseBody));
             isDataFetched.value = true;
         }

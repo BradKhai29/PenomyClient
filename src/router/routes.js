@@ -45,6 +45,7 @@ import creatorProfile1PageRoute from "./creatorProfile/CreatorProfile1PageRoute"
 import socialMedia1PageRoute from "./socialMedia/SocialMedia1PageRoute";
 import socialMedia2PageRoute from "./socialMedia/SocialMedia2PageRoute";
 import socialMedia3PageRoute from "./socialMedia/SocialMedia3PageRoute";
+import friend1PageRoute from "./friend/Friend1PageRoute";
 
 // Become creator page routes section.
 import becomeCreatorPageRoute from "./become_creator/BecomeCreatorPageRoute";
@@ -95,6 +96,7 @@ const routes = [
     ...socialMedia1PageRoute,
     ...socialMedia2PageRoute,
     ...socialMedia3PageRoute,
+    ...friend1PageRoute,
     // Become creator route.
     ...becomeCreatorPageRoute,
     ...userPost1PageRoute,

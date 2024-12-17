@@ -1,7 +1,9 @@
 <template>
     <div class="q-pa-sm">
         <q-card flat bordered>
-            <img :src="groupInfo.coverImgUrl">
+            <div>
+            </div>
+            <q-img :src="groupInfo.coverImgUrl" fit="fill" style="width: 100%; height: 13em;" />
 
             <div class="q-pa-md">
                 <div class="text-bold text-subtitle1">{{ groupInfo.name }}</div>
