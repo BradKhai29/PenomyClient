@@ -9,10 +9,6 @@
 
                 <q-space />
 
-                <TheSearchBar />
-
-                <q-space />
-
                 <div class="q-gutter-sm row items-center no-wrap">
                     <q-btn round dense color="dark" class="bg-dark" icon="message">
                         <q-badge color="red" text-color="white" floating>
