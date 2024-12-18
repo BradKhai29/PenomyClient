@@ -47,6 +47,9 @@ import socialMedia2PageRoute from "./socialMedia/SocialMedia2PageRoute";
 import socialMedia3PageRoute from "./socialMedia/SocialMedia3PageRoute";
 import friend1PageRoute from "./friend/Friend1PageRoute";
 
+// Chat page routes section.
+import chat1PageRoute from "./chat/Chat1PageRoute";
+
 // Become creator page routes section.
 import becomeCreatorPageRoute from "./become_creator/BecomeCreatorPageRoute";
 
@@ -101,6 +104,8 @@ const routes = [
     ...becomeCreatorPageRoute,
     ...userPost1PageRoute,
     ...userPost2PageRoute,
+    // Chat routes.
+    ...chat1PageRoute,
     // Other routes.
     errorNotFoundPageRoute,
 ];

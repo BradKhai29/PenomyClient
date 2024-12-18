@@ -2,7 +2,7 @@
     <q-expansion-item default-opened label="Nhóm bạn đã tham gia" class="my-groups-expansion">
         <div>
             <GroupLink v-for="group in getShowedGroups" :key="group.id" :group="group" />
-            <GroupLink v-if="groupList.length > 4"/>
+            <GroupLink v-if="groupList.length > 4" />
         </div>
     </q-expansion-item>
 </template>
@@ -39,7 +39,9 @@ export default {
             return authStore.isAuth;
         },
         getShowedGroups() {
-            return this.groupList.slice(0, 3);
+            if (this.groupList.length <= 3) return this.groupList;
+            else
+                return this.groupList.slice(0, 3);
         }
     },
     async mounted() {

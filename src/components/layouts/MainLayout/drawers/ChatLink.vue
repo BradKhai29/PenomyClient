@@ -1,5 +1,5 @@
 <template>
-    <DrawerLink title="Kênh chat" icon="chat" link="/chat/recommended" :isSelected="isSelected" />
+    <DrawerLink title="Kênh chat" icon="chat" link="/chat" :isSelected="isSelected" />
 </template>
 
 <script setup>

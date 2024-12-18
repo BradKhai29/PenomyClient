@@ -8,10 +8,6 @@
 
                 <q-space />
 
-                <TheSearchBar />
-
-                <q-space />
-
                 <div class="q-gutter-sm row items-center no-wrap">
                     <q-btn round dense color="dark" class="bg-dark" icon="message">
                         <q-badge color="red" text-color="white" floating>
@@ -34,15 +30,19 @@
 
             <q-list class="app-drawer-list">
                 <q-list class="drawer-gutter">
-                    <HomeLink />
-                    <SocialMediaLink />
+                    <HomeLinkSocial />
+                    <JoinedGroupPageLink />
+                    <FriendLink />
+                    <ChatLink />
                 </q-list>
-                
-                <MyGroupsExpansion />
-                <div class="drawer-gutter"></div>
+                <ForYouSocialExpansion />
+                <div v-if="authStore.isAuth" class="drawer-gutter"></div>
 
-                <JoinGroupsExpansion/>
-                <div class="drawer-gutter"></div>
+                <MyGroupsExpansion v-if="authStore.isAuth" />
+                <div v-if="authStore.isAuth" class="drawer-gutter"></div>
+
+                <JoinGroupsExpansion v-if="authStore.isAuth" />
+                <div v-if="authStore.isAuth" class="drawer-gutter"></div>
 
                 <OthersExpansion />
             </q-list>
@@ -56,25 +56,51 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount, watch } from "vue";
 
 // Import components from header section.
 import TheLogoButton from "src/components/layouts/MainLayout/headers/TheLogoButton.vue";
-import TheSearchBar from "src/components/layouts/MainLayout/headers/TheSearchBar.vue";
 import TheUserAvatar from "src/components/layouts/MainLayout/headers/TheUserAvatar.vue";
 
 // Import components from drawer section.
-import HomeLink from "components/layouts/MainLayout/drawers/HomeLink.vue";
-import SocialMediaLink from "components/layouts/MainLayout/drawers/SocialMediaLink.vue";
+import HomeLinkSocial from "src/components/layouts/MainLayout/drawers/HomeLinkSocial.vue";
 import MyGroupsExpansion from "src/components/layouts/MainLayout/drawers/MyGroupsExpansion.vue";
 import JoinGroupsExpansion from "src/components/layouts/MainLayout/drawers/JoinGroupsExpansion.vue";
 import OthersExpansion from "components/layouts/OthersExpansion.vue";
+import JoinedGroupPageLink from "src/components/layouts/MainLayout/drawers/JoinedGroupPageLink.vue";
+import FriendLink from "src/components/layouts/MainLayout/drawers/FriendLink.vue";
+import ChatLink from "src/components/layouts/MainLayout/drawers/ChatLink.vue";
+
+// Import auth store
+import { useAuthStore } from "src/stores/common/AuthStore";
+// Import router
+import { useRoute, useRouter } from "vue-router";
+import ForYouSocialExpansion from "src/components/layouts/MainLayout/drawers/ForYouSocialExpansion.vue";
 
 defineOptions({
     name: "OverlayMainLayout",
 });
 
 const showDrawer = ref(false);
+
+const authStore = useAuthStore();
+const route = useRoute();
+const router = useRouter();
+
+onBeforeMount(() => {
+    if (route.path.includes('manage') && authStore.bearerAccessToken().length == 11) {
+        router.push('/auth/login');
+    }
+});
+
+watch(
+    () => route.path,
+    () => {
+        if (route.path.includes('manage') && authStore.bearerAccessToken().length == 11) {
+            router.push('/auth/login');
+        }
+    }
+)
 
 function toggleDrawer() {
     showDrawer.value = !showDrawer.value;
