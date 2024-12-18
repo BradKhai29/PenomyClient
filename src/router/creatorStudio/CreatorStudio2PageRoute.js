@@ -6,7 +6,7 @@ const routeDefinition = [
             {
                 path: "statistic",
                 component: () =>
-                    import("pages/creatorStudio/CreatorStudio6Page.vue"),
+                    import("pages/creatorStudio/CreatorStudio2Page.vue"),
             },
         ],
     },

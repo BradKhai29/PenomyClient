@@ -55,8 +55,16 @@
     border: 1px solid var(--dark-500);
 }
 
+.border-sm-dark-500-dashed {
+    border: 1px dashed var(--dark-500);
+}
+
 .border-md-dark-500 {
     border: var(--border-md-width) solid var(--dark-500);
+}
+
+.border-sm-invisible {
+    border: var(--border-sm-width) solid transparent;
 }
 
 .border-md-invisible {
@@ -203,4 +211,21 @@
     /* Ref: https://stackoverflow.com/questions/37745051/fill-the-remaining-height-or-width-in-a-flex-container */
     flex-grow: 1 !important;
     min-width: 0 !important;
+}
+
+.align-stretch {
+    align-items: stretch !important;
+}
+
+/* Others */
+.hide {
+    display: none;
+}
+
+/* Video player section */
+video::-webkit-media-controls {
+    display: none !important;
+}
+video::-webkit-media-controls-enclosure {
+    display: none !important;
 }

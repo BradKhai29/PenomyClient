@@ -33,6 +33,7 @@
                             {{ lastChapterUploadOrder }}/{{ totalChapters }}
                         </span>
                     </span>
+                    <!-- Separator -->
                     <span
                         class="border-sm-light q-mx-sm"
                         style="padding: 6.4px 0px"

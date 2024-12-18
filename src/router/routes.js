@@ -11,6 +11,7 @@ import artwork1PageRoute from "./artwork/Artwork1PageRoute";
 import artwork3PageRoute from "./artwork/Artwork3PageRoute";
 import artwork4PageRoute from "./artwork/Artwork4PageRoute";
 import artwork5PageRoute from "./artwork/Artwork5PageRoute";
+import artwork6PageRoute from "./artwork/Artwork6PageRoute";
 import artwork8PageRoute from "./artwork/Artwork8PageRoute";
 
 // Creator studio page routes section.
@@ -28,6 +29,13 @@ import creatorStudio11PageRoute from "./creatorStudio/CreatorStudio11PageRoute";
 import creatorStudio12PageRoute from "./creatorStudio/CreatorStudio12PageRoute";
 import creatorStudio22PageRoute from "./creatorStudio/CreatorStudio22PageRoute";
 import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
+
+// Creator studio anime page routes section.
+import creatorStudio13PageRoute from "./creatorStudio/CreatorStudio13PageRoute";
+import creatorStudio14PageRoute from "./creatorStudio/CreatorStudio14PageRoute";
+import creatorStudio15PageRoute from "./creatorStudio/CreatorStudio15PageRoute";
+import creatorStudio16PageRoute from "./creatorStudio/CreatorStudio16PageRoute";
+import creatorStudio17PageRoute from "./creatorStudio/CreatorStudio17PageRoute";
 
 // Guest page routes section.
 import guestPageRoute from "./guest/GuestViewHistoryPageRoute";
@@ -72,6 +80,7 @@ const routes = [
     ...artwork3PageRoute,
     ...artwork4PageRoute,
     ...artwork5PageRoute,
+    ...artwork6PageRoute,
     ...artwork8PageRoute,
     // Creator studio routes.
     ...creatorStudio1PageRoute,
@@ -86,6 +95,12 @@ const routes = [
     ...creatorStudio10PageRoute,
     ...creatorStudio11PageRoute,
     ...creatorStudio12PageRoute,
+    // Creator studio - anime section
+    ...creatorStudio13PageRoute,
+    ...creatorStudio14PageRoute,
+    ...creatorStudio15PageRoute,
+    ...creatorStudio16PageRoute,
+    ...creatorStudio17PageRoute,
     ...creatorStudio22PageRoute,
     ...creatorStudio25PageRoute,
     // Guest routes.

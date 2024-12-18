@@ -1,6 +1,22 @@
 <template>
-    <q-page> Search text:  </q-page>
+    <q-page>
+        <section>Search text:</section>
+        <section class="q-pa-lg">
+            <AnimeChapterVideoInput />
+        </section>
+    </q-page>
 </template>
+
+<script>
+import AnimeChapterVideoInput from "src/components/common/creatorStudio/AnimeChapterVideoInput.vue";
+
+export default {
+    name: "Artwork8Page",
+    components: {
+        AnimeChapterVideoInput,
+    },
+};
+</script>
 
 <!-- <script setup>
 import { ref, computed } from "vue";
@@ -55,7 +71,7 @@ computed({
 mounted(() => {
     // Bind the search input for later operation.
     searchInput.value = route.query.searchInput;
-    
+
 })
 
 function onInputFocus() {

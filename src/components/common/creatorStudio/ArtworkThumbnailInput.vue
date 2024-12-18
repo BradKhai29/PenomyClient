@@ -132,7 +132,7 @@ export default {
          * @param {Event} event The event instance.
          */
         onInputImage(event) {
-            const uploadImageFile = event.target.files[0];
+            const uploadImageFile = FileHelper.asFile(event.target.files[0]);
 
             if (!uploadImageFile) {
                 return;

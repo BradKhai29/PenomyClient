@@ -76,6 +76,7 @@
                     >
                         <RecentlyUpdatedArtworkCard
                             :artworkDetail="artwork"
+                            :isComic="isComic"
                             class="q-mb-md"
                             :class="
                                 index != currentArtworkList.length - 1

@@ -5,7 +5,7 @@
             class="q-mb-lg q-mt-md q-px-md"
         />
 
-        <section class="row text-dark q-px-md">
+        <section class="row text-dark q-px-md align-stretch">
             <section class="col-md-auto col-grow">
                 <div class="border-radius-sm q-pa-md bg-light-100 shadow-1">
                     <p

@@ -29,7 +29,7 @@
                 <span class="text-weight-bold">
                     Tập {{ chapterDetail.uploadOrder }}
                 </span>
-                <span class="q-ml-xs">: Lorem ipsum ffffff</span>
+                <span class="q-ml-xs">: {{ title }}</span>
             </p>
             <!-- Chapter metadata section -->
             <div class="row items-center text-dark-500 text-subtitle2 q-mt-xs">
@@ -131,6 +131,9 @@ export default {
                     chapterId: this.chapterDetail.id,
                 },
             };
+        },
+        title() {
+            return this.chapterDetail.chapterName;
         },
         chapterEditRoute() {
             return {

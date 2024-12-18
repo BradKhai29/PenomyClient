@@ -70,7 +70,9 @@ export default {
 
         if (!isValidId) {
             // Redirect back to homepage when getting invalid id.
+            NotificationHelper.notifyError("Id của tác phẩm không hợp lệ");
             this.$router.push("/");
+
             return;
         }
     },

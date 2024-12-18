@@ -44,7 +44,6 @@
 // Import dependencies section.
 import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
-import { useAuthStore } from "src/stores/common/AuthStore";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
 
@@ -55,8 +54,12 @@ import AnimeMetadataSection from "src/components/pages/artwork/artwork4Page/Anim
 import AnimeChapterListSection from "src/components/pages/artwork/artwork4Page/AnimeChapterListSection.vue";
 import ArtworkDetailRecommendedSection from "src/components/common/artwork/ArtworkDetailRecommendedSection.vue";
 
-// Init authStore for later operation.
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useGuestStore } from "src/stores/common/GuestStore";
+
 const authStore = useAuthStore();
+const guestStore = useGuestStore();
 
 export default {
     name: "Artwork4Page",
@@ -69,50 +72,81 @@ export default {
     },
     data() {
         return {
-            isLoading: true,
             artworkId: null,
+            isLoading: true,
             /**
              * @type {ArtworkDetailResponse} Type of this property.
              */
             animeDetail: null,
         };
     },
+    computed: {
+        hasSeries() {
+            return this.animeDetail.hasSeries;
+        },
+    },
     beforeMount() {
-        // Get the id from the route params to fetch data.
-        this.artworkId = this.$route.params.artworkId;
+        this.loadArtworkIdFromRoute();
 
         const isValidId = NumberHelper.isNumber(this.artworkId);
 
         if (!isValidId) {
             // Redirect back to homepage when getting invalid id.
+            NotificationHelper.notifyError("Id của tác phẩm không hợp lệ");
             this.$router.push("/");
 
             return;
         }
     },
     async mounted() {
-        const result = await artworkDetailApiHandler.getArtworkDetailByIdAsync(
-            this.artworkId,
-            authStore.accessToken()
-        );
+        await authStore.setUp();
 
-        if (!result) {
-            NotificationHelper.notifyError("Không tìm thấy nội dung");
-
-            // this.$router.push("/");
-            return;
+        // Wait for guest store to setup success when current user is not authenticated.
+        if (!authStore.isAuth) {
+            await guestStore.waitForSetUp();
         }
 
-        // If result is success, then get the information
-        // and bind to the anime detail.
-        this.animeDetail = result;
-
-        // Turn off is loading flag.
-        this.isLoading = false;
+        this.loadAnimeDetailAsync();
     },
-    computed: {
-        hasSeries() {
-            return this.animeDetail.hasSeries;
+    methods: {
+        loadArtworkIdFromRoute() {
+            // Get the id from the route params to fetch data.
+            this.artworkId = this.$route.params.artworkId;
+        },
+        async loadAnimeDetailAsync() {
+            // Turn on the loading flag to wait for the content being loaded.
+            this.isLoading = true;
+            let guestId = -1;
+            let accessToken = "null_token";
+
+            // If current user is not authenticated, then get the guestId.
+            if (!authStore.isAuth) {
+                guestId = guestStore.currentGuestId;
+            }
+            // Otherwise, get the current user's access token.
+            else {
+                accessToken = authStore.accessToken();
+            }
+
+            const artworkDetail =
+                await artworkDetailApiHandler.getArtworkDetailByIdAsync(
+                    this.artworkId,
+                    guestId,
+                    accessToken
+                );
+
+            if (!artworkDetail) {
+                NotificationHelper.notifyError("Không tìm thấy nội dung");
+
+                this.$router.push("/");
+                return;
+            }
+
+            // If result is success, then get the information and bind to the comic detail.
+            this.animeDetail = artworkDetail;
+
+            // Turn off isLoading flag after loading content successfully.
+            this.isLoading = false;
         },
     },
 };

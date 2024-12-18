@@ -23,12 +23,19 @@
         <div class="text-subtitle1 flex items-center">
             <router-link
                 :to="comicDetailRoute"
-                dense
-                flat
-                no-caps
                 class="text-weight-bold text-dark text-subtitle1 artwork-title underline-none"
             >
                 {{ props.headerTitle }}
+
+                <q-tooltip
+                    anchor="bottom middle"
+                    self="top middle"
+                    :offset="[8, 8]"
+                >
+                    <strong class="text-subtitle2">{{
+                        props.headerTitle
+                    }}</strong>
+                </q-tooltip>
             </router-link>
             <span class="text-weight-bold">
                 <q-icon name="chevron_right" size="sm"

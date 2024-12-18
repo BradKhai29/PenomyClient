@@ -5,7 +5,9 @@
 }
 
 :root,
-* {
+*,
+*::before,
+*::after {
     /* Primary section */
     --primary: #53bf94;
     --primary-700-opacity-12: #e5f3ef;
@@ -28,6 +30,8 @@
     --light-100: #f9fafc;
     --light-300: #eeeeee;
     --light-500: #dddddd;
+
+    box-sizing: border-box;
 }
 
 .font-arial {

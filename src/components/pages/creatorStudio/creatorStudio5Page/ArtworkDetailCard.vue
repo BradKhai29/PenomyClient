@@ -1,7 +1,7 @@
 <template>
     <div :id="`artwork_${id}`" class="q-pa-md artwork-detail-card row">
         <div class="col-auto q-mr-md relative-position">
-            <router-link :to="`/studio/comic/detail/${id}`">
+            <router-link :to="artworkDetailLink">
                 <q-img
                     class="artwork-detail-img shadow-1 border-radius-sm"
                     :src="thumbnailUrl"
@@ -105,7 +105,7 @@
                 </div>
             </section>
             <div class="artwork-title q-mt-md">
-                <router-link :to="`/studio/comic/detail/${id}`">
+                <router-link :to="artworkDetailLink">
                     <q-btn dense flat no-caps class="text-h6 text-dark">
                         <q-badge class="q-mr-sm q-py-xs bg-dark text-light">
                             {{ itemOrder }}
@@ -251,16 +251,32 @@ export default {
         };
     },
     computed: {
+        artworkDetailLink() {
+            if (this.isComic) {
+                return `/studio/comic/detail/${this.id}`;
+            }
+
+            return `/studio/anime/detail/${this.id}`;
+        },
         artworkEditLink() {
-            return `/studio/comic/edit/${this.id}`;
+            if (this.isComic) {
+                return `/studio/comic/edit/${this.id}`;
+            }
+
+            return `/studio/anime/edit/${this.id}`;
         },
         addChapterLink() {
-            const routeDefinition = {
-                name: "create-chapter",
+            if (this.isComic) {
+                return {
+                    name: "create-chapter",
+                    query: { id: this.id },
+                };
+            }
+
+            return {
+                name: "create-anime-chapter",
                 query: { id: this.id },
             };
-
-            return routeDefinition;
         },
     },
     mounted() {
