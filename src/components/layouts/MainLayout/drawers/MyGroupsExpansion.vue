@@ -33,7 +33,9 @@ export default {
             return authStore.isAuth;
         },
         getShowedGroups() {
-            return this.createdGroups.slice(0, 3);
+            if (this.createdGroups.length <= 3) return this.createdGroups;
+            else
+                return this.createdGroups.slice(0, 3);
         }
     },
 
@@ -55,5 +57,4 @@ export default {
     background-color: #f9fafc !important;
     font-weight: bold !important;
 }
-
 </style>
