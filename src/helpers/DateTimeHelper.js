@@ -1,6 +1,8 @@
 const DEFAULT_DATETIME_STRING_OUTPUT_FORMAT = "yyyymmddhhmmss";
 const YYYY_MM_DD_FORMAT = "yyyy/mm/dd";
 const DD_MM_YYYY_FORMAT = "dd/mm/yyyy";
+const DD_MM_YYYY_HH_MM_SS_FORMAT = "dd/mm/yyyy hh:mm:ss";
+const DD_MM_YYYY_HH_MM_FORMAT = "dd/mm/yyyy - hh:mm";
 
 /**
  * Get the formatted string of the input datetime with specified out format.
@@ -151,7 +153,10 @@ function getClientTimeZone() {
  * @param {Date} date - The date to format
  * @returns {string} - The formatted date and time string
  */
-function formatLocaleDateTimeString(date) {
+function formatLocaleDateTimeString(
+    date,
+    outputFormat = DD_MM_YYYY_HH_MM_FORMAT
+) {
     // Format the date part as "dd/mm/yyyy"
     const formattedDate = date.toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -160,15 +165,27 @@ function formatLocaleDateTimeString(date) {
     });
 
     // Format the time part as "hh:mm:ss" in 24-hour format
-    const formattedTime = date.toLocaleTimeString("en-GB", {
+    let formattedTime = date.toLocaleTimeString("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: false, // use 24-hour format
     });
 
-    // Combine date and time with a space in between
-    return `${formattedDate} ${formattedTime}`;
+    if (outputFormat == DD_MM_YYYY_HH_MM_SS_FORMAT) {
+        // Combine date and time with a space in between
+        return `${formattedDate} ${formattedTime}`;
+    }
+
+    if (outputFormat == DD_MM_YYYY_HH_MM_FORMAT) {
+        formattedTime = date.toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false, // use 24-hour format
+        });
+
+        return `${formattedDate} - ${formattedTime}`;
+    }
 }
 
 /**
@@ -196,6 +213,8 @@ const DateTimeHelper = {
         DEFAULT_DATETIME_STRING_OUTPUT_FORMAT,
     YYYY_MM_DD_FORMAT: YYYY_MM_DD_FORMAT,
     DD_MM_YYYY_FORMAT: DD_MM_YYYY_FORMAT,
+    DD_MM_YYYY_HH_MM_FORMAT,
+    DD_MM_YYYY_HH_MM_SS_FORMAT,
 };
 
 export { DateTimeHelper };

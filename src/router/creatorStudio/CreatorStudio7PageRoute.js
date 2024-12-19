@@ -4,7 +4,7 @@ const routeDefinition = [
         component: () => import("layouts/CreatorStudioLayout.vue"),
         children: [
             {
-                path: "detail/:comicId",
+                path: "detail/:artworkId",
                 component: () =>
                     import("pages/creatorStudio/CreatorStudio7Page.vue"),
             },

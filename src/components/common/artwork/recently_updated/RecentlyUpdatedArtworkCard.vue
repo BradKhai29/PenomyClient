@@ -48,7 +48,7 @@
                 >
                     {{ title }}
                 </span>
-                <q-icon name="palette" size="xs" />
+                <q-icon :name="isComic ? 'palette' : 'videocam'" size="xs" />
             </router-link>
 
             <router-link

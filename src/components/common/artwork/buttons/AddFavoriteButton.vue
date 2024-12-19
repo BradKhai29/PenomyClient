@@ -90,7 +90,7 @@ export default {
             // If this button is displayed for animation type.
             else {
                 return this.isFavorite
-                    ? "bg-light-300 text-secondary-500"
+                    ? "bg-secondary-900 text-light"
                     : "bg-light-300 text-dark-500";
             }
         },

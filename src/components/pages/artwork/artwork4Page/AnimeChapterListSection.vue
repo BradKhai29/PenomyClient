@@ -50,7 +50,7 @@
                     unelevated
                     class="text-dark bg-light-300 text-subtitle2 text-weight-bold q-px-sm"
                 >
-                    Tập 1-12
+                    Tập 1-10
 
                     <!-- Chapter list Dropdown -->
                     <q-menu fit>

@@ -23,54 +23,66 @@
                 :value="true"
                 :name="radioInputName"
                 label="Cho phép"
-                :checked="props.modelValue == true"
+                :checked="allowComment == true"
             />
             <RadioInput
                 v-model="allowComment"
                 :value="false"
                 :name="radioInputName"
                 label="Không cho phép"
-                :checked="props.modelValue == false"
+                :checked="allowComment == false"
             />
         </div>
     </section>
 </template>
 
-<script setup>
-import { onBeforeMount, ref, watch } from "vue";
+<script>
+// Import dependencies section.
 import RadioInput from "./ArtworkRadioInput.vue";
 
-const allowComment = ref(false);
-const oldValue = ref(false);
-const radioInputName = "allowComment";
-
-const props = defineProps({
-    modelValue: {
-        required: true,
+export default {
+    name: "ArtworkAllowCommentInput",
+    emits: ["update:modelValue", "hasChange"],
+    components: {
+        RadioInput,
     },
-    oldAllowComment: {
-        default: null,
+    props: {
+        modelValue: {
+            required: true,
+        },
+        oldAllowComment: {
+            default: null,
+        },
+        label: {
+            type: String,
+            default: "Bật bình luận ở trang mô tả",
+        },
     },
-    label: {
-        type: String,
-        default: "Bật bình luận ở trang mô tả",
+    computed: {
+        radioInputName() {
+            return "allowComment";
+        },
     },
-});
+    data() {
+        return {
+            allowComment: false,
+        };
+    },
+    beforeMount() {
+        if (this.oldAllowComment) {
+            this.allowComment = this.oldAllowComment;
+        }
+    },
+    watch: {
+        allowComment(newValue, _) {
+            if (this.oldAllowComment) {
+                const hasChange = this.oldAllowComment != newValue;
 
-const emit = defineEmits(["update:modelValue", "hasChange"]);
+                this.$emit("hasChange", this.radioInputName, hasChange);
+            }
 
-onBeforeMount(() => {
-    if (props.oldAllowComment != null) {
-        allowComment.value = Boolean(props.oldAllowComment);
-        oldValue.value = Boolean(props.oldAllowComment);
-    }
-});
-
-watch(
-    () => allowComment.value,
-    (newValue, _) => {
-        emit("update:modelValue", newValue);
-        emit("hasChange", radioInputName, true);
-    }
-);
+            this.$emit("update:modelValue", newValue);
+        },
+    },
+};
 </script>

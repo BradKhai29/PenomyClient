@@ -90,13 +90,13 @@ async function getArtworkChaptersByIdAsync(artworkId, startPage, pageSize) {
  */
 async function getComicChapterPaginationOptionByIdAsync(comicId) {
     try {
-        const apiUrl = `${BaseWebApiUrl}/g8/comic/pagination-options`;
+        const apiUrl = `${BaseWebApiUrl}/g8/artwork-chapter/pagination-options`;
 
         const apiResponse = await axios({
             url: apiUrl,
             method: HttpMethod.GET,
             params: {
-                comicId: comicId,
+                artworkId: comicId,
             },
         });
 
@@ -149,4 +149,5 @@ const artworkDetailApiHandler = {
     getComicChapterPaginationOptionByIdAsync,
     getRecommendedArtworksAsync,
 };
+
 export default artworkDetailApiHandler;

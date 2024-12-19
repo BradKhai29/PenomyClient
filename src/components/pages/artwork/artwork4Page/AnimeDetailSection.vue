@@ -15,7 +15,7 @@
                         class="q-my-none text-weight-bold q-mb-md flex items-center"
                     >
                         <span class="q-mr-sm">
-                            {{ animeDetail.title }}
+                            {{ title }}
                         </span>
                         <GetLinkButton :darkMode="true" class="bg-light" />
                     </h4>
@@ -39,9 +39,7 @@
 
                             <div>
                                 <span class="text-weight-bold"> Tác giả: </span>
-                                <span class="">{{
-                                    animeDetail.creatorName
-                                }}</span>
+                                <span class="">{{ creatorName }}</span>
                             </div>
                         </div>
                     </div>
@@ -69,7 +67,7 @@
                         </q-btn>
                         <q-btn
                             :to="`${$route.path}?categoryId=${category.categoryId}`"
-                            v-for="category in animeDetail.categories"
+                            v-for="category in categories"
                             :key="category"
                             :id="category.categoryId"
                             dense
@@ -85,16 +83,7 @@
                         class="row q-mt-md text-subtitle1"
                     >
                         <span class="col-md-11 col-12 introduction-text">
-                            {{ animeDetail.introduction }} Lorem ipsum dolor sit
-                            amet consectetur adipisicing elit. Qui assumenda
-                            asperiores, exercitationem autem explicabo aliquid
-                            saepe architecto illo maxime quisquam temporibus
-                            quae sit debitis, consectetur similique animi
-                            perferendis. Ipsum, minus. Lorem ipsum, dolor sit
-                            amet consectetur adipisicing elit. Corrupti aliquam
-                            inventore ullam et cumque autem obcaecati, velit, id
-                            deserunt ipsa, tenetur harum vitae sed! Officiis qui
-                            consectetur est eius rerum!
+                            {{ introduction }}
                         </span>
                     </p>
                     <div id="action-button-group" class="q-gutter-sm q-mt-auto">
@@ -125,7 +114,7 @@
                 </div>
                 <q-img
                     class="q-ml-auto border-radius-md shadow-1 bg-light-300"
-                    :src="animeDetail.thumbnailUrl"
+                    :src="thumbnailUrl"
                     width="225px"
                     height="280px"
                 />
@@ -176,6 +165,21 @@ export default {
         };
     },
     computed: {
+        thumbnailUrl() {
+            return this.animeDetail.thumbnailUrl;
+        },
+        title() {
+            return this.animeDetail.title;
+        },
+        creatorName() {
+            return this.animeDetail.creatorName;
+        },
+        categories() {
+            return this.animeDetail.categories;
+        },
+        introduction() {
+            return this.animeDetail.introduction;
+        },
         isAuth() {
             return authStore.isAuth;
         },

@@ -93,6 +93,23 @@ function formatNumberWithPeriods(number) {
     return numberString.replace(addPeriodRegExp, ".");
 }
 
+function formatDuration(duration) {
+    const seconds = Math.floor(duration % 60);
+    const minutes = Math.floor((duration / 60) % 60);
+    const hours = Math.floor((duration / 3600) % 60);
+
+    const minutesString = String(minutes).padStart(2, "0");
+    const secondsString = String(seconds).padStart(2, "0");
+
+    if (hours <= 1) {
+        return `${minutesString}:${secondsString}`;
+    }
+
+    const hoursString = String(hours).padStart(2, "0");
+
+    return `${hoursString}:${minutesString}:${secondsString}`;
+}
+
 /**
  * Returns a number whose value is limited to the given range.
  *
@@ -110,6 +127,7 @@ const NumberHelper = {
     getSecureRandomNumber: getSecureRandomNumber,
     formatNumberShort: formatNumberShort,
     formatNumberWithPeriods: formatNumberWithPeriods,
+    formatDuration,
     clamp: clamp,
 };
 

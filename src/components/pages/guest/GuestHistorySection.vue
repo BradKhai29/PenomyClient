@@ -67,7 +67,20 @@
                     </q-tab-panel>
 
                     <q-tab-panel :name="animeTab" class="q-pa-none row">
-                        Hello
+                        <div class="row col-grow">
+                            <div
+                                v-for="anime in viewedAnimes"
+                                :key="anime.id"
+                                class="view-history-card-wrapper col-md-3"
+                            >
+                                <ViewHistoryArtworkCard
+                                    :isComic="false"
+                                    :artworkDetail="anime"
+                                    class="q-mr-md q-mb-md"
+                                    @removeItem="handleRemoveHistoryItem"
+                                />
+                            </div>
+                        </div>
                     </q-tab-panel>
                 </q-tab-panels>
             </div>
@@ -128,23 +141,63 @@ export default {
         },
     },
     async mounted() {
-        this.viewedComics =
-            await ViewHistoryApiHandler.getGuestViewHistoryAsync(
-                this.guestId,
-                ArtworkTypes.COMIC
-            );
-
-        console.log(this.viewedComics);
-        this.isLoading = false;
+        this.loadViewComicHistoryAsync();
     },
     methods: {
-        handleRemoveHistoryItem(artworkId) {
+        handleRemoveHistoryItem(artworkId, isComicType) {
+            if (isComicType) {
+                this.removeComicHistoryItem(artworkId);
+            } else {
+                this.removeAnimeHistoryItem(artworkId);
+            }
+        },
+        removeComicHistoryItem(artworkId) {
             const itemIndex = this.viewedComics.findIndex(
                 (item) => item.id == artworkId
             );
 
             // Remove the item from the display list.
             this.viewedComics.splice(itemIndex, 1);
+        },
+        removeAnimeHistoryItem(artworkId) {
+            const itemIndex = this.viewedAnimes.findIndex(
+                (item) => item.id == artworkId
+            );
+
+            // Remove the item from the display list.
+            this.viewedComics.splice(itemIndex, 1);
+        },
+        async loadViewComicHistoryAsync() {
+            this.isLoading = true;
+
+            this.viewedComics =
+                await ViewHistoryApiHandler.getGuestViewHistoryAsync(
+                    this.guestId,
+                    ArtworkTypes.COMIC
+                );
+
+            this.isLoading = false;
+        },
+        async loadViewAnimeHistoryAsync() {
+            this.isLoading = true;
+
+            this.viewedAnimes =
+                await ViewHistoryApiHandler.getGuestViewHistoryAsync(
+                    this.guestId,
+                    ArtworkTypes.ANIMATION
+                );
+
+            this.isLoading = false;
+        },
+    },
+    watch: {
+        selectedTab() {
+            if (this.isAtComicTab) {
+                this.loadViewComicHistoryAsync();
+                return;
+            }
+
+            this.loadViewAnimeHistoryAsync();
         },
     },
 };

@@ -82,10 +82,14 @@ class ComicDetail {
     getStatusIcon() {
         switch (this.artworkStatus) {
             case artworkStatuses.finished:
-                return "check";
-            case artworkStatuses.onGoing:
                 return "close";
+            case artworkStatuses.onGoing:
+                return "check";
         }
+    }
+
+    isCancelled() {
+        return this.artworkStatus == artworkStatuses.cancelled;
     }
 }
 

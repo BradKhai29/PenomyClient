@@ -96,6 +96,18 @@
                     <!-- Report profile button -->
                     <ReportProfileButton v-if="isAuth" :userId="creatorId" />
                     <!-- Report profile button -->
+
+                    <q-btn
+                        id="visit-profile-button"
+                        dense
+                        no-caps
+                        class="q-ml-sm bg-dark text-light border-radius-sm shadow-1 q-px-sm"
+                    >
+                        <q-icon name="group" />
+                        <span class="q-ml-xs text-subtitle1">
+                            Xem trang cá nhân
+                        </span>
+                    </q-btn>
                 </div>
                 <!-- Guest view display section-->
 

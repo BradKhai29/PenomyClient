@@ -58,6 +58,7 @@
                         v-for="(keyword, index) in searchHistory"
                         :key="index"
                         :label="keyword"
+                        :index="index"
                         @click="showMenu = false"
                         @removeItem="handleRemoveItem"
                     />
@@ -376,10 +377,6 @@ export default {
 
     width: var(--width);
     height: var(--height);
-}
-
-.align-stretch {
-    align-items: stretch !important;
 }
 
 .artwork-item-name {
