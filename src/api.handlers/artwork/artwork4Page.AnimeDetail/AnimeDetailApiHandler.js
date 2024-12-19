@@ -24,10 +24,10 @@ async function getArtworkDetailByIdAsync(artworkId, guestId = -1, accessToken) {
         }
 
         const response = await axios({
-            url: `${BaseWebApiUrl}/g5/artwork-detail`,
+            url: `${BaseWebApiUrl}/g15/anime-detail`,
             method: HttpMethod.GET,
             params: {
-                artworkId: artworkId,
+                id: artworkId,
                 guestId: guestId,
                 accessToken: accessToken,
             },
@@ -36,6 +36,7 @@ async function getArtworkDetailByIdAsync(artworkId, guestId = -1, accessToken) {
         const data = response.data.body;
 
         const mapResult = ArtworkDetailResponse.mapFrom(data);
+        console.log(mapResult);
 
         return mapResult;
     } catch (error) {
@@ -44,6 +45,7 @@ async function getArtworkDetailByIdAsync(artworkId, guestId = -1, accessToken) {
         return null;
     }
 }
+
 async function getArtworkChaptersByIdAsync(artworkId, startPage, pageSize) {
     try {
         const response = await axios({
@@ -84,11 +86,11 @@ async function getArtworkChaptersByIdAsync(artworkId, startPage, pageSize) {
 }
 
 /**
- * Get the pagination option for the chapter list of the specified comic.
+ * Get the pagination option for the chapter list of the specified anime.
  *
- * @param {String} comicId Id of the comic to get the chapter list pagination.
+ * @param {String} artworkId Id of the anime to get the chapter list pagination.
  */
-async function getComicChapterPaginationOptionByIdAsync(comicId) {
+async function getChapterPaginationOptionByIdAsync(artworkId) {
     try {
         const apiUrl = `${BaseWebApiUrl}/g8/artwork-chapter/pagination-options`;
 
@@ -96,7 +98,7 @@ async function getComicChapterPaginationOptionByIdAsync(comicId) {
             url: apiUrl,
             method: HttpMethod.GET,
             params: {
-                artworkId: comicId,
+                artworkId: artworkId,
             },
         });
 
@@ -143,11 +145,12 @@ async function getRecommendedArtworksAsync(artworkId) {
     }
 }
 
-const artworkDetailApiHandler = {
+const AnimeDetailApiHandler = {
     getArtworkDetailByIdAsync,
     getArtworkChaptersByIdAsync,
-    getComicChapterPaginationOptionByIdAsync,
+    getComicChapterPaginationOptionByIdAsync:
+        getChapterPaginationOptionByIdAsync,
     getRecommendedArtworksAsync,
 };
 
-export default artworkDetailApiHandler;
+export { AnimeDetailApiHandler };

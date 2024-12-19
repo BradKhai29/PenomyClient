@@ -4,10 +4,10 @@
         class="text-decoration-none text-dark"
     >
         <div
-            class="bg-dark-blur anime-chapter-card image border-radius-sm shadow-1 relative-position"
+            class="anime-chapter-card image border-radius-sm shadow-1 relative-position"
         >
             <q-img
-                class="bg-light-300"
+                style="background-color: rgba(34, 34, 34, 0.88)"
                 :src="chapterDetail.thumbnailUrl"
                 :ratio="1"
                 width="100%"
@@ -18,7 +18,9 @@
                 class="absolute flex items-center q-pa-sm"
                 style="bottom: 0; right: 0"
             >
-                <span class="bg-primary text-dark border-radius-sm q-px-xs">
+                <span
+                    class="bg-primary text-dark text-weight-bold border-radius-sm q-px-xs"
+                >
                     Tập {{ chapterDetail.uploadOrder }}
                 </span>
             </div>
@@ -27,9 +29,8 @@
         <div class="chapter-detail-section q-mt-sm">
             <p class="flex q-mb-none">
                 <span class="text-weight-bold">
-                    Tập {{ chapterDetail.uploadOrder }}
+                    Tập {{ chapterDetail.uploadOrder }}: {{ title }}
                 </span>
-                <span class="q-ml-xs">: {{ title }}</span>
             </p>
             <!-- Chapter metadata section -->
             <div class="row items-center text-dark-500 text-subtitle2 q-mt-xs">
@@ -88,11 +89,11 @@
 
 <script>
 // Import dependencies section.
-import { Art5RouteNames } from "src/router/artwork/Artwork5PageRoute";
 import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
 import { CreatorStudio11RouteNames } from "src/router/creatorStudio/CreatorStudio11PageRoute";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { DateTimeHelper } from "src/helpers/DateTimeHelper";
+import { Artwork6AnimeChapterDetailRouteName } from "src/router/artwork/Artwork6PageRoute";
 
 // Component constants.
 const TOOLTIP_OFFSET = [4, 4];
@@ -125,7 +126,7 @@ export default {
          */
         chapterDetailRoute() {
             return {
-                name: Art5RouteNames.ComicChapterDetail,
+                name: Artwork6AnimeChapterDetailRouteName,
                 params: {
                     comicId: this.artworkId,
                     chapterId: this.chapterDetail.id,

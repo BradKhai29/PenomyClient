@@ -41,7 +41,7 @@ class AnimeChapterDetailToEditResponseDto {
      * @param {Number} publishStatus Publish status value of current anime chapter.
      * @param {Number} publicLevel Public level value of current anime chapter.
      * @param {Boolean} allowComment Indicate to allow comment on this anime chapter.
-     * @param {Strign} publishedAt The datetime that current anime chapter is published at.
+     * @param {String} publishedAt The datetime that current anime chapter is published at.
      * @param {string} chapterVideoUrl The current video url of this chapter.
      * @param {Number} totalMediaSize The total media size in bytes of current anime chapter.
      */
@@ -71,7 +71,7 @@ class AnimeChapterDetailToEditResponseDto {
         this.publishStatus = publishStatus;
         this.publicLevel = publicLevel;
         this.allowComment = allowComment;
-        this.publishedAt = DateTimeHelper.formatISODate(publishedAt);
+        this.publishedAt = publishedAt;
         this.chapterVideoUrl = chapterVideoUrl;
         this.totalMediaSize = totalMediaSize;
 

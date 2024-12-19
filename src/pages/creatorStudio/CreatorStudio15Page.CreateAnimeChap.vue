@@ -282,7 +282,7 @@ export default {
                 this.hasInputData = false;
                 NotificationHelper.notifySuccess(message);
                 this.$router.push(
-                    `/studio/anime/detail/${this.chapterDetail.artworkId}`
+                    `/studio/anime/detail/${this.chapterDetail.animeId}`
                 );
             } else {
                 NotificationHelper.notifyError(result.message);

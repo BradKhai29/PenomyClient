@@ -361,6 +361,7 @@ export default {
          * @param {KeyboardEvent} keyboardEventEvent Tracking the keyboard event to trigger correct action.
          */
         listenUserKeyDown(keyboardEventEvent) {
+            keyboardEventEvent.preventDefault();
             const pressKey = keyboardEventEvent.key.toLocaleLowerCase();
 
             switch (pressKey) {

@@ -3,6 +3,10 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
+// Models for binding
+import { AnimeChapterDetailResponseDto } from "src/api.models/artwork/artwork6Page/AnimeChapterDetailResponseDto";
+import { ArtworkChapterResponse } from "src/api.models/artwork/artwork3Page/ArtworkChapterResponse";
+
 // Init authStore to get the access-token.
 const authStore = useAuthStore();
 
@@ -11,48 +15,39 @@ const authStore = useAuthStore();
  *
  * @param {String} artworkId Id of the anime contains this chapter.
  * @param {String} chapterId Id of the chapter to get detail.
- * @returns {Promise<ComicChapterDetailResponseDto>} Promise contains the chapter detail.
+ * @returns {Promise<AnimeChapterDetailResponseDto>} Promise contains the chapter detail.
  */
 async function getChapterDetailByIdAsync(artworkId, chapterId) {
-    let apiUrl = `${BaseWebApiUrl}/g9/comic/${artworkId}/chapter/${chapterId}`;
-
-    if (!authStore.isAuth) {
-        apiUrl = `${BaseWebApiUrl}/g9/comic/${artworkId}/chapter/${chapterId}`;
-    }
+    const apiUrl = `${BaseWebApiUrl}/g19/anime/${artworkId}/chapter/${chapterId}`;
 
     try {
-        const bearerAccessToken = authStore.bearerAccessToken();
-
         const response = await axios({
             url: apiUrl,
             method: HttpMethod.GET,
-            headers: {
-                Authorization: bearerAccessToken,
-            },
         });
 
-        return ComicChapterDetailResponseDto.mapFrom(response.data.body);
+        return AnimeChapterDetailResponseDto.mapFrom(response.data.body);
     } catch (error) {
-        return ComicChapterDetailResponseDto.failedWithErrorCode();
+        return null;
     }
 }
 
 /**
  * Get the list of chapters of the current
- * comic support for chapter navigation.
+ * anime support for chapter navigation.
  *
- * @param {String} comicId Id of the comic to get.
- * @returns {Promise<ArtworkChapterResponse[]>} The list of chapter of current comic.
+ * @param {String} animeId Id of the anime to get.
+ * @returns {Promise<ArtworkChapterResponse[]>} The list of chapter of current anime.
  */
-async function getChapterListByAnimeIdAsync(comicId) {
-    const apiUrl = `${BaseWebApiUrl}/g9/chapter-list`;
+async function getChapterListByAnimeIdAsync(animeId) {
+    const apiUrl = `${BaseWebApiUrl}/g19/anime/chapter-list`;
 
     try {
         const response = await axios({
             url: apiUrl,
             method: HttpMethod.GET,
             params: {
-                comicId: comicId,
+                animeId: animeId,
             },
         });
 
@@ -72,3 +67,5 @@ const AnimeChapterApiHandler = {
     getChapterDetailByIdAsync,
     getChapterListByAnimeIdAsync,
 };
+
+export { AnimeChapterApiHandler };

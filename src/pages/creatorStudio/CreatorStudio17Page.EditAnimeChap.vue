@@ -39,7 +39,7 @@
                             v-if="chapterDetail.isPublished()"
                             label="Thời điểm xuất bản"
                             tooltipMessage="Thời gian tập truyện được chỉ định xuất bản"
-                            :displayContent="chapterDetail.publishedAt"
+                            :displayContent="publishedAt"
                             class="q-mb-sm"
                         />
 
@@ -160,6 +160,7 @@ import AllowCommentInput from "components/common/creatorStudio/ArtworkAllowComme
 import PublicLevelInput from "components/common/creatorStudio/ArtworkPublicLevelInput.vue";
 import ChapterPublishOptionsInput from "src/components/common/creatorStudio/ChapterPublishOptionsInput.vue";
 import ConfirmPolicyInput from "components/common/creatorStudio/ArtworkConfirmPolicyInput.vue";
+import { DateTimeHelper } from "src/helpers/DateTimeHelper";
 
 export default {
     components: {
@@ -196,6 +197,16 @@ export default {
                 chapterImagesChange: false,
             },
         };
+    },
+    computed: {
+        publishedAt() {
+            const publishedDateTime = new Date(this.chapterDetail.publishedAt);
+
+            return DateTimeHelper.formatLocaleDateTimeString(
+                publishedDateTime,
+                DateTimeHelper.DD_MM_YYYY_HH_MM_FORMAT
+            );
+        },
     },
     provide() {
         return {
@@ -341,7 +352,7 @@ export default {
             this.isUpdating = true;
 
             const result =
-                await CreatorStudio11ApiHandler.updateComicChapterAsync(
+                await EditAnimeChapterApiHandler.updateAnimeChapterAsync(
                     this.chapterDetail,
                     selectUpdateMode.value
                 );
@@ -354,9 +365,9 @@ export default {
                 this.hasChangesInData = false;
                 NotificationHelper.notifySuccess(message);
 
-                // Redirect back to the comic detail page.
+                // Redirect back to the anime detail page.
                 this.$router.push(
-                    `/studio/comic/detail/${this.chapterDetail.comicId}`
+                    `/studio/anime/detail/${this.chapterDetail.animeId}`
                 );
             } else {
                 NotificationHelper.notifyError(result.message);

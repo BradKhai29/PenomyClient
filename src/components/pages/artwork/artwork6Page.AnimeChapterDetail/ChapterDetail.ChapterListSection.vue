@@ -41,7 +41,10 @@
                     v-for="chapter in chapterList"
                     :key="chapter.id"
                 >
-                    <router-link class="underline-none">
+                    <router-link
+                        :to="getChapterLink(chapter.id)"
+                        class="underline-none text-center"
+                    >
                         <div
                             class="q-mr-sm q-mb-sm text-subtitle2 anime-chapter-grid-item q-px-md q-py-sm"
                             :class="
@@ -50,9 +53,7 @@
                                     : 'text-light border-sm-invisible'
                             "
                         >
-                            <span class="title">
-                                {{ chapter.uploadOrder }}
-                            </span>
+                            {{ chapter.uploadOrder }}
                         </div>
                     </router-link>
                 </div>
@@ -62,10 +63,13 @@
 </template>
 
 <script>
+import { AnimeChapterApiHandler } from "src/api.handlers/artwork/artwork6Page/AnimeChapterApiHandler";
 import { AnimeChapterDetailResponseDto } from "src/api.models/artwork/artwork6Page/AnimeChapterDetailResponseDto";
+import { Artwork6AnimeChapterDetailRouteName } from "src/router/artwork/Artwork6PageRoute";
 
 export default {
     name: "AnimeChapterListSection",
+    emits: ["changeChapter"],
     props: {
         artworkId: {
             required: true,
@@ -89,6 +93,9 @@ export default {
         };
     },
     computed: {
+        maxDisplayChapterItems() {
+            return 24;
+        },
         maxGridItemPerLine() {
             return 6;
         },
@@ -107,18 +114,15 @@ export default {
     },
     beforeMount() {
         this.chapterDisplayMode = this.gridDisplayMode;
+        this.currentChapterId = this.chapterId;
     },
     async mounted() {
-        for (let i = 0; i < 12; i++) {
-            const chapterItem = new AnimeChapterDetailResponseDto(
-                i,
-                "chapter_" + i,
-                i + 1,
-                ""
+        const loadChapterList =
+            await AnimeChapterApiHandler.getChapterListByAnimeIdAsync(
+                this.artworkId
             );
 
-            this.chapterList.push(chapterItem);
-        }
+        this.chapterList.push(...loadChapterList);
     },
     methods: {
         selectDisplayMode(displayMode) {
@@ -126,6 +130,17 @@ export default {
         },
         selectChapter(chapterId) {
             this.currentChapterId = chapterId;
+
+            this.$emit("changeChapter", chapterId);
+        },
+        getChapterLink(inputChapterId) {
+            return {
+                name: Artwork6AnimeChapterDetailRouteName,
+                params: {
+                    artworkId: this.artworkId,
+                    chapterId: inputChapterId,
+                },
+            };
         },
     },
 };
@@ -140,11 +155,5 @@ export default {
 
 .anime-chapter-grid-item {
     background-color: rgba(66, 66, 66, 0.48) !important;
-}
-
-.anime-chapter-grid-item .title {
-    display: inline-block;
-    width: 16px !important;
-    text-align: center;
 }
 </style>

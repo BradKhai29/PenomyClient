@@ -327,6 +327,8 @@ export default {
                 "timeupdate",
                 this.handleOnVideoTimeUpdate
             );
+
+            this.videoPlayer.pause();
         },
         setUpVideoTimeLineBar() {
             // Add event listener to the video timeline element for later interaction.

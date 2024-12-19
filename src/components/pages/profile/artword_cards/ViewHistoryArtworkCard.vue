@@ -47,7 +47,7 @@
                 >
                     {{ title }}
                 </span>
-                <q-icon name="palette" size="xs" />
+                <q-icon :name="isComic ? 'palette' : 'videocam'" size="xs" />
             </router-link>
 
             <router-link
@@ -271,7 +271,7 @@ export default {
                 NotificationHelper.notifySuccess("Đã xóa thành công");
 
                 // Emit removeItem event.
-                this.$emit("removeItem", this.artworkId);
+                this.$emit("removeItem", this.artworkId, this.isComic);
             } else {
                 NotificationHelper.notifyError("Đã có lỗi xảy ra");
             }

@@ -12,6 +12,8 @@ import { AnimeChapterDetailRequestDto } from "src/api.models/creatorStudio/creat
 // Init store for later operation.
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { CreateArtworkResult } from "src/api.models/creatorStudio/creatorStudio6Page/CreateArtworkResult";
+import { CreateChapterErrorCodeParser } from "src/api.models/creatorStudio/creatorStudio9Page/CreateComicChapterError";
+import { CreateAnimeChapterErrorCode } from "./CreateAnimeChapterErrorCode";
 const authStore = useAuthStore();
 
 /**
@@ -96,7 +98,7 @@ async function createAnimeChapterAsync(chapterDetail, isDrafted) {
         console.log(error);
 
         const errorMessage =
-            CreateChapterErrorCodeParser.getMessageFromErrorCode(
+            CreateAnimeChapterErrorCode.getMessageFromErrorCode(
                 axiosError.response.data.appCode
             );
 

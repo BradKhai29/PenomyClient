@@ -18,9 +18,9 @@
                     :offset="tooltipOffset"
                     class="bg-dark text-light"
                 >
-                    <strong class="text-subtitle2">
+                    <strong class="text-subtitle1">
                         Số tập:
-                        <span class="text-weight-bold">
+                        <span class="text-weight-bold text-primary">
                             {{ animeDetail.viewCount }} /
                             {{ animeDetail.viewCount }}
                         </span>
@@ -36,9 +36,9 @@
                     :offset="tooltipOffset"
                     class="bg-dark text-light"
                 >
-                    <strong class="text-subtitle2">
+                    <strong class="text-subtitle1">
                         Số lượt xem:
-                        <span class="text-weight-bold">
+                        <span class="text-weight-bold text-primary">
                             {{ animeDetail.viewCount }}
                         </span>
                     </strong>
@@ -55,9 +55,9 @@
                     :offset="tooltipOffset"
                     class="bg-dark text-light"
                 >
-                    <strong class="text-subtitle2">
+                    <strong class="text-subtitle1">
                         Số lượt yêu thích:
-                        <span class="text-weight-bold">
+                        <span class="text-weight-bold text-primary">
                             {{ animeDetail.favoriteCount }}
                         </span>
                     </strong>
@@ -77,7 +77,7 @@
                     :offset="tooltipOffset"
                     class="bg-dark text-light"
                 >
-                    <strong class="text-subtitle2">
+                    <strong class="text-subtitle1">
                         <span class="text-primary text-weight-bold">
                             ({{ starRates }} sao)
                         </span>
@@ -98,9 +98,9 @@
                     :offset="tooltipOffset"
                     class="bg-dark text-light"
                 >
-                    <strong class="text-subtitle2">
+                    <strong class="text-subtitle1">
                         Số lượt theo dõi:
-                        <span class="text-weight-bold">
+                        <span class="text-weight-bold text-primary">
                             {{ animeDetail.followCount }}
                         </span>
                     </strong>
@@ -149,6 +149,9 @@ export default {
         },
         introduction() {
             return this.animeDetail.introduction ?? "Không có phần giới thiệu";
+        },
+        totalChapters() {
+            return this.animeDetail.viewCount;
         },
         viewCount() {
             return NumberHelper.formatNumberShort(

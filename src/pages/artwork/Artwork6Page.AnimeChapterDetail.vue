@@ -31,6 +31,7 @@
                 :artworkId="artworkId"
                 :chapterId="chapterId"
                 :isVideoExpanded="isVideoExpanded"
+                @changeChapter="handleChangeChapter"
             />
         </section>
 
@@ -40,15 +41,93 @@
         >
             <section class="anime-description-section">
                 <div class="anime-description-container">
-                    <p class="p-mb-none flex items-center text-dark text-h6">
-                        <span class="text-weight-bold">
-                            Thanh gươm diệt quỷ: Chuyến tàu vô tận (Trailer)
-                        </span>
+                    <p class="q-mb-none flex items-center text-dark text-h6">
+                        <q-btn
+                            no-caps
+                            dense
+                            padding="none"
+                            unelevated
+                            flat
+                            class="text-weight-bold text-h6"
+                        >
+                            {{ animeTitle }}
+                        </q-btn>
                         <span class="text-weight-bold">
                             <q-icon name="chevron_right" size="md" />
                         </span>
-                        <span> Tập 0 </span>
+                        <span> Tập {{ uploadOrder }} </span>
                     </p>
+
+                    <!-- Artwork detail section -->
+                    <section id="artwork-detail-section">
+                        <div class="flex items-center text-subtitle1 text-dark">
+                            <span class="flex items-center"> Nhật Bản </span>
+                            <!-- Separator -->
+                            <span
+                                class="border-sm-dark q-mx-sm"
+                                style="padding: 6.4px 0px"
+                            ></span>
+
+                            <span> {{ totalViewShort }} lượt xem </span>
+
+                            <!-- Separator -->
+                            <span
+                                class="border-sm-dark q-mx-sm"
+                                style="padding: 6.4px 0px"
+                            ></span>
+
+                            <span>
+                                Tập {{ uploadOrder }}: {{ chapterTitle }}
+                            </span>
+                        </div>
+
+                        <div id="artwork-categories" class="q-mt-xs">
+                            <q-btn
+                                :to="`${$route.path}?categoryId=${category.categoryId}`"
+                                v-for="category in categories"
+                                :key="category"
+                                :id="category.categoryId"
+                                dense
+                                no-caps
+                                unelevated
+                                class="bg-light-500 text-dark text-subtitle2 text-weight-bold border-radius-sm q-px-sm q-mr-xs"
+                            >
+                                {{ category.categoryName }}
+                            </q-btn>
+                            <q-btn
+                                dense
+                                flat
+                                no-caps
+                                unelevated
+                                class="shadow-1 bg-dark-900 text-light q-px-sm border-radius-sm"
+                            >
+                                <q-icon name="info_outline" />
+                                <span
+                                    class="text-subtitle2 border-radius-sm q-ml-xs text-weight-bold"
+                                    >Khác</span
+                                >
+                                <q-tooltip
+                                    anchor="top middle"
+                                    self="bottom middle"
+                                    :offset="[10, 10]"
+                                >
+                                    <strong
+                                        class="text-subtitle2 text-weight-bold"
+                                    >
+                                        Thông tin khác về tác phẩm
+                                    </strong>
+                                </q-tooltip>
+                            </q-btn>
+                        </div>
+
+                        <p
+                            class="q-mt-sm text-subtitle1"
+                            style="line-height: 1.4"
+                        >
+                            <strong> Mô tả tập: </strong>
+                            {{ chapterDescription }}
+                        </p>
+                    </section>
                 </div>
             </section>
 
@@ -65,12 +144,24 @@
 
 <script>
 // Import dependencies section.
+import { AnimeChapterApiHandler } from "src/api.handlers/artwork/artwork6Page/AnimeChapterApiHandler";
 import { AnimeChapterDetailResponseDto } from "src/api.models/artwork/artwork6Page/AnimeChapterDetailResponseDto";
+import { AnimeDetailApiHandler } from "src/api.handlers/artwork/artwork4Page.AnimeDetail/AnimeDetailApiHandler";
+import { NumberHelper } from "src/helpers/NumberHelper";
+import { NotificationHelper } from "src/helpers/NotificationHelper";
+import { AnimeDetailResponseDto } from "src/api.models/creatorStudio/creatorStudio13Page.AnimeDetail/AnimeDetailResponseDto";
+import { ViewHistoryApiHandler } from "src/api.handlers/artwork/common/ViewHistoryApiHandler";
 
 // Import components section.
 import ChapterVideoPlayer from "src/components/pages/artwork/artwork6Page.AnimeChapterDetail/ChapterVideoPlayer.vue";
 import ChapterListSection from "src/components/pages/artwork/artwork6Page.AnimeChapterDetail/ChapterDetail.ChapterListSection.vue";
-import { NumberHelper } from "src/helpers/NumberHelper";
+
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+import { useGuestStore } from "src/stores/common/GuestStore";
+
+const authStore = useAuthStore();
+const guestStore = useGuestStore();
 
 export default {
     name: "Artwork6Page.Temp",
@@ -84,16 +175,64 @@ export default {
             artworkId: null,
             chapterId: null,
             isVideoExpanded: false,
+            /**
+             * @type {AnimeDetailResponseDto} The detail of anime contains this chapter.
+             */
+            animeDetail: null,
+            /**
+             * @type {AnimeChapterDetailResponseDto} Type of this property.
+             */
+            chapterDetail: null,
         };
     },
     computed: {
-        chapterDetail() {
-            return new AnimeChapterDetailResponseDto(
-                1,
-                2,
-                3,
-                "https://res.cloudinary.com/dsjsmbdpw/video/upload/v1733759019/animations/test/kimetsu_no_yaiba_mugen_train_zpscfr.mp4"
-            );
+        animeTitle() {
+            if (this.animeDetail) {
+                return this.animeDetail.title;
+            }
+
+            return "null";
+        },
+        categories() {
+            if (this.animeDetail) {
+                return this.animeDetail.categories;
+            }
+
+            return [];
+        },
+        uploadOrder() {
+            if (this.chapterDetail) {
+                return this.chapterDetail.uploadOrder;
+            }
+
+            return 0;
+        },
+        totalViewShort() {
+            if (this.chapterDetail) {
+                return NumberHelper.formatNumberShort(
+                    this.chapterDetail.totalViews
+                );
+            }
+
+            return 0;
+        },
+        chapterTitle() {
+            if (this.chapterDetail) {
+                return this.chapterDetail.title;
+            }
+
+            return "";
+        },
+        chapterDescription() {
+            if (this.chapterDetail) {
+                if (this.chapterDetail.description.length > 10) {
+                    console.log(this.chapterDetail.description);
+
+                    return this.chapterDetail.description;
+                }
+            }
+
+            return "Không có mô tả";
         },
     },
     beforeMount() {
@@ -105,12 +244,19 @@ export default {
 
         if (!this.isValidId) {
             // Redirect back to homepage when find invalid id.
+            NotificationHelper.notifyError("Đường dẫn không hợp lệ");
+
             this.$router.push("/");
 
             return;
         }
     },
     async mounted() {
+        await this.loadAnimeDetailAsync();
+        await this.loadChapterDetailAsync();
+
+        this.saveViewHistoryAsync();
+
         this.isLoading = false;
     },
     methods: {
@@ -122,6 +268,73 @@ export default {
         handleOnExpanded(isVideoExpanded) {
             this.isVideoExpanded = isVideoExpanded;
         },
+        async loadAnimeDetailAsync() {
+            // Turn on the loading flag to wait for the content being loaded.
+            this.isLoading = true;
+            let guestId = -1;
+            let accessToken = "null_token";
+
+            const artworkDetail =
+                await AnimeDetailApiHandler.getArtworkDetailByIdAsync(
+                    this.artworkId,
+                    guestId,
+                    accessToken
+                );
+
+            if (!artworkDetail) {
+                NotificationHelper.notifyError("Không tìm thấy nội dung");
+
+                this.$router.push("/");
+                return;
+            }
+
+            // If result is success, then get the information and bind to the comic detail.
+            this.animeDetail = artworkDetail;
+        },
+        async saveViewHistoryAsync() {
+            const isAuth = await authStore.isAuthAsync();
+
+            if (isAuth) {
+                ViewHistoryApiHandler.addViewHistoryAsync(
+                    this.artworkId,
+                    this.chapterId,
+                    guestStore.currentGuestId
+                );
+            } else {
+                await guestStore.waitForSetUp();
+
+                ViewHistoryApiHandler.addViewHistoryAsync(
+                    this.artworkId,
+                    this.chapterId,
+                    guestStore.currentGuestId
+                );
+            }
+        },
+        async loadChapterDetailAsync() {
+            const chapterDetail =
+                await AnimeChapterApiHandler.getChapterDetailByIdAsync(
+                    this.artworkId,
+                    this.chapterId
+                );
+
+            if (!chapterDetail) {
+                NotificationHelper.notifyError("Nội dung không tồn tại");
+
+                return;
+            }
+
+            this.chapterDetail = chapterDetail;
+        },
+        async handleChangeChapter() {
+            this.loadArtworkIdAndChapterIdFromRoute();
+
+            this.isLoading = true;
+            await this.loadChapterDetailAsync();
+
+            this.saveViewHistoryAsync();
+
+            this.isLoading = false;
+        },
     },
 };
 </script>
@@ -129,7 +342,7 @@ export default {
 <style scoped>
 #anime-detail-section,
 #chapter-video-section {
-    --margin-width: 112px;
+    --margin-width: 60px;
     --marigin-top-width: 28px;
 
     overflow: hidden;

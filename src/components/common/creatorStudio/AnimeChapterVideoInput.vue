@@ -89,31 +89,22 @@
                 </div>
             </label>
         </div>
-
-        <q-dialog
-            v-model="showDialog"
-            persistent
-            :maximized="true"
-            transition-show="slide-up"
-            transition-hide="slide-down"
+        <section
+            v-show="showDialog"
+            class="preview-video-section flex justify-center"
         >
-            <q-card>
-                <q-bar class="fixed-top bg-dark" style="z-index: 999">
-                    <q-space />
-                    <q-btn
-                        flat
-                        icon="close"
-                        class="bg-light text-dark"
-                        v-close-popup
-                    >
-                    </q-btn>
-                </q-bar>
-
-                <q-card-section class="q-mt-lg flex justify-center">
-                    <VideoPlayer :videoUrl="videoSrc" style="max-width: 100%" />
-                </q-card-section>
-            </q-card>
-        </q-dialog>
+            <div class="preview-container">
+                <VideoPlayer :videoUrl="videoSrc" class="border-radius-sm" />
+                <q-btn
+                    @click="showDialog = false"
+                    class="absolute"
+                    style="right: 0; top: 0"
+                    color="negative"
+                >
+                    <q-icon name="close" />
+                </q-btn>
+            </div>
+        </section>
     </section>
 </template>
 
@@ -262,5 +253,23 @@ export default {
 <style scoped>
 .upload-video-trigger {
     cursor: pointer;
+}
+
+.preview-video-section {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(34, 34, 34, 0.88);
+}
+
+.preview-video-section .preview-container {
+    position: relative;
+    height: 100%;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 40px;
 }
 </style>

@@ -5,13 +5,15 @@ import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import { AxiosHelper } from "src/helpers/AxiosHelper";
 import { DateTimeHelper } from "src/helpers/DateTimeHelper";
+import { FileHelper } from "src/helpers/FileHelper";
 
 // Models section.
-import { FileHelper } from "src/helpers/FileHelper";
+import { AnimeChapterDetailToEditResponseDto } from "src/api.models/creatorStudio/creatorStudio17Page.EditAnimeChap/AnimeChapterDetailToEditResponseDto";
+import { EditAnimeChapterDetailRequestDto } from "src/api.models/creatorStudio/creatorStudio17Page.EditAnimeChap/EditAnimeChapterDetailRequestDto";
+import { UpdateArtworkResult } from "src/api.models/creatorStudio/creatorStudio8Page/UpdateArtworkResult";
 
 // Init store for later operation.
 import { useAuthStore } from "src/stores/common/AuthStore";
-import { AnimeChapterDetailToEditResponseDto } from "src/api.models/creatorStudio/creatorStudio17Page.EditAnimeChap/AnimeChapterDetailToEditResponseDto";
 const authStore = useAuthStore();
 
 const ChapterUpdateModes = {
@@ -68,19 +70,20 @@ async function getChapterDetailByIdAsync(chapterId) {
 /**
  * Send the request to api to update a comic chapter with specified chapterDetail.
  *
- * @param {UpdateComicChapterDetail} chapterDetail The detail of the chapter.
- * @param {Boolean} isDrafted Specify to update a draft for this chapter.
- * @returns {Promise<UpdateComicChapterResult>} The result of chapter updating.
+ * @param {EditAnimeChapterDetailRequestDto} chapterDetail The detail of the chapter.
+ * @param {Number} updateMode Specify to update mode for this chapter.
+ * @returns {Promise<UpdateArtworkResult>} The result of chapter updating.
  */
-async function updateComicChapter(chapterDetail, updateMode) {
+async function updateAnimeChapterAsync(chapterDetail, updateMode) {
     const requestBody = new FormData();
 
     // Populate comic detail information to the request body.
-    requestBody.append("comicId", chapterDetail.comicId);
+    requestBody.append("animeId", chapterDetail.animeId);
     requestBody.append("chapterId", chapterDetail.id);
     requestBody.append("title", chapterDetail.title);
     requestBody.append("description", chapterDetail.description);
     requestBody.append("thumbnailImageFile", chapterDetail.thumbnailImageFile);
+    requestBody.append("chapterVideoFile", chapterDetail.chapterVideoFile);
     requestBody.append("publicLevel", chapterDetail.publicLevel);
     requestBody.append("allowComment", chapterDetail.allowComment);
     requestBody.append("updateMode", updateMode);
@@ -104,31 +107,11 @@ async function updateComicChapter(chapterDetail, updateMode) {
         );
     }
 
-    // Add the chapter image list to the request body.
-    requestBody.append(
-        "chapterMediaItemsInJson",
-        JSON.stringify(chapterDetail.chapterMedias)
-    );
-
-    // Add all new upload image files to the request body.
-    for (const mediaItem of chapterDetail.chapterMedias) {
-        if (mediaItem.imageFile) {
-            const imageFile = mediaItem.imageFile;
-            const fileExtension = FileHelper.getFileExtension(imageFile);
-
-            requestBody.append(
-                "newChapterImageFiles",
-                imageFile,
-                `${mediaItem.id}.${fileExtension}`
-            );
-        }
-    }
-
-    const result = new UpdateComicChapterResult(false, null);
+    const result = new UpdateArtworkResult(false, null);
 
     try {
         await axios({
-            url: `${BaseWebApiUrl}/art12/chapter/update`,
+            url: `${BaseWebApiUrl}/art22/chapter/update`,
             method: HttpMethod.POST,
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -149,6 +132,7 @@ async function updateComicChapter(chapterDetail, updateMode) {
 
 const EditAnimeChapterApiHandler = {
     getChapterDetailByIdAsync: getChapterDetailByIdAsync,
+    updateAnimeChapterAsync,
 };
 
 export { EditAnimeChapterApiHandler, ChapterUpdateModes };

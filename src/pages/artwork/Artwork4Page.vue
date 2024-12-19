@@ -13,13 +13,13 @@
                     :animeDetail="animeDetail"
                     class="border-md-bottom-light-500"
                 />
-                <CreatorDetailSection
+                <!-- <CreatorDetailSection
                     :artworkId="artworkId"
                     :creatorId="animeDetail.creatorId"
                     :creatorName="animeDetail.creatorName"
                     :creatorAvatarUrl="animeDetail.creatorAvatarUrl"
                     :creatorTotalFollowers="animeDetail.creatorTotalFollowers"
-                />
+                /> -->
             </div>
         </section>
 
@@ -42,7 +42,7 @@
 
 <script>
 // Import dependencies section.
-import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
+import { AnimeDetailApiHandler } from "src/api.handlers/artwork/artwork4Page.AnimeDetail/AnimeDetailApiHandler";
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -66,7 +66,7 @@ export default {
     components: {
         AnimeDetailSection,
         AnimeMetadataSection,
-        CreatorDetailSection,
+        // CreatorDetailSection,
         AnimeChapterListSection,
         ArtworkDetailRecommendedSection,
     },
@@ -129,7 +129,7 @@ export default {
             }
 
             const artworkDetail =
-                await artworkDetailApiHandler.getArtworkDetailByIdAsync(
+                await AnimeDetailApiHandler.getArtworkDetailByIdAsync(
                     this.artworkId,
                     guestId,
                     accessToken

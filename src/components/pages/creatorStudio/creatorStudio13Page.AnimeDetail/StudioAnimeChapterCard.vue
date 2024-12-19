@@ -158,7 +158,7 @@
                         <strong class="text-subtitle2">Ngày tạo </strong>
                     </q-tooltip>
                 </div>
-                <div class="q-ml-md flex items-center">
+                <div class="q-ml-md flex items-center" v-if="!isDrafted">
                     <q-icon name="calendar_month" size="xs" />
                     <span class="q-ml-xs">{{ publishedAt }}</span>
                     <q-tooltip
