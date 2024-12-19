@@ -1,8 +1,8 @@
 <template>
     <q-page>
-        <TopRecommendedArtworkSlider :isComic="true" class="q-ma-md" />
-        <RecentlyUpdatedSection class="q-ma-md" />
-        <RecommendedByCategorySection :isComic="true" class="q-ma-md" />
+        <TopRecommendedArtworkSlider :isComic="false" class="q-ma-md" />
+        <RecentlyUpdatedSection :isComic="false" class="q-ma-md" />
+        <RecommendedByCategorySection :isComic="false" class="q-ma-md" />
     </q-page>
 </template>
 

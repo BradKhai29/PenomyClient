@@ -68,6 +68,7 @@
                             :key="artwork.id"
                             :artworkDetail="artwork"
                             :itemIndex="index + 1"
+                            :isComic="isComic"
                         />
                     </q-tab-panel>
                 </q-tab-panels>

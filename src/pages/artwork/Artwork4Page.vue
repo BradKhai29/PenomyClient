@@ -84,6 +84,9 @@ export default {
         hasSeries() {
             return this.animeDetail.hasSeries;
         },
+        currentPath() {
+            return this.$route.path;
+        },
     },
     beforeMount() {
         this.loadArtworkIdFromRoute();
@@ -147,6 +150,13 @@ export default {
 
             // Turn off isLoading flag after loading content successfully.
             this.isLoading = false;
+        },
+    },
+    watch: {
+        currentPath(newPath, _) {
+            this.loadArtworkIdFromRoute();
+
+            this.loadAnimeDetailAsync();
         },
     },
 };

@@ -44,7 +44,11 @@ import RecommendedByCategorySubSection from "./RecommendedByCategorySubSection.v
 
 // Init the authStore for later operation.
 import { useAuthStore } from "src/stores/common/AuthStore";
+import { useGuestStore } from "src/stores/common/GuestStore";
+import { ArtworkTypes } from "src/api.handlers/artwork/artwork1Page/TopRecommendedArtworkApiHandler";
+
 const authStore = useAuthStore();
+const guestStore = useGuestStore();
 
 export default {
     name: "RecommendedByCategorySection",
@@ -67,10 +71,27 @@ export default {
             recommendedLists: null,
         };
     },
+    computed: {
+        loadArtworkType() {
+            if (this.isComic) {
+                return ArtworkTypes.COMIC;
+            }
+
+            return ArtworkTypes.ANIMATION;
+        },
+    },
     async mounted() {
+        await authStore.setUp();
+
+        const PLACEHOLDER_GUEST_ID = -1;
+        const guestId = authStore.isAuth
+            ? PLACEHOLDER_GUEST_ID
+            : guestStore.currentGuestId;
+
         const result = await RecommendComicsByCategoryApiHandler.getAsync(
             authStore.accessToken(),
-            123
+            guestId,
+            this.loadArtworkType
         );
 
         if (result) {
