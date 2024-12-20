@@ -5,6 +5,11 @@
             <FriendCard v-for="friend in friends" :key="friend.userId" :friend-info="friend" class="q-pa-md q-mt-md"
                 @send-friend-request="onSendFriendRequest" @cancel-friend-request="onSendFriendRequest" />
         </div>
+        <div class="text-bold text-subtitle1 q-pa-md container">
+            Bạn bè
+            <FriendCard v-for="friend in alrfriends" :key="friend.userId" :friend-info="friend"
+                class="q-pa-md q-mt-md" />
+        </div>
     </div>
 </template>
 
@@ -17,10 +22,12 @@ import FriendApiHandler from 'src/api.handlers/social/social4Page/FriendApiHandl
 const getFriendsApi = FriendApiHandler.GetFriendsAsync;
 
 const friends = ref([]);
+const alrfriends = ref([]);
 
 onMounted(async () => {
     try {
         friends.value = (await getFriendsApi()).responseBody.users;
+        alrfriends.value = (await getFriendsApi()).responseBody.friendlists;
     } catch (error) {
         console.error('Error fetching friends:', error);
         NotificationHelper.notifyError("Có gì đó không ổn...");
