@@ -13,7 +13,7 @@
                 <q-space />
 
                 <div class="q-gutter-sm row items-center no-wrap">
-                    <TheCategoriesDropdown />
+                    <!-- <TheCategoriesDropdown /> -->
                     <TheWatchingAreaDropdown />
 
                     <q-btn round dense color="dark" class="bg-dark" icon="message" to="/chat">
