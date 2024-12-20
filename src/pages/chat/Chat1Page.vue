@@ -104,13 +104,16 @@ async function sendMessage() {
 
         try {
             // const res = await sendMessageApi(route.params.groupChatId, comment.value);
-            console.log(groupId);
 
-            await ChatHubApiHandler.sendMessageAsync(
+            const result = await ChatHubApiHandler.sendMessageAsync(
                 groupId,
                 userProfileStore.currentUserId,
                 comment.value
             );
+
+            if (result) {
+                comment.value = "";
+            }
         } catch (error) {
             console.log(error);
         }
