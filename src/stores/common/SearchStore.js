@@ -53,6 +53,19 @@ const useSearchStore = defineStore("searchStore", {
             this.loadFromLocalStorage();
         },
         addSearchHistory(searchText) {
+            if (searchText == null) {
+                return;
+            }
+
+            const itemIndex = this.userSearchHistory.findIndex(
+                (item) => item == searchText
+            );
+            const NOT_FOUND_INDEX = -1;
+
+            if (itemIndex != NOT_FOUND_INDEX) {
+                return;
+            }
+
             this.userSearchHistory.unshift(searchText);
 
             if (this.userSearchHistory.length > MAX_PERSIST_HISTORY_ITEMS) {

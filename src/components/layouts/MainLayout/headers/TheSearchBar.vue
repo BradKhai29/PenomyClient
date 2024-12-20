@@ -213,8 +213,30 @@ export default {
     mounted() {
         // Bind the search input for later operation.
         this.searchInput = this.$refs.searchBarInput;
+        this.searchInput.addEventListener("keydown", this.handleOnKeyDown);
     },
     methods: {
+        /**
+         * @param {KeyboardEvent} event Tracking the keyboard event to trigger correct action.
+         */
+        handleOnKeyDown(event) {
+            const pressKey = event.key.toLocaleLowerCase();
+            const ENTER_KEY = "enter";
+
+            if (pressKey != ENTER_KEY) {
+                return;
+            }
+
+            if (this.searchText != null && this.searchText.length > 0) {
+                this.disablePreviousTimeout();
+                this.isProcessing = false;
+                this.showMenu = false;
+
+                this.$router.push(
+                    `/artwork/search?searchText=${this.searchText}`
+                );
+            }
+        },
         onInputFocus() {
             this.showMenu = true;
         },

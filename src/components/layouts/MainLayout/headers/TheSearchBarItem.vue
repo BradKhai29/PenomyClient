@@ -40,7 +40,6 @@
                         color="dark"
                         v-close-popup
                         class="text-subtitle1"
-                        :disable="isProcessing"
                     />
                     <q-btn
                         flat
