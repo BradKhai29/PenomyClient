@@ -24,7 +24,6 @@ async function searchComicAsync(searchText) {
         });
 
         const result = SearchResponseItem.mapFromMangaArray(response.data.body);
-        console.log(result);
 
         return result;
     } catch (error) {
