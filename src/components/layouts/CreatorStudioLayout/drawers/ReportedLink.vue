@@ -1,5 +1,6 @@
 <template>
     <DrawerLink
+        v-if="false"
         title="Nội dung vi phạm"
         icon="report"
         link="/studio/reported"

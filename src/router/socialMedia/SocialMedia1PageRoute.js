@@ -22,7 +22,7 @@ const routeDefinition = [
         component: () => import("src/layouts/SocialLayout.vue"),
         children: [
             {
-                path: "/social/groups/joined",
+                path: "/social/groups",
                 component: () =>
                     import("pages/socialMedia/SocialMedia1Page.vue"),
             },

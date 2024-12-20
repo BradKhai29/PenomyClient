@@ -2,14 +2,7 @@
     <q-layout view="LHh Lpr lFf">
         <q-header class="bg-light" bordered>
             <q-toolbar class="text-dark">
-                <q-btn
-                    flat
-                    round
-                    icon="menu"
-                    aria-label="Menu"
-                    @click="toggleDrawer"
-                    size="md"
-                />
+                <q-btn flat round icon="menu" aria-label="Menu" @click="toggleDrawer" size="md" />
 
                 <TheLogoButton class="toolbar-sm-hide" />
 
@@ -20,19 +13,10 @@
                 <q-space />
 
                 <div class="q-gutter-sm row items-center no-wrap">
-                    <TheCategoriesDropdown />
+                    <!-- <TheCategoriesDropdown /> -->
                     <TheWatchingAreaDropdown />
 
-                    <q-btn
-                        round
-                        dense
-                        color="dark"
-                        class="bg-dark"
-                        icon="message"
-                    >
-                        <q-badge color="red" text-color="white" floating>
-                            <span class="text-weight-bold">1</span>
-                        </q-badge>
+                    <q-btn round dense color="dark" class="bg-dark" icon="message" to="/chat">
                         <q-tooltip>Notifications</q-tooltip>
                     </q-btn>
 
@@ -41,22 +25,9 @@
             </q-toolbar>
         </q-header>
 
-        <q-drawer
-            v-model="showDrawer"
-            :breakpoint="400"
-            :width="280"
-            overlay
-            bordered
-        >
+        <q-drawer v-model="showDrawer" :breakpoint="400" :width="280" overlay bordered>
             <q-toolbar class="text-darkq-py-md">
-                <q-btn
-                    flat
-                    round
-                    icon="menu"
-                    aria-label="Menu"
-                    @click="toggleDrawer"
-                    size="md"
-                />
+                <q-btn flat round icon="menu" aria-label="Menu" @click="toggleDrawer" size="md" />
 
                 <TheLogoButton />
             </q-toolbar>
@@ -67,9 +38,7 @@
                     <SocialMediaLink />
                 </q-list>
                 <ForYouExpansion />
-                <div class="drawer-gutter"></div>
 
-                <OthersExpansion />
             </q-list>
         </q-drawer>
 
@@ -117,16 +86,22 @@ function toggleDrawer() {
 }
 
 .overlay {
-    position: fixed; /* Sit on top of the page content */
-    width: 100%; /* Full width (cover the whole page) */
-    height: 100%; /* Full height (cover the whole page) */
+    position: fixed;
+    /* Sit on top of the page content */
+    width: 100%;
+    /* Full width (cover the whole page) */
+    height: 100%;
+    /* Full height (cover the whole page) */
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.2); /* Black background with opacity */
-    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-    cursor: pointer; /* Add a pointer on hover */
+    background-color: rgba(0, 0, 0, 0.2);
+    /* Black background with opacity */
+    z-index: 2;
+    /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer;
+    /* Add a pointer on hover */
 }
 
 .toolbar-sm-show {

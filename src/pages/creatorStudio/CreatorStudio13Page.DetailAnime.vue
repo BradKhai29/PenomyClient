@@ -104,6 +104,7 @@
                                 <span class="q-ml-xs">Sửa</span>
                             </q-btn>
                             <q-btn
+                                v-if="false"
                                 class="bg-primary text-dark text-subtitle1 text-weight-bold"
                                 no-caps
                             >
@@ -111,6 +112,7 @@
                                 <span class="q-ml-xs">Thống kê</span>
                             </q-btn>
                             <q-btn
+                                v-if="false"
                                 class="bg-light-300 text-dark text-subtitle1 text-weight-bold"
                                 no-caps
                             >

@@ -5,9 +5,10 @@ import { ApiResponse } from "src/api.models/common/ApiResponse";
 import { useAuthStore } from "src/stores/common/AuthStore";
 
 const authStore = useAuthStore();
-const getMessageUrl = `${BaseWebApiUrl}/SM7/groups/get`;
-const sendMessageApiUrl = `${BaseWebApiUrl}/Chat3/chat/save`;
-async function GetMessagesAsync(groupNum) {
+const getMessageUrl = `${BaseWebApiUrl}/Chat10/chat-groups/get`;
+const getChatGroupsUrl = `${BaseWebApiUrl}/Chat2/chat-group/get`;
+
+async function GetGroupChatMesssagesAsync(groupChatId, pageNum, chatNum) {
     try {
         const response = await axios({
             url: getMessageUrl,
@@ -16,34 +17,31 @@ async function GetMessagesAsync(groupNum) {
                 Authorization: authStore.bearerAccessToken(),
             },
             params: {
-                groupId: groupNum,
+                groupChatId: groupChatId,
+                pageNum: "1",
+                chatNum: "20",
             },
         });
+        
         return ApiResponse.success(response.data.body);
     } catch (error) {
         console.log(error);
-
+        
         return ApiResponse.failed();
     }
 }
 
-async function SendMessagesAsync(groupNum, content) {
-    const requestBody = new FormData();
-
-    requestBody.append("chatGroupId", groupNum);
-    requestBody.append("content", content);
-    requestBody.append("isReply", false);
-    requestBody.append("messageType", 1);
+async function GetGroupChatsAsync() {
     try {
         const response = await axios({
-            url: sendMessageApiUrl,
-            method: HttpMethod.POST,
+            url: getChatGroupsUrl,
+            method: HttpMethod.GET,
             headers: {
-                "Content-Type": "multipart/form-data",
                 Authorization: authStore.bearerAccessToken(),
             },
-            data: requestBody,
         });
+        console.log(response.data.body);
+
         return ApiResponse.success(response.data.body);
     } catch (error) {
         console.log(error);
@@ -51,10 +49,9 @@ async function SendMessagesAsync(groupNum, content) {
         return ApiResponse.failed();
     }
 }
-
-const GetGroupsApiHandler = {
-    GetJoinedGroupsAsync: GetMessagesAsync,
-    SendMessageAsync: SendMessagesAsync,
+const GroupChatApiHandler = {
+    GetGroupChatMesssagesAsync: GetGroupChatMesssagesAsync,
+    GetGroupChatsAsync: GetGroupChatsAsync,
 };
 
-export default GetGroupsApiHandler;
+export default GroupChatApiHandler;

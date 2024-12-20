@@ -20,7 +20,7 @@
                 <q-space />
 
                 <div class="q-gutter-sm row items-center no-wrap">
-                    <TheCategoriesDropdown />
+                    <!-- <TheCategoriesDropdown /> -->
                     <TheWatchingAreaDropdown />
 
                     <q-btn
@@ -29,11 +29,11 @@
                         color="dark"
                         class="bg-dark"
                         icon="message"
+                        to="/chat"
                     >
-                        <q-badge color="red" text-color="white" floating>
-                            <span class="text-weight-bold">1</span>
-                        </q-badge>
-                        <q-tooltip>Notifications</q-tooltip>
+                        <!-- <q-badge color="red" text-color="white" floating> -->
+                        <!-- <span class="text-weight-bold">1</span> -->
+                        <!-- </q-badge> -->
                     </q-btn>
 
                     <TheUserAvatar />
@@ -66,9 +66,9 @@
                     <SocialMediaLink />
                 </q-list>
                 <ForYouExpansion />
-                <div class="drawer-gutter"></div>
+                <!-- <div class="drawer-gutter"></div> -->
 
-                <OthersExpansion />
+                <!-- <OthersExpansion /> -->
             </q-list>
         </q-drawer>
 

@@ -19,7 +19,6 @@ async function GetCreatedPostsAsync() {
         });
         if (response.status === 200) {
             const userPostsData = response.data.body.userPosts; // Extract userPosts array
-            console.log(userPostsData);
 
             // Wrap the array in an object with a userPosts key
             return new UserPostResponseDto({ userPosts: userPostsData });

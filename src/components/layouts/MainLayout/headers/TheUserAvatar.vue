@@ -9,10 +9,11 @@
 </template>
 
 <script>
-import TheUserAvatarMenu from "components/layouts/MainLayout/headers/TheUserAvatarMenu.vue";
 import { useAuthStore } from "src/stores/common/AuthStore";
 import { useGuestStore } from "src/stores/common/GuestStore";
 import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+// Import components section.
+import TheUserAvatarMenu from "components/layouts/MainLayout/headers/TheUserAvatarMenu.vue";
 
 // Init store for later operation.
 const authStore = useAuthStore();
