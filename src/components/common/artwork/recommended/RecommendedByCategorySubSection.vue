@@ -112,6 +112,7 @@
                         class="artwork-card-wrapper col-auto"
                     >
                         <RecommendArtworkCard
+                            :isComic="isComic"
                             :artworkDetail="artwork"
                             :class="
                                 index != currentArtworkList.length - 1

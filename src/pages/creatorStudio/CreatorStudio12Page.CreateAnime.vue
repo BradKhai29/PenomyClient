@@ -223,7 +223,7 @@ export default {
                 userProfileStore.increaseTotalArtworks();
 
                 // Redirect to the comic detail page after creating success.
-                this.$router.push(`/studio/comic/detail/${result.comicId}`);
+                this.$router.push(`/studio/anime/detail/${result.comicId}`);
             } else {
                 NotificationHelper.notifyError(
                     result.message ?? "Có lỗi xảy ra khi tạo"

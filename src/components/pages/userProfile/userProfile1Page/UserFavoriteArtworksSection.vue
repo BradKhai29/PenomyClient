@@ -31,7 +31,18 @@
         <div class="row q-mt-md" v-if="!isLoading">
             <q-tab-panels v-model="selectedTab" animated class="col-grow">
                 <q-tab-panel :name="comicTab" class="q-pa-none q-py-xs row">
-                    <div class="row col-grow">
+                    <div
+                        v-if="totalComics == 0"
+                        class="col-grow q-mx-xs q-pa-md bg-light-100 shadow-1 border-radius-sm flex justify-center text-dark-500"
+                    >
+                        <div class="column items-center">
+                            <q-icon name="outbox" size="120px"></q-icon>
+                            <span class="text-subtitle1">
+                                Không có nội dung
+                            </span>
+                        </div>
+                    </div>
+                    <div v-else class="row col-grow">
                         <div
                             v-for="comic in viewedComics"
                             :key="comic.id"
@@ -56,6 +67,20 @@
                             <span class="text-subtitle1">
                                 Không có nội dung
                             </span>
+                        </div>
+                    </div>
+                    <div v-else class="row col-grow">
+                        <div
+                            v-for="anime in viewedAnimes"
+                            :key="anime.id"
+                            class="view-history-card-wrapper col-md-3"
+                        >
+                            <FavoriteArtworkCard
+                                :artworkDetail="anime"
+                                class="q-mr-md q-mb-md"
+                                @removeItem="handleRemoveItem"
+                                :isComic="false"
+                            />
                         </div>
                     </div>
                 </q-tab-panel>
@@ -120,10 +145,10 @@ export default {
         },
     },
     async mounted() {
-        this.loadArtworksAsync();
+        this.loadComicAsync();
     },
     methods: {
-        async loadArtworksAsync() {
+        async loadComicAsync() {
             const result =
                 await FavoriteArtworkApiHandler.getAllFavoriteArtworksAsync(
                     authStore.bearerAccessToken(),
@@ -139,13 +164,54 @@ export default {
 
             this.isLoading = false;
         },
-        handleRemoveItem(artworkId) {
+        async loadAnimeAsync() {
+            const result =
+                await FavoriteArtworkApiHandler.getAllFavoriteArtworksAsync(
+                    authStore.bearerAccessToken(),
+                    ArtworkTypes.ANIMATION,
+                    1
+                );
+
+            if (result) {
+                this.viewedAnimes = result;
+            } else {
+                NotificationHelper.notifyError("Có gì đó không ổn...");
+            }
+
+            this.isLoading = false;
+        },
+        handleRemoveItem(artworkId, isComicType) {
+            if (isComicType) {
+                this.removeComicItem(artworkId);
+            } else {
+                this.removeAnimeItem(artworkId);
+            }
+        },
+        removeComicItem(artworkId) {
             const itemIndex = this.viewedComics.findIndex(
                 (item) => item.id == artworkId
             );
 
             // Remove the item from the display list.
             this.viewedComics.splice(itemIndex, 1);
+        },
+        removeAnimeItem(artworkId) {
+            const itemIndex = this.viewedAnimes.findIndex(
+                (item) => item.id == artworkId
+            );
+
+            // Remove the item from the display list.
+            this.viewedAnimes.splice(itemIndex, 1);
+        },
+    },
+    watch: {
+        selectedTab() {
+            if (this.isAtComicTab) {
+                this.loadComicAsync();
+                return;
+            }
+
+            this.loadAnimeAsync();
         },
     },
 };

@@ -147,7 +147,7 @@ async function createArtwork(artworkDetail) {
 
         console.log(response);
 
-        return CreateArtworkResult.success(response.data.body.comicId);
+        return CreateArtworkResult.success(response.data.body.artworkId);
     } catch (error) {
         const axiosError = AxiosHelper.toAxiosError(error);
 

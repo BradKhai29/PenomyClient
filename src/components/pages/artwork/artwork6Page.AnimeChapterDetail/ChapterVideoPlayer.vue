@@ -209,13 +209,10 @@
                 </div>
             </div>
         </section>
-        <div
-            :class="videoContainerScreenModeClass"
-            class="flex"
-            style="height: fit-content"
-        >
+        <div :class="videoContainerScreenModeClass" class="flex">
             <video
                 @click="togglePlayPauseVideo"
+                :class="isFullScreen ? fullScreenModeClass : ''"
                 :src="videoUrl"
                 ref="videoPlayer"
             />
@@ -530,7 +527,11 @@ export default {
 video {
     cursor: pointer;
     max-width: 100% !important;
-    height: fit-content !important;
+}
+
+video.full-screen {
+    widows: 100%;
+    height: 100%;
 }
 
 .chapter-video-container,

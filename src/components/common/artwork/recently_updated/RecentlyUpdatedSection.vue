@@ -99,6 +99,7 @@ import { RecentlyUpdatedArtworksApiHandler } from "src/api.handlers/artwork/artw
 // Import components section.
 import RecentlyUpdatedArtworkCard from "./RecentlyUpdatedArtworkCard.vue";
 import RecentlyUpdatedArtworkCardSkeleton from "./RecentlyUpdatedArtworkCardSkeleton.vue";
+import { ArtworkTypes } from "src/api.handlers/artwork/artwork1Page/TopRecommendedArtworkApiHandler";
 
 export default {
     name: "RecentlyUpdatedSection",
@@ -133,6 +134,13 @@ export default {
         };
     },
     computed: {
+        loadArtworkType() {
+            if (this.isComic) {
+                return ArtworkTypes.COMIC;
+            }
+
+            return ArtworkTypes.ANIMATION;
+        },
         sliderPrefix() {
             return `recently_update`;
         },
@@ -152,7 +160,9 @@ export default {
     },
     async mounted() {
         const recentlyUpdatedArtworks =
-            await RecentlyUpdatedArtworksApiHandler.getAsync();
+            await RecentlyUpdatedArtworksApiHandler.getAsync(
+                this.loadArtworkType
+            );
 
         // If the response is null, then not display
         if (!recentlyUpdatedArtworks) {

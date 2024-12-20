@@ -246,6 +246,7 @@ export default {
         },
         async unfollowArtwork() {
             this.isProcessing = true;
+            this.showDialog = false;
 
             const removeResult =
                 await FollowArtworkApiHandler.removeFollowAsync(
@@ -258,7 +259,7 @@ export default {
                 NotificationHelper.notifySuccess("Hủy theo dõi thành công");
 
                 // Emit removeItem event.
-                this.$emit("removeItem", this.artworkId);
+                this.$emit("removeItem", this.artworkId, this.isComic);
             } else {
                 NotificationHelper.notifyError("Đã có lỗi xảy ra");
             }

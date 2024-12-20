@@ -251,6 +251,7 @@ export default {
         },
         async unfavoriteArtwork() {
             this.isProcessing = true;
+            this.showDialog = false;
 
             const removeResult =
                 await FavoriteArtworkApiHandler.removeFavoriteAsync(
@@ -263,7 +264,7 @@ export default {
                 NotificationHelper.notifyError("Đã có lỗi xảy ra");
             } else {
                 // Emit removeItem event.
-                this.$emit("removeItem", this.artworkId);
+                this.$emit("removeItem", this.artworkId, this.isComic);
 
                 NotificationHelper.notifySuccess("Xóa thành công");
             }

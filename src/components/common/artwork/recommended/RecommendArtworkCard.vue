@@ -96,6 +96,7 @@ import { CreatorProfile1RouteNames } from "src/router/creatorProfile/CreatorProf
 
 // Import components section.
 import ArtworkCardOtherActionButton from "../buttons/ArtworkCardOtherActionButton.vue";
+import { Artwork6AnimeChapterDetailRouteName } from "src/router/artwork/Artwork6PageRoute";
 
 export default {
     name: "RecommendArtworkCard",
@@ -180,9 +181,9 @@ export default {
             }
 
             return {
-                name: Art5RouteNames.ComicChapterDetail,
+                name: Artwork6AnimeChapterDetailRouteName,
                 params: {
-                    comicId: this.artworkDetail.artworkId,
+                    artworkId: this.artworkDetail.artworkId,
                     chapterId: chapterId,
                 },
             };

@@ -180,7 +180,7 @@ export default {
                 return this.artworkDetail.lastChapterUploadOrder;
             }
 
-            return this.artworkDetail.fixedTotalChapters;
+            return this.artworkDetail.lastChapterUploadOrder;
         },
         latestChapterLink() {
             if (this.isComic) {
