@@ -27,6 +27,7 @@ class ArtworkDetailResponse {
      * @param {CategoryResponseItem[]} categories The list of category of this artwork
      * @param {String} firstChapterId Id of the first chapter of current comic.
      * @param {String} lastReadChapterId Id of the last read chapter of current comic that viewed by user.
+     * @param {Number} totalChapters Total chapters of the current artwork.
      */
     constructor(
         id,
@@ -54,7 +55,8 @@ class ArtworkDetailResponse {
         hasFollowed,
         categories,
         firstChapterId,
-        lastReadChapterId
+        lastReadChapterId,
+        totalChapters
     ) {
         this.id = id;
         this.title = title;
@@ -87,6 +89,7 @@ class ArtworkDetailResponse {
         // Chapter view history section.
         this.firstChapterId = firstChapterId;
         this.lastReadChapterId = lastReadChapterId;
+        this.totalChapters = totalChapters;
     }
 
     /**
@@ -124,8 +127,97 @@ class ArtworkDetailResponse {
             apiResponse.hasFollowed,
             CategoryResponseItem.mapFromArray(apiResponse.categories),
             apiResponse.firstChapterId,
-            apiResponse.lastReadChapterId
+            apiResponse.lastReadChapterId,
+            apiResponse.totalChapters
         );
+    }
+
+    /**
+     * Map the metadata to this artwork detail.
+     *
+     * @param {ArtworkDetailResponse} metadata The metadata detail.
+     */
+    static mapMetaData(metadata) {
+        const response = new ArtworkDetailResponse();
+
+        response.starRates = metadata.starRates;
+        response.totalUsersRated = metadata.totalUsersRated;
+        response.favoriteCount = metadata.favoriteCount;
+        response.viewCount = metadata.viewCount;
+        response.followCount = metadata.followCount;
+
+        return response;
+    }
+
+    /**
+     * Map the user preference to this artwork detail.
+     *
+     * @param {ArtworkDetailResponse} userPreference The userPreference detail.
+     */
+    static mapPreference(userPreference) {
+        const response = new ArtworkDetailResponse();
+
+        response.isUserFavorite = userPreference.isUserFavorite ?? false;
+        response.hasFollowed = userPreference.hasFollowed;
+        response.firstChapterId = userPreference.firstChapterId;
+        response.lastReadChapterId = userPreference.lastReadChapterId;
+
+        return response;
+    }
+
+    /**
+     * Map the creatorProfile to this artwork detail.
+     *
+     * @param {ArtworkDetailResponse} creatorProfile The creatorProfile detail.
+     */
+    static mapCreatorProfile(creatorProfile) {
+        const response = new ArtworkDetailResponse();
+
+        response.creatorName = creatorProfile.creatorName;
+        response.creatorAvatarUrl = creatorProfile.creatorAvatarUrl;
+        response.creatorTotalFollowers = creatorProfile.creatorTotalFollowers;
+
+        return response;
+    }
+
+    /**
+     * Add the user preference to this artwork detail.
+     *
+     * @param {ArtworkDetailResponse} userPreference The user preference detail.
+     */
+    addUserPreference(userPreference) {
+        // console.log(userPreference);
+
+        this.isUserFavorite = userPreference.isUserFavorite ?? false;
+        this.hasFollowed = userPreference.hasFollowed;
+        this.firstChapterId = userPreference.firstChapterId;
+        this.lastReadChapterId = userPreference.lastReadChapterId;
+    }
+
+    /**
+     * Add the metadata to this artwork detail.
+     *
+     * @param {ArtworkDetailResponse} metadata The metadata detail.
+     */
+    addMetaData(metadata) {
+        // console.log(metadata);
+
+        this.starRates = metadata.starRates;
+        this.totalUsersRated = metadata.totalUsersRated;
+        this.favoriteCount = metadata.favoriteCount;
+        this.viewCount = metadata.viewCount;
+        this.followCount = metadata.followCount;
+    }
+
+    /**
+     * Add the creator detail to this artwork detail.
+     *
+     * @param {ArtworkDetailResponse} creatorProfile The creator detail.
+     */
+    addCreatorProfile(creatorProfile) {
+        this.creatorName = creatorProfile.creatorName;
+        this.creatorAvatarUrl = creatorProfile.creatorAvatarUrl;
+        this.creatorTotalFollowers = creatorProfile.creatorTotalFollowers;
     }
 }
 export { ArtworkDetailResponse };

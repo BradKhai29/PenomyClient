@@ -122,7 +122,12 @@ const MAX_UPLOADED_VIDEO_SIZE = 1 * 1024 * 1024 * 1024; // 1GB
 
 export default {
     name: "AnimeChapterVideoInput",
-    emits: ["update:modelValue", "verifyInput", "hasChange"],
+    emits: [
+        "update:modelValue",
+        "verifyInput",
+        "hasChange",
+        "disposeWhenFinish",
+    ],
     components: {
         VideoPlayer,
     },
@@ -164,6 +169,9 @@ export default {
         }
     },
     mounted() {
+        this.$emit("verifyInput", this);
+        this.$emit("disposeWhenFinish", this);
+
         this.videoInput = this.$refs[this.videoInputComponentId];
         this.videoInput.addEventListener("input", this.handleOnInput);
     },
@@ -238,8 +246,17 @@ export default {
             // If image is empty (false), then has error is true.
             this.hasError = !this.hasVideoFile;
 
+            if (this.hasError) {
+                NotificationHelper.notifyError("Chưa có nội dung video");
+            }
+
             // If has error is true, then return false.
             return this.hasVideoFile;
+        },
+        dispose() {
+            if (this.videoSrc) {
+                URL.revokeObjectURL(this.videoSrc);
+            }
         },
     },
     watch: {

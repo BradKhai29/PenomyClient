@@ -1,5 +1,5 @@
 const VALID_IMAGE_FILE_MIME_TYPE = "image";
-const VALID_IMAGE_FILE_EXTENSIONS = ["jpg", "jpeg", "png"];
+const VALID_IMAGE_FILE_EXTENSIONS = ["jpg", "jpeg", "png", "webp"];
 
 const VALID_VIDEO_FILE_MIME_TYPE = "video";
 const VALID_VIDEO_FILE_EXTENSIONS = ["mkv", "mp4", "x-matroska"];

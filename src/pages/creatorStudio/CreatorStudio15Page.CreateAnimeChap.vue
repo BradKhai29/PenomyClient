@@ -64,6 +64,7 @@
                             v-model="chapterDetail.chapterVideoFile"
                             :disableMode="isCreating"
                             @verifyInput="addVerifyInputCallback"
+                            @disposeWhenFinish="handleDisposeWhenFinish"
                         />
 
                         <ChapterPublishOptionsInput
@@ -178,6 +179,7 @@ export default {
                 scheduleOption: ScheduleOptionDetail.new(),
             },
             verifyInputCallbacks: [],
+            videoInputComponent: null,
         };
     },
     provide() {
@@ -236,6 +238,9 @@ export default {
         addVerifyInputCallback(callback) {
             this.verifyInputCallbacks.push(callback);
         },
+        handleDisposeWhenFinish(videoInputComponent) {
+            this.videoInputComponent = videoInputComponent;
+        },
         /**
          * Verify the input from the page and return result (boolean).
          *
@@ -275,6 +280,8 @@ export default {
                 );
 
             if (createResult.isSuccess) {
+                this.videoInputComponent.dispose();
+
                 const message = isDrafted
                     ? "Bản nháp được lưu"
                     : "Tạo mới thành công";

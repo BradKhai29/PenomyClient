@@ -23,8 +23,11 @@ async function getArtworkDetailByIdAsync(artworkId, guestId = -1, accessToken) {
             accessToken = "null";
         }
 
+        // Api-URLs to call.
+        const detailApiUrl = `${BaseWebApiUrl}/g5/artwork-detail`;
+
         const response = await axios({
-            url: `${BaseWebApiUrl}/g5/artwork-detail`,
+            url: detailApiUrl,
             method: HttpMethod.GET,
             params: {
                 artworkId: artworkId,
@@ -44,6 +47,101 @@ async function getArtworkDetailByIdAsync(artworkId, guestId = -1, accessToken) {
         return null;
     }
 }
+
+/**
+ * @param {String} artworkId Id of artwork to get metadata.
+ * @param {String} guestId Id of guest.
+ * @param {String} accessToken Access token of user.
+ * @returns {Promise<ArtworkDetailResponse>} Response contains artwork metadata.
+ */
+async function getUserArtworkPreferenceAsync(
+    artworkId,
+    guestId = -1,
+    accessToken
+) {
+    try {
+        const MINIMUM_TOKEN_LENGTH = 10;
+
+        if (String(accessToken).length < MINIMUM_TOKEN_LENGTH) {
+            accessToken = "null";
+        }
+
+        // Api-URLs to call.
+        const detailApiUrl = `${BaseWebApiUrl}/g5/user-preference`;
+
+        const response = await axios({
+            url: detailApiUrl,
+            method: HttpMethod.GET,
+            params: {
+                artworkId: artworkId,
+                guestId: guestId,
+                accessToken: accessToken,
+            },
+        });
+
+        const data = response.data.body;
+
+        const mapResult = ArtworkDetailResponse.mapPreference(data);
+
+        return mapResult;
+    } catch (error) {
+        const axiosError = AxiosHelper.toAxiosError(error);
+        console.log(axiosError);
+        return null;
+    }
+}
+
+/**
+ * @param {String} artworkId Id of artwork to get metadata.
+ * @returns {Promise<ArtworkDetailResponse>} Response contains artwork metadata.
+ */
+async function getArtworkMetaDataByIdAsync(artworkId) {
+    try {
+        // Api-URLs to call.
+        const apiUrl = `${BaseWebApiUrl}/g5/artwork/metadata/${artworkId}`;
+
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+        });
+
+        const data = response.data.body;
+
+        const mapResult = ArtworkDetailResponse.mapMetaData(data);
+
+        return mapResult;
+    } catch (error) {
+        const axiosError = AxiosHelper.toAxiosError(error);
+        console.log(axiosError);
+        return null;
+    }
+}
+
+/**
+ * @param {String} creatorId Id of artwork to get metadata.
+ * @returns {Promise<ArtworkDetailResponse>} Response contains artwork metadata.
+ */
+async function getCreatorProfileByIdAsync(creatorId) {
+    try {
+        const apiUrl = `${BaseWebApiUrl}/g5/creator-profile/${creatorId}`;
+
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.GET,
+        });
+
+        const data = response.data.body;
+
+        const mapResult = ArtworkDetailResponse.mapCreatorProfile(data);
+
+        return mapResult;
+    } catch (error) {
+        const axiosError = AxiosHelper.toAxiosError(error);
+        console.log(axiosError);
+        return null;
+    }
+}
+
 async function getArtworkChaptersByIdAsync(artworkId, startPage, pageSize) {
     try {
         const response = await axios({
@@ -145,6 +243,9 @@ async function getRecommendedArtworksAsync(artworkId) {
 
 const artworkDetailApiHandler = {
     getArtworkDetailByIdAsync,
+    getArtworkMetaDataByIdAsync,
+    getUserArtworkPreferenceAsync,
+    getCreatorProfileByIdAsync,
     getArtworkChaptersByIdAsync,
     getComicChapterPaginationOptionByIdAsync,
     getRecommendedArtworksAsync,

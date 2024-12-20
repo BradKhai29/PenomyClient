@@ -2,9 +2,14 @@ import axios from "axios";
 import { BaseWebApiUrl } from "src/api.common/BaseWebApiUrl";
 import { HttpMethod } from "src/api.common/HttpMethod";
 import { RecommendArtworksByCategoryResponse } from "src/api.models/artwork/artwork1Page/RecommendArtworksByCategoryResponse";
+import { ArtworkTypes } from "./TopRecommendedArtworkApiHandler";
 
-async function getAsync(accessToken, guestId) {
-    const apiUrl = `${BaseWebApiUrl}/g4/recommended-comics`;
+async function getAsync(
+    accessToken,
+    guestId,
+    artworkType = ArtworkTypes.COMIC
+) {
+    const apiUrl = `${BaseWebApiUrl}/g4/recommended/artworks`;
 
     try {
         const response = await axios({
@@ -13,6 +18,7 @@ async function getAsync(accessToken, guestId) {
             params: {
                 accessToken: accessToken,
                 guestId: guestId,
+                artworkType: artworkType,
             },
         });
 
