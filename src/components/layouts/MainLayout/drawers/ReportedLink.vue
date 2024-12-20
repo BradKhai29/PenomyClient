@@ -1,5 +1,6 @@
 <template>
     <DrawerLink
+        v-if="false"
         title="Báo cáo"
         icon="report"
         link="/profile/user/reported"

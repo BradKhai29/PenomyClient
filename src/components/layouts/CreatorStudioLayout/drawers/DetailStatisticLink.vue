@@ -1,5 +1,6 @@
 <template>
     <DrawerLink
+        v-if="false"
         title="Thống kê chi tiết"
         icon="analytics"
         link="/studio/statistic"

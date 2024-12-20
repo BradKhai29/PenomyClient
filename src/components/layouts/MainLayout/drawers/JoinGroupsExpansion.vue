@@ -45,7 +45,6 @@ export default {
             return authStore.isAuth;
         },
         getShowedGroups() {
-            console.log(this.groupList);
             if (this.groupList.length <= 3 || this.groupList == undefined)
                 return this.groupList;
             else return this.groupList.slice(0, 3);

@@ -37,6 +37,7 @@
             </q-item>
             <q-separator />
             <q-item
+                v-if="false"
                 @click="sendReport"
                 clickable
                 v-close-popup
