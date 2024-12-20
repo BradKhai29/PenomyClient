@@ -13,13 +13,14 @@
                     :animeDetail="animeDetail"
                     class="border-md-bottom-light-500"
                 />
-                <!-- <CreatorDetailSection
+                <CreatorDetailSection
                     :artworkId="artworkId"
                     :creatorId="animeDetail.creatorId"
                     :creatorName="animeDetail.creatorName"
                     :creatorAvatarUrl="animeDetail.creatorAvatarUrl"
                     :creatorTotalFollowers="animeDetail.creatorTotalFollowers"
-                /> -->
+                    :isComic="false"
+                />
             </div>
         </section>
 
@@ -46,6 +47,7 @@ import { AnimeDetailApiHandler } from "src/api.handlers/artwork/artwork4Page.Ani
 import { ArtworkDetailResponse } from "src/api.models/artwork/artwork3Page/ArtworkDetailResponse";
 import { NumberHelper } from "src/helpers/NumberHelper";
 import { NotificationHelper } from "src/helpers/NotificationHelper";
+import artworkDetailApiHandler from "src/api.handlers/artwork/artwork3Page/ArtworkDetailApiHandler";
 
 // Import components section.
 import AnimeDetailSection from "src/components/pages/artwork/artwork4Page/AnimeDetailSection.vue";
@@ -66,7 +68,7 @@ export default {
     components: {
         AnimeDetailSection,
         AnimeMetadataSection,
-        // CreatorDetailSection,
+        CreatorDetailSection,
         AnimeChapterListSection,
         ArtworkDetailRecommendedSection,
     },
@@ -74,6 +76,10 @@ export default {
         return {
             artworkId: null,
             isLoading: true,
+            loadingDetail: true,
+            loadingMetaData: true,
+            loadingCreatorProfile: true,
+            loadingUserPreference: true,
             /**
              * @type {ArtworkDetailResponse} Type of this property.
              */
@@ -118,7 +124,12 @@ export default {
         },
         async loadAnimeDetailAsync() {
             // Turn on the loading flag to wait for the content being loaded.
-            this.isLoading = true;
+            this.loadingDetail = true;
+            this.loadingMetaData = true;
+            this.loadingCreatorProfile = true;
+            this.loadingUserPreference = true;
+            this.setLoadingFlag();
+
             let guestId = -1;
             let accessToken = "null_token";
 
@@ -147,9 +158,53 @@ export default {
 
             // If result is success, then get the information and bind to the comic detail.
             this.animeDetail = artworkDetail;
+            this.loadingDetail = false;
 
-            // Turn off isLoading flag after loading content successfully.
-            this.isLoading = false;
+            this.loadArtworkMetaDataAsync();
+            this.loadCreatorProfileAsync();
+            this.loadUserPreferenceAsync(guestId, accessToken);
+        },
+        async loadArtworkMetaDataAsync() {
+            const metadata =
+                await artworkDetailApiHandler.getArtworkMetaDataByIdAsync(
+                    this.artworkId
+                );
+
+            this.animeDetail.addMetaData(metadata);
+
+            this.loadingMetaData = false;
+            this.setLoadingFlag();
+        },
+        async loadUserPreferenceAsync(guestId, accessToken) {
+            const userPreference =
+                await artworkDetailApiHandler.getUserArtworkPreferenceAsync(
+                    this.artworkId,
+                    guestId,
+                    accessToken
+                );
+
+            this.animeDetail.addUserPreference(userPreference);
+
+            this.loadingUserPreference = false;
+            this.setLoadingFlag();
+        },
+        async loadCreatorProfileAsync() {
+            const creatorProfile =
+                await artworkDetailApiHandler.getCreatorProfileByIdAsync(
+                    this.animeDetail.creatorId
+                );
+
+            this.animeDetail.addCreatorProfile(creatorProfile);
+
+            this.loadingCreatorProfile = false;
+            this.setLoadingFlag();
+        },
+        setLoadingFlag() {
+            this.isLoading =
+                this.loadingDetail ||
+                this.loadingCreatorProfile ||
+                this.loadingMetaData ||
+                this.loadingUserPreference;
         },
     },
     watch: {

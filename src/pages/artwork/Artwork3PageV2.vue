@@ -57,11 +57,26 @@ export default {
         return {
             comicId: null,
             isLoading: true,
+            loadingDetail: true,
+            loadingMetaData: true,
+            loadingCreatorProfile: true,
+            loadingUserPreference: true,
             /**
              * @type {ArtworkDetailResponse} Type of this property.
              */
             comicDetail: null,
         };
+    },
+    computed: {
+        hasSeries() {
+            return this.comicDetail.hasSeries;
+        },
+        creatorId() {
+            return this.comicDetail.creatorId;
+        },
+        currentPath() {
+            return this.$route.path;
+        },
     },
     beforeMount() {
         this.loadComicIdFromRoute();
@@ -94,7 +109,12 @@ export default {
         },
         async loadComicDetailAsync() {
             // Turn on the loading flag to wait for the content being loaded.
-            this.isLoading = true;
+            this.loadingDetail = true;
+            this.loadingMetaData = true;
+            this.loadingCreatorProfile = true;
+            this.loadingUserPreference = true;
+            this.setLoadingFlag();
+
             let guestId = -1;
             let accessToken = "null_token";
 
@@ -123,20 +143,53 @@ export default {
 
             // If result is success, then get the information and bind to the comic detail.
             this.comicDetail = artworkDetail;
+            this.loadingDetail = false;
 
-            // Turn off isLoading flag after loading content successfully.
-            this.isLoading = false;
+            this.loadArtworkMetaDataAsync();
+            this.loadCreatorProfileAsync();
+            this.loadUserPreferenceAsync(guestId, accessToken);
         },
-    },
-    computed: {
-        hasSeries() {
-            return this.comicDetail.hasSeries;
+        async loadArtworkMetaDataAsync() {
+            const metadata =
+                await artworkDetailApiHandler.getArtworkMetaDataByIdAsync(
+                    this.comicId
+                );
+
+            this.comicDetail.addMetaData(metadata);
+
+            this.loadingMetaData = false;
+            this.setLoadingFlag();
         },
-        creatorId() {
-            return this.comicDetail.creatorId;
+        async loadUserPreferenceAsync(guestId, accessToken) {
+            const userPreference =
+                await artworkDetailApiHandler.getUserArtworkPreferenceAsync(
+                    this.comicId,
+                    guestId,
+                    accessToken
+                );
+
+            this.comicDetail.addUserPreference(userPreference);
+
+            this.loadingUserPreference = false;
+            this.setLoadingFlag();
         },
-        currentPath() {
-            return this.$route.path;
+        async loadCreatorProfileAsync() {
+            const creatorProfile =
+                await artworkDetailApiHandler.getCreatorProfileByIdAsync(
+                    this.comicDetail.creatorId
+                );
+
+            this.comicDetail.addCreatorProfile(creatorProfile);
+
+            this.loadingCreatorProfile = false;
+            this.setLoadingFlag();
+        },
+        setLoadingFlag() {
+            this.isLoading =
+                this.loadingDetail ||
+                this.loadingCreatorProfile ||
+                this.loadingMetaData ||
+                this.loadingUserPreference;
         },
     },
     watch: {

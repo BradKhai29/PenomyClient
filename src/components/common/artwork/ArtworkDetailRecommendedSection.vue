@@ -59,7 +59,7 @@
                     </q-tab-panel>
 
                     <q-tab-panel
-                        v-if="!isLoading"
+                        v-if="!isLoading && hasRecommended"
                         :name="recommendedTab"
                         class="q-pa-none row"
                     >
@@ -71,6 +71,14 @@
                             :isComic="isComic"
                         />
                     </q-tab-panel>
+
+                    <div
+                        v-else
+                        class="shadow-1 col-grow border-radius-sm text-subtitle1"
+                        style="height: 130px"
+                    >
+                        Không có tác phẩm nào
+                    </div>
                 </q-tab-panels>
             </div>
         </section>
@@ -119,6 +127,9 @@ export default {
         },
         recommendedTab() {
             return "recommended";
+        },
+        hasRecommended() {
+            return this.recommendedArtworks.length > 0;
         },
     },
     beforeMount() {

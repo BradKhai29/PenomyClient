@@ -10,7 +10,7 @@
             >
                 <q-icon name="list_alt" size="sm" class="text-primary" />
                 <span class="metadata-ml">
-                    {{ viewCount }}/{{ viewCount }} tập
+                    {{ totalChapters }}/{{ totalChapters }} tập
                 </span>
                 <q-tooltip
                     anchor="top middle"
@@ -21,8 +21,8 @@
                     <strong class="text-subtitle1">
                         Số tập:
                         <span class="text-weight-bold text-primary">
-                            {{ animeDetail.viewCount }} /
-                            {{ animeDetail.viewCount }}
+                            {{ totalChapters }} /
+                            {{ totalChapters }}
                         </span>
                     </strong>
                 </q-tooltip>
@@ -151,7 +151,7 @@ export default {
             return this.animeDetail.introduction ?? "Không có phần giới thiệu";
         },
         totalChapters() {
-            return this.animeDetail.viewCount;
+            return this.animeDetail.totalChapters ?? 1;
         },
         viewCount() {
             return NumberHelper.formatNumberShort(

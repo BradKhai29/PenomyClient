@@ -32,7 +32,18 @@
                     rounded
                 >
                     <q-icon name="edit" size="xs" />
-                    <span class="q-ml-xs">Sửa truyện</span>
+                    <span class="q-ml-xs">Sửa</span>
+
+                    <q-tooltip
+                        anchor="top middle"
+                        self="bottom middle"
+                        :offset="[8, 8]"
+                        :class="isComicType ? 'bg-dark text-light' : ''"
+                    >
+                        <strong class="text-subtitle2">
+                            Chỉnh sửa tác phẩm
+                        </strong>
+                    </q-tooltip>
                 </q-btn>
             </router-link>
             <CreatorFollowButton v-else :creatorId="creatorId" />

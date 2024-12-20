@@ -165,7 +165,7 @@ export default {
             );
 
             // Remove the item from the display list.
-            this.viewedComics.splice(itemIndex, 1);
+            this.viewedAnimes.splice(itemIndex, 1);
         },
         async loadViewComicHistoryAsync() {
             this.isLoading = true;
