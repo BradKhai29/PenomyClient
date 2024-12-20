@@ -80,19 +80,19 @@
 
 <script>
 import { SearchResponseItem } from "src/api.models/artwork/search/SearchResponseItem";
+import { ArtworkTypes } from "src/api.handlers/artwork/artwork1Page/TopRecommendedArtworkApiHandler";
 export default {
     name: "SearchItemCard",
     props: {
-        isComic: {
-            type: Boolean,
-            default: true,
-        },
         artworkDetail: {
             type: SearchResponseItem,
             required: true,
         },
     },
     computed: {
+        isComic() {
+            return this.artworkDetail.artworkType == ArtworkTypes.COMIC;
+        },
         artworkId() {
             return this.artworkDetail.id;
         },
@@ -101,7 +101,7 @@ export default {
                 return `/artwork/comic/${this.artworkId}`;
             }
 
-            return `/artwork/comic/${this.artworkId}`;
+            return `/artwork/anime/${this.artworkId}`;
         },
         artworkType() {
             if (this.isComic) {

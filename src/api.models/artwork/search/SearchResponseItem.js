@@ -7,13 +7,22 @@ class SearchResponseItem {
      * @param {String} avatar Avatar/Thumbnail image of the artwork.
      * @param {Number} averageStarRates The average star rates of the artwork.
      * @param {Number} numberOfFollowers The number of total followers of the artwork.
+     * @param {Number} artworkType The type of artwork.
      */
-    constructor(id, name, avatar, averageStarRates, numberOfFollowers) {
+    constructor(
+        id,
+        name,
+        avatar,
+        averageStarRates,
+        numberOfFollowers,
+        artworkType
+    ) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
         this.averageStarRates = averageStarRates;
         this.numberOfFollowers = numberOfFollowers;
+        this.artworkType = artworkType;
     }
 
     /**
@@ -28,7 +37,8 @@ class SearchResponseItem {
             responseItem.mangaName,
             responseItem.mangaAvatar,
             responseItem.mangaNumberOfStars,
-            responseItem.mangaNumberOfFollowers
+            responseItem.mangaNumberOfFollowers,
+            responseItem.artworkType
         );
     }
 
@@ -44,7 +54,8 @@ class SearchResponseItem {
             responseItem.mangaName,
             responseItem.mangaAvatar,
             responseItem.mangaNumberOfStars,
-            responseItem.mangaNumberOfFollowers
+            responseItem.mangaNumberOfFollowers,
+            responseItem.artworkType
         );
     }
 
