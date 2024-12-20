@@ -6,7 +6,9 @@ const routeDefinition = [
             {
                 path: "anime/create",
                 component: () =>
-                    import("pages/creatorStudio/CreatorStudio6Page.vue"),
+                    import(
+                        "pages/creatorStudio/CreatorStudio12Page.CreateAnime.vue"
+                    ),
             },
         ],
     },

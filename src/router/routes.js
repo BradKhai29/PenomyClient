@@ -1,9 +1,20 @@
-import artwork1PageRoute from "./artwork/Artwork1PageRoute";
+// Auth page routes section.
 import auth1PageRoute from "./auth/Auth1PageRoute";
 import auth2PageRoute from "./auth/Auth2PageRoute";
 import auth3PageRoute from "./auth/Auth3PageRoute";
 import auth4PageRoute from "./auth/Auth4PageRoute";
 import auth5PageRoute from "./auth/Auth5PageRoute";
+import auth6PageRoute from "./auth/Auth6PageRoute";
+
+// Artwork page routes section.
+import artwork1PageRoute from "./artwork/Artwork1PageRoute";
+import artwork3PageRoute from "./artwork/Artwork3PageRoute";
+import artwork4PageRoute from "./artwork/Artwork4PageRoute";
+import artwork5PageRoute from "./artwork/Artwork5PageRoute";
+import artwork6PageRoute from "./artwork/Artwork6PageRoute";
+import artwork8PageRoute from "./artwork/Artwork8PageRoute";
+
+// Creator studio page routes section.
 import creatorStudio1PageRoute from "./creatorStudio/CreatorStudio1PageRoute";
 import creatorStudio2PageRoute from "./creatorStudio/CreatorStudio2PageRoute";
 import creatorStudio3PageRoute from "./creatorStudio/CreatorStudio3PageRoute";
@@ -18,7 +29,37 @@ import creatorStudio11PageRoute from "./creatorStudio/CreatorStudio11PageRoute";
 import creatorStudio12PageRoute from "./creatorStudio/CreatorStudio12PageRoute";
 import creatorStudio22PageRoute from "./creatorStudio/CreatorStudio22PageRoute";
 import creatorStudio25PageRoute from "./creatorStudio/CreatorStudio25PageRoute";
-import artwork3PageRoute from "./artwork/Artwork3PageRoute";
+
+// Creator studio anime page routes section.
+import creatorStudio13PageRoute from "./creatorStudio/CreatorStudio13PageRoute";
+import creatorStudio14PageRoute from "./creatorStudio/CreatorStudio14PageRoute";
+import creatorStudio15PageRoute from "./creatorStudio/CreatorStudio15PageRoute";
+import creatorStudio16PageRoute from "./creatorStudio/CreatorStudio16PageRoute";
+import creatorStudio17PageRoute from "./creatorStudio/CreatorStudio17PageRoute";
+
+// Guest page routes section.
+import guestPageRoute from "./guest/GuestViewHistoryPageRoute";
+
+// User profile page routes section.
+import userProfile1PageRoute from "./userProfile/UserProfile1PageRoute";
+import userProfile2PageRoute from "./userProfile/UserProfile2PageRoute";
+import userPost1PageRoute from "./userpost/UserPost1PageRoute";
+import userPost2PageRoute from "./userpost/UserPost2PageRoute";
+
+// Creator profile page routes section.
+import creatorProfile1PageRoute from "./creatorProfile/CreatorProfile1PageRoute";
+
+// Social media page routes section.
+import socialMedia1PageRoute from "./socialMedia/SocialMedia1PageRoute";
+import socialMedia2PageRoute from "./socialMedia/SocialMedia2PageRoute";
+import socialMedia3PageRoute from "./socialMedia/SocialMedia3PageRoute";
+import friend1PageRoute from "./friend/Friend1PageRoute";
+
+// Chat page routes section.
+import chat1PageRoute from "./chat/Chat1PageRoute";
+
+// Become creator page routes section.
+import becomeCreatorPageRoute from "./become_creator/BecomeCreatorPageRoute";
 
 // Always leave this as last one, but you can also remove it
 const errorNotFoundPageRoute = {
@@ -27,14 +68,21 @@ const errorNotFoundPageRoute = {
 };
 
 const routes = [
-    ...artwork1PageRoute,
-    ...artwork3PageRoute,
-    // Continue to add more page routes here.
+    // Auth routes.
     ...auth1PageRoute,
     ...auth2PageRoute,
     ...auth3PageRoute,
     ...auth4PageRoute,
     ...auth5PageRoute,
+    ...auth6PageRoute,
+    // Artwork routes.
+    ...artwork1PageRoute,
+    ...artwork3PageRoute,
+    ...artwork4PageRoute,
+    ...artwork5PageRoute,
+    ...artwork6PageRoute,
+    ...artwork8PageRoute,
+    // Creator studio routes.
     ...creatorStudio1PageRoute,
     ...creatorStudio2PageRoute,
     ...creatorStudio3PageRoute,
@@ -47,8 +95,33 @@ const routes = [
     ...creatorStudio10PageRoute,
     ...creatorStudio11PageRoute,
     ...creatorStudio12PageRoute,
+    // Creator studio - anime section
+    ...creatorStudio13PageRoute,
+    ...creatorStudio14PageRoute,
+    ...creatorStudio15PageRoute,
+    ...creatorStudio16PageRoute,
+    ...creatorStudio17PageRoute,
     ...creatorStudio22PageRoute,
     ...creatorStudio25PageRoute,
+    // Guest routes.
+    ...guestPageRoute,
+    // User profile routes.
+    ...userProfile1PageRoute,
+    ...userProfile2PageRoute,
+    // Creator profile routes.
+    ...creatorProfile1PageRoute,
+    // Social media routes.
+    ...socialMedia1PageRoute,
+    ...socialMedia2PageRoute,
+    ...socialMedia3PageRoute,
+    ...friend1PageRoute,
+    // Become creator route.
+    ...becomeCreatorPageRoute,
+    ...userPost1PageRoute,
+    ...userPost2PageRoute,
+    // Chat routes.
+    ...chat1PageRoute,
+    // Other routes.
     errorNotFoundPageRoute,
 ];
 

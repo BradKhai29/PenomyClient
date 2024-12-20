@@ -13,7 +13,7 @@ const routeDefinition = [
             },
             {
                 path: "artwork/anime",
-                component: () => import("pages/artwork/Artwork1Page.vue"),
+                component: () => import("pages/artwork/Artwork2Page.vue"),
             },
         ],
     },

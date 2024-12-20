@@ -17,6 +17,6 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 function goToHome() {
-    router.push("/studio");
+    router.push("/studio/overview");
 }
 </script>

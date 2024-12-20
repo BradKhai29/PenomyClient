@@ -2,27 +2,34 @@
     <DrawerLink
         title="Trang cá nhân"
         icon="person"
-        link="/profile"
+        :link="profileLink"
         :isSelected="isSelected"
     />
 </template>
 
-<script setup>
-import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
+<script>
+// Import dependencies section.
+import { UserProfile1RouteNames } from "src/router/userProfile/UserProfile1PageRoute";
+import { useUserProfileStore } from "src/stores/common/UserProfileStore";
+
+// Import components section.
 import DrawerLink from "components/layouts/DrawerLink.vue";
 
-const route = useRoute();
-const isSelected = ref(false);
+// Init store for later operation.
+const userProfileStore = useUserProfileStore();
 
-watch(
-    () => route.path,
-    (newPath, _) => {
-        if (newPath && newPath == `/profile`) {
-            isSelected.value = true;
-        } else {
-            isSelected.value = false;
-        }
-    }
-);
+export default {
+    name: "PersonalProfileLink",
+    components: {
+        DrawerLink,
+    },
+    computed: {
+        isSelected() {
+            return String(this.$route.path).includes("/user");
+        },
+        profileLink() {
+            return `/user/${userProfileStore.currentUserId}`;
+        },
+    },
+};
 </script>

@@ -5,6 +5,10 @@ import { HttpMethod } from "src/api.common/HttpMethod";
 import { ComicChapterDetail } from "src/api.models/creatorStudio/creatorStudio7Page/ComicChapterDetail";
 import { ComicDetail } from "src/api.models/creatorStudio/creatorStudio7Page/ComicDetail";
 
+// Init store for later operation.
+import { useAuthStore } from "src/stores/common/AuthStore";
+const authStore = useAuthStore();
+
 /**
  * Get the detail of the comic with specified input id.
  *
@@ -16,6 +20,9 @@ async function getComicDetailByIdAsync(comicId) {
         const response = await axios({
             url: `${BaseWebApiUrl}/art5/comic/detail/${comicId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
         });
 
         const responseBody = response.data.body;
@@ -48,6 +55,9 @@ async function getComicChaptersByIdAndPublishStatusAsync(
         const response = await axios({
             url: `${BaseWebApiUrl}/art6/comic/chapters/${comicId}`,
             method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
             params: {
                 publishStatus: publishStatus,
             },
@@ -62,10 +72,42 @@ async function getComicChaptersByIdAndPublishStatusAsync(
     }
 }
 
+/**
+ * Remove the chapter of current comic by input id.
+ *
+ * @param {String} artworkId Id of the artwork contains this chapter.
+ * @param {String} chapterId Id of the chapter to be removed.
+ * @returns {Promise<Boolean>} Return true if the operation is success.
+ */
+async function removeChapterAsync(artworkId, chapterId) {
+    const apiUrl = `${BaseWebApiUrl}/art14/remove/chapter`;
+
+    try {
+        const response = await axios({
+            url: apiUrl,
+            method: HttpMethod.POST,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+            data: {
+                artworkId: artworkId,
+                chapterId: chapterId,
+            },
+        });
+
+        return true;
+    } catch (error) {
+        console.log(error);
+
+        return false;
+    }
+}
+
 const CreatorStudio7ApiHandler = {
     getComicDetailByIdAsync: getComicDetailByIdAsync,
     getComicChaptersByIdAndPublishStatusAsync:
         getComicChaptersByIdAndPublishStatusAsync,
+    removeChapterAsync,
 };
 
 export { CreatorStudio7ApiHandler, PublishStatuses };

@@ -1,10 +1,13 @@
-const VALID_IMAGE_FILE_EXTENSIONS = ["jpg", "jpeg", "png"];
 const VALID_IMAGE_FILE_MIME_TYPE = "image";
+const VALID_IMAGE_FILE_EXTENSIONS = ["jpg", "jpeg", "png", "webp"];
+
+const VALID_VIDEO_FILE_MIME_TYPE = "video";
+const VALID_VIDEO_FILE_EXTENSIONS = ["mkv", "mp4", "x-matroska"];
 const EMPTY_STRING = "";
 /**
  * The maximum size of an image file to upload to server.
  */
-const MAXIMUM_IMAGE_FILE_SIZE = 4 * 1024 * 1024;
+const MAXIMUM_IMAGE_FILE_SIZE = 2 * 1024 * 1024;
 
 /**
  * Get the extension of the input file.
@@ -51,8 +54,35 @@ function isImageFile(file) {
 }
 
 /**
+ * Check if the input file is video file or not.
+ *
+ * @param {File} file The input video to check.
+ * @returns {Boolean} The result (bool) after checking.
+ */
+function isVideoFile(file) {
+    if (!file) {
+        return false;
+    }
+
+    // Get the mime type of the file and check.
+    const mimeType = file.type;
+
+    if (!mimeType.includes(VALID_VIDEO_FILE_MIME_TYPE)) {
+        return false;
+    }
+
+    const fileExtension = getFileExtension(file);
+
+    if (VALID_VIDEO_FILE_EXTENSIONS.includes(fileExtension)) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * Check if the input image file is exceed the maximum size or not.
- * The default maximum file size is 4MB if the input file size is not defined.
+ * The default maximum file size is 2MB if the input file size is not defined.
  * @param {File} imageFile The image file to check the size.
  * @param {Number} maximumFileSize The maximum file size to check.
  */
@@ -85,6 +115,7 @@ function asFiles(files) {
 const FileHelper = {
     getFileExtension: getFileExtension,
     isImageFile: isImageFile,
+    isVideoFile,
     isImageFileExceedMaximumSize: isImageFileExceedMaximumSize,
     asFile: asFile,
     asFiles: asFiles,

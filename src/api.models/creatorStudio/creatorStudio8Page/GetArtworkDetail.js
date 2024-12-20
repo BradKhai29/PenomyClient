@@ -12,6 +12,7 @@ class GetArtworkDetail {
      * @param {Boolean} allowComment Specify if this artwork allow to comment at detail page.
      * @param {String} thumbnailUrl The thumbnail image's URL of this artwork.
      * @param {Boolean} isNotFound Indicate if the artwork detail is not found.
+     * @param {String} updatedAt Indicate the date time the artwork is updated.
      */
     constructor(
         id,
@@ -22,7 +23,8 @@ class GetArtworkDetail {
         publicLevel,
         allowComment,
         thumbnailUrl,
-        isNotFound
+        isNotFound,
+        updatedAt
     ) {
         this.id = id;
         this.title = title;
@@ -33,6 +35,7 @@ class GetArtworkDetail {
         this.allowComment = allowComment;
         this.thumbnailUrl = thumbnailUrl;
         this.isNotFound = isNotFound;
+        this.updatedAt = updatedAt;
     }
 
     static NotFound() {

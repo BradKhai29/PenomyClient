@@ -13,6 +13,7 @@
         "build": "quasar build"
     },
     "dependencies": {
+        "@microsoft/signalr": "^8.0.7",
         "@quasar/extras": "^1.16.4",
         "axios": "^1.7.7",
         "emoji-mart-vue-fast": "^15.0.3",
@@ -25,6 +26,7 @@
     "devDependencies": {
         "@quasar/app-vite": "^1.9.0",
         "autoprefixer": "^10.4.2",
+        "dotenv": "^16.4.5",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^8.1.0",
         "eslint-plugin-vue": "^9.0.0",

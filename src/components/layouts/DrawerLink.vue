@@ -1,45 +1,65 @@
 <template>
     <q-item
+        :to="link"
         clickable
         tag="a"
-        :to="props.link"
         class="flex flex-row items-center app-drawer-link"
         :class="{ 'is-selected': isSelected }"
     >
-        <q-icon :name="props.icon" size="24px" />
+        <q-icon :name="icon" size="24px" />
         <div class="q-pl-md">
-            {{ props.title }}
+            {{ title }}
         </div>
+
+        <q-badge v-if="hasBadge" class="q-ml-md bg-primary flex items-center">
+            <q-icon :name="badgeIcon" color="dark" size="xs" />
+        </q-badge>
+
+        <q-tooltip
+            v-if="hasBadge"
+            anchor="bottom middle"
+            self="top middle"
+            :offset="[8, 8]"
+        >
+            <strong class="text-subtitle2">{{ tooltipMessage }}</strong>
+        </q-tooltip>
     </q-item>
 </template>
 
-<script setup>
-import { useRoute } from "vue-router";
-
-defineOptions({
+<script>
+export default {
     name: "DrawerLink",
-});
-
-const props = defineProps({
-    title: {
-        type: String,
-        required: true,
+    props: {
+        title: {
+            type: String,
+            required: true,
+        },
+        link: {
+            type: String,
+            default: "",
+        },
+        icon: {
+            type: String,
+            default: "",
+        },
+        isSelected: {
+            type: Boolean,
+            default: false,
+        },
+        hasBadge: {
+            type: Boolean,
+            default: false,
+        },
+        badgeIcon: {
+            type: String,
+            default: "info",
+        },
+        tooltipMessage: {
+            type: String,
+            default: "Có tác phẩm tạm xóa",
+        },
     },
-
-    link: {
-        type: String,
-        default: "#",
-    },
-
-    icon: {
-        type: String,
-        default: "",
-    },
-    isSelected: {
-        type: Boolean,
-        default: false,
-    },
-});
+};
 </script>
 
 <style scoped>

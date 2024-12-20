@@ -38,11 +38,11 @@
             <div class="column">
                 <q-btn
                     v-if="error"
-                    @click="goToRegister"
+                    @click="redirectTo"
                     class="border-radius-md bg-secondary-100 text-secondary-900 text-subtitle1 text-bold q-py-sm"
                     no-caps
                 >
-                    Về trang đăng ký
+                    Về trang {{ displayRouteName }}
                 </q-btn>
                 <q-btn
                     v-else
@@ -59,6 +59,7 @@
 
 <script>
 export default {
+    name: "LoadingPlaceholder",
     props: {
         error: {
             type: Boolean,
@@ -68,10 +69,49 @@ export default {
             type: String,
             default: null,
         },
+        routeToLogin: {
+            type: Boolean,
+            default: false,
+        },
+        routeToForgotPassword: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    data() {
+        return {
+            displayRouteName: "đăng ký",
+        };
+    },
+    beforeMount() {
+        if (this.routeToLogin) {
+            this.displayRouteName = "đăng nhập";
+        } else if (this.routeToForgotPassword) {
+            this.displayRouteName = "quên mật khẩu";
+        }
     },
     methods: {
+        redirectTo() {
+            if (this.routeToLogin) {
+                this.goToLogin();
+                return;
+            }
+
+            if (this.routeToForgotPassword) {
+                this.goToForgotPassword();
+                return;
+            }
+
+            this.goToRegister();
+        },
         goToRegister() {
             this.$router.push("/auth/register");
+        },
+        goToLogin() {
+            this.$router.push("/auth/login");
+        },
+        goToForgotPassword() {
+            this.$router.push("/auth/forgot-password");
         },
     },
 };

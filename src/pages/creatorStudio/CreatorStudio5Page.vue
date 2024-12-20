@@ -40,19 +40,18 @@
                 </q-tab-panel>
 
                 <q-tab-panel name="animation">
-                    <div>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Dolorem eveniet asperiores perferendis ad expedita
-                        culpa in quia veritatis eius, omnis non iste, doloremque
-                        neque ratione? Corrupti quas vitae maiores numquam!
-                    </div>
-                    <ArtworkSection v-if="false" :loadComic="false" />
+                    <ArtworkSection
+                        :loadComic="false"
+                        @updateSection="reloadPageState"
+                    />
                 </q-tab-panel>
 
+                <!--
                 <q-tab-panel name="series">
                     <div class="text-h6">Movies</div>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 </q-tab-panel>
+                -->
             </q-tab-panels>
         </section>
     </q-page>
@@ -77,12 +76,12 @@ const tabItemsDefinition = [
         value: "animation",
         icon: "videocam",
     },
-    {
-        name: "series",
-        label: "Series",
-        value: "series",
-        icon: "view_list",
-    },
+    // {
+    //     name: "series",
+    //     label: "Series",
+    //     value: "series",
+    //     icon: "view_list",
+    // },
 ];
 
 export default {

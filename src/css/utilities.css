@@ -1,6 +1,13 @@
 @import url(app.css);
 
 :root {
+    /* Primary section */
+    --primary: #53bf94;
+
+    /* Light section */
+    --light-100: #f9fafc;
+    --light-500: #dddddd;
+
     --dark-500: #78847e;
     --border-sm-width: 1px;
     --border-md-width: 1.4px;
@@ -8,25 +15,88 @@
     --border-radius-sm: 4px;
     --border-radius-md: 6.4px;
     --border-radius-lg: 8px;
+
+    /* Secondary section */
+    --secondary-100: #ffa086;
+    --secondary-500: #ef633d;
+    --secondary-900: #c04827;
 }
 
 /* Border section */
+.border-sm-top-light-500 {
+    border-top: 1px solid var(--light-500);
+}
+
+.border-sm-bottom-light-500 {
+    border-bottom: 1px solid var(--light-500);
+}
+
+.border-md-bottom-light-500 {
+    border-bottom: 2px solid var(--light-500);
+}
+
+.border-sm-light {
+    border: 1px solid var(--light-100);
+}
+
+.border-md-light {
+    border: 2px solid var(--light-100) !important;
+}
+
+.border-sm-light-500 {
+    border: 1px solid var(--light-500);
+}
+
 .border-sm-dark {
     border: 1px solid var(--dark);
+}
+
+.border-sm-dark-500 {
+    border: 1px solid var(--dark-500);
+}
+
+.border-sm-dark-500-dashed {
+    border: 1px dashed var(--dark-500);
 }
 
 .border-md-dark-500 {
     border: var(--border-md-width) solid var(--dark-500);
 }
 
+.border-sm-invisible {
+    border: var(--border-sm-width) solid transparent;
+}
+
 .border-md-invisible {
     border: var(--border-md-width) solid transparent;
+}
+
+.border-sm-primary {
+    border: 1px solid var(--primary);
+}
+
+.border-md-primary {
+    border: 2px solid var(--primary);
+}
+
+.border-sm-secondary {
+    border: 1px solid var(--secondary-900);
 }
 
 /* Border radius section */
 .border-radius-sm {
     overflow: hidden !important;
     border-radius: var(--border-radius-sm) !important;
+}
+
+.border-radius-top-left-sm {
+    overflow: hidden !important;
+    border-top-left-radius: var(--border-radius-sm) !important;
+}
+
+.border-radius-bottom-right-sm {
+    overflow: hidden !important;
+    border-bottom-right-radius: var(--border-radius-sm) !important;
 }
 
 .border-radius-md {
@@ -42,6 +112,16 @@
     border-radius: 100% !important;
 }
 
+.border-left-sm-primary {
+    border-left: 4px solid var(--primary);
+    padding-left: 4px;
+}
+
+/* Other section */
+.penomy-notification {
+    cursor: pointer !important;
+}
+
 .penomy-tab {
     --primary: #53bf94;
     --border-width: 4px;
@@ -51,4 +131,101 @@
 
 .penomy-tab.selected {
     border-bottom: var(--border-width) solid var(--primary) !important;
+}
+
+.metadata-badge {
+    width: 32px !important;
+    height: 24px !important;
+    text-align: center !important;
+}
+
+/* Custom scrollbar */
+/* width */
+.penomy-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.penomy-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+.penomy-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 16px;
+}
+
+/* Handle on hover */
+.penomy-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Scrollbar-square */
+.penomy-scrollbar-square::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.penomy-scrollbar-square::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+.penomy-scrollbar-square::-webkit-scrollbar-thumb {
+    background: var(--primary);
+}
+
+/* Handle on hover */
+.penomy-scrollbar-square::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Limit paragraph lines */
+.paragraph-line-1 {
+    --limit-line: 1;
+
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: var(
+        --limit-line
+    ) !important; /* number of lines to show */
+    line-clamp: var(--limit-line) !important;
+    -webkit-box-orient: vertical !important;
+}
+
+.paragraph-line-4 {
+    --limit-line: 4;
+
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: var(
+        --limit-line
+    ) !important; /* number of lines to show */
+    line-clamp: var(--limit-line) !important;
+    -webkit-box-orient: vertical !important;
+}
+
+/* Flexbox utilities */
+.flex-grow {
+    /* Ref: https://stackoverflow.com/questions/37745051/fill-the-remaining-height-or-width-in-a-flex-container */
+    flex-grow: 1 !important;
+    min-width: 0 !important;
+}
+
+.align-stretch {
+    align-items: stretch !important;
+}
+
+/* Others */
+.hide {
+    display: none;
+}
+
+/* Video player section */
+video::-webkit-media-controls {
+    display: none !important;
+}
+video::-webkit-media-controls-enclosure {
+    display: none !important;
 }
