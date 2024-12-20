@@ -24,7 +24,7 @@
                         color="primary" text-color="white" @click="AcceptFriendRequest" />
 
                     <q-btn no-caps v-if="friendInfo.isFriend" icon="message" label="Nhắn tin" size="1rem"
-                        color="primary" text-color="white" />
+                        color="primary" text-color="white" :to="'/chat/' + friendInfo.chatGroupId" />
 
                     <q-btn no-caps v-if="friendInfo.isFriend" icon="remove" label="Hủy bạn" size="1rem" color="red"
                         text-color="white" @click="RemoveFromFriend" />
