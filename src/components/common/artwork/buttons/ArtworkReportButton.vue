@@ -1,5 +1,6 @@
 <template>
     <q-btn
+        v-if="false"
         class="bg-light-300 text-dark text-subtitle1 text-weight-bold"
         no-caps
         :rounded="isComicType"
