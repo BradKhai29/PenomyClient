@@ -2,14 +2,7 @@
     <q-layout view="hHR Lpr lFf">
         <q-header class="bg-light" bordered>
             <q-toolbar class="text-dark">
-                <q-btn
-                    flat
-                    round
-                    icon="menu"
-                    aria-label="Menu"
-                    @click="toggleDrawer"
-                    size="md"
-                />
+                <q-btn flat round icon="menu" aria-label="Menu" @click="toggleDrawer" size="md" />
 
                 <TheLogoButton class="toolbar-sm-hide" />
 
@@ -23,16 +16,10 @@
                     <TheCategoriesDropdown />
                     <TheWatchingAreaDropdown />
 
-                    <q-btn
-                        round
-                        dense
-                        color="dark"
-                        class="bg-dark"
-                        icon="message"
-                    >
-                        <q-badge color="red" text-color="white" floating>
-                            <span class="text-weight-bold">1</span>
-                        </q-badge>
+                    <q-btn round dense color="dark" class="bg-dark" icon="message" to="/chat">
+                        <!-- <q-badge color="red" text-color="white" floating> -->
+                        <!-- <span class="text-weight-bold">1</span> -->
+                        <!-- </q-badge> -->
                         <q-tooltip>Notifications</q-tooltip>
                     </q-btn>
 
@@ -41,22 +28,9 @@
             </q-toolbar>
         </q-header>
 
-        <q-drawer
-            v-model="showDrawer"
-            :breakpoint="400"
-            :width="280"
-            show-if-above
-            bordered
-        >
+        <q-drawer v-model="showDrawer" :breakpoint="400" :width="280" show-if-above bordered>
             <q-toolbar class="text-dark toolbar-sm-show q-py-md">
-                <q-btn
-                    flat
-                    round
-                    icon="menu"
-                    aria-label="Menu"
-                    @click="toggleDrawer"
-                    size="md"
-                />
+                <q-btn flat round icon="menu" aria-label="Menu" @click="toggleDrawer" size="md" />
 
                 <TheLogoButton />
             </q-toolbar>
@@ -66,9 +40,9 @@
                     <SocialMediaLink />
                 </q-list>
                 <ForYouExpansion />
-                <div class="drawer-gutter"></div>
+                <!-- <div class="drawer-gutter"></div> -->
 
-                <OthersExpansion />
+                <!-- <OthersExpansion /> -->
             </q-list>
         </q-drawer>
 

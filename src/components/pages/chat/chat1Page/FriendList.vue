@@ -49,14 +49,16 @@ onMounted(async () => {
     try {
         groupList.value = (await getGroupChatsAsync()).responseBody.groups;
         groupList.value.forEach(group => {
-            group.groupName = group.members.find(member => member.memberId != profileStore.userProfile.userId).memberName;
-            group.coverPhotoUrl = group.members.find(member => member.memberId != profileStore.userProfile.userId).avatarUrl;
+            if (group.chatGroupType == "Friend") {
+                group.groupName = group.members.find(member => member.memberId != profileStore.userProfile.userId).memberName;
+                group.coverPhotoUrl = group.members.find(member => member.memberId != profileStore.userProfile.userId).avatarUrl;
+            }
         });
+        isLoading.value = true;
     }
     catch {
         console.log("Error");
     }
-    isLoading.value = true;
 })
 
 watch(

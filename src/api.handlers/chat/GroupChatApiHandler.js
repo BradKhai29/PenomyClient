@@ -22,12 +22,11 @@ async function GetGroupChatMesssagesAsync(groupChatId, pageNum, chatNum) {
                 chatNum: "20",
             },
         });
-        // console.log(response.data.body);
-
+        
         return ApiResponse.success(response.data.body);
     } catch (error) {
         console.log(error);
-
+        
         return ApiResponse.failed();
     }
 }
@@ -41,6 +40,7 @@ async function GetGroupChatsAsync() {
                 Authorization: authStore.bearerAccessToken(),
             },
         });
+        console.log(response.data.body);
 
         return ApiResponse.success(response.data.body);
     } catch (error) {

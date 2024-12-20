@@ -11,18 +11,9 @@ import { ref, defineProps, watch, onMounted } from 'vue';
 import ChatMessage from './ChatMessage.vue';
 import GroupChatApiHandler from "src/api.handlers/chat/GroupChatApiHandler";
 import { useRoute } from 'vue-router';
-import { UserChatResponse } from 'src/api.models/chat/chat1Page/UserChatResponse';
 
 const props = defineProps({
-    messages: {
-        type: Array,
-        default: null
-    },
-    props: {
-        groupId: {
-            require: true
-        }
-    }
+    messageSent: Number
 });
 
 const userChatMessages = ref([]);

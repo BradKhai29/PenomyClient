@@ -10,10 +10,7 @@
                 <q-space />
 
                 <div class="q-gutter-sm row items-center no-wrap">
-                    <q-btn round dense color="dark" class="bg-dark" icon="message">
-                        <q-badge color="red" text-color="white" floating>
-                            <span class="text-weight-bold">1</span>
-                        </q-badge>
+                    <q-btn round dense color="dark" class="bg-dark" icon="message" to="/chat">
                         <q-tooltip>Notifications</q-tooltip>
                     </q-btn>
 
@@ -32,23 +29,19 @@
             <q-list class="app-drawer-list">
                 <q-list class="drawer-gutter">
                     <HomeLinkSocial />
-                    <JoinedGroupPageLink/>
-                    <FriendLink/>
-                    <ChatLink/>
+                    <JoinedGroupPageLink />
+                    <FriendLink />
+                    <ChatLink />
                     <!-- <DrawerGroupLink v-if="authStore.isAuth" :title="''" link="/social/group/create" :isSelected="false"
                         :createdAt="''" /> -->
                 </q-list>
 
-                <ForYouSocialExpansion/>
-                <div v-if="authStore.isAuth" class="drawer-gutter"></div>
-                
                 <MyGroupsExpansion v-if="authStore.isAuth" />
                 <div v-if="authStore.isAuth" class="drawer-gutter"></div>
 
                 <JoinGroupsExpansion v-if="authStore.isAuth" />
                 <div v-if="authStore.isAuth" class="drawer-gutter"></div>
 
-                <OthersExpansion />
             </q-list>
         </q-drawer>
 
@@ -91,7 +84,7 @@ defineOptions({
 });
 
 onBeforeMount(() => {
-    if (route.path.includes('manage') && authStore.bearerAccessToken().length == 11) {
+    if (authStore.bearerAccessToken().length == 11) {
         router.push('/auth/login');
     }
 });
