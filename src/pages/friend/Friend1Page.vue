@@ -36,7 +36,6 @@ async function fetchUserInfo() {
         const res = (await getFriendsApi()).responseBody;
         people.value = res.users.filter(user => user.isFriend == false);
         allfriends.value = res.friendLists;
-        console.log(res.friendLists);
     } catch (error) {
         console.error('Error fetching friends:', error);
         NotificationHelper.notifyError("Có gì đó không ổn...");

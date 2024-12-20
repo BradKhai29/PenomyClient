@@ -7,6 +7,7 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 const authStore = useAuthStore();
 const getMemberApiUrl = `${BaseWebApiUrl}/sm39/group-member/get`;
 const changeMemberRoleApiUrl = `${BaseWebApiUrl}/sm40/group-member/assign-role`;
+const leaveGroupApiUrl = `${BaseWebApiUrl}/SM50/group/leave`;
 
 async function RemoveGroupMemberAsync(groupId, memberId) {
     const removeMemberApiUrl = `${BaseWebApiUrl}/sm41/group-member/remove/${groupId}/${memberId}`;
@@ -68,10 +69,31 @@ async function ChangeMemberRoleAsync(groupId, memberId) {
     }
 }
 
+async function LeaveGroupAsync(groupId) {
+    try {
+        const response = await axios({
+            url: leaveGroupApiUrl,
+            method: HttpMethod.POST,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+            data: {
+                groupId: groupId,
+            },
+        });
+        return ApiResponse.success(response.data.body);
+    } catch (error) {
+        console.log(error);
+
+        return ApiResponse.failed();
+    }
+}
+
 const GroupMemberApiHandler = {
     RemoveGroupMemberAsync: RemoveGroupMemberAsync,
     GetGroupMemberAsync: GetGroupMemberAsync,
-    ChangeMemberRoleAsync: ChangeMemberRoleAsync
+    ChangeMemberRoleAsync: ChangeMemberRoleAsync,
+    LeaveGroupAsync: LeaveGroupAsync,
 };
 
 export default GroupMemberApiHandler;

@@ -39,13 +39,14 @@ export default {
             return authStore.isAuth;
         },
         getShowedGroups() {
-            if (this.groupList.length <= 3) return this.groupList;
+            console.log(this.groupList);
+            if (this.groupList.length <= 3 || this.groupList == undefined) return this.groupList;
             else
                 return this.groupList.slice(0, 3);
         }
     },
     async mounted() {
-        this.groupList = (await getGroupsApiHandler(5)).responseBody;
+        this.groupList = (await getGroupsApiHandler(5)).responseBody.groups;
     },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <DrawerLink title="Nhóm" icon="groups" link="/social/groups/joined" :isSelected="isSelected" />
+    <DrawerLink title="Nhóm" icon="groups" link="/social/groups" :isSelected="isSelected" />
 </template>
 
 <script setup>
