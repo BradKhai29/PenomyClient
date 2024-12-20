@@ -58,7 +58,6 @@ async function GetFriendsAsync() {
                 Authorization: authStore.bearerAccessToken(),
             },
         });
-        console.log(response.data.body);
         return ApiResponse.success(response.data.body);
     } catch (error) {
         console.log(error);

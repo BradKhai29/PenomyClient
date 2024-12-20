@@ -52,7 +52,18 @@
                             @click="CancelJoinRequestAsync">Hủy
                             yêu cầu</q-btn>
 
-                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary" label="Đã tham gia" />
+                        <q-btn-dropdown v-if="hasJoinGroup" icon="how_to_reg" color="primary" label="Đã tham gia">
+                            <q-list>
+                                <q-item clickable v-close-popup @click="LeaveGroupAsync">
+                                    <q-item-section>
+                                        <q-item-label>
+                                            <q-icon name="logout" />
+                                            Rời nhóm
+                                        </q-item-label>
+                                    </q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-btn-dropdown>
                     </div>
 
                     <q-btn v-if="groupInfo.isManager" :to="editUrl" color="primary" icon="settings"
@@ -120,13 +131,14 @@
 import { ref, defineProps, watch } from 'vue';
 import { defineEmits } from 'vue';
 import GroupPost from './Common/GroupPost.vue';
+import PostCreateSection from './Common/PostCreateSection.vue';
 
 // import apis
 import SocialCoverImageInput from 'src/components/common/socialMedia/SocialCoverImageInput.vue';
 import UpdateGroupApiHandler from 'src/api.handlers/social/social2Page/UpdateGroupApiHandler';
 import JoinRequestApiHandler from 'src/api.handlers/social/social3Page/JoinRequestApiHandler';
 import GetGroupPostHandler from 'src/api.handlers/UserPostHandler/GetGroupPostHandler';
-import PostCreateSection from './Common/PostCreateSection.vue';
+import GroupMemberApiHandler from 'src/api.handlers/social/social3Page/GroupMemberApiHandler';
 
 // import helpers and stores
 import { NotificationHelper } from "src/helpers/NotificationHelper";
@@ -150,6 +162,8 @@ const updateImageApi = UpdateGroupApiHandler.UpdateGroupCoverImageAsync;
 const requestJoinGroupApi = JoinRequestApiHandler.JoinGroupAsync;
 const cancelRequestJoinGroupApi = JoinRequestApiHandler.CancelJoinRequestAsync;
 const JoinGroupApi = JoinRequestApiHandler.AcceptJoinRequestAsync;
+const leaveGroupApi = GroupMemberApiHandler.LeaveGroupAsync;
+
 const emit = defineEmits(['updateCoverImage', 'createPostSuccess']);
 
 const props = defineProps({
@@ -300,6 +314,20 @@ async function CancelJoinRequestAsync() {
     } else {
         NotificationHelper.notifyError(
             result.message ?? "Có lỗi xảy ra"
+        );
+    }
+    isLoadingCancelBtn.value = false
+}
+
+async function LeaveGroupAsync() {
+    isLoadingCancelBtn.value = true;
+    const result = await leaveGroupApi(props.groupInfo.id);
+    if (result.isSuccess) {
+        NotificationHelper.notifySuccess("Đã rời nhóm");
+        hasJoinGroup.value = false
+    } else {
+        NotificationHelper.notifyError(
+            result.message ?? "Có gì đó không ổn..."
         );
     }
     isLoadingCancelBtn.value = false
