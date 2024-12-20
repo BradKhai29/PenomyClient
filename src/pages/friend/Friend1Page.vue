@@ -3,7 +3,8 @@
         <div class="text-bold text-subtitle1 q-pa-md container">
             Mọi người
             <FriendCard v-for="friend in friends" :key="friend.userId" :friend-info="friend" class="q-pa-md q-mt-md"
-                @send-friend-request="onSendFriendRequest" @cancel-friend-request="onSendFriendRequest" />
+                @send-friend-request="onSendFriendRequest" @cancel-friend-request="onSendFriendRequest"
+                @updateFriendInfo="onFriendRequestUpdated" @Unfriend="onFriendRequestUpdated" />
         </div>
         <div class="text-bold text-subtitle1 q-pa-md container">
             Bạn bè
@@ -25,6 +26,10 @@ const friends = ref([]);
 const alrfriends = ref([]);
 
 onMounted(async () => {
+    await fetchUserInfo();
+});
+
+async function fetchUserInfo() {
     try {
         friends.value = (await getFriendsApi()).responseBody.users;
         alrfriends.value = (await getFriendsApi()).responseBody.friendlists;
@@ -32,10 +37,13 @@ onMounted(async () => {
         console.error('Error fetching friends:', error);
         NotificationHelper.notifyError("Có gì đó không ổn...");
     }
-});
+}
 
 function onSendFriendRequest(userId) {
-    friends.value.find(friend => friend.userId == userId).hasSentFriendRequest = !friends.value.find(friend => friend.userId == userId).hasSentFriendRequest
+    friends.value.find(friend => friend.userId == userId).hasSentByMeFriendRequest = !friends.value.find(friend => friend.userId == userId).hasSentByMeFriendRequest
+}
+async function onFriendRequestUpdated() {
+    await fetchUserInfo()
 }
 
 </script>

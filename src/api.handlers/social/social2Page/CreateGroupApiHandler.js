@@ -9,7 +9,7 @@ const apiUrl = `${BaseWebApiUrl}/sm8/groups/create`;
 
 async function CreateGroupAsync(groupDetail) {
     const requestBody = new FormData();
-    
+
     requestBody.append("name", groupDetail.groupName);
     requestBody.append("description", groupDetail.groupDescription);
     requestBody.append("isPublic", groupDetail.isPublic.value);
@@ -19,7 +19,7 @@ async function CreateGroupAsync(groupDetail) {
         groupDetail.coverImage,
         groupDetail.coverImage.name
     );
-    
+
     try {
         const response = await axios({
             url: apiUrl,

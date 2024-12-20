@@ -1,49 +1,37 @@
 <template>
-    <div class="row content-start container" :class="isMe ? 'justify-end' : ''">
-        <div class="avatar" v-if="!isMe">
+    <div class="row content-start container" :class="authStore.userId == message.userId ? 'justify-end' : ''">
+        <div class="avatar" v-if="authStore.userId != message.userId">
             <q-avatar size="3.5em" class="shadow-1">
-                <q-img src="https://cdn.quasar.dev/img/avatar2.jpg" width="100%" height="100%" />
+                <q-img :src="message.avatarUrl" width="100%" height="100%" />
                 <q-tooltip delay='300' anchor='center start' self="center end" style="margin: 30px;">
-                    userName
+                    {{ message.nickName }}
                 </q-tooltip>
             </q-avatar>
         </div>
         <div class="message-container">
-            <div v-if="!isMe" class="q-pa-xs user-name">name</div>
-            <div class="message-content">I just feel like typing a really, really, REALLY long message to
-                annoy you...I just feel like typing a really, really, REALLY long message to
-                annoy you...I just feel like typing a really, really, REALLY long message to
-                annoy you...
-                <q-tooltip delay= 300 :anchor="isMe ? 'center start' : 'center end'"
-                    :self="isMe ? 'center end' : 'center start'" style="margin: 30px;">12:30
+            <div v-if="authStore.userId != message.userId" class="q-pa-xs user-name">{{ message.nickName }}</div>
+            <div v-for="message in message.messages" :key="message" class="message-content">{{ message.content }}
+                <q-tooltip delay=300 :anchor="authStore.userId == message.UserId ? 'center start' : 'center end'"
+                    :self="authStore.userId == message.UserId ? 'center end' : 'center start'" style="margin: 30px;">{{
+                        message.time }}
                 </q-tooltip>
-            </div>
-            <div class="message-content">
-                <q-tooltip delay= 300 :anchor="isMe ? 'center start' : 'center end'"
-                    :self="isMe ? 'center end' : 'center start'" style="margin: 30px;">12:30
-                </q-tooltip>
-                <div>
-                    I just feel like typing a really, really, REALLY long message to
-                    annoy you...
-                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onBeforeMount, defineProps } from 'vue';
+import { defineProps } from 'vue';
+import { useAuthStore } from 'src/stores/common/AuthStore';
 
 const props = defineProps({
     message: {
         type: Object,
         default: null
     },
-    isMe: {
-        type: Boolean,
-        default: false
-    }
 });
+
+const authStore = useAuthStore();
 
 </script>
 <style scoped>

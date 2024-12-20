@@ -9,6 +9,10 @@ const routeDefinition = [
                 path: "",
                 component: () => import("src/pages/chat/Chat1Page.vue"),
             },
+            {
+                path: ":groupChatId",
+                component: () => import("src/pages/chat/Chat1Page.vue"),
+            },
         ],
     },
 ];

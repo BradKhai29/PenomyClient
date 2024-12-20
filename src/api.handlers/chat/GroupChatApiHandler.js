@@ -6,12 +6,9 @@ import { useAuthStore } from "src/stores/common/AuthStore";
 
 const authStore = useAuthStore();
 const getMessageUrl = `${BaseWebApiUrl}/Chat10/chat-groups/get`;
+const getChatGroupsUrl = `${BaseWebApiUrl}/Chat2/chat-group/get`;
 
-async function GetGroupChatMesssagesAsync(
-    groupChatId,
-    pageNum,
-    chatNum
-) {
+async function GetGroupChatMesssagesAsync(groupChatId, pageNum, chatNum) {
     try {
         const response = await axios({
             url: getMessageUrl,
@@ -20,12 +17,12 @@ async function GetGroupChatMesssagesAsync(
                 Authorization: authStore.bearerAccessToken(),
             },
             params: {
-                groupChatId: "1",
+                groupChatId: groupChatId,
                 pageNum: "1",
-                chatNum: "20"
+                chatNum: "20",
             },
         });
-        console.log(response.data.body);
+        // console.log(response.data.body);
 
         return ApiResponse.success(response.data.body);
     } catch (error) {
@@ -35,8 +32,26 @@ async function GetGroupChatMesssagesAsync(
     }
 }
 
+async function GetGroupChatsAsync() {
+    try {
+        const response = await axios({
+            url: getChatGroupsUrl,
+            method: HttpMethod.GET,
+            headers: {
+                Authorization: authStore.bearerAccessToken(),
+            },
+        });
+
+        return ApiResponse.success(response.data.body);
+    } catch (error) {
+        console.log(error);
+
+        return ApiResponse.failed();
+    }
+}
 const GroupChatApiHandler = {
     GetGroupChatMesssagesAsync: GetGroupChatMesssagesAsync,
+    GetGroupChatsAsync: GetGroupChatsAsync,
 };
 
 export default GroupChatApiHandler;

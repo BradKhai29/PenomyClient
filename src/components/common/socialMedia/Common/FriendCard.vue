@@ -2,7 +2,7 @@
     <div class="row card items-center q-mb-md">
         <div class="col-2">
             <q-avatar size="5rem">
-                <q-img src="https://cdn.quasar.dev/img/avatar.png" width="5rem" height="5rem" />
+                <q-img :src="friendInfo.avatarUrl" alt="" width="5rem" height="5rem" />
             </q-avatar>
         </div>
         <div class="col">
@@ -12,22 +12,22 @@
                     <div>{{ localFriendInfo.aboutMe }}</div>
                 </q-item-section>
                 <div class="row items-center q-gutter-sm">
-                    <!-- Add Friend -->
-                    <q-btn
-                        v-if="!localFriendInfo.isFriend && !localFriendInfo.hasSentByMeFriendRequest && !localFriendInfo.hasSentToMeFriendRequest"
-                        no-caps icon="person_add" label="Thêm bạn" size="1rem" color="primary" text-color="white"
+                    <q-btn no-caps
+                        v-if="!friendInfo.isFriend && !friendInfo.hasSentByMeFriendRequest && !friendInfo.hasSentToMeFriendRequest"
+                        icon="person_add" label="Thêm bạn" size="1rem" color="primary" text-color="white"
                         @click="AddFriend" />
-                    <!-- Cancel Sent Request -->
-                    <q-btn v-if="localFriendInfo.hasSentByMeFriendRequest" no-caps icon="remove" label="Hủy yêu cầu"
+
+                    <q-btn no-caps v-if="friendInfo.hasSentByMeFriendRequest" icon="remove" label="Hủy yêu cầu"
                         size="1rem" color="grey-5" text-color="white" @click="RemoveFriend" />
-                    <!-- Accept or Decline Received Request -->
-                    <q-btn v-if="localFriendInfo.hasSentToMeFriendRequest" no-caps icon="check_circle" label="Chấp nhận"
-                        size="1rem" color="green" text-color="white" @click="AcceptFriendRequest" />
-                    <q-btn v-if="localFriendInfo.hasSentToMeFriendRequest" no-caps icon="cancel" label="Từ chối"
-                        size="1rem" color="red" text-color="white" @click="RemoveFriend" />
-                    <!-- Unfriend -->
-                    <q-btn v-if="localFriendInfo.isFriend" no-caps icon="remove" label="Hủy bạn" size="1rem"
-                        color="primary" text-color="white" @click="RemoveFromFriend" />
+
+                    <q-btn no-caps v-if="friendInfo.hasSentToMeFriendRequest" label="Chấp nhận yêu cầu" size="1rem"
+                        color="primary" text-color="white" @click="AcceptFriendRequest" />
+
+                    <q-btn no-caps v-if="friendInfo.isFriend" icon="message" label="Nhắn tin" size="1rem"
+                        color="primary" text-color="white" />
+
+                    <q-btn no-caps v-if="friendInfo.isFriend" icon="remove" label="Hủy bạn" size="1rem" color="red"
+                        text-color="white" @click="RemoveFromFriend" />
                 </div>
             </q-item>
         </div>
@@ -100,7 +100,7 @@ async function RemoveFromFriend() {
         const response = await removeFriendApi(localFriendInfo.userId);
         if (response.isSuccess) {
             NotificationHelper.notifySuccess("Đã hủy yêu cầu hoặc hủy kết bạn!");
-            emit('cancelFriendRequest', localFriendInfo.userId);
+            emit('Unfriend', localFriendInfo.userId);
 
             if (localFriendInfo.hasSentByMeFriendRequest) {
                 localFriendInfo.hasSentByMeFriendRequest = false;
@@ -123,7 +123,7 @@ async function AcceptFriendRequest() {
             localFriendInfo.hasSentToMeFriendRequest = false;
             localFriendInfo.isFriend = true;
 
-            emit('updateFriendInfo', localFriendInfo);
+            emit('updateFriendInfo');
         }
     } catch (error) {
         NotificationHelper.notifyError("Không thể chấp nhận yêu cầu, vui lòng thử lại.");
