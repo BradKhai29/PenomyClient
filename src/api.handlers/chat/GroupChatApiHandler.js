@@ -10,7 +10,8 @@ const getMessageUrl = `${BaseWebApiUrl}/Chat10/chat-groups/get`;
 async function GetGroupChatMesssagesAsync(
     groupChatId,
     pageNum,
-    chatNum) {
+    chatNum
+) {
     try {
         const response = await axios({
             url: getMessageUrl,
