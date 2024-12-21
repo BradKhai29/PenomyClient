@@ -94,7 +94,7 @@
                     <!-- Creator follow button -->
 
                     <!-- Report profile button -->
-                    <ReportProfileButton v-if="isAuth" :userId="creatorId" />
+                    <ReportProfileButton v-if="false" :userId="creatorId" />
                     <!-- Report profile button -->
 
                     <q-btn
