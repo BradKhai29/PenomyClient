@@ -99,6 +99,7 @@
                     <q-icon name="info" size="sm" />
                 </q-btn>
                 <q-btn
+                    v-if="false"
                     dense
                     no-caps
                     class="bg-light text-dark border-radius-sm flex items-center"
